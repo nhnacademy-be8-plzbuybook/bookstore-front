@@ -1,7 +1,6 @@
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY target/*.jar /app/front.jar
-EXPOSE 8080
+COPY target/bookstore-front-0.0.1-SNAPSHOT.jar /app/front.jar
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 # Run the entrypoint script
