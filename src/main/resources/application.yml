@@ -1,5 +1,4 @@
-#spring.application.name=bookstore-front
-
+# ??? 이거 필요없으면 삭제해주세용
 server:
   port: 0
 

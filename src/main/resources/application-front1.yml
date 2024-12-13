@@ -1,11 +1,13 @@
-#spring.application.name=bookstore-front
 
 server:
   port: 3000
 
 spring:
+  config:
+    activate:
+      on-profile: dev
   application:
-    name: bookstore-front1
+    name: bookstore-front1-dev
 
 eureka:
   client:
@@ -13,3 +15,29 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+logging:
+  level:
+    root: DEBUG
+
+---
+
+server:
+  port: 3000
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  application:
+    name: bookstore-front1-prod
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    root: INFO
