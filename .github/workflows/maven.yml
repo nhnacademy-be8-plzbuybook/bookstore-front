@@ -1,51 +1,90 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
-
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-name: Java CI with Maven
+name: Java CI with Maven, SonarQube, and Docker
 
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out the code
+        uses: actions/checkout@v4
+
       - name: Set up JDK 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v3
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: maven
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
 
-      - name : upload file
+      - name: Build with Maven
+        run: mvn clean -B package --file pom.xml
+
+      # SonarQube 관련 주석 해제 가능
+      - name: Run SonarQube
+        run: mvn clean verify sonar:sonar -Dsonar.projectKey=${{secrets.SONAR_KEY}} -Dsonar.projectName=${{secrets.SONAR_NAME}} -Dsonar.host.url=${{secrets.SONAR_HOST}} -Dsonar.token=${{secrets.SONAR_TOKEN}}
+
+      - name: Delete old files on server
+        run: sudo rm -rf /home/nhnacademy/front
+
+      - name: Copy files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_IP }}
           username: ${{ secrets.SSH_ID }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          source: "target/*.jar"
+          source: "."
           target: "/home/nhnacademy/front"
-          rm: false
 
-      - name: execute shell script
+      - name: Deploy to server via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_IP }}
           username: ${{ secrets.SSH_ID }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script_stop: true
-          script: "/home/nhnacademy/front/frontStartup.sh"
+          script: |
+            cd /home/nhnacademy/front
+            
+            chmod +x ./renew_cert.sh
+            chmod +x ./setup_cron.sh
+            ./setup_cron.sh
+
+            # Docker 네트워크가 없으면 생성
+            if ! sudo docker network inspect store_network > /dev/null 2>&1; then
+              sudo docker network create store_network
+            fi
+
+            # Frontend 컨테이너 1 구축 및 실행
+            sudo docker stop front1 || true
+            sudo docker rm front1 || true
+            sudo docker build -t front-image1 .
+            sudo docker run -d --name front1 --net store_network -e "SPRING_PROFILES_ACTIVE=prod" front-image1
+            
+            # Frontend 컨테이너 2 구축 및 실행
+            sudo docker stop front2 || true
+            sudo docker rm front2 || true
+            sudo docker build -t front-image2 .
+            sudo docker run -d --name front2 --net store_network -e "SPRING_PROFILES_ACTIVE=prod" front-image2
+
+            # Nginx 컨테이너 구축 및 실행
+            # 기존 Nginx 컨테이너 중지 및 제거
+            sudo docker stop nginx || true
+            sudo docker rm nginx || true
+            
+            # Nginx 컨테이너 실행
+            sudo docker run --name nginx -d \
+              -p 80:80 -p 443:443 \
+              -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf \  # Nginx 설정 파일 마운트
+              -v /etc/letsencrypt:/etc/letsencrypt \  # 전체 Let’s Encrypt 디렉토리 마운트
+              --net store_network nginx:latest || { echo "Error: Failed to run nginx container"; exit 1; }
+
+            # Nginx 컨테이너가 성공적으로 실행될 때까지 대기
+            while [[ "$(sudo docker inspect -f '{{.State.Status}}' nginx)" != "running" ]]; do
+              echo "Waiting for Nginx container to become healthy..."
+              sleep 5
+            done
+

@@ -1,0 +1,45 @@
+server:
+  port: 3001
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  application:
+    name: bookstore-front2-dev
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    root: DEBUG
+
+---
+
+
+server:
+  port: 3001
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  application:
+    name: bookstore-front2-prod
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+
+logging:
+  level:
+    root: INFO
