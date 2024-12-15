@@ -54,21 +54,21 @@ jobs:
             ./setup_cron.sh
 
             # Docker 네트워크가 없으면 생성
-            if ! sudo docker network inspect store_network > /dev/null 2>&1; then
-              sudo docker network create store_network
+            if ! sudo docker network inspect front_network > /dev/null 2>&1; then
+              sudo docker network create front_network
             fi
 
             # Frontend 컨테이너 1 구축 및 실행
             sudo docker stop front1 || true
             sudo docker rm front1 || true
             sudo docker build -t front-image1 .
-            sudo docker run -d --name front1 --net store_network -p 3000:3000 -e "SPRING_PROFILES_ACTIVE=prod" front-image1
+            sudo docker run -d --name front1 --net front_network -p 3000:3000 -e "SPRING_PROFILES_ACTIVE=prod" front-image1
             
             # Frontend 컨테이너 2 구축 및 실행
             sudo docker stop front2 || true
             sudo docker rm front2 || true
             sudo docker build -t front-image2 .
-            sudo docker run -d --name front2 --net store_network -p 3001:3001 -e "SPRING_PROFILES_ACTIVE=prod" front-image2
+            sudo docker run -d --name front2 --net front_network -p 3001:3001 -e "SPRING_PROFILES_ACTIVE=prod" front-image2
 
             # Nginx 컨테이너 구축 및 실행
             # 기존 Nginx 컨테이너 중지 및 제거
@@ -76,7 +76,7 @@ jobs:
             sudo docker rm nginx || true
             
             # Nginx 컨테이너 실행
-            sudo docker run --name nginx -d -p 80:80 -p 443:443 -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf -v /etc/letsencrypt:/etc/letsencrypt --net store_network nginx:latest || { echo "Error: Failed to run nginx container"; exit 1; }
+            sudo docker run --name nginx -d -p 80:80 -p 443:443 -v /etc/nginx/nginx.conf:/etc/nginx/nginx.conf -v /etc/letsencrypt:/etc/letsencrypt --net front_network nginx:latest || { echo "Error: Failed to run nginx container"; exit 1; }
 
             # Nginx 컨테이너가 성공적으로 실행될 때까지 대기
             while [[ "$(sudo docker inspect -f '{{.State.Status}}' nginx)" != "running" ]]; do
