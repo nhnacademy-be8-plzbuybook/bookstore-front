@@ -1,9 +1,12 @@
+server:
+  port: 3000
+
 spring:
   config:
     activate:
-      on-profile: prod
+      on-profile: prod1
   application:
-    name: bookstore-front-prod
+    name: bookstore-front-prod1
 
 eureka:
   client:
