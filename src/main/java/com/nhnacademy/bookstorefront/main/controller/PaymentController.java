@@ -1,19 +1,15 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
-import com.nhnacademy.bookstorefront.main.client.PaymentClient;
-import org.json.simple.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 
 @Controller
 public class PaymentController {
-    @Autowired
-    private PaymentClient paymentClient;
 
     // 결제위젯 요청
     @GetMapping("/payments/toss")
@@ -21,13 +17,11 @@ public class PaymentController {
         return "payment/checkout";
     }
 
-    // 결제하기 버튼 누를 때 호출, 결제서버에 결제 승인 요청
-    @RequestMapping(value = {"/confirm/widget", "/confirm/payment"})
-    public ResponseEntity<JSONObject> confirmPayment(@RequestBody String jsonBody) {
-        //결제 서버로 승인요청
-        JSONObject response = paymentClient.confirm(jsonBody);
 
-        int statusCode = response.containsKey("error") ? 400 : 200;
-        return ResponseEntity.status(statusCode).body(response);
+    @RequestMapping(value = "/fail", method = RequestMethod.GET)
+    public String failPayment(HttpServletRequest request, Model model) {
+        model.addAttribute("code", request.getParameter("code"));
+        model.addAttribute("message", request.getParameter("message"));
+        return "payment/fail";
     }
 }

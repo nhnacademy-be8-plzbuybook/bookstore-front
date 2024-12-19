@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <link rel="icon" href="https://static.toss.im/icons/png/4x/icon-toss-logo.png" />
-  <link rel="stylesheet" type="text/css" href="./style.css" />
+  <link rel="stylesheet" type="text/css" href="/style.css" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>토스페이먼츠 샘플 프로젝트</title>
@@ -92,6 +92,7 @@
         return;
       }
 
+      // TODO: 페이지 불러올 때 정보 채워넣을 수 있게 바꿔야함
       await widgets.setAmount({
         currency: "KRW",
         value: amount.value,
@@ -100,20 +101,55 @@
 
     // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
     // @docs https://docs.tosspayments.com/sdk/v2/js#widgetsrequestpayment
+    // button.addEventListener("click", async function () {
+    //   // 결제를 요청하기 전에 orderId, amount를 서버에 저장하세요.
+    //   // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도입니다.
+    //
+    //
+    //
+    //
+    //   await widgets.requestPayment({
+    //     orderId: generateRandomString(),
+    //     orderName: "토스 티셔츠 외 2건",
+    //     successUrl: window.location.origin + "/payment/success.html",
+    //     failUrl: window.location.origin + "/fail.html",
+    //     customerEmail: "customer123@gmail.com",
+    //     customerName: "김토스",
+    //     // 가상계좌 안내, 퀵계좌이체 휴대폰 번호 자동 완성에 사용되는 값입니다. 필요하다면 주석을 해제해 주세요.
+    //     // customerMobilePhone: "01012341234",
+    //   });
+    // });
     button.addEventListener("click", async function () {
-      // 결제를 요청하기 전에 orderId, amount를 서버에 저장하세요.
-      // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도입니다.
+      const orderId = generateRandomString();
+      const paymentInfo = {
+        orderId,
+        amount: coupon.checked ? amount.value - 5000 : amount.value
+      };
+
+      // 서버로 결제 정보 전송
+      const response = await fetch("http://localhost:8090/api/payments/save-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(paymentInfo),
+      });
+
+      if (!response.ok) {
+        alert("결제 정보를 저장하는데 실패했습니다. 다시 시도해 주세요.");
+        return;
+      }
+
+      // 결제 요청
+      // TODO: 페이지 불러올 때 정보 채워넣게 바꿔야함
       await widgets.requestPayment({
-        orderId: generateRandomString(),
+        orderId,
         orderName: "토스 티셔츠 외 2건",
-        successUrl: window.location.origin + "/widget/success.html",
-        failUrl: window.location.origin + "/fail.html",
+        successUrl: window.location.origin + "/payment/success.html",
+        failUrl: window.location.origin + "/payment/fail.html",
         customerEmail: "customer123@gmail.com",
         customerName: "김토스",
-        // 가상계좌 안내, 퀵계좌이체 휴대폰 번호 자동 완성에 사용되는 값입니다. 필요하다면 주석을 해제해 주세요.
-        // customerMobilePhone: "01012341234",
       });
     });
+
   }
   //
   // document.getElementById("payment-window-button").addEventListener("click", () => {
