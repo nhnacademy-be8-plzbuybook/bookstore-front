@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Map;
 
-@FeignClient(name = "gateway", url = "http://localhost:8080/api")
+@FeignClient(name = "gateway-dev")
 public interface AuthenticationClient {
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     ResponseEntity<String> login(@RequestBody Map<String, String> credentials);
 }

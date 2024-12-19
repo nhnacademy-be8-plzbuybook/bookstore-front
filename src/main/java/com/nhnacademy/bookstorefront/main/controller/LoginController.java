@@ -16,14 +16,14 @@ public class LoginController {
         this.authenticationClient = authenticationClient;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
-        try {
-            // Feign Client를 통해 인증 서버로 요청 전달
-            ResponseEntity<String> response = authenticationClient.login(credentials);
-            return ResponseEntity.ok(response.getBody()); // 성공적으로 토큰 반환
-        } catch (Exception e) {
-            return ResponseEntity.status(401).body("Invalid credentials"); // 실패 시 에러 메시지 반환
-        }
-    }
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody Map<String, String> credentials) {
+//        try {
+//            // Feign Client를 통해 인증 서버로 요청 전달
+//            ResponseEntity<String> response = authenticationClient.login(credentials);
+//            return ResponseEntity.ok(response.getBody()); // 성공적으로 토큰 반환
+//        } catch (Exception e) {
+//            return ResponseEntity.status(401).body("Invalid credentials"); // 실패 시 에러 메시지 반환
+//        }
+//    }
 }
