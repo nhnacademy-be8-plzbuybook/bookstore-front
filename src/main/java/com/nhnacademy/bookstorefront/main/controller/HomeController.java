@@ -11,8 +11,13 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/api/login")
+    @GetMapping("/login")
     public String home() {
-        return "main";
+        return "loginPage";
+    }
+
+    @GetMapping("/payment")
+    public String payment() {
+        return "orders/payment";
     }
 }
