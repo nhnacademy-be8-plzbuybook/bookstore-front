@@ -20,7 +20,7 @@
                 }
 
                 try {
-                    const response = await fetch('http://localhost:8080/api/login', {
+                    const response = await fetch('http://localhost:8080/api/auth/login', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -29,8 +29,10 @@
                     });
 
                     if (response.ok) {
-                        const data = await response.json();
-                        alert('Login successful: ' + JSON.stringify(data));
+                        //TODO: 이 부분 인증서버 응답 형식이랑 같이 바꿔야됨
+                        const accessToken = await response.text();
+                        localStorage.setItem('access_token', accessToken);
+                        alert('로그인 성공!');
                     } else {
                         const error = await response.json();
                         alert('Login failed: ' + JSON.stringify(error));
