@@ -1,11 +1,16 @@
 main();
 
 async function main() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryOrderId = urlParams.get("orderId");
+    const queryOrderName = urlParams.get("orderName");
+    const queryOrderAmount = urlParams.get("amount");
+
     const button = document.getElementById("payment-button");
     const coupon = document.getElementById("coupon-box");
     const amount = {
         currency: "KRW",
-        value: 50000,
+        value: queryOrderAmount,
     };
     // ------  결제위젯 초기화 ------
     // TODO: clientKey는 개발자센터의 결제위젯 연동 키 > 클라이언트 키로 바꾸세요.
@@ -86,9 +91,9 @@ async function main() {
     //   });
     // });
     button.addEventListener("click", async function () {
-        const orderId = generateRandomString();
+        // const orderId = generateRandomString();
         const paymentInfo = {
-            orderId,
+            queryOrderId,
             amount: coupon.checked ? amount.value - 5000 : amount.value
         };
 
@@ -108,12 +113,12 @@ async function main() {
         // 결제 요청
         // TODO: 페이지 불러올 때 정보 채워넣게 바꿔야함
         await widgets.requestPayment({
-            orderId,
-            orderName: "토스 티셔츠 외 2건",
+            queryOrderId,
+            orderName: queryOrderName,
             successUrl: window.location.origin + "/payment/success.html",
             failUrl: window.location.origin + "/payment/fail.html",
-            customerEmail: "customer123@gmail.com",
-            customerName: "김토스",
+            // customerEmail: "customer123@gmail.com",
+            // customerName: "김토스",
         });
     });
 
