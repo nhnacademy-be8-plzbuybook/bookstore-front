@@ -45,6 +45,5 @@ public class LoginController {
 
         redirectAttributes.addFlashAttribute("message", "로그인 성공!");
         return "redirect:/";
-
     }
 }
