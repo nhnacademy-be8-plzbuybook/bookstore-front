@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <link rel="icon" href="https://static.toss.im/icons/png/4x/icon-toss-logo.png" />
-  <link rel="stylesheet" type="text/css" href="/style.css" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>토스페이먼츠 샘플 프로젝트</title>
@@ -37,53 +37,6 @@
   <div id="response" style="white-space: initial"></div>
 </div>
 
-<script>
-  // 쿼리 파라미터 값을 서버로 전달해 결제 요청할 때 보낸 데이터와 동일한지 반드시 확인하세요.
-  // 클라이언트에서 결제 금액을 조작하는 행위를 방지할 수 있습니다.
-  const urlParams = new URLSearchParams(window.location.search);
-
-  // 서버로 결제 승인에 필요한 결제 정보를 보내세요.
-  async function confirm() {
-    var requestData = {
-      paymentKey: urlParams.get("paymentKey"),
-      orderId: urlParams.get("orderId"),
-      amount: urlParams.get("amount"),
-    };
-
-    const response = await fetch("http://localhost:8090/api/payments/confirm/widget", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestData),
-    });
-
-    const json = await response.json();
-
-    if (!response.ok) {
-      throw { message: json.message, code: json.code };
-    }
-
-    return json;
-  }
-
-  confirm()
-    .then(function (data) {
-      // TODO: 결제 승인에 성공했을 경우 UI 처리 로직을 구현하세요.
-      document.getElementById("response").innerHTML = `<pre>${JSON.stringify(data, null, 4)}</pre>`;
-    })
-    .catch((err) => {
-      // TODO: 결제 승인에 실패했을 경우 UI 처리 로직을 구현하세요.
-      window.location.href = `/fail.html?message=${err.message}&code=${err.code}`;
-    });
-
-  const paymentKeyElement = document.getElementById("paymentKey");
-  const orderIdElement = document.getElementById("orderId");
-  const amountElement = document.getElementById("amount");
-
-  orderIdElement.textContent = urlParams.get("orderId");
-  amountElement.textContent = urlParams.get("amount") + "원";
-  paymentKeyElement.textContent = urlParams.get("paymentKey");
-</script>
+<script src="/js/payment/success.js"></script>
 </body>
 </html>

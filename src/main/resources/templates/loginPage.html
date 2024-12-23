@@ -4,48 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loginForm = document.getElementById('loginForm');
-
-            loginForm.addEventListener('submit', async (event) => {
-                event.preventDefault(); // 기본 폼 제출 방지
-
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-
-                const data = {
-                    "email": username,
-                    "password": password
-                }
-
-                try {
-                    const response = await fetch('http://localhost:8080/api/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(data),
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        alert('Login successful: ' + JSON.stringify(data));
-                    } else {
-                        const error = await response.json();
-                        alert('Login failed: ' + JSON.stringify(error));
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('An error occurred: ' + error.message);
-                }
-            });
-        });
-    </script>
 </head>
 <body>
 <h1>Login</h1>
-<form id="loginForm">
+<!--https://plzbuybook.store/api/login-->
+<form id="loginForm" method="POST" action="/login/process">
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" required>
     <br>
@@ -54,5 +17,13 @@
     <br>
     <button type="submit">Login</button>
 </form>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var message = [[${message}]];
+    if (message) {
+        alert(message);
+    }
+    /*]]>*/
+</script>
 </body>
 </html>

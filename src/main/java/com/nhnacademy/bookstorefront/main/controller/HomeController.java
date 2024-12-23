@@ -11,10 +11,7 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/login")
-    public String home() {
-        return "loginPage";
-    }
+
 
     @GetMapping("/payment")
     public String payment() {
