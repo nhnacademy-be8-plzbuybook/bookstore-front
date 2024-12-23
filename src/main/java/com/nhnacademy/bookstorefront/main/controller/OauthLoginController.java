@@ -28,7 +28,7 @@ public class OauthLoginController {
         String accessToken = tokenService.issueAccessToken(memberDto);
 
         // 발급된 토큰 쿠키에 저장
-        cookieService.addOnCookie(response, "accessToken", accessToken, 100000);
+        cookieService.addCookie(response, "accessToken", accessToken, 100000);
 
         redirectAttributes.addFlashAttribute("message", "로그인 성공");
         return "redirect:/";
