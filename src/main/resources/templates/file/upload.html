@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>파일 및 URL 업로드</title>
+</head>
+<body>
+<h1>파일 업로드</h1>
+<form action="http://localhost:8091/api/objects/upload_file" method="post" enctype="multipart/form-data">
+  <input type="file" name="files" multiple required>
+  <button type="submit">업로드</button>
+</form>
+
+<h2>URL로 이미지 업로드</h2>
+<form action="http://localhost:8091/api/objects/upload_url" method="post">
+  <input type="text" name="url" placeholder="이미지 URL" required>
+  <button type="submit">업로드 URL</button>
+</form>
+
+<div>
+  <p th:text="${message}"></p> <!-- 업로드 결과 메시지 -->
+</div>
+</body>
+</html>
