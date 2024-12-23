@@ -38,5 +38,12 @@ const dummyOrderData = {
             appliedCouponIds: [0],
             couponDiscount: 0
         }
-    ]
+    ],
+    orderDeliveryAddress: {
+        locationAddress: "광주광역시 동구 필문대로 309(서석동, 조선대학교) 조선대5길 65",
+        zipCode: "61452",
+        detailAddress: "IT융합대학 별관 1층 컴퓨터공학과",
+        recipient: "김태현",
+        recipientPhone: "062-230-7381"
+    }
 }
