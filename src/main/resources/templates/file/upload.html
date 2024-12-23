@@ -7,12 +7,21 @@
 </head>
 <body>
 <h1>파일 업로드</h1>
+<!--
+지금 상태 : Front -> bookstore 바로가는 방식.
+<form action="http://bookstore-gateway/api/objects/upload_file>
+배포시엔 서버에서 이렇게 수정해야 하지 않을까?
+-->
 <form action="http://localhost:8091/api/objects/upload_file" method="post" enctype="multipart/form-data">
   <input type="file" name="files" multiple required>
   <button type="submit">업로드</button>
 </form>
 
 <h2>URL로 이미지 업로드</h2>
+<!--
+<form action="http://bookstore-gateway/api/objects/upload_url>
+배포시엔 서버에서 이렇게 등록해야 하지 않을까?
+-->
 <form action="http://localhost:8091/api/objects/upload_url" method="post">
   <input type="text" name="url" placeholder="이미지 URL" required>
   <button type="submit">업로드 URL</button>
