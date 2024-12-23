@@ -1,9 +1,10 @@
 package com.nhnacademy.bookstorefront.main.client;
 
 
+import com.nhnacademy.bookstorefront.main.dto.AccessTokenResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.MemberDto;
-import org.json.simple.JSONObject;
+import com.nhnacademy.bookstorefront.main.dto.OauthResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +22,8 @@ public interface AuthenticationClient {
     ResponseEntity<?> oauthLogin(@RequestParam("provider") String provider);
 
     @PostMapping("/api/auth/access-token/issue")
-    ResponseEntity<JSONObject> issueAccessToken(@RequestBody MemberDto memberDto);
+    ResponseEntity<AccessTokenResponseDto> issueAccessToken(@RequestBody MemberDto memberDto);
 
     @GetMapping("/api/auth/oauth/callback")
-    ResponseEntity<JSONObject> getEmailFromOauthUser(@RequestParam String code);
+    ResponseEntity<OauthResponseDto> getEmailFromOauthUser(@RequestParam String code);
 }
