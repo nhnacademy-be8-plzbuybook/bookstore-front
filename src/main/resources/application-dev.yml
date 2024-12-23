@@ -15,7 +15,8 @@ eureka:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
+
 server:
   port: 3000
 #eureka:
