@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <link rel="icon" href="https://static.toss.im/icons/png/4x/icon-toss-logo.png" />
-  <link rel="stylesheet" type="text/css" href="/style.css" />
+  <link rel="stylesheet" type="text/css" href="/css/style.css" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>토스페이먼츠 샘플 프로젝트</title>
@@ -28,14 +28,6 @@
   </div>
 </div>
 
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-
-  const codeElement = document.getElementById("code");
-  const messageElement = document.getElementById("message");
-
-  codeElement.textContent = urlParams.get("code");
-  messageElement.textContent = urlParams.get("message");
-</script>
+<script src="/js/payment/fail.js"></script>
 </body>
 </html>
