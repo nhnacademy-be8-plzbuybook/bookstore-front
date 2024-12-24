@@ -1,11 +1,10 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.MemberDto;
+import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import com.nhnacademy.bookstorefront.main.service.CookieService;
 import com.nhnacademy.bookstorefront.main.service.TokenService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -36,10 +35,8 @@ public class AuthenticationController {
 
         LoginRequestDto loginRequest = new LoginRequestDto(username, password);
         // 로그인 수행
-        MemberDto memberDto = authenticationService.processLogin(loginRequest);
-
-        // 토근 발급
-        String accessToken = tokenService.issueAccessToken(memberDto);
+        LoginResponseDto loginResponse = authenticationService.processLogin(loginRequest);
+        String accessToken = loginResponse.accessToken();
 
         // 발급된 토큰 쿠키에 저장
         cookieService.addCookie(response, "accessToken", accessToken, 100000);
