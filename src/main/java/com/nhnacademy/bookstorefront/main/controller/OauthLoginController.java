@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
-import com.nhnacademy.bookstorefront.main.dto.MemberDto;
+import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import com.nhnacademy.bookstorefront.main.service.CookieService;
 import com.nhnacademy.bookstorefront.main.service.TokenService;
@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 @Controller
 public class OauthLoginController {
-    private final TokenService tokenService;
     private final AuthenticationService authenticationService;
     private final CookieService cookieService;
 
@@ -22,13 +21,12 @@ public class OauthLoginController {
     public String processOauthLogin(@RequestParam String code, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 
         //oauth 로그인 수행
-        MemberDto memberDto = authenticationService.processOauthLogin(code);
-
-        // 로그인 성공 시 액세스토큰 발급
-        String accessToken = tokenService.issueAccessToken(memberDto);
+        OauthLoginResponseDto oauthLoginResponseDto = authenticationService.processOauthLogin(code);
 
         // 발급된 토큰 쿠키에 저장
+        String accessToken = oauthLoginResponseDto.accessToken();
         cookieService.addCookie(response, "accessToken", accessToken, 100000);
+        //TODO: 쿠키발급만료시간 설정
 
         redirectAttributes.addFlashAttribute("message", "로그인 성공");
         return "redirect:/";
