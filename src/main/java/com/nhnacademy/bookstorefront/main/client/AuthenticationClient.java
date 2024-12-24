@@ -1,19 +1,30 @@
 package com.nhnacademy.bookstorefront.main.client;
 
 
-import com.nhnacademy.bookstorefront.main.dto.AccessTokenResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.MemberDto;
-import com.nhnacademy.bookstorefront.main.dto.OauthResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @FeignClient(name = "GATEWAY-DEV")
 public interface AuthenticationClient {
+
+
+
+
+    @PostMapping("/api/upload")
+    ResponseEntity<String> uploadFiles(@RequestParam("file") List<MultipartFile> multipartFiles);
+
+    @GetMapping("/api/books")
+    List<BookDetailResponseDto> getBooks();
+
+
 
     @PostMapping("/api/auth/login")
     ResponseEntity<MemberDto> login(@RequestBody LoginRequestDto loginRequest);
