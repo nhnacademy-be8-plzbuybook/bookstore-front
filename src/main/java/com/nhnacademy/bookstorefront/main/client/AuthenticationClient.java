@@ -15,16 +15,11 @@ import java.util.List;
 @FeignClient(name = "GATEWAY-DEV")
 public interface AuthenticationClient {
 
-
-
-
     @PostMapping("/api/upload")
     ResponseEntity<String> uploadFiles(@RequestParam("file") List<MultipartFile> multipartFiles);
 
     @GetMapping("/api/books")
     List<BookDetailResponseDto> getBooks();
-
-
 
     @PostMapping("/api/auth/login")
     ResponseEntity<MemberDto> login(@RequestBody LoginRequestDto loginRequest);
