@@ -23,10 +23,12 @@ public interface AuthenticationClient {
     @PostMapping("/api/upload")
     ResponseEntity<String> uploadFiles(@RequestParam("file") List<MultipartFile> multipartFiles);
 
-    @PostMapping("/api/login")
-    ResponseEntity<String> login(@RequestBody Map<String, String> credentials);
+//    @PostMapping("/api/login")
+//    ResponseEntity<String> login(@RequestBody Map<String, String> credentials);
 
     @GetMapping("/api/books")
     List<BookDetailResponseDto> getBooks();
+
+
 
 }

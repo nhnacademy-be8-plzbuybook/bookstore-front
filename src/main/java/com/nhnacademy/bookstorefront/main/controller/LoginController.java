@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
-import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
+//import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
 import feign.FeignException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,27 +26,27 @@ public class LoginController {
         return "loginPage";
     }
 
-    @PostMapping("/process")
-    public String login(@RequestParam("username") String username,
-                        @RequestParam("password") String password,
-                        HttpServletResponse response,
-                        RedirectAttributes redirectAttributes) {
-        LoginRequestDto loginRequest = new LoginRequestDto(username, password);
-        try {
-            ResponseEntity<String> responseEntity = authenticationClient.login(loginRequest);
-            String accessToken = responseEntity.getBody();
-            addAccessTokenOnCookie(response, accessToken);
-            return "redirect:/index";
-
-        } catch (FeignException.BadRequest e) {
-            redirectAttributes.addFlashAttribute("message", "잘못된 입력입니다.");
-            return "redirect:/login";
-
-        } catch (FeignException.Unauthorized e) {
-            redirectAttributes.addFlashAttribute("message", "잘못된 아이디 또는 비밀번호입니다.");
-            return "redirect:/login";
-        }
-    }
+//    @PostMapping("/process")
+//    public String login(@RequestParam("username") String username,
+//                        @RequestParam("password") String password,
+//                        HttpServletResponse response,
+//                        RedirectAttributes redirectAttributes) {
+//        LoginRequestDto loginRequest = new LoginRequestDto(username, password);
+//        try {
+//            ResponseEntity<String> responseEntity = authenticationClient.login(loginRequest);
+//            String accessToken = responseEntity.getBody();
+//            addAccessTokenOnCookie(response, accessToken);
+//            return "redirect:/index";
+//
+//        } catch (FeignException.BadRequest e) {
+//            redirectAttributes.addFlashAttribute("message", "잘못된 입력입니다.");
+//            return "redirect:/login";
+//
+//        } catch (FeignException.Unauthorized e) {
+//            redirectAttributes.addFlashAttribute("message", "잘못된 아이디 또는 비밀번호입니다.");
+//            return "redirect:/login";
+//        }
+//    }
 
     private void addAccessTokenOnCookie(HttpServletResponse response, String accessToken) {
         Cookie cookie = new Cookie("accessToken", accessToken);
