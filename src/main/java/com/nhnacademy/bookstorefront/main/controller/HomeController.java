@@ -10,11 +10,4 @@ public class HomeController {
     public String index() {
         return "index";
     }
-
-
-
-    @GetMapping("/payment")
-    public String payment() {
-        return "orders/payment";
-    }
 }
