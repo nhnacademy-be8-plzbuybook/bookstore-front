@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/index.css?v=1.0">
+    <title>📚 책사조잉 📚</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        main {
+            display: flex;
+            gap: 20px;
+        }
+        .sidebar {
+            width: 200px;
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-right: 2px solid #ddd;
+        }
+        .sidebar .group {
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        .sidebar .group.active {
+            background-color: #ddd;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+        .content .section {
+            display: none;
+        }
+        .content .section.active {
+            display: block;
+        }
+        .benefits-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .benefits-table th, .benefits-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .benefits-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .highlight {
+            background-color: #fffbe6;
+            font-weight: bold;
+            position: relative;
+        }
+        .highlight:after {
+            content: "← 현재 등급";
+            position: absolute;
+            right: -120px;
+            color: #ff5722;
+            font-weight: bold;
+        }
+        .description {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        .current-grade {
+            font-weight: bold;
+            color: #ff5722;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo">📚 책사조잉 📚</div>
+    <nav class="menu">
+        <a href="#">Home</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="/mypage">MyPage</a>
+        <a href="/logout">로그아웃</a>
+    </div>
+</header>
+<main>
+    <div class="sidebar">
+        <div class="group active" data-section="grade-benefits">회원 등급 및 혜택</div>
+        <div class="group" data-section="likes">좋아요 도서</div>
+        <div class="group" data-section="points">포인트 내역</div>
+        <div class="group" data-section="edit-info">회원 정보 수정</div>
+        <div class="group" data-section="address">주소 설정</div>
+        <div class="group" data-section="withdraw">회원 탈퇴</div>
+    </div>
+    <div class="content">
+        <div class="section active" id="grade-benefits">
+            <h2>회원 등급 및 혜택</h2>
+            <p class="description">* 등급은 최근 3개월 이내 순수 주문금액을 기준으로 산정됩니다.<br>
+                * 순수 주문금액 = 주문금액 - (쿠폰 + 배송비 + 취소금액 + 포장비)</p>
+            <p class="current-grade">현재 등급: <span id="user-grade" th:text="${member.memberGradeName}">일반</span></p>
+            <table class="benefits-table">
+                <thead>
+                <tr>
+                    <th>등급</th>
+                    <th>기준 순수금액</th>
+                    <th>포인트 적립률</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>NORMAL</td>
+                    <td>10만원 미만</td>
+                    <td>순수금액의 1%</td>
+                </tr>
+                <tr>
+                    <td>ROYAL</td>
+                    <td>10만원 ~ 20만원</td>
+                    <td>순수금액의 2%</td>
+                </tr>
+                <tr>
+                    <td>GOLD</td>
+                    <td>20만원 ~ 30만원</td>
+                    <td>순수금액의 3%</td>
+                </tr>
+                <tr>
+                    <td>PLATINUM</td>
+                    <td>30만원 이상</td>
+                    <td>순수금액의 3%</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+<script>
+    // Thymeleaf에서 서버에서 받은 등급을 JavaScript로 전달받음
+    const currentGrade = '[[${member.memberGradeName}]]'; // 서버에서 렌더링된 등급 값
+
+    console.log("현재 등급: ", currentGrade);  // 콘솔에서 값이 잘 전달되는지 확인
+
+    // 페이지 로드 시 현재 등급에 맞는 하이라이트 처리
+    highlightGrade(currentGrade);
+
+    function highlightGrade(grade) {
+        const allRows = document.querySelectorAll('.benefits-table tbody tr'); // 모든 행 가져오기
+
+        // 기존 하이라이트 제거
+        allRows.forEach(row => row.classList.remove('highlight'));
+
+        // 각 행 검사하여 현재 등급에 맞는 행 하이라이트 처리
+        allRows.forEach(row => {
+            const gradeCell = row.querySelector('td:first-child'); // 첫 번째 열의 등급 값 가져오기
+            if (gradeCell && gradeCell.textContent.trim().toUpperCase() === grade.toUpperCase()) {
+                row.classList.add('highlight'); // 등급이 일치하면 하이라이트 클래스 추가
+            }
+        });
+
+        // 현재 등급을 화면에 업데이트
+        document.getElementById('user-grade').textContent = grade;
+    }
+</script>
+</body>
+</html>
