@@ -22,18 +22,19 @@ public class FeignRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        // 요청에서 쿠키 가져오기
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            // 쿠키에서 accessToken을 찾기
-            for (Cookie cookie : cookies) {
-                if ("accessToken".equals(cookie.getName())) {
-                    log.debug("accessToken cookie: {}", cookie.getValue());
-
-                    // Authorization 헤더에 "Bearer {accessToken}" 형식으로 추가
-                    template.header("Authorization", "Bearer " + cookie.getValue());
+        // URL이 "/api/members/my"로 시작하면 Authorization 헤더 추가
+        if (template.url().startsWith("/api/members/my")) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if ("accessToken".equals(cookie.getName())) {
+                        log.debug("Authorization 헤더가 추가된 요청의 URL: {}", template.url());
+                        //access 토큰은 헤더가 없으므로 특정 요청에 대해 추가해서 header에 저장한다
+                        template.header("Authorization", "Bearer " + cookie.getValue());
+                    }
                 }
             }
         }
+        //이런식으로 access 토큰이 필요한 것은 추가해주는 방법
     }
 }
