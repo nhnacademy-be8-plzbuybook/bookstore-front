@@ -1,24 +1,144 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Login</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Login</h1>-->
+<!--&lt;!&ndash;https://plzbuybook.store/api/login&ndash;&gt;-->
+<!--<form id="loginForm" method="POST" action="/login/process">-->
+<!--    <label for="username">Username:</label>-->
+<!--    <input type="text" id="username" name="username" required>-->
+<!--    <br>-->
+<!--    <label for="password">Password:</label>-->
+<!--    <input type="password" id="password" name="password" required>-->
+<!--    <br>-->
+<!--    <button type="submit">Login</button>-->
+<!--</form>-->
+<!--<a href="https://id.payco.com/oauth2.0/authorize?client_id=3RDjoVxezCTITgSDTsHnlnB&response_type=code&redirect_uri=http://plzbuybook.store:3000/oauth/callback&serviceProviderCode=FRIENDS&userLocale=ko_KR">페이코 로그인</a>-->
+
+<!--<script th:inline="javascript">-->
+<!--    /*<![CDATA[*/-->
+<!--    const message = [[${message}]];-->
+<!--    if (message) {-->
+<!--        alert(message);-->
+<!--    }-->
+<!--    /*]]>*/-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>📚 책사조잉 로그인 📚</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 350px;
+            text-align: center;
+        }
+
+        .login-container h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+            text-align: left;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f7f7f7;
+            width: 100%;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #888;
+            background-color: #fff;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+
+        .alternative-login {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .alternative-login a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .alternative-login a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-<h1>Login</h1>
-<!--https://plzbuybook.store/api/login-->
-<form id="loginForm" method="POST" action="/login/process">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
-    <br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <br>
-    <button type="submit">Login</button>
-</form>
-<a href="https://id.payco.com/oauth2.0/authorize?client_id=3RDjoVxezCTITgSDTsHnlnB&response_type=code&redirect_uri=http://plzbuybook.store:3000/oauth/callback&serviceProviderCode=FRIENDS&userLocale=ko_KR">페이코 로그인</a>
+<div class="login-container">
+    <h1>📚 책사조잉 로그인</h1>
+    <form id="loginForm" method="POST" action="/login/process">
+        <label for="username">아이디</label>
+        <input type="text" id="username" name="username" placeholder="아이디를 입력하세요" required>
 
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+
+        <button type="submit">로그인</button>
+    </form>
+    <div class="alternative-login">
+        <p>또는</p>
+        <a href="https://id.payco.com/oauth2.0/authorize?client_id=3RDjoVxezCTITgSDTsHnlnB&response_type=code&redirect_uri=http://plzbuybook.store:3000/oauth/callback&serviceProviderCode=FRIENDS&userLocale=ko_KR">📱 페이코로 로그인</a>
+    </div>
+</div>
 <script th:inline="javascript">
     /*<![CDATA[*/
     const message = [[${message}]];
