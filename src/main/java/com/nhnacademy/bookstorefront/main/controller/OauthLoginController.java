@@ -3,7 +3,6 @@ package com.nhnacademy.bookstorefront.main.controller;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import com.nhnacademy.bookstorefront.main.service.CookieService;
-import com.nhnacademy.bookstorefront.main.service.TokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
