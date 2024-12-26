@@ -1,10 +1,57 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>hello front</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/index.css?v=1.0">
+    <title>📚 책사조잉 📚</title>
 </head>
 <body>
-hello front
+<header>
+    <div class="logo">📚 책사조잉 📚</div>
+    <nav class="menu">
+        <a href="#">Home</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="#">MyPage</a>
+        <a href="/login">로그인</a>
+    </div>
+</header>
+<main>
+    <div class="search-bar">
+        <input type="text" placeholder="검색어를 입력하세요 (책 제목, 작가, ISBN)">
+        <button>검색</button>
+    </div>
+    <div class="sort-bar">
+        정렬 기준
+        <select>
+            <option value="popularity">인기순</option>
+            <option value="new">신상품</option>
+            <option value="low-price">최저가</option>
+            <option value="high-price">최고가</option>
+            <option value="rating">평점 높은순</option>
+            <option value="review">리뷰 많은순</option>
+        </select>
+    </div>
+    <div class="book-list">
+        <!-- Thymeleaf 반복문 -->
+        <div class="book" th:each="book : ${books}">
+            <img th:src="${book.imageUrl}" th:alt="${book.bookTitle}">
+            <div th:text="${book.bookTitle}"></div>
+        </div>
+    </div>
+    <button id="more-button">More</button>
+</main>
+<script>
+    // JavaScript로 클라이언트 단에서 "More" 버튼 동작 구현
+    document.getElementById('more-button').addEventListener('click', () => {
+        alert('더 많은 도서를 로드하려면 서버 요청을 구현해야 합니다.');
+    });
+
+
+</script>
 </body>
 </html>

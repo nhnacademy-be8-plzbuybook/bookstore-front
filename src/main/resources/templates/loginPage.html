@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+<h1>Login</h1>
+<!--https://plzbuybook.store/api/login-->
+<form id="loginForm" method="POST" action="/login/process">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <br>
+    <button type="submit">Login</button>
+</form>
+<a href="https://id.payco.com/oauth2.0/authorize?client_id=3RDjoVxezCTITgSDTsHnlnB&response_type=code&redirect_uri=http://plzbuybook.store:3000/oauth/callback&serviceProviderCode=FRIENDS&userLocale=ko_KR">페이코 로그인</a>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const message = [[${message}]];
+    if (message) {
+        alert(message);
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

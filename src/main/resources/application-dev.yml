@@ -3,8 +3,9 @@ spring:
   config:
     activate:
       on-profile: dev
+    import: classpath:application-secret.yml
   application:
-    name: bookstore-front-dev
+    name: front
 
 eureka:
   client:
@@ -15,4 +16,7 @@ eureka:
 
 logging:
   level:
-    root: DEBUG
+    root: INFO
+
+server:
+  port: 3000
