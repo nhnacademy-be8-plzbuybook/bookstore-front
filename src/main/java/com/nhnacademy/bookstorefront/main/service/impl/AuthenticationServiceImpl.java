@@ -37,7 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             OauthLoginResponseDto oauthLoginResponseDto = response.getBody();
 
             if (oauthLoginResponseDto == null) {
-                throw new LoginFailException("로그인 중 오류가 발생했습니다.");
+                throw new LoginFailException("회원정보 불러오기가 실패했습니다.");
             }
 
             // 등록 안된 회원이면 회원가입 페이지로 이동
