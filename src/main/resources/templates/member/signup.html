@@ -1,10 +1,190 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>회원가입</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 책사조잉 회원가입 📚</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .signup-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 350px;
+            text-align: center;
+        }
+
+        .signup-container h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .signup-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+            text-align: left;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f7f7f7;
+            width: 100%;
+        }
+
+        input:focus {
+            border-color: #888;
+            background-color: #fff;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+
+        /* message styling */
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .modal {
+            display: none; /* 기본적으로 숨겨진 상태 */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); /* 반투명 배경 */
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-<h1>회원가입페이지</h1>
+
+<div class="signup-container">
+    <h1>📚 책사조잉 회원가입 📚</h1>
+
+    <form action="/members/signup" method="post">
+        <label for="name">이름</label>
+        <input type="text" id="name" name="name" placeholder="이름을 입력하세요" required>
+
+        <label for="email">이메일</label>
+        <input type="email" id="email" name="email" placeholder="이메일 주소를 입력하세요" required>
+
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+
+        <label for="phone">휴대폰 번호</label>
+        <input type="tel" id="phone" name="phone" placeholder="휴대폰 번호를 입력하세요 (010-1234-5678)" pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}" required>
+
+        <label for="birthdate">생일</label>
+        <input type="date" id="birthdate" name="birth" required>
+
+        <button type="submit">회원가입</button>
+    </form>
+</div>
+
+<!-- 팝업 모달 -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p id="modalMessage"></p> <!-- 메시지를 여기에 표시 -->
+    </div>
+</div>
+
+<script>
+    // 모달 띄우기 함수
+    function showModal(message) {
+        const modal = document.getElementById("myModal");
+        const modalMessage = document.getElementById("modalMessage");
+        modalMessage.textContent = message;  // 메시지 설정
+        modal.style.display = "block";  // 모달 창 표시
+    }
+
+    // 모달 창 닫기
+    const closeBtn = document.getElementsByClassName("close")[0];
+    closeBtn.onclick = function() {
+        const modal = document.getElementById("myModal");
+        modal.style.display = "none";
+    }
+
+    // 페이지가 로드될 때 message가 있다면 모달을 띄운다
+    window.onload = function() {
+        const message = /*[[${message}]]*/ '';  // 서버에서 전달된 메시지 삽입
+        if (message) {
+            showModal(message); // 메시지가 있으면 모달 띄우기
+        }
+    }
+</script>
+
 </body>
 </html>
