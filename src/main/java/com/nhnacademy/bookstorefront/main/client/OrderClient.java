@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "BOOKSTORE-BACK2")
+@FeignClient(name = "BOOKSTORE")
 public interface OrderClient {
 
     @PostMapping("/api/orders")
