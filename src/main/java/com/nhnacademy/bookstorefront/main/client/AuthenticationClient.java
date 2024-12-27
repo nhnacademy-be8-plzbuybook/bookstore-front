@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@FeignClient(name = "GATEWAY")
+@FeignClient(name = "GATEWAY-DEV")
 public interface AuthenticationClient {
 
     @PostMapping("/api/upload")

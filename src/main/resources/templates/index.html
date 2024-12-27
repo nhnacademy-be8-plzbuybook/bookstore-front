@@ -15,9 +15,14 @@
         <a href="#">외국도서</a>
         <a href="#">추천도서</a>
     </nav>
-    <div class="icons">
-        <a href="/mypage">MyPage</a>
-        <a href="/login">로그인</a>
+    <div class="icons" id="auth-icons">
+        <!-- 로그인 상태에서만 보이는 MyPage -->
+        <a href="/mypage" id="mypage-btn" style="display:none;">MyPage</a>
+        <!-- 로그인 상태에서만 보이는 로그아웃 -->
+        <a href="#" id="logout-btn" style="display:none;" onclick="logout()">로그아웃</a>
+        <!-- 로그인과 회원가입 버튼 (로그인 상태에서는 숨김) -->
+        <a href="/login" id="login-btn">로그인</a>
+        <a href="/signup" id="signup-btn">회원가입</a>
     </div>
 </header>
 <main>
@@ -45,13 +50,58 @@
     </div>
     <button id="more-button">More</button>
 </main>
+<!--<script>-->
+<!--    // JavaScript로 클라이언트 단에서 "More" 버튼 동작 구현-->
+<!--    document.getElementById('more-button').addEventListener('click', () => {-->
+<!--        alert('더 많은 도서를 로드하려면 서버 요청을 구현해야 합니다.');-->
+<!--    });-->
+
+
+<!--</script>-->
+
 <script>
-    // JavaScript로 클라이언트 단에서 "More" 버튼 동작 구현
+    // 페이지 로드 시 로그인 상태를 확인
+    fetch('/api/check-login', {
+        method: 'GET',
+        credentials: 'same-origin'  // 쿠키를 포함한 요청
+    })
+        .then(response => response.json())
+        .then(loggedIn => {
+            if (loggedIn) {
+                // 로그인된 상태
+                document.getElementById('login-btn').style.display = 'none';
+                document.getElementById('signup-btn').style.display = 'none';
+                document.getElementById('mypage-btn').style.display = 'inline-block';
+                document.getElementById('logout-btn').style.display = 'inline-block';
+            } else {
+                // 비로그인 상태
+                document.getElementById('login-btn').style.display = 'inline-block';
+                document.getElementById('signup-btn').style.display = 'inline-block';
+                document.getElementById('mypage-btn').style.display = 'none';
+                document.getElementById('logout-btn').style.display = 'none';
+            }
+        });
+
+    // "More" 버튼 클릭 시 동작
     document.getElementById('more-button').addEventListener('click', () => {
         alert('더 많은 도서를 로드하려면 서버 요청을 구현해야 합니다.');
     });
 
-
+    // 로그아웃 처리
+    function logout() {
+        // 로그아웃 요청을 POST 방식으로 서버에 보내기
+        fetch('/logout', {
+            method: 'POST',
+            credentials: 'same-origin', // 쿠키 포함
+        })
+            .then(response => {
+                // 로그아웃 후 홈 페이지로 리다이렉트
+                window.location.href = "/index";
+            })
+            .catch(error => {
+                console.error('로그아웃 실패:', error);
+            });
+    }
 </script>
 </body>
 </html>
