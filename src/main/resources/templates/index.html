@@ -5,6 +5,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/index.css?v=1.0">
     <title>📚 책사조잉 📚</title>
+    <style>
+        /* 공통 스타일 */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header .menu a,
+        header .icons a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        header .menu a:hover,
+        header .icons a:hover {
+            color: #f1f1f1;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        /* 검색바와 정렬바 */
+        .search-bar, .sort-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .search-bar button:hover {
+            background-color: #444;
+        }
+
+        .sort-bar select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* 책 목록 스타일 */
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .book {
+            text-align: center;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .book img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .book div {
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* 버튼 */
+        button {
+            padding: 12px 20px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -16,11 +134,8 @@
         <a href="#">추천도서</a>
     </nav>
     <div class="icons" id="auth-icons">
-        <!-- 로그인 상태에서만 보이는 MyPage -->
         <a href="/mypage" id="mypage-btn" style="display:none;">MyPage</a>
-        <!-- 로그인 상태에서만 보이는 로그아웃 -->
         <a href="#" id="logout-btn" style="display:none;" onclick="logout()">로그아웃</a>
-        <!-- 로그인과 회원가입 버튼 (로그인 상태에서는 숨김) -->
         <a href="/login" id="login-btn">로그인</a>
         <a href="/signup" id="signup-btn">회원가입</a>
     </div>
@@ -42,7 +157,6 @@
         </select>
     </div>
     <div class="book-list">
-        <!-- Thymeleaf 반복문 -->
         <div class="book" th:each="book : ${books}">
             <img th:src="${book.imageUrl}" th:alt="${book.bookTitle}">
             <div th:text="${book.bookTitle}"></div>
@@ -50,15 +164,6 @@
     </div>
     <button id="more-button">More</button>
 </main>
-<!--<script>-->
-<!--    // JavaScript로 클라이언트 단에서 "More" 버튼 동작 구현-->
-<!--    document.getElementById('more-button').addEventListener('click', () => {-->
-<!--        alert('더 많은 도서를 로드하려면 서버 요청을 구현해야 합니다.');-->
-<!--    });-->
-
-
-<!--</script>-->
-
 <script>
     // 페이지 로드 시 로그인 상태를 확인
     fetch('/api/check-login', {
@@ -68,13 +173,11 @@
         .then(response => response.json())
         .then(loggedIn => {
             if (loggedIn) {
-                // 로그인된 상태
                 document.getElementById('login-btn').style.display = 'none';
                 document.getElementById('signup-btn').style.display = 'none';
                 document.getElementById('mypage-btn').style.display = 'inline-block';
                 document.getElementById('logout-btn').style.display = 'inline-block';
             } else {
-                // 비로그인 상태
                 document.getElementById('login-btn').style.display = 'inline-block';
                 document.getElementById('signup-btn').style.display = 'inline-block';
                 document.getElementById('mypage-btn').style.display = 'none';
@@ -82,20 +185,16 @@
             }
         });
 
-    // "More" 버튼 클릭 시 동작
     document.getElementById('more-button').addEventListener('click', () => {
         alert('더 많은 도서를 로드하려면 서버 요청을 구현해야 합니다.');
     });
 
-    // 로그아웃 처리
     function logout() {
-        // 로그아웃 요청을 POST 방식으로 서버에 보내기
         fetch('/logout', {
             method: 'POST',
-            credentials: 'same-origin', // 쿠키 포함
+            credentials: 'same-origin',
         })
             .then(response => {
-                // 로그아웃 후 홈 페이지로 리다이렉트
                 window.location.href = "/index";
             })
             .catch(error => {
