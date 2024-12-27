@@ -6,10 +6,7 @@ import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -20,8 +17,11 @@ public interface AuthenticationClient {
     @PostMapping("/api/upload")
     ResponseEntity<String> uploadFiles(@RequestParam("file") List<MultipartFile> multipartFiles);
 
-    @GetMapping("/api/books")
+    @GetMapping("/api/selling-books")
     List<BookDetailResponseDto> getBooks();
+
+    @GetMapping("/api/selling-books/{sellingBookId}")
+    BookDetailResponseDto getSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
 
     @PostMapping("/api/auth/login")
     ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequest);

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/detail.css">
+    <title th:text="${book.bookTitle} + ' - 상세정보'">책 상세정보</title>
+</head>
+<body>
+<header>
+    <div class="logo">📚 책사조잉 📚</div>
+</header>
+<main>
+    <div class="book-detail">
+        <img th:src="${book.imageUrl}" th:alt="${book.bookTitle}">
+        <h1 th:text="${book.bookTitle}"></h1>
+        <p><strong>목차:</strong> <span th:text="${book.bookIndex}"></span></p>
+        <p><strong>설명:</strong> <span th:text="${book.bookDescription}"></span></p>
+        <p><strong>카테고리:</strong>
+        <ul>
+            <li th:each="category : ${book.categories}" th:text="${category}"></li>
+        </ul>
+        </p>
+        <p><strong>작가:</strong>
+        <ul>
+            <li th:each="author : ${book.authors}" th:text="${author}"></li>
+        </ul>
+        </p>
+        <p><strong>출판사:</strong> <span th:text="${book.publisher}"></span></p>
+        <p><strong>출판일:</strong> <span th:text="${book.bookPubDate}"></span></p>
+        <p><strong>ISBN:</strong> <span th:text="${book.bookIsbn13}"></span></p>
+    </div>
+</main>
+</body>
+</html>
