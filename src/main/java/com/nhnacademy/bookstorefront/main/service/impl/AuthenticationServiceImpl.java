@@ -7,12 +7,13 @@ import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
-import com.nhnacademy.bookstorefront.main.service.TokenService;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -26,6 +27,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (FeignException.NotFound | FeignException.Unauthorized e) {
             throw new LoginFailException("잘못된 아이디 또는 비밀번호입니다.");
         } catch (RuntimeException e) {
+            log.error("login error: {}", e.getMessage());
             throw new LoginFailException("로그인 중 오류 발생했습니다.");
         }
     }
@@ -49,6 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return oauthLoginResponseDto;
 
         } catch (FeignException e) {
+            log.error("login error: {}", e.getMessage());
             throw new LoginFailException("로그인 중 오류가 발생했습니다.");
         }
     }

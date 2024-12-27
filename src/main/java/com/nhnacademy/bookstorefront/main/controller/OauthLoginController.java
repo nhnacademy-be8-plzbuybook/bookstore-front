@@ -17,7 +17,7 @@ public class OauthLoginController {
     private final CookieService cookieService;
 
     @GetMapping("/oauth/callback")
-    public String processOauthLogin(@RequestParam String code, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+    public String processOauthLogin(@RequestParam("code") String code, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 
         //oauth 로그인 수행
         OauthLoginResponseDto oauthLoginResponseDto = authenticationService.processOauthLogin(code);
