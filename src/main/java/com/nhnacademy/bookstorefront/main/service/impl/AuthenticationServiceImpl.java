@@ -6,6 +6,7 @@ import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +54,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (FeignException e) {
             log.error("login error: {}", e.getMessage());
             throw new LoginFailException("로그인 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public MyPageDto getMyPage() {
+        try{
+            ResponseEntity<MyPageDto> response = authenticationClient.getMemberMyPage();
+            return response.getBody();
+        }catch(FeignException  e){
+            throw new RuntimeException("마이페이지 조회 중 오류 발생!");
         }
     }
 }
