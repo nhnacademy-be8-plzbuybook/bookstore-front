@@ -3,7 +3,6 @@ package com.nhnacademy.bookstorefront.main.controller;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import com.nhnacademy.bookstorefront.main.service.CookieService;
-import com.nhnacademy.bookstorefront.main.service.TokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -18,7 +17,7 @@ public class OauthLoginController {
     private final CookieService cookieService;
 
     @GetMapping("/oauth/callback")
-    public String processOauthLogin(@RequestParam String code, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+    public String processOauthLogin(@RequestParam("code") String code, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 
         //oauth 로그인 수행
         OauthLoginResponseDto oauthLoginResponseDto = authenticationService.processOauthLogin(code);
@@ -29,6 +28,6 @@ public class OauthLoginController {
         //TODO: 쿠키발급만료시간 설정
 
         redirectAttributes.addFlashAttribute("message", "로그인 성공");
-        return "redirect:/";
+        return "redirect:/index";
     }
 }

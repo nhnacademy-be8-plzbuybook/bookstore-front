@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/index.css?v=1.0">
+    <title>📚 책사조잉 📚</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header .menu a,
+        header .icons a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        header .menu a:hover,
+        header .icons a:hover {
+            color: #f1f1f1;
+        }
+
+        main {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .sidebar .group {
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar .group.active,
+        .sidebar .group:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="password"] {
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #f7f7f7;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="date"]:focus,
+        input[type="password"]:focus {
+            border-color: #888;
+            background-color: #fff;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+
+        .current-grade {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        .description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .benefits-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .benefits-table th,
+        .benefits-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .benefits-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background-color: #fffbe6;
+            font-weight: bold;
+            position: relative;
+        }
+
+        .highlight:after {
+            content: "← 현재 등급";
+            position: absolute;
+            right: -120px;
+            color: #ff5722;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo">📚 책사조잉 📚</div>
+    <nav class="menu">
+        <a href="#">Home</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="/mypage">MyPage</a>
+        <a href="/logout">로그아웃</a>
+    </div>
+</header>
+<main>
+    <div class="sidebar">
+        <div class="group active" data-section="grade-benefits">회원 등급 및 혜택</div>
+        <div class="group" data-section="likes">좋아요 도서</div>
+        <div class="group" data-section="points">포인트 내역</div>
+        <div class="group" data-section="edit-info">회원 정보 수정</div>
+        <div class="group" data-section="address">주소 설정</div>
+        <div class="group" data-section="withdraw">회원 탈퇴</div>
+    </div>
+    <div class="content">
+        <div class="section active" id="grade-benefits">
+            <h2>회원 등급 및 혜택</h2>
+            <p class="description">* 등급은 최근 3개월 이내 순수 주문금액을 기준으로 산정됩니다.<br>
+                * 순수 주문금액 = 주문금액 - (쿠폰 + 배송비 + 취소금액 + 포장비)</p>
+            <p class="current-grade">현재 등급: <span id="user-grade" th:text="${member.memberGradeName}">일반</span></p>
+            <table class="benefits-table">
+                <thead>
+                <tr>
+                    <th>등급</th>
+                    <th>기준 순수금액</th>
+                    <th>포인트 적립률</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>NORMAL</td>
+                    <td>10만원 미만</td>
+                    <td>순수금액의 1%</td>
+                </tr>
+                <tr>
+                    <td>ROYAL</td>
+                    <td>10만원 ~ 20만원</td>
+                    <td>순수금액의 2%</td>
+                </tr>
+                <tr>
+                    <td>GOLD</td>
+                    <td>20만원 ~ 30만원</td>
+                    <td>순수금액의 3%</td>
+                </tr>
+                <tr>
+                    <td>PLATINUM</td>
+                    <td>30만원 이상</td>
+                    <td>순수금액의 3%</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="section" id="likes">
+            <h2>좋아요 도서</h2>
+            <div class="book-list">
+                <!-- main에 책 나오게 했음 (수정 필요) -->
+                <div class="book" th:each="book : ${books}">
+                    <img th:src="${book.imageUrl}" th:alt="${book.bookTitle}">
+                    <div th:text="${book.bookTitle}"></div>
+                </div>
+            </div>
+        </div>
+        <div class="section" id="points">
+            <h2>포인트 내역</h2>
+            <p>총 포인트: <strong>1,200</strong></p>
+            <ul>
+                <li>2024-12-20: 500 포인트 사용</li>
+                <li>2024-12-15: 700 포인트 적립</li>
+            </ul>
+        </div>
+        <div class="section" id="edit-info">
+            <h2>회원 정보 수정</h2>
+            <form action="/update-profile" method="post">
+                <!-- 이름 -->
+                <label for="name">이름</label>
+                <input type="text" id="name" name="name" th:value="${member.name}" placeholder="이름을 입력하세요" required>
+
+                <!-- 연락처 -->
+                <label for="phone">연락처</label>
+                <input type="tel" id="phone" name="phone" th:value="${member.phone}" placeholder="010-1234-5678" required>
+
+                <!-- 이메일 -->
+                <label for="email">이메일</label>
+                <input type="email" id="email" name="email" th:value="${member.email}" placeholder="이메일을 입력하세요" required>
+
+                <!-- 생일 -->
+                <label for="birthdate">생일</label>
+                <input type="date" id="birthdate" name="birthdate" th:value="${member.birth}" required>
+
+                <!-- 비밀번호 -->
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" name="password" placeholder="새로운 비밀번호를 입력하세요" required>
+
+                <!-- 제출 버튼 -->
+                <button type="submit">수정 완료</button>
+            </form>
+        </div>
+        <div class="section" id="address">
+            <h2>주소 설정</h2>
+            <form>
+                <label>주소: <input type="text" value="서울시 강남구"></label><br><br>
+                <button type="submit">저장</button>
+            </form>
+        </div>
+        <div class="section" id="withdraw">
+            <h2>회원 탈퇴</h2>
+            <p>회원 탈퇴를 진행하면 모든 데이터가 삭제됩니다.</p>
+            <button onclick="alert('회원 탈퇴가 완료되었습니다. 로그아웃됩니다.')">회원 탈퇴</button>
+        </div>
+    </div>
+</main>
+<script>
+    // Thymeleaf에서 서버에서 받은 등급을 JavaScript로 전달받음
+    const currentGrade = '[[${member.memberGradeName}]]'; // 서버에서 렌더링된 등급 값
+
+    console.log("현재 등급: ", currentGrade);  // 콘솔에서 값이 잘 전달되는지 확인
+
+    // 페이지 로드 시 현재 등급에 맞는 하이라이트 처리
+    highlightGrade(currentGrade);
+
+    function highlightGrade(grade) {
+        const allRows = document.querySelectorAll('.benefits-table tbody tr'); // 모든 행 가져오기
+
+        // 기존 하이라이트 제거
+        allRows.forEach(row => row.classList.remove('highlight'));
+
+        // 각 행 검사하여 현재 등급에 맞는 행 하이라이트 처리
+        allRows.forEach(row => {
+            const gradeCell = row.querySelector('td:first-child'); // 첫 번째 열의 등급 값 가져오기
+            if (gradeCell && gradeCell.textContent.trim().toUpperCase() === grade.toUpperCase()) {
+                row.classList.add('highlight'); // 등급이 일치하면 하이라이트 클래스 추가
+            }
+        });
+
+        // 현재 등급을 화면에 업데이트
+        document.getElementById('user-grade').textContent = grade;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const sidebarGroups = document.querySelectorAll('.sidebar .group');
+        const sections = document.querySelectorAll('.content .section');
+
+        // 사이드바 항목 클릭 이벤트 추가
+        sidebarGroups.forEach(group => {
+            group.addEventListener('click', () => {
+                // 모든 그룹의 활성화 클래스 제거
+                sidebarGroups.forEach(g => g.classList.remove('active'));
+
+                // 클릭한 그룹 활성화
+                group.classList.add('active');
+
+                // 모든 섹션 숨김
+                sections.forEach(section => section.classList.remove('active'));
+
+                // 클릭한 그룹의 data-section 값에 해당하는 섹션 보여주기
+                const sectionId = group.getAttribute('data-section');
+                const targetSection = document.getElementById(sectionId);
+
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

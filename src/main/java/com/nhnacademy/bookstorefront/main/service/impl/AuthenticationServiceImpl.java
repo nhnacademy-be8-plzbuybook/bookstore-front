@@ -6,13 +6,15 @@ import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
-import com.nhnacademy.bookstorefront.main.service.TokenService;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -26,6 +28,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (FeignException.NotFound | FeignException.Unauthorized e) {
             throw new LoginFailException("잘못된 아이디 또는 비밀번호입니다.");
         } catch (RuntimeException e) {
+            log.error("login error: {}", e.getMessage());
             throw new LoginFailException("로그인 중 오류 발생했습니다.");
         }
     }
@@ -37,7 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             OauthLoginResponseDto oauthLoginResponseDto = response.getBody();
 
             if (oauthLoginResponseDto == null) {
-                throw new LoginFailException("로그인 중 오류가 발생했습니다.");
+                throw new LoginFailException("회원정보 불러오기가 실패했습니다.");
             }
 
             // 등록 안된 회원이면 회원가입 페이지로 이동
@@ -49,7 +52,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return oauthLoginResponseDto;
 
         } catch (FeignException e) {
+            log.error("login error: {}", e.getMessage());
             throw new LoginFailException("로그인 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public MyPageDto getMyPage() {
+        try{
+            ResponseEntity<MyPageDto> response = authenticationClient.getMemberMyPage();
+            return response.getBody();
+        }catch(FeignException  e){
+            throw new RuntimeException("마이페이지 조회 중 오류 발생!");
         }
     }
 }

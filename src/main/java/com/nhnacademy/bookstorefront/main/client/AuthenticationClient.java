@@ -4,6 +4,7 @@ package com.nhnacademy.bookstorefront.main.client;
 import com.nhnacademy.bookstorefront.main.dto.*;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@FeignClient(name = "GATEWAY")
+@FeignClient(name = "GATEWAY-DEV")
 public interface AuthenticationClient {
 
     @PostMapping("/api/upload")
@@ -34,4 +35,7 @@ public interface AuthenticationClient {
 
     @GetMapping("/api/auth/oauth/login")
     ResponseEntity<OauthLoginResponseDto> getEmailFromOauthUser(@RequestParam String code);
+
+    @GetMapping("/api/members/my/email")
+    ResponseEntity<MyPageDto> getMemberMyPage();
 }
