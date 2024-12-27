@@ -20,8 +20,11 @@ public interface AuthenticationClient {
     @PostMapping("/api/upload")
     ResponseEntity<String> uploadFiles(@RequestParam("file") List<MultipartFile> multipartFiles);
 
-    @GetMapping("/api/books")
+    @GetMapping("/api/selling-books")
     List<BookDetailResponseDto> getBooks();
+
+    @GetMapping("/api/selling-books/{sellingBookId}")
+    BookDetailResponseDto getSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
 
     @PostMapping("/api/auth/login")
     ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequest);

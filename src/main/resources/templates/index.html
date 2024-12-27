@@ -158,12 +158,37 @@
     </div>
     <div class="book-list">
         <div class="book" th:each="book : ${books}">
-            <img th:src="${book.imageUrl}" th:alt="${book.bookTitle}">
-            <div th:text="${book.bookTitle}"></div>
+            <a th:href="'/book/detail/' + ${book.sellingBookId}">
+                <img th:src="${book.imageUrl}" th:alt="${book.bookTitle}">
+                <div th:text="${book.bookTitle}"></div>
+            </a>
         </div>
     </div>
-    <button id="more-button">More</button>
 </main>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li class="page-item" id="prev-page">
+            <a class="page-link" href="#" aria-label="Previous">&laquo;</a>
+        </li>
+        <!-- 동적으로 페이지 번호가 추가될 영역 -->
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item" id="next-page">
+            <a class="page-link" href="#" aria-label="Next">&raquo;</a>
+        </li>
+    </ul>
+</nav>
+<!--<script>-->
+<!--    // JavaScript로 클라이언트 단에서 "More" 버튼 동작 구현-->
+<!--    document.getElementById('more-button').addEventListener('click', () => {-->
+<!--        alert('더 많은 도서를 로드하려면 서버 요청을 구현해야 합니다.');-->
+<!--    });-->
+
+
+<!--</script>-->
+
 <script>
     // 페이지 로드 시 로그인 상태를 확인
     fetch('/api/check-login', {
@@ -202,5 +227,6 @@
             });
     }
 </script>
+
 </body>
 </html>
