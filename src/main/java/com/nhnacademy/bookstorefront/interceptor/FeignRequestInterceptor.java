@@ -25,9 +25,6 @@ public class FeignRequestInterceptor implements RequestInterceptor {
 
     @Override
     public void apply(RequestTemplate template) {
-        // URL이 "/api/members/my"로 시작하면 Authorization 헤더 추가
-        //이런식으로 access 토큰이 있더라도 제한을 둘 수 있다.
-        if (template.url().startsWith("/api/members/my")) {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
@@ -37,14 +34,6 @@ public class FeignRequestInterceptor implements RequestInterceptor {
                         template.header("Authorization", "Bearer " + cookie.getValue());
                     }
                 }
-            }
         }
-        // 쿠키에 accessToken이 없거나 유효하지 않으면 다른 동작을 수행
-//        if (토큰이 없을때) {
-//            log.warn("Access Token이 쿠키에 존재하지 않습니다.");
-//            // 예시: 로그인 페이지로 리디렉션 (Feign에서는 직접 리디렉션을 못 하지만, 다른 방법을 고려할 수 있음)
-//            // 예: 예외를 던져서 처리하거나 다른 로직으로 전환할 수 있음
-//        }
-        //이런식으로 access 토큰이 필요한 것은 추가해주는 방법
     }
 }
