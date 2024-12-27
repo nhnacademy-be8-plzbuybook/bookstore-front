@@ -2,6 +2,8 @@ package com.nhnacademy.bookstorefront.main.client;
 
 
 import com.nhnacademy.bookstorefront.main.dto.*;
+import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
@@ -12,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@FeignClient(name = "GATEWAY-DEV")
+@FeignClient(name = "GATEWAY")
 public interface AuthenticationClient {
 
     @PostMapping("/api/upload")
@@ -36,6 +38,11 @@ public interface AuthenticationClient {
     @GetMapping("/api/auth/oauth/login")
     ResponseEntity<OauthLoginResponseDto> getEmailFromOauthUser(@RequestParam String code);
 
+    //마이 페이지에 필요한 정보 가져오기
     @GetMapping("/api/members/my/email")
     ResponseEntity<MyPageDto> getMemberMyPage();
+
+    //회원 가입
+    @PostMapping("/api/members")
+    ResponseEntity<MemberCreateResponseDto> createMember(@RequestBody MemberCreateRequestDto memberCreateRequestDto);
 }
