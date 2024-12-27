@@ -28,6 +28,6 @@ public class OauthLoginController {
         //TODO: 쿠키발급만료시간 설정
 
         redirectAttributes.addFlashAttribute("message", "로그인 성공");
-        return "redirect:/";
+        return "redirect:/index";
     }
 }
