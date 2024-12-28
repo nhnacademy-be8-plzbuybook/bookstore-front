@@ -2,12 +2,14 @@ package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
+@Slf4j
 @Controller
 public class IndexController {
     private final AuthenticationClient authenticationClient;
@@ -22,9 +24,9 @@ public class IndexController {
         List<BookDetailResponseDto> books = authenticationClient.getBooks();
         // 디버깅 로그
         books.forEach(book -> {
-            System.out.println("Book ID: " + book.getBookId());
-            System.out.println("Book Title: " + book.getBookTitle());
-            System.out.println("Image URL: " + book.getImageUrl());
+            log.debug("Selling Book ID : {}", book.getBookId());
+            log.debug("Book Title : {}",  book.getBookTitle());
+            log.debug("Image URL : {}", book.getImageUrl());
         });
         model.addAttribute("books", books);
 
