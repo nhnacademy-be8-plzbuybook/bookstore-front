@@ -115,6 +115,14 @@
             <scope>runtime</scope>
         </dependency>
 
+<!--        스프링 데이터 의존성-->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>
