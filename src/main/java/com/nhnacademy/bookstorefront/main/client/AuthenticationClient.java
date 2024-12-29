@@ -4,6 +4,7 @@ package com.nhnacademy.bookstorefront.main.client;
 import com.nhnacademy.bookstorefront.main.dto.*;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.Member.MemberModifyRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
@@ -45,4 +46,9 @@ public interface AuthenticationClient {
     //회원 가입
     @PostMapping("/api/members")
     ResponseEntity<MemberCreateResponseDto> createMember(@RequestBody MemberCreateRequestDto memberCreateRequestDto);
+
+    //회원 정보 수정
+    @PostMapping("/api/members/me")
+    ResponseEntity<String> updateMember(@RequestBody MemberModifyRequestDto memberModifyRequestDto);
+
 }
