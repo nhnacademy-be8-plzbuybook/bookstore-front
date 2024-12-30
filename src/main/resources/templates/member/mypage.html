@@ -185,6 +185,72 @@
             color: #ff5722;
             font-weight: bold;
         }
+
+        /* 섹션 제목 */
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        /* 현재 등록된 주소 섹션 스타일 */
+        .address-list {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 주소 등록 섹션 스타일 */
+        .address-form-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 테이블 스타일 */
+        #address-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #address-table th, #address-table td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #address-table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        #address-table .empty-message {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        /* 폼 요소 스타일 */
+        #address-form label {
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        #address-form input {
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -208,6 +274,7 @@
         <div class="group" data-section="points">포인트 내역</div>
         <div class="group" data-section="edit-info">회원 정보 수정</div>
         <div class="group" data-section="address">주소 설정</div>
+        <div class="group" data-section="coupon">보유 쿠폰</div>
         <div class="group" data-section="withdraw">회원 탈퇴</div>
     </div>
     <div class="content">
@@ -268,7 +335,7 @@
         </div>
         <div class="section" id="edit-info">
             <h2>회원 정보 수정</h2>
-            <form action="/update-profile" method="post">
+            <form action="/mypage/update" method="post">
                 <!-- 이름 -->
                 <label for="name">이름</label>
                 <input type="text" id="name" name="name" th:value="${member.name}" placeholder="이름을 입력하세요" required>
@@ -293,12 +360,62 @@
                 <button type="submit">수정 완료</button>
             </form>
         </div>
+        <!-- 주소 설정 -->
         <div class="section" id="address">
             <h2>주소 설정</h2>
-            <form>
-                <label>주소: <input type="text" value="서울시 강남구"></label><br><br>
-                <button type="submit">저장</button>
-            </form>
+
+            <!-- 현재 등록된 주소 섹션 -->
+            <div class="address-list">
+                <h3 class="section-title">현재 등록된 주소</h3>
+                <table id="address-table">
+                    <thead>
+                    <tr>
+                        <th>별칭</th>
+                        <th>수령인</th>
+                        <th>전화번호</th>
+                        <th>도로명 주소</th>
+                        <th>상세 주소</th>
+                        <th>우편번호</th>
+                        <th>기본 주소</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- 동적으로 추가될 주소 목록 -->
+                    <tr>
+                        <td colspan="7" class="empty-message">등록된 주소가 없습니다.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 주소 등록 섹션 -->
+            <div class="address-form-container">
+                <h3 class="section-title">주소 등록</h3>
+                <form id="address-form">
+                    <label for="locationAddress">도로명 주소</label>
+                    <input type="text" id="locationAddress" name="locationAddress" placeholder="도로명 주소를 입력하세요" required>
+
+                    <label for="detailAddress">상세 주소</label>
+                    <input type="text" id="detailAddress" name="detailAddress" placeholder="상세 주소를 입력하세요" required>
+
+                    <label for="zipCode">우편번호</label>
+                    <input type="text" id="zipCode" name="zipCode" placeholder="우편번호를 입력하세요" required>
+
+                    <label for="nickName">주소 별칭</label>
+                    <input type="text" id="nickName" name="nickName" placeholder="예: 집, 회사" required>
+
+                    <label for="recipient">수령인</label>
+                    <input type="text" id="recipient" name="recipient" placeholder="수령인을 입력하세요" required>
+
+                    <label for="recipientPhone">수령인 전화번호</label>
+                    <input type="tel" id="recipientPhone" name="recipientPhone" placeholder="010-1234-5678" required>
+
+                    <button type="submit">주소 등록</button>
+                </form>
+            </div>
+        </div>
+        <div class="section" id="coupon">
+            보유 쿠폰 내용
         </div>
         <div class="section" id="withdraw">
             <h2>회원 탈퇴</h2>
@@ -360,6 +477,39 @@
             });
         });
     });
+
+    function displayAddressesInTable(addresses) {
+        const addressTableBody = document.querySelector('#address-table tbody');
+        addressTableBody.innerHTML = ''; // 기존 테이블 내용 초기화
+
+        if (addresses.length === 0) {
+            const emptyRow = document.createElement('tr');
+            const emptyCell = document.createElement('td');
+            emptyCell.colSpan = 7;
+            emptyCell.classList.add('empty-message');
+            emptyCell.textContent = '등록된 주소가 없습니다.';
+            emptyRow.appendChild(emptyCell);
+            addressTableBody.appendChild(emptyRow);
+        } else {
+            addresses.forEach(address => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${address.nickName}</td>
+                    <td>${address.recipient}</td>
+                    <td>${address.recipientPhone}</td>
+                    <td>${address.locationAddress}</td>
+                    <td>${address.detailAddress}</td>
+                    <td>${address.zipCode}</td>
+                    <td>${address.defaultAddress ? '✔' : ''}</td>
+                `;
+                addressTableBody.appendChild(row);
+            });
+        }
+    }
+
+    // 예제 데이터
+    const addresses = []; // 초기 상태: 주소 없음
+    displayAddressesInTable(addresses); // 기본 상태 표시
 </script>
 </body>
 </html>
