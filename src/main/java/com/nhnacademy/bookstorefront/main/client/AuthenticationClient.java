@@ -55,4 +55,7 @@ public interface AuthenticationClient {
     @PostMapping("/api/members/me")
     ResponseEntity<String> updateMember(@RequestBody MemberModifyRequestDto memberModifyRequestDto);
 
+    @PostMapping("/api/members/withdrawal")
+    ResponseEntity<String> withdrawState(@RequestBody WithdrawStateRequestDto withdrawStateRequestDto);
+
 }
