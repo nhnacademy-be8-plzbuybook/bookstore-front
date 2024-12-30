@@ -17,6 +17,7 @@ public class BookDetailResponseDto {
     private String bookDescription;
     private String bookPubDate;
     private BigDecimal bookPriceStandard;
+    private int selling_book_stock;     // 재고
     private BigDecimal sellingPrice;
     private String bookIsbn13;
     private String publisher;
