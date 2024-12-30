@@ -8,6 +8,7 @@ import com.nhnacademy.bookstorefront.main.dto.Member.MemberModifyRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
+import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@FeignClient(name = "GATEWAY")
+@FeignClient(name = "GATEWAY", contextId = "authenticationClient")
 public interface AuthenticationClient {
 
     @PostMapping("/api/upload")
@@ -47,6 +48,9 @@ public interface AuthenticationClient {
     @PostMapping("/api/members")
     ResponseEntity<MemberCreateResponseDto> createMember(@RequestBody MemberCreateRequestDto memberCreateRequestDto);
 
+    @PostMapping("/api/orders")
+    ResponseEntity<OrderSaveResponseDto> order(@RequestBody OrderSaveRequestDto orderSaveRequest);
+}
     //회원 정보 수정
     @PostMapping("/api/members/me")
     ResponseEntity<String> updateMember(@RequestBody MemberModifyRequestDto memberModifyRequestDto);

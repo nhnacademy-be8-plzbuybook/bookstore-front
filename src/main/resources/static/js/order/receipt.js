@@ -2,7 +2,7 @@ const orderBtn = document.getElementById("order-btn");
 
 orderBtn.addEventListener('click', async function () {
     const data = dummyOrderData;
-    const response = await fetch("http://plzbuybook.store:3000/api/orders", {
+    const response = await fetch("/api/orders", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data),
@@ -14,8 +14,14 @@ orderBtn.addEventListener('click', async function () {
     }
 
     // 응답 본문을 문자열로 읽기
-    const query = await response.text();
-    const queryString = new URLSearchParams(query);
+    const responseData = await response.json();
+
+    // JSON 데이터를 기반으로 쿼리 문자열 생성
+    const queryString = new URLSearchParams({
+        orderId: responseData.orderId,
+        amount: responseData.amount,
+        orderName: responseData.orderName
+    });
     window.location.replace(`/payments/toss?${queryString}`);
 });
 
@@ -25,17 +31,15 @@ const dummyOrderData = {
     usedPoint: 0,
     orderProducts: [
         {
-            sellingBookId: 100,
+            sellingBookId: 250,
             quantity: 1,
-            appliedCouponIds: [0],
-            couponDiscount: 0, // 이거 지워도 되나?
             wrapping: {
                 wrappingPaperId: 1,
                 quantity: 1
             }
         },
         {
-            sellingBookId: 101,
+            sellingBookId: 252,
             quantity: 1,
             appliedCouponIds: [0],
             couponDiscount: 0

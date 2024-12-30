@@ -91,36 +91,8 @@ async function main() {
     //   });
     // });
     button.addEventListener("click", async function () {
-        // const orderId = generateRandomString();
-        const paymentInfo = {
-            queryOrderId,
-            amount: coupon.checked ? amount.value - 5000 : amount.value
-        };
-
-        // 결제정보 임시 저장
-        // const response = await fetch("http://plzbuybook:3000/api/payments/save-payment", {
-        //     method: "POST",
-        //     headers: {"Content-Type": "application/json"},
-        //     body: JSON.stringify(paymentInfo),
-        // });
-        //
-        // if (!response.ok) {
-        //     alert("결제 정보를 저장하는데 실패했습니다. 다시 시도해 주세요.");
-        //     return;
-        // }
-
-        // 결제 요청
-        // TODO: 페이지 불러올 때 정보 채워넣게 바꿔야함
-        // await widgets.requestPayment({
-        //     queryOrderId,
-        //     orderName: queryOrderName,
-        //     successUrl: window.location.origin + "/payment/success.html",
-        //     failUrl: window.location.origin + "/payment/fail.html",
-        //     // customerEmail: "customer123@gmail.com",
-        //     // customerName: "김토스",
-        // });
         await widgets.requestPayment({
-            queryOrderId,
+            orderId: queryOrderId,
             orderName: queryOrderName,
             successUrl: window.location.origin + "/payments/success",
             failUrl: window.location.origin + "/payments/fail",
