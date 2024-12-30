@@ -23,7 +23,12 @@ public interface AuthenticationClient {
     ResponseEntity<String> uploadFiles(@RequestParam("file") List<MultipartFile> multipartFiles);
 
     @GetMapping("/api/selling-books")
-    List<BookDetailResponseDto> getBooks();
+    PagedResponse<BookDetailResponseDto> getBooks(
+            @RequestParam(defaultValue = "0") int page,         // 페이지 번호
+            @RequestParam(defaultValue = "10") int size,        // 페이지 크기
+            @RequestParam(defaultValue = "sellingBookId") String sortBy,  // 정렬 기준
+            @RequestParam(defaultValue = "desc") String sortDir // 정렬 방향
+    );
 
     @GetMapping("/api/selling-books/{sellingBookId}")
     BookDetailResponseDto getSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
