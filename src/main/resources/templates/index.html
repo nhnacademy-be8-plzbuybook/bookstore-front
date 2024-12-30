@@ -164,68 +164,33 @@
             </a>
         </div>
     </div>
+
 </main>
 
+
 <nav aria-label="Page navigation">
-    <ul class="pagination" id="pagination">
-        <!-- 동적으로 생성될 페이징 버튼 -->
+    <ul class="pagination">
+        <!-- 이전 버튼 -->
+        <li class="page-item" th:classappend="${pageNumber == 0} ? 'disabled'">
+            <a th:href="@{/index(page=${pageNumber != null && pageNumber > 0 ? pageNumber - 1 : 0}, size=${pageSize != null ? pageSize : 16})}">이전</a>
+        </li>
+
+        <!-- 페이지 번호 버튼 -->
+        <li class="page-item" th:each="page, stat : ${#numbers.sequence(0, totalPages != null ? totalPages - 1 : 0)}"
+            th:classappend="${page == (pageNumber != null ? pageNumber : 0)} ? 'active'">
+            <a th:href="@{/index(page=${page}, size=${pageSize != null ? pageSize : 12})}" th:text="${page + 1}"></a>
+        </li>
+
+        <!-- 다음 버튼 -->
+        <li class="page-item" th:classappend="${pageNumber != null && pageNumber == (totalPages != null ? totalPages - 1 : 0)} ? 'disabled'">
+            <a th:href="@{/index(page=${pageNumber != null && pageNumber < (totalPages != null ? totalPages - 1 : 0) ? pageNumber + 1 : (totalPages != null ? totalPages - 1 : 0)}, size=${pageSize != null ? pageSize : 16})}">다음</a>
+        </li>
     </ul>
 </nav>
 
-<script>
-    // 페이징 버튼 렌더링 함수
-    function renderPagination(currentPage, totalPages) {
-        const pagination = document.getElementById('pagination');
-        pagination.innerHTML = ''; // 기존 버튼 초기화
 
-        // 이전 버튼
-        const prevButton = document.createElement('li');
-        prevButton.className = `page-item ${currentPage === 0 ? 'disabled' : ''}`;
-        prevButton.innerHTML = `
-                <a href="#" onclick="loadPage(${currentPage - 1})">&laquo;</a>
-            `;
-        pagination.appendChild(prevButton);
+<script src="/script/books.js"></script>
 
-        // 페이지 번호 버튼 (최대 5개 표시)
-        const maxVisiblePages = 5;
-        let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
-        let endPage = Math.min(startPage + maxVisiblePages, totalPages);
-
-        if (endPage - startPage < maxVisiblePages) {
-            startPage = Math.max(0, endPage - maxVisiblePages);
-        }
-
-        for (let i = startPage; i < endPage; i++) {
-            const pageButton = document.createElement('li');
-            pageButton.className = `page-item ${i === currentPage ? 'active' : ''}`;
-            pageButton.innerHTML = `
-                    <a href="#" onclick="loadPage(${i})">${i + 1}</a>
-                `;
-            pagination.appendChild(pageButton);
-        }
-
-        // 다음 버튼
-        const nextButton = document.createElement('li');
-        nextButton.className = `page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`;
-        nextButton.innerHTML = `
-                <a href="#" onclick="loadPage(${currentPage + 1})">&raquo;</a>
-            `;
-        pagination.appendChild(nextButton);
-    }
-
-    // 페이지 로드 함수
-    function loadPage(page) {
-        console.log(`Loading page: ${page}`);
-        // 페이지 데이터를 불러오는 로직 추가 가능
-        // 예: fetch API 호출 후 데이터 렌더링
-        renderPagination(page, 10); // 임시로 총 페이지 수 10으로 설정
-    }
-
-    // 초기 로드
-    document.addEventListener('DOMContentLoaded', () => {
-        renderPagination(0, 10); // 초기 페이지 0, 총 페이지 수 10
-    });
-</script>
 <script>
     // 페이지 로드 시 로그인 상태를 확인
     fetch('/api/check-login', {
