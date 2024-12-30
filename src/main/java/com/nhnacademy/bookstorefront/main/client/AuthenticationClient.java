@@ -50,7 +50,7 @@ public interface AuthenticationClient {
 
     @PostMapping("/api/orders")
     ResponseEntity<OrderSaveResponseDto> order(@RequestBody OrderSaveRequestDto orderSaveRequest);
-}
+
     //회원 정보 수정
     @PostMapping("/api/members/me")
     ResponseEntity<String> updateMember(@RequestBody MemberModifyRequestDto memberModifyRequestDto);
