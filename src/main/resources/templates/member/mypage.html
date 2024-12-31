@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/index.css?v=1.0">
-    <title>📚 마이페이지 📚</title>
+    <title>📚 책사조잉 📚</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -329,8 +329,19 @@
     </style>
 </head>
 <body>
-<div th:replace="~{fragments/header :: headerContent(isLoggedIn=${isLoggedIn})}"></div>
-
+<header>
+    <div class="logo">📚 책사조잉 📚</div>
+    <nav class="menu">
+        <a href="#">Home</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="/mypage">MyPage</a>
+        <a href="/logout">로그아웃</a>
+    </div>
+</header>
 <main>
     <div class="sidebar">
         <div class="group active" data-section="grade-benefits">회원 등급 및 혜택</div>
@@ -552,10 +563,7 @@
         <div class="section" id="withdraw">
             <h2>회원 탈퇴</h2>
             <p>회원 탈퇴를 진행하면 모든 데이터가 삭제됩니다.</p>
-            <form id="withdraw-form" action="/mypage/withdrawal" method="POST">
-                <input type="hidden" id="user-email" name="email" th:value="${email}">
-                <button type="submit" class="withdraw-btn">회원 탈퇴</button>
-            </form>
+            <button onclick="alert('회원 탈퇴가 완료되었습니다. 로그아웃됩니다.')">회원 탈퇴</button>
         </div>
     </div>
 </main>
@@ -613,7 +621,6 @@
         });
     });
 
-
     document.addEventListener('DOMContentLoaded', function() {
         const withdrawForm = document.querySelector('#withdraw-form'); // 회원 탈퇴 폼
         const withdrawButton = document.querySelector('.withdraw-btn'); // 회원 탈퇴 버튼
@@ -634,9 +641,6 @@
         });
     });
 
-    // 예제 데이터
-    const addresses = []; // 초기 상태: 주소 없음
-    displayAddressesInTable(addresses); // 기본 상태 표시
 
 </script>
 </body>
