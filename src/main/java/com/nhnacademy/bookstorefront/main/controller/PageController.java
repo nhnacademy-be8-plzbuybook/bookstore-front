@@ -5,6 +5,8 @@ import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberModifyRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -20,19 +23,21 @@ import java.util.List;
 public class PageController {
 
     private final AuthenticationService authenticationService;
-
-    //테스트용
     private final AuthenticationClient authenticationClient;
 
     @GetMapping("/mypage")
-    public String mypage(Model model) {
+    public String mypage(HttpServletRequest request, Model model) {
+        boolean isLoggedIn = authenticationService.isLoggedIn(request);
+        if (!isLoggedIn) {
+            return "redirect:/login";
+        }
+
         MyPageDto myPageDto = authenticationService.getMyPage();
-        //테스트용
         List<BookDetailResponseDto> books = authenticationClient.getBooks();
-        model.addAttribute("books", books);
 
-
+        model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("member", myPageDto);
+        model.addAttribute("books", books);
 
         return "member/mypage";
     }
@@ -50,4 +55,3 @@ public class PageController {
         return "redirect:/mypage";
     }
 }
-

@@ -44,35 +44,25 @@ public class AuthenticationController {
         return "redirect:/index";
     }
 
-    // 로그인 상태 확인 api
-    @GetMapping("/api/check-login")
-    @ResponseBody
-    public boolean checkLoginStatus(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        boolean loggedIn = false;
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("accessToken".equals(cookie.getName())) {
-                    loggedIn = true;
-                    break;
-                }
-            }
-        }
-        return loggedIn;
-    }
-
-    // 로그아웃 처리
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // 세션 무효화
         request.getSession().invalidate();
 
+        // accessToken 쿠키 삭제
         Cookie cookie = new Cookie("accessToken", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        cookie.setMaxAge(0); // 즉시 만료
+        cookie.setPath("/"); // 경로를 동일하게 설정
+        response.addCookie(cookie); // 응답에 쿠키 추가
 
         return "redirect:/index";
     }
+
+    @GetMapping("/api/check-login")
+    @ResponseBody
+    public boolean checkLoginStatus(HttpServletRequest request) {
+        return authenticationService.isLoggedIn(request);
+    }
+
 
 }
