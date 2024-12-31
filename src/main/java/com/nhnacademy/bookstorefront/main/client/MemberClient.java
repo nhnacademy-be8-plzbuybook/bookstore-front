@@ -22,4 +22,8 @@ public interface MemberClient {
     //회원 주소 삭제
     @DeleteMapping("/api/members/address/{address_id}")
     ResponseEntity<Void> deleteAddress(@PathVariable Long address_id);
+
+    //회원 주소 수정
+    @PostMapping("/api/members/address/{address_id}")
+    MemberAddressResponseDto updateAddress(@PathVariable Long address_id, @RequestBody MemberAddressRequestDto addressRequestDto);
 }
