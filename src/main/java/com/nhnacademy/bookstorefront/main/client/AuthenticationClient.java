@@ -11,6 +11,7 @@ import com.nhnacademy.bookstorefront.main.dto.book.BookSearchResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +25,13 @@ public interface AuthenticationClient {
     ResponseEntity<String> uploadFiles(@RequestParam("file") List<MultipartFile> multipartFiles);
 
     @GetMapping("/api/selling-books")
-    List<BookDetailResponseDto> getBooks();
+    Page<BookDetailResponseDto> getBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "sellingBookId") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir
+    );
+
 
     @GetMapping("/api/selling-books/{sellingBookId}")
     BookDetailResponseDto getSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
