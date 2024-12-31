@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/index.css?v=1.0">
-    <title>📚 책사조잉 📚</title>
+    <title>📚 마이페이지 📚</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -176,16 +176,17 @@
             background-color: #fffbe6;
             font-weight: bold;
             position: relative;
+            padding-right: 120px; /* 오른쪽 여백을 추가하여 텍스트가 셀 안에 보이도록 합니다 */
         }
 
         .highlight:after {
             content: "← 현재 등급";
             position: absolute;
-            right: -120px;
+            right: 10px; /* 셀 내 오른쪽에 텍스트를 위치시킵니다 */
             color: #ff5722;
             font-weight: bold;
+            font-size: 14px;
         }
-
         /* 섹션 제목 */
         .section-title {
             font-size: 18px;
@@ -252,22 +253,84 @@
         #address-form input {
             margin-bottom: 15px;
         }
+
+        /* 쿠폰 섹션 */
+        #coupon {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        #coupon h2 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        /* 테이블 스타일 */
+        #coupon table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #coupon th,
+        #coupon td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        #coupon th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #coupon tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #coupon tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        #coupon .empty-message {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            font-size: 16px;
+        }
+
+        #coupon .empty-message {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px; /* 적당한 높이 지정 */
+            color: #999;
+            font-style: italic;
+            font-size: 16px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+
     </style>
 </head>
 <body>
-<header>
-    <div class="logo">📚 책사조잉 📚</div>
-    <nav class="menu">
-        <a href="#">Home</a>
-        <a href="#">국내도서</a>
-        <a href="#">외국도서</a>
-        <a href="#">추천도서</a>
-    </nav>
-    <div class="icons">
-        <a href="/mypage">MyPage</a>
-        <a href="/logout">로그아웃</a>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: headerContent(isLoggedIn=${isLoggedIn})}"></div>
+
 <main>
     <div class="sidebar">
         <div class="group active" data-section="grade-benefits">회원 등급 및 혜택</div>
@@ -378,24 +441,28 @@
                         <th>상세 주소</th>
                         <th>우편번호</th>
                         <th>기본 주소</th>
+                        <th>수정</th>
                         <th>삭제</th>
                     </tr>
                     </thead>
                     <tbody>
                     <!-- 등록된 주소가 없을 경우 처리 -->
                     <tr th:if="${#lists.isEmpty(addresses)}">
-                        <td colspan="7" class="empty-message">등록된 주소가 없습니다.</td>
+                        <td colspan="8" class="empty-message">등록된 주소가 없습니다.</td>
                     </tr>
 
                     <!-- 주소 목록 출력 -->
                     <tr th:each="address : ${addresses}">
-                        <td th:text="${address.nickName}">별칭</td>
-                        <td th:text="${address.recipient}">수령인</td>
-                        <td th:text="${address.recipientPhone}">전화번호</td>
-                        <td th:text="${address.locationAddress}">도로명 주소</td>
-                        <td th:text="${address.detailAddress}">상세 주소</td>
-                        <td th:text="${address.zipCode}">우편번호</td>
-                        <td th:text="${address.defaultAddress ? '✔' : ''}">기본 주소</td>
+                        <form th:action="@{/mypage/address/update/{addressId}(addressId=${address.memberAddressId})}" method="post">
+                            <td><input type="text" name="nickName" th:value="${address.nickName}" required></td>
+                            <td><input type="text" name="recipient" th:value="${address.recipient}" required></td>
+                            <td><input type="tel" name="recipientPhone" th:value="${address.recipientPhone}" required></td>
+                            <td><input type="text" name="locationAddress" th:value="${address.locationAddress}" required></td>
+                            <td><input type="text" name="detailAddress" th:value="${address.detailAddress}" required></td>
+                            <td><input type="text" name="zipCode" th:value="${address.zipCode}" required></td>
+                            <td><input type="checkbox" name="defaultAddress" th:checked="${address.defaultAddress}"></td>
+                            <td><button type="submit">수정</button></td>
+                        </form>
                         <td>
                             <form th:action="@{/mypage/address/delete/{addressId}(addressId=${address.memberAddressId})}" method="post">
                                 <button type="submit">삭제</button>
@@ -439,12 +506,56 @@
             </div>
         </div>
         <div class="section" id="coupon">
-            보유 쿠폰 내용
+            <h2>보유 쿠폰</h2>
+
+            <!-- 쿠폰 리스트 출력 -->
+            <div th:if="${coupons != null}">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>쿠폰 코드</th>
+                        <th>쿠폰 상태</th>
+                        <th>발급일</th>
+                        <th>만료일</th>
+                        <th>쿠폰명</th>
+                        <th>할인 타입</th>
+                        <th>최소 사용 금액</th>
+                        <th>최대 할인 금액</th>
+                        <th>할인율</th>
+                        <th>중복 사용 가능</th>
+                        <th>쿠폰 적용 범위</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="coupon : ${coupons}">
+                        <td th:text="${coupon.code}">쿠폰 코드</td>
+                        <td th:text="${coupon.status}">쿠폰 상태</td>
+                        <td th:text="${coupon.issuedAt != null ? #temporals.format(coupon.issuedAt, 'yyyy-MM-dd HH:mm:ss.SSS') : 'N/A'}">발급일</td>
+                        <td th:text="${coupon.expiredAt != null ? #temporals.format(coupon.expiredAt, 'yyyy-MM-dd HH:mm:ss.SSS') : 'N/A'}">만료일</td>
+                        <td th:text="${coupon.name}">쿠폰명</td>
+                        <td th:text="${coupon.saleType}">할인 타입</td>
+                        <td th:text="${coupon.minimumAmount}">최소 사용 금액</td>
+                        <td th:text="${coupon.discountLimit}">최대 할인 금액</td>
+                        <td th:text="${coupon.discountRatio}">할인율</td>
+                        <td th:text="${coupon.isStackable ? '가능' : '불가능'}">중복 사용 가능</td>
+                        <td th:text="${coupon.couponScope}">쿠폰 적용 범위</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 쿠폰이 없을 경우 메시지 -->
+            <div class="empty-message" th:if="${coupons == null or #lists.isEmpty(coupons)}">
+                <p>보유한 쿠폰이 없습니다.</p>
+            </div>
         </div>
         <div class="section" id="withdraw">
             <h2>회원 탈퇴</h2>
             <p>회원 탈퇴를 진행하면 모든 데이터가 삭제됩니다.</p>
-            <button onclick="alert('회원 탈퇴가 완료되었습니다. 로그아웃됩니다.')">회원 탈퇴</button>
+            <form id="withdraw-form" action="/mypage/withdrawal" method="POST">
+                <input type="hidden" id="user-email" name="email" th:value="${email}">
+                <button type="submit" class="withdraw-btn">회원 탈퇴</button>
+            </form>
         </div>
     </div>
 </main>
@@ -502,6 +613,30 @@
         });
     });
 
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const withdrawForm = document.querySelector('#withdraw-form'); // 회원 탈퇴 폼
+        const withdrawButton = document.querySelector('.withdraw-btn'); // 회원 탈퇴 버튼
+
+        // 폼의 제출 이벤트를 처리
+        withdrawForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // 폼의 기본 제출 동작을 막음
+
+            // 탈퇴 확인 메시지
+            const confirmWithdrawal = confirm("정말로 탈퇴하시겠습니까?");
+            if (!confirmWithdrawal) {
+                alert("회원 탈퇴가 취소되었습니다.");
+                return;  // 사용자가 탈퇴를 취소한 경우, 폼 제출을 막음
+            }
+
+            // 폼 제출
+            withdrawForm.submit(); // 폼을 실제로 제출하여 서버로 요청을 보냄
+        });
+    });
+
+    // 예제 데이터
+    const addresses = []; // 초기 상태: 주소 없음
+    displayAddressesInTable(addresses); // 기본 상태 표시
 
 </script>
 </body>

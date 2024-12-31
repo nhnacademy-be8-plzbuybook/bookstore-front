@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
+import com.nhnacademy.bookstorefront.common.exception.LoginFailException;
 import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
@@ -33,46 +34,37 @@ public class AuthenticationController {
                                RedirectAttributes redirectAttributes) {
 
         LoginRequestDto loginRequest = new LoginRequestDto(username, password);
-        // 로그인 수행
-        LoginResponseDto loginResponse = authenticationService.processLogin(loginRequest);
-        String accessToken = loginResponse.accessToken();
+            // 로그인 수행
+            LoginResponseDto loginResponse = authenticationService.processLogin(loginRequest);
+            String accessToken = loginResponse.accessToken();
 
-        // 발급된 토큰 쿠키에 저장
-        cookieService.addCookie(response, "accessToken", accessToken, 100000);
+            // 발급된 토큰 쿠키에 저장
+            cookieService.addCookie(response, "accessToken", accessToken, 100000);
 
-        redirectAttributes.addFlashAttribute("message", "로그인 성공!");
+            redirectAttributes.addFlashAttribute("message", "로그인 성공!");
+            return "redirect:/index";
+
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        // 세션 무효화
+        request.getSession().invalidate();
+
+        // accessToken 쿠키 삭제
+        Cookie cookie = new Cookie("accessToken", null);
+        cookie.setMaxAge(0); // 즉시 만료
+        cookie.setPath("/"); // 경로를 동일하게 설정
+        response.addCookie(cookie); // 응답에 쿠키 추가
+
         return "redirect:/index";
     }
 
-    // 로그인 상태 확인 api
     @GetMapping("/api/check-login")
     @ResponseBody
     public boolean checkLoginStatus(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        boolean loggedIn = false;
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("accessToken".equals(cookie.getName())) {
-                    loggedIn = true;
-                    break;
-                }
-            }
-        }
-        return loggedIn;
+        return authenticationService.isLoggedIn(request);
     }
 
-    // 로그아웃 처리
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        request.getSession().invalidate();
-
-        Cookie cookie = new Cookie("accessToken", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-
-        return "redirect:/index";
-    }
 
 }
