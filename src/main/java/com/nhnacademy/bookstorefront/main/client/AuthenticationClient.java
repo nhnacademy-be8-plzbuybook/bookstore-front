@@ -1,13 +1,10 @@
 package com.nhnacademy.bookstorefront.main.client;
 
 
-import com.nhnacademy.bookstorefront.main.dto.AccessTokenResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.*;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberModifyRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.MemberDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
