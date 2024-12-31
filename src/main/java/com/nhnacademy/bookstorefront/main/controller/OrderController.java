@@ -2,10 +2,11 @@ package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,9 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
     private final OrderService orderService;
 
-    @GetMapping("/order/receipt")
+    @GetMapping("/non-member/order/receipt")
     public String OrderReceipt() {
-        return "order/receipt";
+        return "order/non_member_receipt";
     }
 
     @GetMapping("/orders/{order-id}")
@@ -44,11 +45,12 @@ public class OrderController {
 
 
     @ResponseBody
-    @PostMapping("/api/orders")
-    public OrderSaveResponseDto order(@RequestBody OrderSaveRequestDto orderSaveRequestDto) {
+    @PostMapping("/api/orders/non-member")
+    public OrderSaveResponseDto nonMemberOrder(@RequestBody NonMemberOrderRequestDto orderRequest) {
 //        OrderSaveResponseDto orderSaveResponse = new OrderSaveResponseDto("13123123", new BigDecimal("10000"), "수학의 정석 외 1건");
-        OrderSaveResponseDto orderSaveResponse = orderService.requestOrder(orderSaveRequestDto);
+        OrderSaveResponseDto orderSaveResponse = orderService.requestNonMemberOrder(orderRequest);
         return orderSaveResponse;
+//        return null;
     }
 
 
