@@ -1,7 +1,6 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
-import com.nhnacademy.bookstorefront.main.client.MemberClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
@@ -9,7 +8,6 @@ import com.nhnacademy.bookstorefront.main.dto.Member.MemberCouponGetResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberModifyRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -30,7 +31,6 @@ public class PageController {
 
     //테스트용
     private final AuthenticationClient authenticationClient;
-    private final MemberClient memberClient;
 
     @GetMapping("/mypage")
     public String mypage(Model model) {
@@ -39,12 +39,8 @@ public class PageController {
 //        List<BookDetailResponseDto> books = authenticationClient.getBooks();
 //        model.addAttribute("books", books);
 
-        //회원 수정전 정보 표시
-        model.addAttribute("member", myPageDto);
 
-        //주소 목록 추가
-        List<MemberAddressResponseDto> addresses = memberClient.getAddressListByMemberEmail();
-        model.addAttribute("addresses", addresses);
+        model.addAttribute("member", myPageDto);
 
         Long memberId = myPageDto.getMemberId();
 
@@ -121,4 +117,6 @@ public class PageController {
 
         return "redirect:/mypage";
     }
+
 }
+

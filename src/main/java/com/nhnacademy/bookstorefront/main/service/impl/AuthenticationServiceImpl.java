@@ -9,6 +9,7 @@ import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import feign.FeignException;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public LoginResponseDto processLogin(LoginRequestDto loginRequest) {
         try {
             ResponseEntity<LoginResponseDto> responseEntity = authenticationClient.login(loginRequest);
-            return responseEntity.getBody();
-        } catch (FeignException.NotFound | FeignException.Unauthorized e) {
-            throw new LoginFailException("잘못된 아이디 또는 비밀번호입니다.");
-        } catch (RuntimeException e) {
-            log.error("login error: {}", e.getMessage());
-            throw new LoginFailException("로그인 중 오류 발생했습니다.");
+            LoginResponseDto loginResponse =  responseEntity.getBody();
+
+
+            if (loginResponse == null || loginResponse.memberStateName() == null) {
+                throw new LoginFailException("회원 상태 정보가 유효하지 않습니다.");
+            }
+
+            if ("WITHDRAWAL".equals(loginResponse.memberStateName())) {
+                // 탈퇴한 회원의 경우
+                throw new LoginFailException("이미 탈퇴한 회원입니다.");
+            }
+
+            return loginResponse;
+
+        } catch (LoginFailException e) {
+            log.error("Login failed: {}", e.getMessage());
+            throw e;
+        } catch (FeignException e) {
+            log.error("Feign Client error: {}", e.getMessage());
+            throw new LoginFailException("로그인 중 오류가 발생했습니다.");
+        } catch (Exception e) {
+            log.error("Unexpected login error: {}", e.getMessage());
+            throw new LoginFailException("로그인 중 오류가 발생했습니다.");
         }
     }
 
@@ -47,6 +65,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (!oauthLoginResponseDto.isRegistered()) {
                 String email = oauthLoginResponseDto.email();
                 throw new OauthMemberNotRegisteredException(email);
+            }
+
+            if ("WITHDRAWAL".equals(oauthLoginResponseDto.memberStateName())) {
+                throw new LoginFailException("이미 탈퇴한 회원입니다.");
             }
 
             return oauthLoginResponseDto;
