@@ -4,7 +4,6 @@ on:
   push:
     branches: [ "develop" ]
   pull_request:
-    types: [ "opened", "synchronize" ]
     branches: [ "develop" ]
 
 jobs:
@@ -24,8 +23,5 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean -B package --file pom.xml
-
-      - name: Run Tests
-        run: mvn test -B --file pom.xml
 
 
