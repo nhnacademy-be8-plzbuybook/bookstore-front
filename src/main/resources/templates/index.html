@@ -142,13 +142,19 @@
 </header>
 <main>
     <div class="search-bar">
-        <input type="text" placeholder="검색어를 입력하세요 (책 제목, 작가, ISBN)">
-        <button>검색</button>
+        <form id="searchForm" method="GET" action="/search/books">
+            <input type="text" name="searchKeyword" placeholder="검색어를 입력하세요 (책 제목, 작가, ISBN)" required>
+            <!-- 페이징 관련 기본값 -->
+            <input type="hidden" name="page" value="0">
+            <input type="hidden" name="size" value="9">
+            <button type="submit">검색</button>
+        </form>
     </div>
+
     <div class="sort-bar">
         정렬 기준
         <select>
-            <option value="popularity">인기순</option>
+            <option value="sellingBookId">인기순</option>
             <option value="new">신상품</option>
             <option value="low-price">최저가</option>
             <option value="high-price">최고가</option>
@@ -164,30 +170,32 @@
             </a>
         </div>
     </div>
+
 </main>
+
 
 <nav aria-label="Page navigation">
     <ul class="pagination">
-        <li class="page-item" id="prev-page">
-            <a class="page-link" href="#" aria-label="Previous">&laquo;</a>
+        <!-- 이전 버튼 -->
+        <li class="page-item" th:classappend="${pageNumber == 0} ? 'disabled'">
+            <a th:href="@{/index(page=${pageNumber != null && pageNumber > 0 ? pageNumber - 1 : 0}, size=${pageSize != null ? pageSize : 16})}">이전</a>
         </li>
-        <!-- 동적으로 페이지 번호가 추가될 영역 -->
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item" id="next-page">
-            <a class="page-link" href="#" aria-label="Next">&raquo;</a>
+
+        <!-- 페이지 번호 버튼 -->
+        <li class="page-item" th:each="page, stat : ${#numbers.sequence(0, totalPages != null ? totalPages - 1 : 0)}"
+            th:classappend="${page == (pageNumber != null ? pageNumber : 0)} ? 'active'">
+            <a th:href="@{/index(page=${page}, size=${pageSize != null ? pageSize : 12})}" th:text="${page + 1}"></a>
+        </li>
+
+        <!-- 다음 버튼 -->
+        <li class="page-item" th:classappend="${pageNumber != null && pageNumber == (totalPages != null ? totalPages - 1 : 0)} ? 'disabled'">
+            <a th:href="@{/index(page=${pageNumber != null && pageNumber < (totalPages != null ? totalPages - 1 : 0) ? pageNumber + 1 : (totalPages != null ? totalPages - 1 : 0)}, size=${pageSize != null ? pageSize : 16})}">다음</a>
         </li>
     </ul>
 </nav>
-<!--<script>-->
-<!--    // JavaScript로 클라이언트 단에서 "More" 버튼 동작 구현-->
-<!--    document.getElementById('more-button').addEventListener('click', () => {-->
-<!--        alert('더 많은 도서를 로드하려면 서버 요청을 구현해야 합니다.');-->
-<!--    });-->
 
 
-<!--</script>-->
+<script src="/script/books.js"></script>
 
 <script>
     // 페이지 로드 시 로그인 상태를 확인

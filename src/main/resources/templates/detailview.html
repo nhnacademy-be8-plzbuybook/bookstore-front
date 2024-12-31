@@ -64,6 +64,11 @@
                 <strong>상태:</strong> <span th:text="${book.status}"></span>
             </p>
 
+            <p th:if="${book.selling_book_stock != null}">
+                <strong>재고 :</strong> <span th:text="${book.selling_book_stock}"></span>
+            </p>
+
+
             <p th:if="${book.likeCount != null}">
                 <strong>좋아요:</strong> <span th:text="${book.likeCount}"></span>
             </p>
