@@ -35,8 +35,8 @@ public class PageController {
     public String mypage(Model model) {
         MyPageDto myPageDto = authenticationService.getMyPage();
         //테스트용
-        List<BookDetailResponseDto> books = authenticationClient.getBooks();
-        model.addAttribute("books", books);
+//        List<BookDetailResponseDto> books = authenticationClient.getBooks();
+//        model.addAttribute("books", books);
 
         //회원 수정전 정보 표시
         model.addAttribute("member", myPageDto);
