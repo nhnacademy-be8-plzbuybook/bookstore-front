@@ -64,13 +64,13 @@ jobs:
             sudo docker stop front1 || true
             sudo docker rm front1 || true
             sudo docker build -t front-image1 .
-            sudo docker run -d --name front1 --net front_network -p 3000:3000 -e "SPRING_PROFILES_ACTIVE=prod" front-image1
+            sudo docker run -d --name front1 --net front_network -p 3000:3000 -e "SPRING_PROFILES_ACTIVE=prod" -e "SERVER_PORT=3000" front-image1
             
             # Frontend 컨테이너 2 구축 및 실행
             sudo docker stop front2 || true
             sudo docker rm front2 || true
             sudo docker build -t front-image2 .
-            sudo docker run -d --name front2 --net front_network -p 3001:3001 -e "SPRING_PROFILES_ACTIVE=prod" front-image2
+            sudo docker run -d --name front2 --net front_network -p 3001:3001 -e "SPRING_PROFILES_ACTIVE=prod" -e "SERVER_PORT=3001" front-image2
 
             # Nginx 컨테이너 구축 및 실행
             # 기존 Nginx 컨테이너 중지 및 제거
