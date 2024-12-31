@@ -1,5 +1,8 @@
 server:
   port: 3000
+  servlet:
+    session:
+      tracking-modes: cookie
 
 spring:
   config:
