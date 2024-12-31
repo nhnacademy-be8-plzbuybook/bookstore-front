@@ -7,7 +7,6 @@ import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberModifyRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.book.BookSearchResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -39,7 +38,7 @@ public interface AuthenticationClient {
     ResponseEntity<AccessTokenResponseDto> issueAccessToken(@RequestBody MemberDto memberDto);
 
     @GetMapping("/api/auth/oauth/login")
-    ResponseEntity<OauthLoginResponseDto> getEmailFromOauthUser(@RequestParam String code);
+    ResponseEntity<OauthLoginResponseDto> oauthLogin(@RequestParam String code);
 
     //마이 페이지에 필요한 정보 가져오기
     @GetMapping("/api/members/my/email")
