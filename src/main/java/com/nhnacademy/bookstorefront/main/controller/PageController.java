@@ -78,22 +78,22 @@ public class PageController {
         return "redirect:/mypage";
     }
 
-//    // 주소 삭제 메서드
-//    @PostMapping("/mypage/address/delete/{addressId}")
-//    public String deleteAddress(@PathVariable Long addressId, Model model) {
-//        try {
-//            ResponseEntity<Void> response = memberClient.deleteAddress(addressId);
-//
-//            if (response.getStatusCode().is2xxSuccessful()) {
-//                model.addAttribute("successMessage", "주소가 성공적으로 삭제되었습니다.");
-//            } else {
-//                model.addAttribute("errorMessage", "주소 삭제에 실패했습니다.");
-//            }
-//        } catch (Exception e) {
-//            model.addAttribute("errorMessage", "주소 삭제에 실패했습니다.");
-//        }
-//        return "redirect:/mypage";  // 삭제 후 마이페이지로 리디렉션
-//    }
+    // 주소 삭제 메서드
+    @PostMapping("/mypage/address/delete/{addressId}")
+    public String deleteAddress(@PathVariable Long addressId, Model model) {
+        try {
+            ResponseEntity<Void> response = memberClient.deleteAddress(addressId);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                model.addAttribute("successMessage", "주소가 성공적으로 삭제되었습니다.");
+            } else {
+                model.addAttribute("errorMessage", "주소 삭제에 실패했습니다.");
+            }
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "주소 삭제에 실패했습니다.");
+        }
+        return "redirect:/mypage";  // 삭제 후 마이페이지로 리디렉션
+    }
 
 
 }
