@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
+import com.nhnacademy.bookstorefront.common.exception.LoginFailException;
 import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
@@ -33,15 +34,16 @@ public class AuthenticationController {
                                RedirectAttributes redirectAttributes) {
 
         LoginRequestDto loginRequest = new LoginRequestDto(username, password);
-        // 로그인 수행
-        LoginResponseDto loginResponse = authenticationService.processLogin(loginRequest);
-        String accessToken = loginResponse.accessToken();
+            // 로그인 수행
+            LoginResponseDto loginResponse = authenticationService.processLogin(loginRequest);
+            String accessToken = loginResponse.accessToken();
 
-        // 발급된 토큰 쿠키에 저장
-        cookieService.addCookie(response, "accessToken", accessToken, 100000);
+            // 발급된 토큰 쿠키에 저장
+            cookieService.addCookie(response, "accessToken", accessToken, 100000);
 
-        redirectAttributes.addFlashAttribute("message", "로그인 성공!");
-        return "redirect:/index";
+            redirectAttributes.addFlashAttribute("message", "로그인 성공!");
+            return "redirect:/index";
+
     }
 
     @GetMapping("/logout")
