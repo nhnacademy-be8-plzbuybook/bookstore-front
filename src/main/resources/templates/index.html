@@ -125,21 +125,10 @@
     </style>
 </head>
 <body>
-<header>
-    <div class="logo">📚 책사조잉 📚</div>
-    <nav class="menu">
-        <a href="#">Home</a>
-        <a href="#">국내도서</a>
-        <a href="#">외국도서</a>
-        <a href="#">추천도서</a>
-    </nav>
-    <div class="icons" id="auth-icons">
-        <a href="/mypage" id="mypage-btn" style="display:none;">MyPage</a>
-        <a href="#" id="logout-btn" style="display:none;" onclick="logout()">로그아웃</a>
-        <a href="/login" id="login-btn">로그인</a>
-        <a href="/signup" id="signup-btn">회원가입</a>
-    </div>
-</header>
+
+<div th:replace="~{fragments/header :: headerContent(isLoggedIn=${isLoggedIn})}"></div>
+
+
 <main>
     <div class="search-bar">
         <form id="searchForm" method="GET" action="/search/books">
@@ -198,42 +187,15 @@
 <script src="/script/books.js"></script>
 
 <script>
-    // 페이지 로드 시 로그인 상태를 확인
-    fetch('/api/check-login', {
-        method: 'GET',
-        credentials: 'same-origin'  // 쿠키를 포함한 요청
-    })
-        .then(response => response.json())
-        .then(loggedIn => {
-            if (loggedIn) {
-                document.getElementById('login-btn').style.display = 'none';
-                document.getElementById('signup-btn').style.display = 'none';
-                document.getElementById('mypage-btn').style.display = 'inline-block';
-                document.getElementById('logout-btn').style.display = 'inline-block';
-            } else {
-                document.getElementById('login-btn').style.display = 'inline-block';
-                document.getElementById('signup-btn').style.display = 'inline-block';
-                document.getElementById('mypage-btn').style.display = 'none';
-                document.getElementById('logout-btn').style.display = 'none';
-            }
-        });
 
-    document.getElementById('more-button').addEventListener('click', () => {
-        alert('더 많은 도서를 로드하려면 서버 요청을 구현해야 합니다.');
-    });
-
-    function logout() {
-        fetch('/logout', {
-            method: 'POST',
-            credentials: 'same-origin',
-        })
-            .then(response => {
-                window.location.href = "/index";
-            })
-            .catch(error => {
-                console.error('로그아웃 실패:', error);
+    document.addEventListener('DOMContentLoaded', () => {
+        const moreButton = document.getElementById('more-button');
+        if (moreButton) {
+            moreButton.addEventListener('click', () => {
+                alert('더 많은 도서를 로드하려면 서버 요청을 구현해야 합니다.');
             });
-    }
+        }
+    });
 </script>
 
 </body>

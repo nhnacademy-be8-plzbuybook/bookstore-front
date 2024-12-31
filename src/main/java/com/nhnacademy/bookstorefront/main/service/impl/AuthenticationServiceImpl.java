@@ -9,6 +9,8 @@ import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import feign.FeignException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,5 +89,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }catch(FeignException  e){
             throw new RuntimeException("마이페이지 조회 중 오류 발생!");
         }
+    }
+
+    @Override
+    public boolean isLoggedIn(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return false;
+        }
+        for (Cookie cookie : cookies) {
+            if ("accessToken".equals(cookie.getName()) && cookie.getValue() != null) {
+                return true; // accessToken이 존재하면 로그인 상태
+            }
+        }
+        return false; // 쿠키에 accessToken이 없으면 로그아웃 상태
     }
 }

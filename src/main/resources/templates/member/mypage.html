@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/index.css?v=1.0">
-    <title>📚 책사조잉 📚</title>
+    <title>📚 마이페이지 📚</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -329,19 +329,8 @@
     </style>
 </head>
 <body>
-<header>
-    <div class="logo">📚 책사조잉 📚</div>
-    <nav class="menu">
-        <a href="#">Home</a>
-        <a href="#">국내도서</a>
-        <a href="#">외국도서</a>
-        <a href="#">추천도서</a>
-    </nav>
-    <div class="icons">
-        <a href="/mypage">MyPage</a>
-        <a href="/logout">로그아웃</a>
-    </div>
-</header>
+<div th:replace="~{fragments/header :: headerContent(isLoggedIn=${isLoggedIn})}"></div>
+
 <main>
     <div class="sidebar">
         <div class="group active" data-section="grade-benefits">회원 등급 및 혜택</div>
