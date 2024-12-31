@@ -14,10 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -93,6 +90,24 @@ public class PageController {
             model.addAttribute("errorMessage", "주소 삭제에 실패했습니다.");
         }
         return "redirect:/mypage";  // 삭제 후 마이페이지로 리디렉션
+    }
+
+    // 주소 수정 메서드
+    @PostMapping("/mypage/address/update/{addressId}")
+    public String updateAddress(@PathVariable("addressId") Long addressId, @Valid MemberAddressRequestDto memberAddressRequestDto, BindingResult bindingResult, Model model) {
+        if(bindingResult.hasErrors()) {
+            model.addAttribute("error", "모든 필드를 바르게 입력해주세요");
+            return "mypage";
+        }
+
+        try{
+            memberClient.updateAddress(addressId, memberAddressRequestDto);
+            model.addAttribute("successMessage", "주소가 성공적으로 수정되었습니다.");
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "주소 수정에 실패했습니다.");
+        }
+
+        return "redirect:/mypage";
     }
 
 
