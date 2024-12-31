@@ -8,7 +8,6 @@ import com.nhnacademy.bookstorefront.main.dto.Member.MemberModifyRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -55,8 +54,6 @@ public interface AuthenticationClient {
     @PostMapping("/api/members")
     ResponseEntity<MemberCreateResponseDto> createMember(@RequestBody MemberCreateRequestDto memberCreateRequestDto);
 
-    @PostMapping("/api/orders")
-    ResponseEntity<OrderSaveResponseDto> order(@RequestBody OrderSaveRequestDto orderSaveRequest);
 
     //회원 정보 수정
     @PostMapping("/api/members/me")
