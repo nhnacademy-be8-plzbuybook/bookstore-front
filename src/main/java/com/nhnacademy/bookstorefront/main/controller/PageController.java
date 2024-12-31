@@ -5,11 +5,15 @@ import com.nhnacademy.bookstorefront.main.client.MemberClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.Member.MemberCouponGetResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberModifyRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -111,4 +115,20 @@ public class PageController {
     }
 
 
+    @GetMapping("/mypage/coupons")
+    public String coupon(Model model) {
+        MyPageDto myPageDto = authenticationService.getMyPage();
+        Long memberId = myPageDto.getMemberId();
+
+        Pageable pageable = PageRequest.of(0, 10);
+        ResponseEntity<Page<MemberCouponGetResponseDto>> response = memberClient.getMemberCouponsByMemberId(memberId, pageable);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            model.addAttribute("coupons", response.getBody().getContent());
+        } else {
+            model.addAttribute("errorMessage", "쿠폰 리스트를 불러오는데 실패 했습니다.");
+        }
+
+        return "member/mypage";
+    }
 }
