@@ -46,6 +46,14 @@ public class PageController {
         List<MemberAddressResponseDto> addresses = memberClient.getAddressListByMemberEmail();
         model.addAttribute("addresses", addresses);
 
+        Long memberId = myPageDto.getMemberId();
+
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<MemberCouponGetResponseDto> response = memberClient.getMemberCouponsByMemberId(memberId, pageable);
+
+
+        model.addAttribute("coupons", response.getContent());
+
         return "member/mypage";
     }
 
@@ -112,23 +120,5 @@ public class PageController {
         }
 
         return "redirect:/mypage";
-    }
-
-
-    @GetMapping("/mypage/coupons")
-    public String coupon(Model model) {
-        MyPageDto myPageDto = authenticationService.getMyPage();
-        Long memberId = myPageDto.getMemberId();
-
-        Pageable pageable = PageRequest.of(0, 10);
-        ResponseEntity<Page<MemberCouponGetResponseDto>> response = memberClient.getMemberCouponsByMemberId(memberId, pageable);
-
-        if (response.getStatusCode().is2xxSuccessful()) {
-            model.addAttribute("coupons", response.getBody().getContent());
-        } else {
-            model.addAttribute("errorMessage", "쿠폰 리스트를 불러오는데 실패 했습니다.");
-        }
-
-        return "member/mypage";
     }
 }

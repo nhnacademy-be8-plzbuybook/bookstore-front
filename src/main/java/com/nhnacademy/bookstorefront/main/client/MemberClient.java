@@ -32,5 +32,5 @@ public interface MemberClient {
 
     //회원 쿠폰 리스트 조회
     @GetMapping("/api/coupons/member-coupons/member/{memberId}")
-    ResponseEntity<Page<MemberCouponGetResponseDto>> getMemberCouponsByMemberId(@PathVariable("memberId") Long memberId, Pageable pageable);
+    Page<MemberCouponGetResponseDto> getMemberCouponsByMemberId(@PathVariable("memberId") Long memberId, Pageable pageable);
 }

@@ -253,6 +253,79 @@
         #address-form input {
             margin-bottom: 15px;
         }
+
+        /* 쿠폰 섹션 */
+        #coupon {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        #coupon h2 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        /* 테이블 스타일 */
+        #coupon table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #coupon th,
+        #coupon td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        #coupon th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #coupon tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #coupon tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        #coupon .empty-message {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            font-size: 16px;
+        }
+
+        #coupon .empty-message {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px; /* 적당한 높이 지정 */
+            color: #999;
+            font-style: italic;
+            font-size: 16px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+
     </style>
 </head>
 <body>
@@ -468,8 +541,8 @@
                     <tr th:each="coupon : ${coupons}">
                         <td th:text="${coupon.code}">쿠폰 코드</td>
                         <td th:text="${coupon.status}">쿠폰 상태</td>
-                        <td th:text="${#dates.format(coupon.issuedAt, 'yyyy-MM-dd HH:mm')}">발급일</td>
-                        <td th:text="${#dates.format(coupon.expiredAt, 'yyyy-MM-dd HH:mm')}">만료일</td>
+                        <td th:text="${coupon.issuedAt != null ? #temporals.format(coupon.issuedAt, 'yyyy-MM-dd HH:mm:ss.SSS') : 'N/A'}">발급일</td>
+                        <td th:text="${coupon.expiredAt != null ? #temporals.format(coupon.expiredAt, 'yyyy-MM-dd HH:mm:ss.SSS') : 'N/A'}">만료일</td>
                         <td th:text="${coupon.name}">쿠폰명</td>
                         <td th:text="${coupon.saleType}">할인 타입</td>
                         <td th:text="${coupon.minimumAmount}">최소 사용 금액</td>
@@ -483,7 +556,7 @@
             </div>
 
             <!-- 쿠폰이 없을 경우 메시지 -->
-            <div th:if="${coupons == null}">
+            <div class="empty-message" th:if="${coupons == null or #lists.isEmpty(coupons)}">
                 <p>보유한 쿠폰이 없습니다.</p>
             </div>
         </div>
