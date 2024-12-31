@@ -222,6 +222,7 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
 
         #address-table th, #address-table td {
@@ -366,7 +367,7 @@
 
             <!-- 현재 등록된 주소 섹션 -->
             <div class="address-list">
-                <h3 class="section-title">현재 등록된 주소</h3>
+                <h3 class="section-title">현재 등록된 주소 (총 <span th:text="${#lists.size(addresses)}">0</span>개)</h3>
                 <table id="address-table">
                     <thead>
                     <tr>
@@ -377,12 +378,29 @@
                         <th>상세 주소</th>
                         <th>우편번호</th>
                         <th>기본 주소</th>
+                        <th>삭제</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- 동적으로 추가될 주소 목록 -->
-                    <tr>
+                    <!-- 등록된 주소가 없을 경우 처리 -->
+                    <tr th:if="${#lists.isEmpty(addresses)}">
                         <td colspan="7" class="empty-message">등록된 주소가 없습니다.</td>
+                    </tr>
+
+                    <!-- 주소 목록 출력 -->
+                    <tr th:each="address : ${addresses}">
+                        <td th:text="${address.nickName}">별칭</td>
+                        <td th:text="${address.recipient}">수령인</td>
+                        <td th:text="${address.recipientPhone}">전화번호</td>
+                        <td th:text="${address.locationAddress}">도로명 주소</td>
+                        <td th:text="${address.detailAddress}">상세 주소</td>
+                        <td th:text="${address.zipCode}">우편번호</td>
+                        <td th:text="${address.defaultAddress ? '✔' : ''}">기본 주소</td>
+                        <td>
+                            <form th:action="@{/mypage/address/delete/{addressId}(addressId=${address.memberAddressId})}" method="post">
+                                <button type="submit">삭제</button>
+                            </form>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
@@ -391,7 +409,11 @@
             <!-- 주소 등록 섹션 -->
             <div class="address-form-container">
                 <h3 class="section-title">주소 등록</h3>
-                <form id="address-form">
+                <form id="address-form" method="post" action="/mypage/address">
+                    <div th:if="${error}" class="error-message">
+                        <p th:text="${error}"></p>
+                    </div>
+
                     <label for="locationAddress">도로명 주소</label>
                     <input type="text" id="locationAddress" name="locationAddress" placeholder="도로명 주소를 입력하세요" required>
 
@@ -410,6 +432,8 @@
                     <label for="recipientPhone">수령인 전화번호</label>
                     <input type="tel" id="recipientPhone" name="recipientPhone" placeholder="010-1234-5678" required>
 
+                    <label for="defaultAddress">기본 주소</label>
+                    <input type="checkbox" id="defaultAddress" name="defaultAddress">
                     <button type="submit">주소 등록</button>
                 </form>
             </div>
@@ -481,34 +505,6 @@
         });
     });
 
-    function displayAddressesInTable(addresses) {
-        const addressTableBody = document.querySelector('#address-table tbody');
-        addressTableBody.innerHTML = ''; // 기존 테이블 내용 초기화
-
-        if (addresses.length === 0) {
-            const emptyRow = document.createElement('tr');
-            const emptyCell = document.createElement('td');
-            emptyCell.colSpan = 7;
-            emptyCell.classList.add('empty-message');
-            emptyCell.textContent = '등록된 주소가 없습니다.';
-            emptyRow.appendChild(emptyCell);
-            addressTableBody.appendChild(emptyRow);
-        } else {
-            addresses.forEach(address => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${address.nickName}</td>
-                    <td>${address.recipient}</td>
-                    <td>${address.recipientPhone}</td>
-                    <td>${address.locationAddress}</td>
-                    <td>${address.detailAddress}</td>
-                    <td>${address.zipCode}</td>
-                    <td>${address.defaultAddress ? '✔' : ''}</td>
-                `;
-                addressTableBody.appendChild(row);
-            });
-        }
-    }
 
     document.addEventListener('DOMContentLoaded', function() {
         const withdrawForm = document.querySelector('#withdraw-form'); // 회원 탈퇴 폼
@@ -533,6 +529,7 @@
     // 예제 데이터
     const addresses = []; // 초기 상태: 주소 없음
     displayAddressesInTable(addresses); // 기본 상태 표시
+
 </script>
 </body>
 </html>

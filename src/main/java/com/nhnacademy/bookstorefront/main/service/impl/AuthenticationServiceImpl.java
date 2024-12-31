@@ -54,7 +54,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public OauthLoginResponseDto processOauthLogin(String code) {
         try {
-            ResponseEntity<OauthLoginResponseDto> response = authenticationClient.getEmailFromOauthUser(code);
+            ResponseEntity<OauthLoginResponseDto> response = authenticationClient.oauthLogin(code);
             OauthLoginResponseDto oauthLoginResponseDto = response.getBody();
 
             if (oauthLoginResponseDto == null) {
