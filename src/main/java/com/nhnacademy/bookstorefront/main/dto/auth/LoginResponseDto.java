@@ -2,7 +2,8 @@ package com.nhnacademy.bookstorefront.main.dto.auth;
 
 public record LoginResponseDto(
         String accessToken,
-        String memberStateName
+        String memberStateName,
+        String redirectUrl
 ){
 
 }
