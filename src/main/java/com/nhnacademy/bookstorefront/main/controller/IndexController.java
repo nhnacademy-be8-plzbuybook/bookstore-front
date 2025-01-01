@@ -37,7 +37,6 @@ public class IndexController {
         model.addAttribute("books", response.getContent());
         model.addAttribute("currentPage", response.getNumber());
         model.addAttribute("totalPages", response.getTotalPages());
-
         model.addAttribute("isLoggedIn", isLoggedIn);
 
         return "index"; // index.html 렌더링
