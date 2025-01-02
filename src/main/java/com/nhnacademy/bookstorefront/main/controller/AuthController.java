@@ -46,7 +46,7 @@ public class AuthController {
     }
 
 
-    @PostMapping("/auth/verify-code")
+        @PostMapping("/auth/verify-code")
     public String verifyCode(@RequestParam("code") String code, @RequestParam("token") String token, Model model) {
         try{
             String response = authenticationClient.verifyVerificationCode(token, code);
