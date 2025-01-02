@@ -64,12 +64,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String completeOrder(String orderId) {
         try {
-            ResponseEntity<?> response = orderClient.completeOrder(orderId);
+            ResponseEntity<String> response = orderClient.completeOrder(orderId);
 
             if (response.getStatusCode() != HttpStatus.OK) {
                 throw new RuntimeException("주문이 실패했습니다.");
             }
-            return orderId;
+            return response.getBody().toString();
 
         } catch (FeignException e) {
             throw new RuntimeException("주문서버에 네트워크 오류가 발생했습니다.");
