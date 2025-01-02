@@ -4,12 +4,15 @@ import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.WithdrawStateRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
 import com.nhnacademy.bookstorefront.main.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -66,6 +69,8 @@ public class MemberController {
         }
 
     }
+
+
 
 }
 

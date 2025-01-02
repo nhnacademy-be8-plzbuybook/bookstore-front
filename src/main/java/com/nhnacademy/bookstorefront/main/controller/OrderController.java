@@ -3,10 +3,10 @@ package com.nhnacademy.bookstorefront.main.controller;
 import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -23,6 +23,11 @@ public class OrderController {
     @GetMapping("/non-member/order/receipt")
     public String OrderReceipt() {
         return "order/non_member_receipt";
+    }
+
+    @GetMapping("/order/receipt")
+    public String memberOrderReceipt() {
+        return "order/member_receipt";
     }
 
     @GetMapping("/orders/{order-id}")
@@ -47,8 +52,15 @@ public class OrderController {
     @ResponseBody
     @PostMapping("/api/orders/non-member")
     public OrderSaveResponseDto nonMemberOrder(@RequestBody NonMemberOrderRequestDto orderRequest) {
-//        OrderSaveResponseDto orderSaveResponse = new OrderSaveResponseDto("13123123", new BigDecimal("10000"), "수학의 정석 외 1건");
         OrderSaveResponseDto orderSaveResponse = orderService.requestNonMemberOrder(orderRequest);
+        return orderSaveResponse;
+    }
+
+    @ResponseBody
+    @PostMapping("/api/orders")
+    public OrderSaveResponseDto memberOrder(@RequestBody MemberOrderRequestDto orderRequest) {
+//        OrderSaveResponseDto orderSaveResponse = new OrderSaveResponseDto("13123123", new BigDecimal("10000"), "수학의 정석 외 1건");
+        OrderSaveResponseDto orderSaveResponse = orderService.requestMemberOrder(orderRequest);
         return orderSaveResponse;
 //        return null;
     }
@@ -59,6 +71,8 @@ public class OrderController {
         String completedOrderId = orderService.completeOrder(orderId);
         return ResponseEntity.status(HttpStatus.OK).body(completedOrderId);
     }
+
+
 
 
 }

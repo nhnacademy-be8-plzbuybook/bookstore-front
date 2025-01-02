@@ -4,6 +4,7 @@ import com.nhnacademy.bookstorefront.main.client.OrderClient;
 import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import feign.FeignException;
@@ -29,6 +30,25 @@ public class OrderServiceImpl implements OrderService {
     public OrderSaveResponseDto requestNonMemberOrder(NonMemberOrderRequestDto orderSaveRequestDto) {
         try {
             ResponseEntity<OrderSaveResponseDto> response = orderClient.requestNonMemberOrder(orderSaveRequestDto);
+
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("주문이 실패했습니다.");
+            }
+            return response.getBody();
+
+        } catch (FeignException.BadRequest e) {
+            log.error("feignClient error: {}", e.getMessage());
+            throw new RuntimeException("잘못된 주문형식입니다.");
+        } catch (FeignException e) {
+            log.error("feignClient error: {}", e.getMessage());
+            throw new RuntimeException("주문 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public OrderSaveResponseDto requestMemberOrder(MemberOrderRequestDto orderSaveRequestDto) {
+        try {
+            ResponseEntity<OrderSaveResponseDto> response = orderClient.requestMemberOrder(orderSaveRequestDto);
 
             if (!response.getStatusCode().is2xxSuccessful()) {
                 throw new RuntimeException("주문이 실패했습니다.");
