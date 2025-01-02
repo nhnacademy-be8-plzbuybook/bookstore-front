@@ -97,8 +97,19 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderDto> getOrders(OrderSearchRequestDto searchRequest, Pageable pageable) {
+    public Page<OrderDto> getMemberOrders(OrderSearchRequestDto searchRequest, Pageable pageable) {
         ResponseEntity<Page<OrderDto>> response = orderClient.getMemberOrders(searchRequest, pageable);
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("페이지를 가져오는 중 오류가 발생했습니다.");
+        }
+
+        return response.getBody();
+    }
+
+    @Override
+    public Page<OrderDto> getAllOrders(OrderSearchRequestDto searchRequest, Pageable pageable) {
+        ResponseEntity<Page<OrderDto>> response = orderClient.getAllOrders(searchRequest, pageable);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RuntimeException("페이지를 가져오는 중 오류가 발생했습니다.");

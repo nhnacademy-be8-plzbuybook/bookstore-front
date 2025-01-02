@@ -17,6 +17,9 @@ public interface OrderClient {
     @GetMapping("/api/my/orders")
     ResponseEntity<Page<OrderDto>> getMemberOrders(@ModelAttribute OrderSearchRequestDto searchRequest, Pageable pageable);
 
+    @GetMapping("/api/orders")
+    ResponseEntity<Page<OrderDto>> getAllOrders(@RequestBody OrderSearchRequestDto searchRequest, Pageable pageable);
+
     //    @PostMapping("/api/orders/non-member")
 //    ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
     @PostMapping("/api/orders/non-member")
