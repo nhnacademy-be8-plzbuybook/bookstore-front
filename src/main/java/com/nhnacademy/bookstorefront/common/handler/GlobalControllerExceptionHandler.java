@@ -20,6 +20,6 @@ public class GlobalControllerExceptionHandler {
     public String handleNotRegisteredOauthMember(OauthMemberNotRegisteredException ex, RedirectAttributes redirectAttributes) {
         String email = ex.getMessage();
         redirectAttributes.addFlashAttribute("message", "최초 회원가입이 필요한 서비스입니다.");
-        return "redirect:/members/signup?email=" + email;
+        return "redirect:/signup?email=" + email;
     }
 }
