@@ -36,6 +36,11 @@ public class AuthenticationController {
         LoginRequestDto loginRequest = new LoginRequestDto(username, password);
             // 로그인 수행
             LoginResponseDto loginResponse = authenticationService.processLogin(loginRequest);
+
+        if ("DORMANT".equals(loginResponse.memberStateName())) {
+            return "redirect:" + loginResponse.redirectUrl();
+        }
+
             String accessToken = loginResponse.accessToken();
 
             // 발급된 토큰 쿠키에 저장

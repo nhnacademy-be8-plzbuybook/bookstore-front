@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/index.css?v=1.0">
+    <title>휴면 계정 인증</title>
+    <style>
+        /* 공통 스타일 */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header .menu a,
+        header .icons a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        header .menu a:hover,
+        header .icons a:hover {
+            color: #f1f1f1;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 60%;
+            text-align: center;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #444;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .button-container form {
+            display: inline-block;
+        }
+
+        .button-container button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">📚 책사조잉 📚</div>
+    <div class="menu">
+        <a href="/">홈</a>
+        <a href="/search/books">책 검색</a>
+    </div>
+</header>
+
+<main>
+    <h2>휴면 계정 인증</h2>
+    <p>현재 계정은 휴면 상태입니다. 로그인을 위해 인증 코드가 필요합니다.</p>
+
+    <!-- 인증 코드 입력 폼 -->
+    <div class="form-group">
+        <form action="/auth/verify-code" method="POST">
+            <label for="code">인증 코드:</label>
+            <input type="text" id="code" name="code" placeholder="인증 코드를 입력하세요" required />
+            <button type="submit">인증</button>
+        </form>
+    </div>
+
+    <!-- 인증 코드 요청 버튼 -->
+    <div class="button-container">
+        <form action="/auth/request-code" method="POST">
+            <button type="submit">인증 코드 요청</button>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>
