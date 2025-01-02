@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 책사조잉 관리자 페이지 📚</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header .menu a,
+        header .icons a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        header .menu a:hover,
+        header .icons a:hover {
+            color: #f1f1f1;
+        }
+
+        main {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .sidebar .group {
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .sidebar .group.active,
+        .sidebar .group:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo">📚 책사조잉 📚</div>
+    <nav class="menu">
+        <a href="#">홈</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="/mypage">MyPage</a>
+        <a href="/logout">로그아웃</a>
+    </div>
+</header>
+<main>
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <div class="group" data-section="member-management">회원 관리</div>
+        <div class="group" data-section="book-management">도서 관리</div>
+        <div class="group" data-section="coupon-management">쿠폰 관리</div>
+        <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
+        <div class="group" data-section="tag-management">태그 관리</div>
+        <div class="group" data-section="category-management">카테고리 관리</div>
+
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="content">
+        <div id="member-management" class="section">
+            <h2>회원 관리</h2>
+            <p>여기에 회원 crud 구현</p>
+        </div>
+        <div id="book-management" class="section">
+            <h2>도서 관리</h2>
+            <p>여기에 도서 crud 구현</p>
+        </div>
+        <div id="coupon-management" class="section">
+            <h2>쿠폰 관리</h2>
+            <p>여기에 쿠폰 crud 구현</p>
+        </div>
+        <div id="coupon-policy-management" class="section">
+            <h2>쿠폰 정책 관리</h2>
+            <p>여기에 쿠폰 정책 crud 구현</p>
+        </div>
+        <div id="tag-management" class="section">
+            <h2>태그 관리</h2>
+            <p>여기에 태그 crud 구현</p>
+        </div>
+        <div id="category-management" class="section">
+            <h2>카테고리 관리</h2>
+            <p>여기에 카테고리 crud 구현</p>
+        </div>
+
+    </div>
+</main>
+<script>
+    const sidebarItems = document.querySelectorAll('.sidebar .group');
+    const sections = document.querySelectorAll('.section');
+
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', () => {
+            sidebarItems.forEach(i => i.classList.remove('active'));
+            sections.forEach(section => section.classList.remove('active'));
+
+            item.classList.add('active');
+            const sectionId = item.getAttribute('data-section');
+            document.getElementById(sectionId).classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>
