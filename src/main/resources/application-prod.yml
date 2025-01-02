@@ -1,5 +1,8 @@
 server:
-  port: 3000
+  port: ${SERVER_PORT:3000}
+  servlet:
+    session:
+      tracking-modes: cookie
 
 spring:
   config:
@@ -14,6 +17,8 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://eureka:8761/eureka
+  instance:
+    hostname: ${HOSTNAME}
 
 logging:
   level:

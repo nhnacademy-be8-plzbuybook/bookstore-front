@@ -26,30 +26,12 @@
     </dependencyManagement>
     <packaging>jar</packaging>
 
-<!--    <url/>-->
-<!--    <licenses>-->
-<!--        <license/>-->
-<!--    </licenses>-->
-<!--    <developers>-->
-<!--        <developer/>-->
-<!--    </developers>-->
-<!--    <scm>-->
-<!--        <connection/>-->
-<!--        <developerConnection/>-->
-<!--        <tag/>-->
-<!--        <url/>-->
-<!--    </scm>-->
-
-
     <properties>
         <java.version>21</java.version>
-
         <spring-cloud.version>2023.0.2</spring-cloud.version>
-
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -109,7 +91,35 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
+<!--        스프링 데이터 의존성-->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+            <version>3.4.0</version>
+        </dependency>
+
+        <!-- log&crash logback sdk 사용을 위한 필수 의존성 -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20240303</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.12</version>
+        </dependency>
     </dependencies>
 
     <build>

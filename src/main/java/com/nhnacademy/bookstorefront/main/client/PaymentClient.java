@@ -1,14 +1,16 @@
 package com.nhnacademy.bookstorefront.main.client;
 
-import com.nhnacademy.bookstorefront.main.dto.payment.SaveAmountDto;
+import com.nhnacademy.bookstorefront.main.dto.PaymentConfirmResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.payment.PaymentConfirmRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-//@FeignClient(name = "BOOKSTORE-DEV1")
-//public interface PaymentClient {
-//
-//    @PostMapping("/api/payments/save-payment")
-//    ResponseEntity<?> savePaymentTemporary(@RequestBody SaveAmountDto saveAmountDto);
-//}
+@FeignClient(name = "GATEWAY", contextId = "paymentClient")
+public interface PaymentClient {
+
+    /** 결제승인 요청 */
+    @PostMapping("/api/payments/confirm/widget")
+    ResponseEntity<PaymentConfirmResponseDto> confirmPayment(@RequestBody PaymentConfirmRequestDto confirmRequest);
+}

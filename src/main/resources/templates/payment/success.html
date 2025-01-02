@@ -18,14 +18,13 @@
     <div class="p-grid-col text--left"><b>결제금액</b></div>
     <div class="p-grid-col text--right" id="amount"></div>
   </div>
-
 </div>
+<input type="hidden" id="orderId" th:value="${orderId}">
 
-<div class="box_section" style="width: 600px; text-align: left">
-  <b>Response Data :</b>
-  <div id="response" style="white-space: initial"></div>
+<div>
+  <button id="orderCheck-btn">주문확인</button>
 </div>
+<script src="/js/payment/success.js"></script>
 
-<!--<script src="/js/payment/success.js"></script>-->
 </body>
 </html>

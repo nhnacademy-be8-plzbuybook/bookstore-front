@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/detail.css?v=1.0">
+    <title th:text="${book.bookTitle} + ' - 상세정보'">책 상세정보</title>
+</head>
+<body>
+<header>
+    <div class="logo">📚 책사조잉 📚</div>
+</header>
+<main>
+    <div class="book-detail">
+        <!-- 이미지 -->
+        <div class="book-image">
+            <img th:src="${book.imageUrl != null ? book.imageUrl : '/default-image.png'}"
+                 th:alt="${book.bookTitle != null ? book.bookTitle : '이미지 없음'}">
+        </div>
+
+        <!-- 정보 -->
+        <div class="book-info">
+            <h1 th:text="${book.bookTitle != null ? book.bookTitle : '제목 정보 없음'}"></h1>
+
+            <p th:if="${book.bookIndex != null}">
+                <strong>목차:</strong> <span th:text="${book.bookIndex}"></span>
+            </p>
+
+            <p th:if="${book.bookDescription != null}">
+                <strong>설명:</strong> <span th:text="${book.bookDescription}"></span>
+            </p>
+
+            <p th:if="${book.categories != null}">
+                <strong>카테고리:</strong>
+            <ul>
+                <li th:each="category : ${book.categories}" th:text="${category}"></li>
+            </ul>
+            </p>
+
+            <p th:if="${book.authorName != null}">
+                <strong>작가:</strong>
+            <ul>
+                <li th:each="author : ${book.authorName}" th:text="${author}"></li>
+            </ul>
+            </p>
+
+            <p th:if="${book.publisher != null}">
+                <strong>출판사:</strong> <span th:text="${book.publisher}"></span>
+            </p>
+
+            <p><strong>출판일:</strong>
+                <span th:text="${book.bookPubDate != null ? book.bookPubDate : '출판일 정보 없음'}"></span>
+            </p>
+
+            <p th:if="${book.bookPriceStandard != null}">
+                <strong>정가:</strong> <span th:text="${book.bookPriceStandard} + '원'"></span>
+            </p>
+
+            <p th:if="${book.sellingPrice != null}">
+                <strong>판매가:</strong> <span th:text="${book.sellingPrice} + '원'"></span>
+            </p>
+
+            <p th:if="${book.status != null}">
+                <strong>상태:</strong> <span th:text="${book.status}"></span>
+            </p>
+
+            <p th:if="${book.selling_book_stock != null}">
+                <strong>재고 :</strong> <span th:text="${book.selling_book_stock}"></span>
+            </p>
+
+
+            <p th:if="${book.likeCount != null}">
+                <strong>좋아요:</strong> <span th:text="${book.likeCount}"></span>
+            </p>
+
+            <!-- 버튼 -->
+            <div class="button-group">
+                <button class="cart-btn" onclick="addToCart()">장바구니 담기</button>
+                <button class="buy-btn" onclick="buyNow()">바로 구매</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function addToCart() {
+        alert("장바구니에 담겼습니다!");
+    }
+
+    function buyNow() {
+        alert("구매 페이지로 이동합니다!");
+    }
+</script>
+</body>
+</html>

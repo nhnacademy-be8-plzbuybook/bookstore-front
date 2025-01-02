@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
+import com.nhnacademy.bookstorefront.main.dto.PaymentConfirmResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.payment.PaymentConfirmRequestDto;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import com.nhnacademy.bookstorefront.main.service.PaymentService;
@@ -33,23 +34,22 @@ public class PaymentController {
         return "payment/checkout";
     }
 
-    // 결제정보 임시 저장
-//    @PostMapping("/save-payment")
-//    public ResponseEntity<?> saveAmount(@RequestBody SaveAmountDto saveAmount) {
-//        paymentService.savePaymentAmountTemporary(saveAmount);
-//        return ResponseEntity.ok().build();
-//    }
 
-
-    // 결제 승인 요청
     @GetMapping("/payments/success")
-    public String confirmPayment(@RequestBody PaymentConfirmRequestDto confirmRequest, Model model) {
+    public String confirmPayment(@RequestParam("orderId") String orderId,
+                                 @RequestParam("paymentKey") String paymentKey,
+                                 @RequestParam("amount") BigDecimal amount,
+                                 Model model) {
+
         //TODO: /api/payments/confirm/widget에 결제 승인 요청
-        paymentService.confirmPayment(confirmRequest);
+        PaymentConfirmResponseDto response = paymentService.confirmPayment(new PaymentConfirmRequestDto(paymentKey, orderId, amount));
 
-        BigDecimal amount = BigDecimal.ONE;
-        model.addAttribute("amount", amount);
+        //주문 완료
+//        orderService.completeOrder(orderId);
+        model.addAttribute("amount", response.getAmount());
+        model.addAttribute("orderId", orderId);
 
+//        return "redirect:/orders/" + orderId;
         return "payment/success";
     }
 
