@@ -23,3 +23,7 @@ eureka:
 logging:
   level:
     root: INFO
+
+oauth:
+  payco:
+    loginUrl: https://id.payco.com/oauth2.0/authorize?client_id=3RDjoVxezCTITgSDTsHnlnB&response_type=code&redirect_uri=https://plzbuybook.store/oauth/callback&serviceProviderCode=FRIENDS&userLocale=ko_KR
