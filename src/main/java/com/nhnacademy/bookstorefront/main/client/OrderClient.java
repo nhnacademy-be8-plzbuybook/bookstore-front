@@ -4,7 +4,6 @@ import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
-import org.json.simple.JSONObject;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,5 +22,5 @@ public interface OrderClient {
 ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
 
     @PostMapping("/api/orders/{order-id}/complete")
-    ResponseEntity<?> completeOrder(@RequestParam("order-id") String orderId);
+    ResponseEntity<String> completeOrder(@PathVariable("order-id") String orderId);
 }

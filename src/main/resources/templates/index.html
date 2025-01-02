@@ -125,8 +125,22 @@
     </style>
 </head>
 <body>
-
-<div th:replace="~{fragments/header :: headerContent(isLoggedIn=${isLoggedIn})}"></div>
+<header>
+    <div class="logo">📚 책사조잉 📚</div>
+    <nav class="menu">
+        <a href="/">Home</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <!-- 로그인 상태에 따라 버튼 표시 -->
+        <a th:if="${isLoggedIn}" href="/mypage" id="mypage-btn">MyPage</a>
+        <a th:if="${isLoggedIn}" href="/logout" id="logout-btn" onclick="logout()">로그아웃</a>
+        <a th:if="${!isLoggedIn}" href="/login" id="login-btn">로그인</a>
+        <a th:if="${!isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>
+    </div>
+</header>
 
 
 <main>
