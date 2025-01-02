@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
+import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.PagedResponse;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
@@ -19,7 +20,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class IndexController {
-    private final AuthenticationClient authenticationClient;
+    private final BookClient bookClient;
     private final AuthenticationService authenticationService;
 
     @GetMapping("/index")
@@ -30,7 +31,7 @@ public class IndexController {
             @RequestParam(defaultValue = "desc") String sortDir, // 정렬 방향
             Model model, HttpServletRequest request) {
         // Feign 클라이언트를 통해 페이징된 데이터 요청
-        Page<BookDetailResponseDto> response = authenticationClient.getBooks(page, size, sortBy, sortDir);
+        Page<BookDetailResponseDto> response = bookClient.getBooks(page, size, sortBy, sortDir);
 
         boolean isLoggedIn = authenticationService.isLoggedIn(request);
 

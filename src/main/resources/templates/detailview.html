@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/detail.css?v=1.0">
+    <link rel="stylesheet" href="/detail.css?v=1.1">
     <title th:text="${book.bookTitle} + ' - 상세정보'">책 상세정보</title>
 </head>
 <body>
@@ -69,9 +69,19 @@
             </p>
 
 
-            <p th:if="${book.likeCount != null}">
-                <strong>좋아요:</strong> <span th:text="${book.likeCount}"></span>
-            </p>
+            <p>좋아요: <span id="likeCount" th:text="${book.likesCount ?: 0}"></span></p>
+
+            <!-- 좋아요 버튼 -->
+            <form action="/book/detail/like/${book.sellingBookId}" method="post">
+                <button type="submit">❤️ 좋아요</button>
+            </form>
+
+
+
+
+
+
+
 
             <!-- 버튼 -->
             <div class="button-group">
@@ -90,6 +100,7 @@
     function buyNow() {
         alert("구매 페이지로 이동합니다!");
     }
+
 </script>
 </body>
 </html>

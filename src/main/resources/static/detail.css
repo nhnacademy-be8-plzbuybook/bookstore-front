@@ -99,3 +99,17 @@ main {
 .button-group .buy-btn:hover {
     background-color: #e53935;
 }
+button#likeButton {
+    background-color: #ff6961; /* 좋아요 버튼 색상 */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button#likeButton:hover {
+    background-color: #ff5c5c; /* 호버 효과 */
+}

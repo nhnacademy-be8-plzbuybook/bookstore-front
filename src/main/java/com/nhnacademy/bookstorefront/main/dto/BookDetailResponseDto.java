@@ -12,6 +12,7 @@ import java.util.List;
 public class BookDetailResponseDto {
     private Long bookId;
     private Long sellingBookId;
+    private String memberEmail;
     private String bookTitle;
     private String bookIndex;
     private String bookDescription;
@@ -25,5 +26,5 @@ public class BookDetailResponseDto {
     private List<String> categories;
     private List<String> authorName;
     private String status;
-    private Long likeCount; // null 허용
+    private Long likesCount; // null 허용
 }
