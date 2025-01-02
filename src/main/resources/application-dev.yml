@@ -3,7 +3,6 @@ spring:
   config:
     activate:
       on-profile: dev
-    import: classpath:application-secret.yml
   application:
     name: front
 
