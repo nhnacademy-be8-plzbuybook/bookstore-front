@@ -54,5 +54,7 @@ const dummyOrderData =
             detailAddress: "IT융합대학 별관 1층 컴퓨터공학과",
             recipient: "김태현",
             recipientPhone: "062-230-7381"
-        }
+        },
+        deliveryFee: 3000,
+        orderPrice: 18000
     }
