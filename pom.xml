@@ -71,6 +71,11 @@
             <scope>provided</scope>
 
         </dependency>
+<!--레디스 관련 pom 추가-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
 
 
         <dependency>

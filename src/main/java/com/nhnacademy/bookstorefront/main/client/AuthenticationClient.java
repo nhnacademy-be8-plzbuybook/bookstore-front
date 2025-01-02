@@ -69,6 +69,6 @@ public interface AuthenticationClient {
 
     //인증 코드 검증
     @PostMapping("/api/auth/verify-code")
-    String verifyVerificationCode(@RequestParam("userId") String userId, @RequestParam("code") String code);
+    String verifyVerificationCode(@RequestParam("token") String token, @RequestParam("code") String code);
 
 }
