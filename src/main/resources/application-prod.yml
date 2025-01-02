@@ -27,3 +27,16 @@ logging:
 oauth:
   payco:
     loginUrl: https://id.payco.com/oauth2.0/authorize?client_id=3RDjoVxezCTITgSDTsHnlnB&response_type=code&redirect_uri=https://plzbuybook.store/oauth/callback&serviceProviderCode=FRIENDS&userLocale=ko_KR
+
+app:
+  skm:
+    url: https://api-keymanager.nhncloudservice.com
+    appKey: qTQNj7LyHhdAazH3
+    keystoreFile: skm.p12
+    password: 4444
+
+    verify_redis:
+      host: b2f0a980ffaa480286e37314248774cf
+      port: 5cd143faaa144e25a6c5470ec0d168be
+      password: 14fbaf7a1be74641b6832c7a16d29acc
+      range: 086ed8a388cb42f98dfa7f9272e95941
