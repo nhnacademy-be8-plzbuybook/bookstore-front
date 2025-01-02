@@ -3,7 +3,6 @@ spring:
   config:
     activate:
       on-profile: dev
-    import: classpath:application-secret.yml
   application:
     name: front
 
@@ -23,3 +22,7 @@ server:
   servlet:
     session:
       tracking-modes: cookie
+
+oauth:
+  payco:
+    loginUrl: https://id.payco.com/oauth2.0/authorize?client_id=3RDjoVxezCTITgSDTsHnlnB&response_type=code&redirect_uri=http://plzbuybook.store:3000/oauth/callback&serviceProviderCode=FRIENDS&userLocale=ko_KR

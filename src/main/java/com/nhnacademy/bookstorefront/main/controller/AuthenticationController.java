@@ -1,6 +1,5 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
-import com.nhnacademy.bookstorefront.common.exception.LoginFailException;
 import com.nhnacademy.bookstorefront.main.dto.LoginRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
@@ -10,7 +9,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -22,8 +23,12 @@ public class AuthenticationController {
     private final TokenService tokenService;
     private final CookieService cookieService;
 
+    @Value("${oauth.payco.loginUrl}")
+    private String PAYCO_LOGIN_URL;
+
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(Model model) {
+        model.addAttribute("paycoLoginUrl", PAYCO_LOGIN_URL);
         return "loginPage";
     }
 
