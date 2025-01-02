@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -15,6 +16,13 @@ public class BookSearchPagedResponseDto {
     private int number;                          // 현재 페이지 번호
     private int totalPages;                      // 전체 페이지 수
     private long totalElements;                  // 전체 데이터 수
+
+    public BookSearchPagedResponseDto(List<Object> objects, int i, int i1, int i2) {
+        content = Collections.singletonList((BookSearchResponseDto) objects);
+        number = i;
+        totalPages = i1;
+        totalElements = i2;
+    }
 
     // getters and setters
 }

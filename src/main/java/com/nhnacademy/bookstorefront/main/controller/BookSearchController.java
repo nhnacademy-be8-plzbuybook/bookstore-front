@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collections;
 import java.util.Objects;
 
 @Slf4j
@@ -25,12 +26,20 @@ public class BookSearchController {
     public String searchBook(Model model,
                              @RequestParam String searchKeyword,
                              @RequestParam(defaultValue = "0") int page,
-                             @RequestParam(defaultValue = "9") int size) {
+                             @RequestParam(defaultValue = "3") int size) {
         // API 호출 (ResponseEntity로 반환)
         BookSearchPagedResponseDto response = bookSearchClient.searchBook(searchKeyword, page, size);
 
-        // 응답 내용에서 필요한 데이터를 추출
 
+        log.info("Search Response: {}", response); // 응답 로그 확인
+        if (response != null) {
+            log.info("Content: {}", response.getContent()); // 콘텐츠 내용 로그 확인
+        }
+
+        // 응답 내용에서 필요한 데이터를 추출
+        if (response == null || response.getContent() == null) {
+            response = new BookSearchPagedResponseDto(Collections.emptyList(), 0, 0, 0); // 빈 리스트를 반환
+        }
 
         // 모델에 검색어와 결과 및 페이징 정보를 추가
         model.addAttribute("searchKeyword", searchKeyword);

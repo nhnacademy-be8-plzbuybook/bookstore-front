@@ -88,9 +88,12 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             width: 220px;
+            height: 400px; /* 고정 높이 설정 */
             margin: 10px;
             overflow: hidden;
             transition: transform 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column; /* 세로로 정렬 */
         }
 
         .book:hover {
@@ -99,12 +102,16 @@
 
         .book img {
             width: 100%;
-            height: 300px;
+            height: 250px; /* 이미지 크기 고정 */
             object-fit: cover;
         }
 
         .book div {
             padding: 10px;
+            flex-grow: 1; /* 내용이 많아져도 빈 공간을 채우도록 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 항목 간의 공간 배분 */
         }
 
         .book div span {
@@ -154,6 +161,7 @@
             }
         }
     </style>
+
 </head>
 <body>
 <header>
@@ -199,7 +207,6 @@
                     <div>저자: <span th:text="${#strings.isEmpty(book.authorName) ? '저자 정보 없음' : book.authorName}"></span></div>
                     <div>카테고리: <span th:text="${#strings.isEmpty(book.categoryName) ? '카테고리 정보 없음' : book.categoryName}"></span></div>
                     <div>가격: <span th:text="${book.sellingBookPrice}"></span>원</div>
-                    <div>출판일: <span th:text="${book.bookPubDate != null ? #temporals.format(book.bookPubDate, 'yyyy-MM-dd') : '출판일 정보 없음'}"></span></div>
                 </a>
             </div>
         </div>
@@ -207,54 +214,26 @@
 
     <!-- 페이징 -->
     <div class="pagination" th:if="${totalPages > 1}">
-        <a href="?searchKeyword={searchKeyword}&page=0" th:if="${currentPage > 0}">이전</a>
-        <a th:each="i : ${#numbers.sequence(0, totalPages - 1)}" href="?searchKeyword={searchKeyword}&page={i}" th:text="${i + 1}" th:classappend="${i == currentPage ? 'active' : ''}"></a>
-        <a href="?searchKeyword={searchKeyword}&page={totalPages - 1}" th:if="${currentPage < totalPages - 1}">다음</a>
+        <!-- 이전 페이지 링크 -->
+        <a href="#" th:if="${currentPage > 0}"
+           th:href="@{/search/books(searchKeyword=${searchKeyword}, page=${currentPage - 1}, size=${pageSize})}">이전</a>
+
+        <!-- 페이지 번호 링크 -->
+        <a th:each="i : ${#numbers.sequence(currentPage - 2 < 0 ? 0 : currentPage - 2, currentPage + 2 > totalPages - 1 ? totalPages - 1 : currentPage + 2)}"
+           th:if="${i >= 0 && i < totalPages}"
+           th:href="@{/search/books(searchKeyword=${searchKeyword}, page=${i}, size=${pageSize})}"
+           th:text="${i + 1}"
+           th:classappend="${i == currentPage ? 'active' : ''}"></a>
+
+
+        <!-- 다음 페이지 링크 -->
+        <a href="#" th:if="${currentPage < totalPages - 1}"
+           th:href="@{/search/books(searchKeyword=${searchKeyword}, page=${currentPage + 1}, size=${pageSize})}">다음</a>
     </div>
+
+
+
 </main>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const currentPage = /*[[${currentPage}]]*/ 0;
-        const totalPages = /*[[${totalPages}]]*/ 10;
-        const paginationElement = document.getElementById('pagination');
-
-        function createPagination() {
-            paginationElement.innerHTML = '';
-
-            if (currentPage > 0) {
-                const prevButton = document.createElement('a');
-                prevButton.href = `?searchKeyword=${getSearchKeyword()}&page=${currentPage - 1}`;
-                prevButton.textContent = '이전';
-                paginationElement.appendChild(prevButton);
-            }
-
-            for (let i = 0; i < totalPages; i++) {
-                const pageButton = document.createElement('a');
-                pageButton.href = `?searchKeyword=${getSearchKeyword()}&page=${i}`;
-                pageButton.textContent = i + 1;
-                if (i === currentPage) {
-                    pageButton.classList.add('active');
-                }
-                paginationElement.appendChild(pageButton);
-            }
-
-            if (currentPage < totalPages - 1) {
-                const nextButton = document.createElement('a');
-                nextButton.href = `?searchKeyword=${getSearchKeyword()}&page=${currentPage + 1}`;
-                nextButton.textContent = '다음';
-                paginationElement.appendChild(nextButton);
-            }
-        }
-
-        function getSearchKeyword() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('searchKeyword') || '';
-        }
-
-        createPagination();
-    });
-</script>
 
 </body>
 </html>
