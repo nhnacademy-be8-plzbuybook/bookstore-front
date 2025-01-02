@@ -46,25 +46,26 @@ public class MemberController {
     }
 
     @PostMapping("/mypage/withdrawal")
-    public String withdrawMember(@RequestParam String email, Model model, HttpServletRequest request, HttpServletResponse response) {
-        ResponseEntity<String> responseEntity = authenticationClient.withdrawState(new WithdrawStateRequestDto(email));
+    public String withdrawMember(Model model, HttpServletRequest request, HttpServletResponse response) {
+        ResponseEntity<String> responseEntity = authenticationClient.withdrawState(new WithdrawStateRequestDto());
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
-            model.addAttribute("successMessage", "회원 탈퇴가 성공적으로 처리되었습니다.");
 
-            // 로그아웃 처리 (세션 무효화 및 쿠키 삭제)
-            request.getSession().invalidate(); // 세션 무효화
-
+            request.getSession().invalidate();
             Cookie cookie = new Cookie("accessToken", null);
             cookie.setMaxAge(0);
             cookie.setPath("/");
             response.addCookie(cookie);
+            model.addAttribute("successMessage", "회원 탈퇴가 성공적으로 처리되었습니다.");
+
+            return "redirect:/index";
 
         } else {
             model.addAttribute("errorMessage", "회원 탈퇴에 실패했습니다.");
+            return "redirect:/index";
         }
 
-        return "redirect:/index";
     }
 
 }
+

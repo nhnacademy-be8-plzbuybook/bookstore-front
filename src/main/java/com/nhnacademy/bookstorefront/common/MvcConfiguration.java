@@ -1,9 +1,7 @@
 package com.nhnacademy.bookstorefront.common;
 
-import com.nhnacademy.bookstorefront.interceptor.LoginStatusInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -19,9 +17,4 @@ public class MvcConfiguration implements WebMvcConfigurer {
                 .setCacheControl(CacheControl.maxAge(10, TimeUnit.MINUTES));
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginStatusInterceptor())
-                .addPathPatterns("/**");
-    }
 }
