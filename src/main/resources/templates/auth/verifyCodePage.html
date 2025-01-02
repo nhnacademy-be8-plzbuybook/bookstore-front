@@ -147,6 +147,7 @@
         <form action="/auth/verify-code" method="POST">
             <label for="code">인증 코드:</label>
             <input type="text" id="code" name="code" placeholder="인증 코드를 입력하세요" required />
+            <input type="hidden" name="token" th:value="${token}" />
             <button type="submit">인증</button>
         </form>
     </div>
