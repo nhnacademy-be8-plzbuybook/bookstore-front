@@ -63,4 +63,12 @@ public interface AuthenticationClient {
     @PostMapping("/api/members/withdrawal")
     ResponseEntity<String> withdrawState(@RequestBody WithdrawStateRequestDto withdrawStateRequestDto);
 
+    //인증 코드 요청
+    @PostMapping("/api/auth/request-code")
+    String requestVerificationCode(@RequestParam("userId") String userId);
+
+    //인증 코드 검증
+    @PostMapping("/api/auth/verify-code")
+    String verifyVerificationCode(@RequestParam("userId") String userId, @RequestParam("code") String code);
+
 }
