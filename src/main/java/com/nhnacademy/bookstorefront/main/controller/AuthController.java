@@ -17,7 +17,7 @@ public class AuthController {
 
     @GetMapping("/auth/verify-code")
     public String verifyCodePage(){
-        return "/auth/verifyCodePage";
+        return "auth/verifyCodePage";
     }
 
     @PostMapping("/auth/request-code")
@@ -29,7 +29,7 @@ public class AuthController {
         }catch(Exception e){
             model.addAttribute("message", "인증 코드 요청에 실패 했습니다.");
         }
-        return "/auth/verifyCodePage";
+        return "auth/verifyCodePage";
     }
 
     @PostMapping("/auth/verify-code")
@@ -37,7 +37,7 @@ public class AuthController {
         String userId = (String) session.getAttribute("userId");
         if(userId == null){
             model.addAttribute("message", "사용자 id가 세션에 없다!");
-            return "/auth/verifyCodePage";
+            return "auth/verifyCodePage";
         }
         try{
             String response = authenticationClient.verifyVerificationCode(userId, code);
@@ -46,7 +46,7 @@ public class AuthController {
             model.addAttribute("message", "인증 코드 검증에 실패했습니다.");
         }
 
-        return "/auth/verifyCodePage";
+        return "auth/verifyCodePage";
     }
 
 
