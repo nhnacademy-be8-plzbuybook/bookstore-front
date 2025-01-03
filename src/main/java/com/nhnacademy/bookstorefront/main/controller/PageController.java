@@ -3,10 +3,7 @@ package com.nhnacademy.bookstorefront.main.controller;
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.Member.MemberCouponGetResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.Member.MemberModifyRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.Member.*;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import jakarta.validation.Valid;
@@ -20,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -53,6 +51,14 @@ public class PageController {
 
 
         model.addAttribute("coupons", response.getContent());
+        List<MemberPointResponseDto> points = memberClient.getMemberPoints(myPageDto.getMemberId());
+        model.addAttribute("points", points);
+
+        BigDecimal totalPoints = points.stream()
+                .map(MemberPointResponseDto::getPoint)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        model.addAttribute("totalPoints", totalPoints);
+
 
         return "member/mypage";
     }

@@ -1,0 +1,8 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###33
+POST http://localhost:8080/api/selling-books/like/301
+Content-Type: application/json
+X-USER-ID: yoonwlgh12@naver.com

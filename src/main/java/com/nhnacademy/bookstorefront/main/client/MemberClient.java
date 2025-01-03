@@ -40,4 +40,15 @@ public interface MemberClient {
     @GetMapping("/api/members/status/all")
     List<MemberStatus> getAllMemberStatus();
 
+
+    @PostMapping("/api/member-selling-books/like/{sellingBookId}")
+    ResponseEntity<Long> toggleLike(@PathVariable("sellingBookId") Long sellingBookId);
+
+    // 포인트 내역 조회
+    @GetMapping("/api/members/{memberId}/points")
+    List<MemberPointResponseDto> getMemberPoints(@PathVariable("memberId") Long memberId);
 }
+
+
+
+

@@ -22,17 +22,17 @@ public interface AuthenticationClient {
     @PostMapping("/api/upload")
     ResponseEntity<String> uploadFiles(@RequestParam("file") List<MultipartFile> multipartFiles);
 
-    @GetMapping("/api/selling-books")
-    Page<BookDetailResponseDto> getBooks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "sellingBookId") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDir
-    );
-
-
-    @GetMapping("/api/selling-books/{sellingBookId}")
-    BookDetailResponseDto getSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
+//    @GetMapping("/api/selling-books")
+//    Page<BookDetailResponseDto> getBooks(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            @RequestParam(defaultValue = "sellingBookId") String sortBy,
+//            @RequestParam(defaultValue = "desc") String sortDir
+//    );
+//
+//
+//    @GetMapping("/api/selling-books/{sellingBookId}")
+//    BookDetailResponseDto getSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
 
     @PostMapping("/api/auth/login")
     ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequest);
