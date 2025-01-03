@@ -90,6 +90,77 @@
         .section.active {
             display: block;
         }
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            color: #333;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+
+        .pagination .disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+            font-weight: bold;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            font-weight: bold;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
@@ -102,14 +173,13 @@
         <a href="#">추천도서</a>
     </nav>
     <div class="icons">
-        <a href="/mypage">MyPage</a>
         <a href="/logout">로그아웃</a>
     </div>
 </header>
 <main>
     <!-- 사이드바 -->
     <div class="sidebar">
-        <div class="group" data-section="member-management">회원 관리</div>
+        <div class="group active" data-section="member-management">회원 관리</div>
         <div class="group" data-section="book-management">도서 관리</div>
         <div class="group" data-section="coupon-management">쿠폰 관리</div>
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
@@ -120,9 +190,96 @@
 
     <!-- 메인 콘텐츠 -->
     <div class="content">
-        <div id="member-management" class="section">
+        <div id="member-management" class="section active">
             <h2>회원 관리</h2>
-            <p>여기에 회원 crud 구현</p>
+
+            <!-- 성공 메시지 표시 -->
+            <div th:if="${successMessage}" class="alert success">
+                <p th:text="${successMessage}"></p>
+            </div>
+
+            <!-- 실패 메시지 표시 -->
+            <div th:if="${errorMessage}" class="alert error">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>전화번호</th>
+                    <th>이메일</th>
+                    <th>생년월일</th>
+                    <th>등급</th>
+                    <th>상태</th>
+                    <th>수정</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="member : ${members}">
+                    <form th:action="@{/adminpage/update}" method="post">
+
+                        <!-- 이름 수정 -->
+                        <td><input type="text" th:name="name" th:value="${member.name}" /></td>
+
+                        <!-- 전화번호 수정 -->
+                        <td><input type="text" th:name="phone" th:value="${member.phone}" /></td>
+
+                        <!-- 이메일 수정 -->
+                        <td><input type="email" th:name="email" th:value="${member.email}" /></td>
+
+                        <!-- 생년월일 수정 -->
+                        <td><input type="date" th:name="birth" th:value="${member.birth}" /></td>
+
+                        <td><input type="text" th:name="membergrade" th:value="${member.memberGradeName}"/></td>
+
+                        <td><input type="text" th:name="memberstatus" th:value="${member.memberStateName}"/></td>
+<!--                        <td th:text="${member.memberGradeName}">등급</td>-->
+<!--                        <td th:text="${member.memberStateName}">상태</td>-->
+
+<!--                        &lt;!&ndash; 등급 &ndash;&gt;-->
+<!--                        <td>-->
+<!--                            <select th:name="memberGrade">-->
+<!--                                <option th:value="${member.memberGradeId}" th:text="${member.memberGradeName}" selected="selected"></option>-->
+<!--                                <option value="1">일반</option>-->
+<!--                                <option value="2">VIP</option>-->
+<!--                                &lt;!&ndash; 다른 등급 옵션을 추가 &ndash;&gt;-->
+<!--                            </select>-->
+<!--                        </td>-->
+
+                        <!-- 상태 -->
+<!--                        <select th:name="memberState">-->
+<!--                            &lt;!&ndash; 이미 존재하는 상태를 선택할 수 있도록 현재 상태 표시 &ndash;&gt;-->
+<!--                            <option th:value="${member.memberStatus.id}" th:text="${member.memberStatus.name}" selected="selected"></option>-->
+
+<!--                            &lt;!&ndash; memberStatusList를 순회하여 상태를 옵션으로 추가 &ndash;&gt;-->
+<!--                            <option th:each="status : ${memberStatusList}" th:value="${status.id}" th:text="${status.name}"></option>-->
+                        </select>
+                        <td><button type="submit">수정</button> </td>
+                    </form>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 페이징 버튼 -->
+            <div class="pagination">
+                <!-- 이전 버튼 -->
+                <a th:if="${currentPage > 0}"
+                   th:href="@{'/adminpage'(page=${currentPage - 1})}"
+                   class="prev">
+                    이전
+                </a>
+
+                <!-- 페이지 번호 -->
+                <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">10</span></span>
+
+                <!-- 다음 버튼 -->
+                <a th:if="${currentPage < totalPages - 1}"
+                   th:href="@{'/adminpage'(page=${currentPage + 1})}"
+                   class="next">
+                    다음
+                </a>
+            </div>
         </div>
         <div id="book-management" class="section">
             <h2>도서 관리</h2>
