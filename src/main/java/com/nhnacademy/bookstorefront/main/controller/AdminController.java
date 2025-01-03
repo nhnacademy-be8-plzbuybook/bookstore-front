@@ -44,7 +44,7 @@ public class AdminController {
         model.addAttribute("currentPage", response.getBody().getNumber());
 //        model.addAttribute("memberStatusList", memberStatusList);
 
-        return "admin/adminpage";
+        return "admin/adminPage";
     }
 
 //    @PostMapping("/adminpage/update")
