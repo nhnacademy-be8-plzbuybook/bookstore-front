@@ -32,7 +32,7 @@ const dummyOrderData =
         usedPoint: 0,
         orderProducts: [
             {
-                productId: 250,
+                productId: 291,
                 price: 15000,
                 quantity: 1,
                 appliedCoupons: [
@@ -46,6 +46,37 @@ const dummyOrderData =
                     quantity: 1,
                     price: 3000
                 }
+            },
+            {
+                productId: 292,
+                price: 16000,
+                quantity: 3,
+                wrapping: {
+                    wrappingPaperId: 1,
+                    quantity: 1,
+                    price: 3000
+                }
+            },
+            {
+                productId: 297,
+                price: 22000,
+                quantity: 2,
+                appliedCoupons: [
+                    {
+                        couponId: 0,
+                        discount: 0
+                    }
+                ],
+                wrapping: {
+                    wrappingPaperId: 1,
+                    quantity: 2,
+                    price: 3000
+                }
+            },
+            {
+                productId: 298,
+                price: 15000,
+                quantity: 1
             }
         ],
         orderDeliveryAddress: {
@@ -55,7 +86,7 @@ const dummyOrderData =
             recipient: "김태현",
             recipientPhone: "062-230-7381"
         },
-        deliveryFee: 3000,
-        orderPrice: 18000,
+        deliveryFee: 0,
+        orderPrice: 56000,
         nonMemberPassword: "1234"
     }

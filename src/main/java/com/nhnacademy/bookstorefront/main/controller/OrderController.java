@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
@@ -43,7 +44,7 @@ public class OrderController {
 
 
     /**
-     * 주문상세내역 조회
+     * 주문 상세조회
      *
      * @param orderId
      * @param model
@@ -53,6 +54,8 @@ public class OrderController {
     public String orderDetail(@PathVariable("order-id") String orderId,
                               Model model) {
         //TODO: 주문상세정보 불러오기
+        OrderDetail orderDetail = orderService.getOrderDetail(orderId);
+        model.addAttribute("orderDetail", orderDetail);
 
         return "order/detail";
     }
