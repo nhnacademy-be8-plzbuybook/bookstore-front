@@ -6,152 +6,121 @@
     <link rel="stylesheet" href="/index.css?v=1.0">
     <title>📚 책사조잉 📚</title>
     <style>
+        /* 공통 스타일 */
         body {
             font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            color: #333;
         }
 
         header {
-            background-color: #3e8e41;
-            padding: 10px;
+            background-color: #333;
+            padding: 15px 20px;
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .logo {
+        header .logo {
             font-size: 24px;
             font-weight: bold;
         }
 
-        .menu a {
+        header .menu a,
+        header .icons a {
             color: white;
             text-decoration: none;
             margin: 0 15px;
+            font-size: 16px;
         }
 
-        .menu a:hover {
-            text-decoration: underline;
+        header .menu a:hover,
+        header .icons a:hover {
+            color: #f1f1f1;
         }
 
-        .icons a {
-            color: white;
-            margin: 0 10px;
+        main {
+            padding: 20px;
         }
 
-        .search-bar {
-            margin: 20px auto;
-            text-align: center;
+        /* 검색바와 정렬바 */
+        .search-bar, .sort-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .search-bar input {
+            flex: 1;
             padding: 10px;
-            width: 80%;
-            max-width: 400px;
             font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
         .search-bar button {
-            padding: 10px;
-            width: 100px;
-            background-color: #3e8e41;
+            padding: 10px 15px;
+            background-color: #333;
             color: white;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
         }
 
         .search-bar button:hover {
-            background-color: #2c6e2b;
+            background-color: #444;
         }
 
-        .sort-bar {
-            margin: 10px auto;
-            text-align: center;
-            font-size: 16px;
+        .sort-bar select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
+        /* 책 목록 스타일 */
         .book-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            margin: 20px auto;
-            max-width: 1200px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
         }
 
         .book {
-            background-color: white;
+            text-align: center;
+            background-color: #fff;
+            padding: 10px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            width: 220px;
-            margin: 10px;
-            overflow: hidden;
-            transition: transform 0.2s ease-in-out;
-        }
-
-        .book:hover {
-            transform: translateY(-10px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .book img {
             width: 100%;
-            height: 300px;
-            object-fit: cover;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 10px;
         }
 
         .book div {
-            padding: 10px;
+            font-size: 14px;
+            color: #333;
         }
 
-        .book div span {
-            font-weight: bold;
-        }
-
-        .pagination {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .pagination a {
-            padding: 8px 16px;
-            margin: 0 5px;
-            text-decoration: none;
-            background-color: #3e8e41;
+        /* 버튼 */
+        button {
+            padding: 12px 20px;
+            background-color: #333;
             color: white;
-            border-radius: 5px;
             font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        .pagination a:hover {
-            background-color: #2c6e2b;
-        }
-
-        .pagination a.active {
-            background-color: #2c6e2b;
-            cursor: default;
-        }
-
-        @media (max-width: 768px) {
-            .book-list {
-                justify-content: center;
-            }
-
-            .book {
-                width: 150px;
-                margin: 10px;
-            }
-
-            .search-bar input {
-                width: 90%;
-            }
-
-            .search-bar button {
-                width: 80px;
-            }
+        button:hover {
+            background-color: #444;
         }
     </style>
 </head>
@@ -173,8 +142,10 @@
 </header>
 <main>
     <div class="search-bar">
-        <form id="searchForm" method="GET" action="/search/book">
+        <form id="searchForm" method="GET" action="/search/books">
             <input type="text" name="searchKeyword" placeholder="검색어를 입력하세요 (책 제목, 작가, ISBN)" required>
+            <!-- 페이징 관련 기본값 -->
+            <input type="hidden" name="page" value="0">
             <button type="submit">검색</button>
         </form>
     </div>
@@ -194,67 +165,38 @@
         <div th:each="book : ${searchResult}">
             <div class="book">
                 <a th:href="@{/book/detail/{sellingBookId}(sellingBookId=${book.sellingBookId})}">
-                    <img th:src="${#strings.isEmpty(book.imageUrl) ? '/images/default-image.jpg' : '/images/' + book.imageUrl}" alt="Book Image">
+                    <img th:src="${book.imageUrl.getFirst()}">
                     <div th:text="${book.bookTitle}"></div>
                     <div>저자: <span th:text="${#strings.isEmpty(book.authorName) ? '저자 정보 없음' : book.authorName}"></span></div>
-                    <div>카테고리: <span th:text="${#strings.isEmpty(book.categoryName) ? '카테고리 정보 없음' : book.categoryName}"></span></div>
-                    <div>가격: <span th:text="${book.sellingBookPrice}"></span>원</div>
+                    <div>카테고리: <span th:text="${#strings.isEmpty(book.categoryName) ? '카테고리 정보 없음' : book.categoryName.getFirst()}"></span></div>
+                    <div>정가: <span th:text="${book.getBookPriceStandard()}"></span>원</div>
+                    <div>판매가: <span th:text="${book.sellingBookPrice}"></span>원</div>
                     <div>출판일: <span th:text="${book.bookPubDate != null ? #temporals.format(book.bookPubDate, 'yyyy-MM-dd') : '출판일 정보 없음'}"></span></div>
                 </a>
             </div>
         </div>
     </div>
+    <div class="pagination">
+        <!-- 이전 페이지 버튼 -->
+        <a th:if="${currentPage > 0}" th:href="@{/search/books(page=${currentPage - 1}, searchKeyword=${searchKeyword})}"
+           th:class="${currentPage == 0} ? 'disabled' : ''">Prev</a>
 
-    <!-- 페이징 -->
-    <div class="pagination" th:if="${totalPages > 1}">
-        <a href="?searchKeyword={searchKeyword}&page=0" th:if="${currentPage > 0}">이전</a>
-        <a th:each="i : ${#numbers.sequence(0, totalPages - 1)}" href="?searchKeyword={searchKeyword}&page={i}" th:text="${i + 1}" th:classappend="${i == currentPage ? 'active' : ''}"></a>
-        <a href="?searchKeyword={searchKeyword}&page={totalPages - 1}" th:if="${currentPage < totalPages - 1}">다음</a>
+        <!-- 페이지 번호들 -->
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <a th:href="@{/search/books(page=${i}, searchKeyword=${searchKeyword})}"
+           th:text="${i + 1}" th:class="${i == currentPage} ? 'active' : ''"></a>
+    </span>
+
+        <!-- 다음 페이지 버튼 -->
+        <a th:if="${currentPage < totalPages - 1}" th:href="@{/search/books(page=${currentPage + 1}, searchKeyword=${searchKeyword})}"
+           th:class="${currentPage == totalPages - 1} ? 'disabled' : ''">Next</a>
     </div>
+
+
+
 </main>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const currentPage = /*[[${currentPage}]]*/ 0;
-        const totalPages = /*[[${totalPages}]]*/ 10;
-        const paginationElement = document.getElementById('pagination');
 
-        function createPagination() {
-            paginationElement.innerHTML = '';
-
-            if (currentPage > 0) {
-                const prevButton = document.createElement('a');
-                prevButton.href = `?searchKeyword=${getSearchKeyword()}&page=${currentPage - 1}`;
-                prevButton.textContent = '이전';
-                paginationElement.appendChild(prevButton);
-            }
-
-            for (let i = 0; i < totalPages; i++) {
-                const pageButton = document.createElement('a');
-                pageButton.href = `?searchKeyword=${getSearchKeyword()}&page=${i}`;
-                pageButton.textContent = i + 1;
-                if (i === currentPage) {
-                    pageButton.classList.add('active');
-                }
-                paginationElement.appendChild(pageButton);
-            }
-
-            if (currentPage < totalPages - 1) {
-                const nextButton = document.createElement('a');
-                nextButton.href = `?searchKeyword=${getSearchKeyword()}&page=${currentPage + 1}`;
-                nextButton.textContent = '다음';
-                paginationElement.appendChild(nextButton);
-            }
-        }
-
-        function getSearchKeyword() {
-            const params = new URLSearchParams(window.location.search);
-            return params.get('searchKeyword') || '';
-        }
-
-        createPagination();
-    });
-</script>
 
 </body>
 </html>

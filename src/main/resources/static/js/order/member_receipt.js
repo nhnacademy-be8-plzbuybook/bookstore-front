@@ -2,7 +2,7 @@ const orderBtn = document.getElementById("order-btn");
 
 orderBtn.addEventListener('click', async function () {
     const data = dummyOrderData;
-    const response = await fetch("/api/orders/non-member", {
+    const response = await fetch("/api/orders", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(data),
@@ -56,6 +56,5 @@ const dummyOrderData =
             recipientPhone: "062-230-7381"
         },
         deliveryFee: 3000,
-        orderPrice: 18000,
-        nonMemberPassword: "1234"
+        orderPrice: 18000
     }

@@ -3,6 +3,7 @@ package com.nhnacademy.bookstorefront.main.client;
 import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
@@ -16,10 +17,16 @@ public interface OrderClient {
     @GetMapping("/api/my/orders")
     ResponseEntity<Page<OrderDto>> getMemberOrders(@ModelAttribute OrderSearchRequestDto searchRequest, Pageable pageable);
 
-//    @PostMapping("/api/orders/non-member")
+    @GetMapping("/api/orders")
+    ResponseEntity<Page<OrderDto>> getAllOrders(@RequestBody OrderSearchRequestDto searchRequest, Pageable pageable);
+
+    //    @PostMapping("/api/orders/non-member")
 //    ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
-@PostMapping("/api/orders/non-member")
-ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
+    @PostMapping("/api/orders/non-member")
+    ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
+
+    @PostMapping("/api/orders")
+    ResponseEntity<OrderSaveResponseDto> requestMemberOrder(@RequestBody MemberOrderRequestDto orderSaveRequest);
 
     @PostMapping("/api/orders/{order-id}/complete")
     ResponseEntity<String> completeOrder(@PathVariable("order-id") String orderId);

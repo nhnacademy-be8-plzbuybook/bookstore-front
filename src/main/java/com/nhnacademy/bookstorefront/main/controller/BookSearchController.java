@@ -24,10 +24,9 @@ public class BookSearchController {
     @GetMapping("/search/books")
     public String searchBook(Model model,
                              @RequestParam String searchKeyword,
-                             @RequestParam(defaultValue = "0") int page,
-                             @RequestParam(defaultValue = "9") int size) {
+                             @RequestParam(defaultValue = "0") int page) {
         // API 호출 (ResponseEntity로 반환)
-        BookSearchPagedResponseDto response = bookSearchClient.searchBook(searchKeyword, page, size);
+        BookSearchPagedResponseDto response = bookSearchClient.searchBook(searchKeyword, page, 3);
 
         // 응답 내용에서 필요한 데이터를 추출
 
@@ -37,7 +36,7 @@ public class BookSearchController {
         model.addAttribute("searchResult", Objects.requireNonNull(response).getContent()); // 책 목록
         model.addAttribute("totalPages", response.getTotalPages()); // 전체 페이지 수
         model.addAttribute("currentPage", page); // 현재 페이지 번호
-        model.addAttribute("pageSize", size); // 페이지 크기
+        model.addAttribute("pageSize", 3); // 페이지 크기
 
         return "search/searchResult"; // 검색 결과 뷰
     }

@@ -325,6 +325,61 @@
             margin-top: 20px;
         }
 
+        /* 포인트 섹션 스타일 */
+        #points {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        #points h2 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #points table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #points th, #points td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        #points th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #points tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #points tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        #points .empty-message {
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 20px;
+            font-size: 16px;
+        }
+
 
     </style>
 </head>
@@ -400,14 +455,51 @@
                 </div>
             </div>
         </div>
+
+        <!-- 포인트 -->
         <div class="section" id="points">
             <h2>포인트 내역</h2>
-            <p>총 포인트: <strong>1,200</strong></p>
-            <ul>
-                <li>2024-12-20: 500 포인트 사용</li>
-                <li>2024-12-15: 700 포인트 적립</li>
-            </ul>
+            <p>총 포인트: <strong th:text="${#numbers.formatDecimal(totalPoints, 0, 0)}">0</strong></p>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>적립 날짜</th>
+                    <th>사유</th>
+                    <th>포인트</th>
+                    <th>만료 날짜</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- 포인트 내역이 없을 때 -->
+                <tr th:if="${#lists.isEmpty(points)}">
+                    <td colspan="4" class="empty-message">포인트 내역이 없습니다.</td>
+                </tr>
+
+                <!-- 포인트 내역 출력 -->
+                <tr th:each="point : ${points}">
+                    <td th:text="${#temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss')}">적립 날짜</td>
+                    <td>
+                <span th:switch="${point.pointConditionName}">
+                    <span th:case="'SIGN_UP'">회원가입</span>
+                    <span th:case="'BOOK_PURCHASE'">도서구매</span>
+                    <span th:case="'REVIEW'">리뷰작성</span>
+                    <span th:case="'PHOTO_REVIEW'">사진리뷰작성</span>
+                    <span th:case="*">기타</span>
+                </span>
+                    </td>
+                    <td th:text="${#numbers.formatDecimal(point.point, 0, 0)}">포인트</td>
+                    <td th:text="${#temporals.format(point.endDate, 'yyyy-MM-dd HH:mm:ss')}">만료 날짜</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!-- 오류 메시지 -->
+            <div th:if="${errorMessage}">
+                <p class="error" th:text="${errorMessage}">오류가 발생했습니다.</p>
+            </div>
         </div>
+
         <div class="section" id="edit-info">
             <h2>회원 정보 수정</h2>
             <form action="/mypage/update" method="post">
