@@ -29,8 +29,8 @@ public interface MemberClient {
     MemberAddressResponseDto updateAddress(@PathVariable Long address_id, @RequestBody MemberAddressRequestDto addressRequestDto);
 
     //회원 쿠폰 리스트 조회
-    @GetMapping("/api/coupons/member-coupons/member/{memberId}")
-    Page<MemberCouponGetResponseDto> getMemberCouponsByMemberId(@PathVariable("memberId") Long memberId, Pageable pageable);
+    @GetMapping("/api/member-coupons/member/{member-id}")
+    Page<MemberCouponGetResponseDto> getMemberCouponsByMemberId(@PathVariable("member-id") Long memberId, Pageable pageable);
 
     //전체 회원 리스트 조회(관리자 페이지)
     @GetMapping("/api/members")
