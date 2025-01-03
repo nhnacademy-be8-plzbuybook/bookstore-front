@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorefront.main.service.impl;
 
+import com.nhnacademy.bookstorefront.common.exception.ConflictException;
 import com.nhnacademy.bookstorefront.main.client.OrderClient;
 import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
@@ -39,9 +40,8 @@ public class OrderServiceImpl implements OrderService {
         } catch (FeignException.BadRequest e) {
             log.error("feignClient error: {}", e.getMessage());
             throw new RuntimeException("잘못된 주문형식입니다.");
-        } catch (FeignException e) {
-            log.error("feignClient error: {}", e.getMessage());
-            throw new RuntimeException("주문 중 오류가 발생했습니다.");
+        } catch (FeignException.Conflict e) {
+            throw new ConflictException(e.getMessage());
         }
     }
 
