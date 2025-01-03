@@ -36,7 +36,7 @@ public class AuthenticationController {
     public String loginProcess(@RequestParam("username") String username,
                                @RequestParam("password") String password,
                                HttpServletResponse response,
-                               RedirectAttributes redirectAttributes) {
+                               Model model) {
 
         LoginRequestDto loginRequest = new LoginRequestDto(username, password);
             // 로그인 수행
@@ -52,8 +52,9 @@ public class AuthenticationController {
             // 발급된 토큰 쿠키에 저장
             cookieService.addCookie(response, "accessToken", accessToken, 100000);
 
-            redirectAttributes.addFlashAttribute("message", "로그인 성공!");
-            redirectAttributes.addFlashAttribute("role", role);
+//            redirectAttributes.addFlashAttribute("message", "로그인 성공!");
+//            redirectAttributes.addFlashAttribute("role", role);
+        model.addAttribute("role", role);
             return "redirect:/index";
 
     }
