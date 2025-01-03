@@ -26,10 +26,6 @@ public interface BookClient {
     @GetMapping("/api/selling-books/{sellingBookId}")
     BookDetailResponseDto getSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
 
-    @PostMapping("/api/selling-books/like/{sellingBookId}")
-//    ResponseEntity<Map<String, Long>> likeBook(
-//            @PathVariable("sellingBookId") Long sellingBookId,
-//            @RequestParam("memberEmail") String memberEmail);
-    ResponseEntity<Long> toggleLike(@PathVariable("sellingBookId") Long sellingBookId,
-                                    @RequestHeader("X-USER-ID") String memberEmail);
+//    @PostMapping("/api/selling-books/like/{sellingBookId}")
+//    ResponseEntity<Long> toggleLike(@PathVariable("sellingBookId") Long sellingBookId);
 }

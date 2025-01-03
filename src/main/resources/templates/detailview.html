@@ -69,54 +69,14 @@
             </p>
 
 
-            <p>좋아요: <span id="likeCount" th:text="${book.likesCount ?: 0}"></span></p>
+            <p>좋아요: <span id="likesCount" th:text="${book.likeCount ?: 0}"></span></p>
 
-            <!-- 좋아요 버튼 -->
-            <!-- [[${book}]]-->
-            <!-- 플레이스 홀더 th 액션 하는 법  -->
-<!--            <form th:action="@{/book/detail/like/{id}(id=${book.sellingBookId})}" method="post">-->
-<!--                <button type="submit">❤️ 좋아요</button>-->
-<!--            </form>-->
+            <form th:action="@{/book/detail/like/{id}(id=${book.sellingBookId})}" method="post">
+                <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}">
+                <button id="likeButton">❤️ 좋아요</button>
+            </form>
 
-            <button id="likeButton" th:data-id="${book.sellingBookId}">❤️ 좋아요</button>
 
-            <script>
-                document.getElementById('likeButton').addEventListener('click', function () {
-                    const sellingBookId = this.dataset.id;
-                    const userEmail = "로그인된 사용자 이메일"; // 필요 시 동적으로 설정
-
-                    fetch(`/book/detail/like/${sellingBookId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-USER-ID': userEmail
-                        }
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                return response.json();
-                            } else {
-                                throw new Error('좋아요 처리 실패');
-                            }
-                        })
-                        .then(data => {
-                            document.getElementById('likeCount').textContent = data;
-                            alert('좋아요가 반영되었습니다!');
-                        })
-                        .catch(error => {
-                            console.error('좋아요 처리 중 오류 발생:', error);
-                            alert('좋아요 처리 중 오류가 발생했습니다.');
-                        });
-                });
-
-                function addToCart() {
-                    alert("장바구니에 담겼습니다!");
-                }
-
-                function buyNow() {
-                    alert("구매 페이지로 이동합니다!");
-                }
-            </script>
             <!-- 버튼 -->
             <div class="button-group">
                 <button class="cart-btn" onclick="addToCart()">장바구니 담기</button>
@@ -134,7 +94,6 @@
     function buyNow() {
         alert("구매 페이지로 이동합니다!");
     }
-
 </script>
 </body>
 </html>

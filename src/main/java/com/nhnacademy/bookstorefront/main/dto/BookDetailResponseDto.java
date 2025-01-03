@@ -26,5 +26,5 @@ public class BookDetailResponseDto {
     private List<String> categories;
     private List<String> authorName;
     private String status;
-    private Long likesCount; // null 허용
+    private Long likeCount; // null 허용
 }
