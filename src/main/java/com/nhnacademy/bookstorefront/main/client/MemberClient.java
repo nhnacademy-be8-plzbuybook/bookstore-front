@@ -31,6 +31,10 @@ public interface MemberClient {
     @GetMapping("/api/coupons/member-coupons/member/{memberId}")
     Page<MemberCouponGetResponseDto> getMemberCouponsByMemberId(@PathVariable("memberId") Long memberId, Pageable pageable);
 
+
+    @PostMapping("/api/member-selling-books/like/{sellingBookId}")
+    ResponseEntity<Long> toggleLike(@PathVariable("sellingBookId") Long sellingBookId);
+
     // 포인트 내역 조회
     @GetMapping("/api/members/{memberId}/points")
     List<MemberPointResponseDto> getMemberPoints(@PathVariable("memberId") Long memberId);

@@ -155,16 +155,22 @@
     </div>
 
     <div class="sort-bar">
-        정렬 기준
-        <select>
-            <option value="sellingBookId">인기순</option>
-            <option value="new">신상품</option>
-            <option value="low-price">최저가</option>
-            <option value="high-price">최고가</option>
-            <option value="rating">평점 높은순</option>
-            <option value="review">리뷰 많은순</option>
-        </select>
+        <form id="sortForm" method="GET" action="/index">
+            정렬 기준
+            <select name="sortBy" onchange="document.getElementById('sortForm').submit();">
+                <option value="sellingBookId" th:attr="selected=${sortBy == 'sellingBookId'}">인기순</option>
+                <option value="new" th:attr="selected=${sortBy == 'new'}">신상품</option>
+                <option value="low-price" th:attr="selected=${sortBy == 'low-price'}">최저가</option>
+                <option value="high-price" th:attr="selected=${sortBy == 'high-price'}">최고가</option>
+                <option value="rating" th:attr="selected=${sortBy == 'rating'}">평점 높은순</option>
+                <option value="review" th:attr="selected=${sortBy == 'review'}">리뷰 많은순</option>
+            </select>
+            <input type="hidden" name="page" th:value="${currentPage}">
+            <input type="hidden" name="size" th:value="16">
+            <input type="hidden" name="sortDir" th:value="${sortDir}">
+        </form>
     </div>
+
     <div class="book-list">
         <div class="book" th:each="book : ${books}">
             <a th:href="'/book/detail/' + ${book.sellingBookId}">
@@ -181,18 +187,18 @@
     <ul class="pagination">
         <!-- 이전 버튼 -->
         <li class="page-item" th:classappend="${pageNumber == 0} ? 'disabled'">
-            <a th:href="@{/index(page=${pageNumber != null && pageNumber > 0 ? pageNumber - 1 : 0}, size=${pageSize != null ? pageSize : 16})}">이전</a>
+            <a th:href="@{/index(page=${pageNumber != null && pageNumber > 0 ? pageNumber - 1 : 0}, size=${pageSize != null ? pageSize : 16}, sortBy=${sortBy}, sortDir=${sortDir})}">이전</a>
         </li>
 
         <!-- 페이지 번호 버튼 -->
         <li class="page-item" th:each="page, stat : ${#numbers.sequence(0, totalPages != null ? totalPages - 1 : 0)}"
             th:classappend="${page == (pageNumber != null ? pageNumber : 0)} ? 'active'">
-            <a th:href="@{/index(page=${page}, size=${pageSize != null ? pageSize : 12})}" th:text="${page + 1}"></a>
+            <a th:href="@{/index(page=${page}, size=${pageSize != null ? pageSize : 12}, sortBy=${sortBy}, sortDir=${sortDir})}" th:text="${page + 1}"></a>
         </li>
 
         <!-- 다음 버튼 -->
         <li class="page-item" th:classappend="${pageNumber != null && pageNumber == (totalPages != null ? totalPages - 1 : 0)} ? 'disabled'">
-            <a th:href="@{/index(page=${pageNumber != null && pageNumber < (totalPages != null ? totalPages - 1 : 0) ? pageNumber + 1 : (totalPages != null ? totalPages - 1 : 0)}, size=${pageSize != null ? pageSize : 16})}">다음</a>
+            <a th:href="@{/index(page=${pageNumber != null && pageNumber < (totalPages != null ? totalPages - 1 : 0) ? pageNumber + 1 : (totalPages != null ? totalPages - 1 : 0)}, size=${pageSize != null ? pageSize : 16}, sortBy=${sortBy}, sortDir=${sortDir})}">다음</a>
         </li>
     </ul>
 </nav>
