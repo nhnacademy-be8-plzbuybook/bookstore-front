@@ -55,5 +55,7 @@ const dummyOrderData =
             recipient: "김태현",
             recipientPhone: "062-230-7381"
         },
+        deliveryFee: 3000,
+        orderPrice: 18000,
         nonMemberPassword: "1234"
     }

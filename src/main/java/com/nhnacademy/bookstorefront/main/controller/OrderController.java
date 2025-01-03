@@ -20,16 +20,35 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
     private final OrderService orderService;
 
+    /**
+     * 비회원 주문페이지
+     *
+     * @return
+     */
     @GetMapping("/non-member/order/receipt")
     public String OrderReceipt() {
         return "order/non_member_receipt";
     }
 
+
+    /**
+     * 회원 주문페이지
+     *
+     * @return
+     */
     @GetMapping("/order/receipt")
     public String memberOrderReceipt() {
         return "order/member_receipt";
     }
 
+
+    /**
+     * 주문상세내역 조회
+     *
+     * @param orderId
+     * @param model
+     * @return
+     */
     @GetMapping("/orders/{order-id}")
     public String orderDetail(@PathVariable("order-id") String orderId,
                               Model model) {
@@ -38,17 +57,51 @@ public class OrderController {
         return "order/detail";
     }
 
+
+    /**
+     * 내 주문목록 조회
+     *
+     * @param searchRequest
+     * @param pageable
+     * @param model
+     * @return
+     */
     @GetMapping("/my/orders")
     public String getMemberOrders(@ModelAttribute OrderSearchRequestDto searchRequest,
                                   Pageable pageable,
                                   Model model) {
-        Page<OrderDto> orderPage = orderService.getOrders(searchRequest, pageable);
+        Page<OrderDto> orderPage = orderService.getMemberOrders(searchRequest, pageable);
         model.addAttribute("orderPage", orderPage);
 
         return "order/myOrderList";
     }
 
 
+    /**
+     * 전체 주문목록 조회 (관리자용)
+     *
+     * @param searchRequest
+     * @param pageable
+     * @param model
+     * @return
+     */
+    @GetMapping("/admin/orders")
+    public String getAllOrders(@ModelAttribute OrderSearchRequestDto searchRequest,
+                               Pageable pageable,
+                               Model model) {
+        Page<OrderDto> orderList = orderService.getAllOrders(searchRequest, pageable);
+        model.addAttribute("orderList", orderList);
+
+        return "order/allOrderList";
+    }
+
+
+    /**
+     * 비회원 주문요청
+     *
+     * @param orderRequest
+     * @return
+     */
     @ResponseBody
     @PostMapping("/api/orders/non-member")
     public OrderSaveResponseDto nonMemberOrder(@RequestBody NonMemberOrderRequestDto orderRequest) {
@@ -56,6 +109,13 @@ public class OrderController {
         return orderSaveResponse;
     }
 
+
+    /**
+     * 회원 주문요청
+     *
+     * @param orderRequest
+     * @return
+     */
     @ResponseBody
     @PostMapping("/api/orders")
     public OrderSaveResponseDto memberOrder(@RequestBody MemberOrderRequestDto orderRequest) {
@@ -66,13 +126,15 @@ public class OrderController {
     }
 
 
+    /**
+     * 회원 주문완료
+     *
+     * @param orderId
+     * @return
+     */
     @PostMapping("/api/orders/{order-id}/complete")
     public ResponseEntity<String> completeOrder(@PathVariable("order-id") String orderId) {
         String completedOrderId = orderService.completeOrder(orderId);
         return ResponseEntity.status(HttpStatus.OK).body(completedOrderId);
     }
-
-
-
-
 }

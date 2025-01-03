@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문 목록 조회</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/order/allOrderList.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>주문 목록 조회</h1>
+
+    <div class="search-filter">
+        <input type="text" id="searchKeyword" placeholder="주문 번호, 고객명 검색" />
+        <select id="statusFilter">
+            <option value="">주문 상태</option>
+            <option value="completed">배송 완료</option>
+            <option value="pending">배송 중</option>
+            <option value="cancelled">취소</option>
+        </select>
+        <input type="date" id="startDate" />
+        <input type="date" id="endDate" />
+        <button onclick="applyFilters()">검색</button>
+    </div>
+
+    <table id="orderTable">
+        <thead>
+        <tr>
+            <th>주문 번호</th>
+            <th>주문 상품</th>
+            <th>고객 이름</th>
+            <th>주문 상태</th>
+            <th>주문 날짜</th>
+            <th>총 금액</th>
+            <th>액션</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order: ${orderList}">
+            <td th:text="${order.}">#00123</td>
+            <td>홍길동</td>
+            <td><span class="status-tag status-completed" th:text="${order.getOrderStatus()}">배송 완료</span></td>
+            <td>2025-01-02</td>
+            <td>₩50,000</td>
+            <td class="action-btns">
+                <button onclick="viewOrderDetails(123)">상세보기</button>
+                <button onclick="changeStatus(123)">상태 변경</button>
+            </td>
+        </tr>
+        <tr>
+            <td>#00124</td>
+            <td>김철수</td>
+            <td><span class="status-tag status-pending">배송 중</span></td>
+            <td>2025-01-01</td>
+            <td>₩30,000</td>
+            <td class="action-btns">
+                <button onclick="viewOrderDetails(124)">상세보기</button>
+                <button onclick="changeStatus(124)">상태 변경</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+    </div>
+</div>
+
+<script>
+    function applyFilters() {
+        const keyword = document.getElementById("searchKeyword").value;
+        const status = document.getElementById("statusFilter").value;
+        const startDate = document.getElementById("startDate").value;
+        const endDate = document.getElementById("endDate").value;
+
+        // 필터 적용 후, 테이블 데이터를 갱신하는 로직을 추가하면 됩니다.
+        console.log("검색 키워드:", keyword, "상태:", status, "시작일:", startDate, "종료일:", endDate);
+    }
+
+    function viewOrderDetails(orderId) {
+        // 주문 상세 페이지로 이동하거나 모달을 띄울 수 있습니다.
+        alert("주문 상세 보기: " + orderId);
+    }
+
+    function changeStatus(orderId) {
+        // 주문 상태 변경 기능 구현
+        alert("주문 상태 변경: " + orderId);
+    }
+</script>
+
+</body>
+</html>
