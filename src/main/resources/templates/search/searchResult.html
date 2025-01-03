@@ -165,13 +165,12 @@
         <div th:each="book : ${searchResult}">
             <div class="book">
                 <a th:href="@{/book/detail/{sellingBookId}(sellingBookId=${book.sellingBookId})}">
-                    <img th:src="${book.imageUrl.getFirst()}">
+                    <img th:src="${book.imageUrl}">
                     <div th:text="${book.bookTitle}"></div>
                     <div>저자: <span th:text="${#strings.isEmpty(book.authorName) ? '저자 정보 없음' : book.authorName}"></span></div>
-                    <div>카테고리: <span th:text="${#strings.isEmpty(book.categoryName) ? '카테고리 정보 없음' : book.categoryName.getFirst()}"></span></div>
+                    <div>카테고리: <span th:text="${#strings.isEmpty(book.categoryName) ? '카테고리 정보 없음' : book.categoryName}"></span></div>
                     <div>정가: <span th:text="${book.getBookPriceStandard()}"></span>원</div>
                     <div>판매가: <span th:text="${book.sellingBookPrice}"></span>원</div>
-                    <div>출판일: <span th:text="${book.bookPubDate != null ? #temporals.format(book.bookPubDate, 'yyyy-MM-dd') : '출판일 정보 없음'}"></span></div>
                 </a>
             </div>
         </div>
