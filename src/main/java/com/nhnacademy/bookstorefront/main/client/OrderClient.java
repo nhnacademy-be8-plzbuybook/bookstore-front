@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstorefront.main.client;
 
 import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
@@ -18,10 +19,8 @@ public interface OrderClient {
     ResponseEntity<Page<OrderDto>> getMemberOrders(@ModelAttribute OrderSearchRequestDto searchRequest, Pageable pageable);
 
     @GetMapping("/api/orders")
-    ResponseEntity<Page<OrderDto>> getAllOrders(@RequestBody OrderSearchRequestDto searchRequest, Pageable pageable);
+    ResponseEntity<Page<OrderDto>> getAllOrders(@ModelAttribute OrderSearchRequestDto searchRequest, Pageable pageable);
 
-    //    @PostMapping("/api/orders/non-member")
-//    ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
     @PostMapping("/api/orders/non-member")
     ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
 
@@ -30,4 +29,7 @@ public interface OrderClient {
 
     @PostMapping("/api/orders/{order-id}/complete")
     ResponseEntity<String> completeOrder(@PathVariable("order-id") String orderId);
+
+    @GetMapping("/api/orders/{order-id}")
+    ResponseEntity<OrderDetail> getOrderDetail(@PathVariable("order-id") String orderId);
 }
