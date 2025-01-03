@@ -11,6 +11,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Getter
 public class OrderDto {
+    // 주문 id
+    private String id;
     // 주문일
     private LocalDate orderDate;
     // 주문상태
@@ -21,5 +23,7 @@ public class OrderDto {
     private String orderName;
     // 결제금액
     private BigDecimal paymentAmount;
+    // 주문자
+    private String orderer;
 
 }
