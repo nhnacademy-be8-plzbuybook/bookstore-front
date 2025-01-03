@@ -23,7 +23,7 @@ public class IndexController {
     private final BookClient bookClient;
     private final AuthenticationService authenticationService;
 
-    @GetMapping("/index")
+    @GetMapping({"/index", "/"})
     public String index(
             @RequestParam(defaultValue = "0") int page,        // 페이지 번호
             @RequestParam(defaultValue = "16") int size,       // 한 페이지당 아이템 수
@@ -38,6 +38,9 @@ public class IndexController {
         model.addAttribute("books", response.getContent());
         model.addAttribute("currentPage", response.getNumber());
         model.addAttribute("totalPages", response.getTotalPages());
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("pageSize", size);
         model.addAttribute("isLoggedIn", isLoggedIn);
 
         return "index"; // index.html 렌더링
