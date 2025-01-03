@@ -47,11 +47,13 @@ public class AuthenticationController {
         }
 
             String accessToken = loginResponse.accessToken();
+            String role = loginResponse.role();
 
             // 발급된 토큰 쿠키에 저장
             cookieService.addCookie(response, "accessToken", accessToken, 100000);
 
             redirectAttributes.addFlashAttribute("message", "로그인 성공!");
+            redirectAttributes.addFlashAttribute("role", role);
             return "redirect:/index";
 
     }
