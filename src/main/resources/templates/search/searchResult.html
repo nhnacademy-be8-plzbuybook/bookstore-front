@@ -181,10 +181,16 @@
            th:class="${currentPage == 0} ? 'disabled' : ''">Prev</a>
 
         <!-- 페이지 번호들 -->
-        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <div th:if="${totalPages > 0}">
+    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
         <a th:href="@{/search/books(page=${i}, searchKeyword=${searchKeyword})}"
-           th:text="${i + 1}" th:class="${i == currentPage} ? 'active' : ''"></a>
+           th:text="${i + 1}" th:classappend="${i == currentPage} ? ' active' : ''"></a>
     </span>
+        </div>
+        <div th:if="${totalPages == 0}">
+            <p>No results found.</p>
+        </div>
+
 
         <!-- 다음 페이지 버튼 -->
         <a th:if="${currentPage < totalPages - 1}" th:href="@{/search/books(page=${currentPage + 1}, searchKeyword=${searchKeyword})}"
