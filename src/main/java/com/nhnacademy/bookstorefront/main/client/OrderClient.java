@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstorefront.main.client;
 
-import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;

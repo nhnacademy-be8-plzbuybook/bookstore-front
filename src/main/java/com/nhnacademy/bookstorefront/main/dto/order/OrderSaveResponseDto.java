@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorefront.main.dto;
+package com.nhnacademy.bookstorefront.main.dto.order;
 
 import java.math.BigDecimal;
 
