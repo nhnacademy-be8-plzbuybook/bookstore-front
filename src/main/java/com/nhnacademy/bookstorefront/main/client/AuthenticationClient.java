@@ -71,4 +71,8 @@ public interface AuthenticationClient {
     @PostMapping("/api/auth/verify-code")
     String verifyVerificationCode(@RequestParam("token") String token, @RequestParam("code") String code);
 
+    //role 요청
+    @GetMapping("/api/auth/role")
+    ResponseEntity<String> getRoleFromToken(@RequestHeader("Authorization") String token);
+
 }

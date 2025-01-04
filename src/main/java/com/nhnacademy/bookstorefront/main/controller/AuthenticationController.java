@@ -35,8 +35,7 @@ public class AuthenticationController {
     @PostMapping("/login/process")
     public String loginProcess(@RequestParam("username") String username,
                                @RequestParam("password") String password,
-                               HttpServletResponse response,
-                               Model model) {
+                               HttpServletResponse response) {
 
         LoginRequestDto loginRequest = new LoginRequestDto(username, password);
             // 로그인 수행
@@ -47,14 +46,10 @@ public class AuthenticationController {
         }
 
             String accessToken = loginResponse.accessToken();
-            String role = loginResponse.role();
 
             // 발급된 토큰 쿠키에 저장
             cookieService.addCookie(response, "accessToken", accessToken, 100000);
 
-//            redirectAttributes.addFlashAttribute("message", "로그인 성공!");
-//            redirectAttributes.addFlashAttribute("role", role);
-        model.addAttribute("role", role);
             return "redirect:/index";
 
     }
