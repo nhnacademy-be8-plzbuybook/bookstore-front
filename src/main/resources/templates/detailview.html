@@ -116,7 +116,9 @@
     }
 
     function buyNow() {
-        alert("구매 페이지로 이동합니다!");
+        const sellingBookId = [[${book.getSellingBookId()}]];
+        const quantity = 1; //TODO: 일단 1로 고정
+        window.location.href=`/order/receipt?productId=${sellingBookId}&quantity=${quantity}`;
     }
 
     document.getElementById('choice1').addEventListener('click', function () {
@@ -131,7 +133,7 @@
         modal.hide();
         // 비회원 주문 페이지로 이동
         const sellingBookId = [[${book.getSellingBookId()}]];
-        const quantity = 1;
+        const quantity = 1; //TODO: 일단 1로 고정
         window.location.href=`/non-member/order/receipt?productId=${sellingBookId}&quantity=${quantity}&productId=303&quantity=2&productId=304&quantity=1`;
     });
 </script>
