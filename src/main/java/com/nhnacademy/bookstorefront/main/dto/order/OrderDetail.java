@@ -1,19 +1,29 @@
 package com.nhnacademy.bookstorefront.main.dto.order;
 
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderDeliveryAddressDto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 public class OrderDetail {
     private List<OrderProductDto> orderProducts;
     private OrderDeliveryAddressDto orderDeliveryAddress;
     private PaymentDto payment;
+    private BigDecimal deliveryFee;
+    private BigDecimal orderPrice;
+    private LocalDateTime orderedAt;
+    private LocalDate deliveryWishDate;
+    private String status;
+    private int usedPoint;
+    private BigDecimal couponDiscount;
+    private String orderNumber;
 
-    public OrderDetail(List<OrderProductDto> orderProducts, OrderDeliveryAddressDto orderDeliveryAddress, PaymentDto payment) {
-        this.orderProducts = orderProducts;
-        this.orderDeliveryAddress = orderDeliveryAddress;
-        this.payment = payment;
-    }
 }

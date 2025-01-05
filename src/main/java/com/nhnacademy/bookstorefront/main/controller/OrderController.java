@@ -98,7 +98,8 @@ public class OrderController {
     @GetMapping("/orders/{order-id}")
     public String orderDetail(@PathVariable("order-id") String orderId,
                               Model model) {
-        //TODO: 주문상세정보 불러오기
+        // 주문상세 DTO
+
         OrderDetail orderDetail = orderService.getOrderDetail(orderId);
         model.addAttribute("orderDetail", orderDetail);
 

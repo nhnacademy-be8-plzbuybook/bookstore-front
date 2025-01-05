@@ -154,7 +154,7 @@ function getOrderRequest() {
     const deliveryFee = document.getElementById("shippingFee").innerText;
 
     const usedPointValue = document.getElementById("usedPoint").value;
-    const usedPoint = usedPointValue === null || usedPointValue === '' ? 0 : parseInt(usedPoint);
+    const usedPoint = usedPointValue === null || usedPointValue === '' ? 0 : parseInt(usedPointValue);
 
     const orderProducts = getOrderProducts();
 

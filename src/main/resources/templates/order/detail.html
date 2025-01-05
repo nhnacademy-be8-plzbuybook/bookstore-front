@@ -8,6 +8,15 @@
 </head>
 <body>
 <h1>주문상세</h1>
+<h2>주문정보</h2>
+<!--주문번호-->
+<span th:text="${orderDetail.getOrderNumber()}"></span>
+<!--주문일자-->
+<span th:text="${orderDetail.getOrderedAt()}"></span>
+<!--주문상태-->
+<span th:text="${orderDetail.getStatus()}"></span>
+
+
 <h2>주문상품</h2>
 <table>
     <thead>
@@ -44,6 +53,9 @@
     </tbody>
 </table>
 
+<h2>배송희망 날짜</h2>
+<span th:text="${orderDetail.getDeliveryWishDate()}"></span>
+
 <h2>주문 배송 정보</h2>
 <table>
     <thead>
@@ -66,20 +78,27 @@
     </tbody>
 </table>
 
+
+
 <h2>결제정보</h2>
 <table>
     <tbody>
     <tr>
-        <td>상품금액</td>
-        <td>10000원</td>
+        <td>주문금액</td>
+        <td th:text="${orderDetail.getOrderPrice()}">10000원</td>원
     </tr>
     <tr>
+        <td>사용포인트</td>
+        <td th:text="${orderDetail.getUsedPoint()}"></td>원
+    </tr>
+    <tr>
+<!--        쿠폰할인금액 등 추가-->
         <td>할인금액</td>
         <td>1000원</td>
     </tr>
     <tr>
         <td>배송비</td>
-        <td>3000원</td>
+        <td th:text="${orderDetail.getDeliveryFee()}"></td>원
     </tr>
     </tbody>
 </table>
