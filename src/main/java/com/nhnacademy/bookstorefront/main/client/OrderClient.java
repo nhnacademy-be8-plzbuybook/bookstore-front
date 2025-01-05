@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public interface OrderClient {
 
     @GetMapping("/api/orders/my")
-    ResponseEntity<Page<OrderDto>> getMemberOrders(@ModelAttribute OrderSearchRequestDto searchRequest, Pageable pageable);
+    ResponseEntity<Page<OrderDto>> getMemberOrders(@RequestParam(required = false) OrderSearchRequestDto searchRequest, Pageable pageable);
 
     @GetMapping("/api/orders")
     ResponseEntity<Page<OrderDto>> getAllOrders(@ModelAttribute OrderSearchRequestDto searchRequest, Pageable pageable);

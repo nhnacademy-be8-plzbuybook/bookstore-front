@@ -25,5 +25,4 @@ public class OrderDto {
     private BigDecimal paymentAmount;
     // 주문자
     private String orderer;
-
 }

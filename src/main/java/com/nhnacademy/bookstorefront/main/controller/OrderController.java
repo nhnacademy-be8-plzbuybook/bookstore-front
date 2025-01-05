@@ -115,10 +115,11 @@ public class OrderController {
      * @return
      */
     @GetMapping("/my/orders")
-    public String getMemberOrders(@ModelAttribute OrderSearchRequestDto searchRequest,
+    public String getMemberOrders(@RequestParam(required = false) OrderSearchRequestDto searchRequest,
                                   Pageable pageable,
                                   Model model) {
         Page<OrderDto> orderPage = orderService.getMemberOrders(searchRequest, pageable);
+
         model.addAttribute("orderPage", orderPage);
 
         return "order/myOrderList";
