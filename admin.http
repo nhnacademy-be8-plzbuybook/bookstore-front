@@ -1,0 +1,10 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###도서 목록 조회 시:
+GET http://localhost:8080/admin/books
+
+
+###
+GET http://localhost:8080/api/admin/selling-books?page=0&size=10

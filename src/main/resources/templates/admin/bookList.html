@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📚 책사조잉 관리자 페이지 📚</title>
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui-editor/latest/tui-editor.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -83,38 +84,94 @@
             margin-bottom: 20px;
         }
 
-        .section {
-            display: none;
+        .button-container {
+            text-align: right;
+            margin-bottom: 20px;
         }
 
-        .section.active {
-            display: block;
+        .button-container button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        .table-wrapper {
-            overflow-x: auto;
+
+        .button-container button:hover {
+            background-color: #218838;
+        }
+
+        .search-container {
             margin-bottom: 20px;
+        }
+
+        .search-container input {
+            width: calc(100% - 110px);
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .search-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .table-wrapper {
+            margin-top: 20px;
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
         }
 
-        th, td {
+        table th,
+        table td {
             padding: 10px;
             text-align: left;
             border: 1px solid #ddd;
         }
 
-        th {
+        table th {
             background-color: #f1f1f1;
         }
 
-        td {
+        table td {
             background-color: #fff;
         }
 
+        table .action-buttons button {
+            padding: 5px 10px;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        table .action-buttons .edit {
+            background-color: #007bff;
+        }
+
+        table .action-buttons .delete {
+            background-color: #dc3545;
+        }
         .pagination {
             display: flex;
             justify-content: center;
@@ -147,20 +204,6 @@
             border-radius: 5px;
             font-size: 16px;
         }
-
-        .alert.success {
-            background-color: #d4edda;
-            color: #155724;
-            font-weight: bold;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            font-weight: bold;
-            border: 1px solid #f5c6cb;
-        }
         footer {
             background-color: #333;
             color: white;
@@ -177,6 +220,7 @@
         footer a:hover {
             text-decoration: underline;
         }
+
 
     </style>
 </head>
@@ -197,7 +241,7 @@
     <!-- 사이드바 -->
     <div class="sidebar">
         <div class="group active" data-section="member-management">회원 관리</div>
-        <div class="group active" data-section="book-management" onclick="location.href='/admin/selling-books'">도서 관리 </div>
+        <div class="group active" data-section="book-management">도서 관리</div>
         <div class="group" data-section="coupon-management">쿠폰 관리</div>
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
         <div class="group" data-section="tag-management">태그 관리</div>
@@ -207,73 +251,66 @@
 
     <!-- 메인 콘텐츠 -->
     <div class="content">
-        <div id="member-management" class="section active">
-            <h2>회원 관리</h2>
+        <h2>도서 관리</h2>
 
-            <!-- 성공 메시지 표시 -->
-            <div th:if="${successMessage}" class="alert success">
-                <p th:text="${successMessage}"></p>
-            </div>
+        <!-- 도서 검색 -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="책 제목으로 검색" oninput="filterBooks()">
+            <button onclick="filterBooks()">검색</button>
+        </div>
 
-            <!-- 실패 메시지 표시 -->
-            <div th:if="${errorMessage}" class="alert error">
-                <p th:text="${errorMessage}"></p>
-            </div>
+        <!-- 도서 등록 버튼 -->
+        <div class="button-container">
+            <button onclick="location.href='/admin/bookregister.html'">+ 도서 추가</button>
+            <form action="/api/books/sync" method="post" style="display:inline;">
+                <button type="submit">📚 알라딘 최신 도서 동기화</button>
+            </form>
+            <!-- ISBN 입력 및 동기화 폼 -->
+            <form action="/admin/books/sync/isbn" method="post" style="display:inline;">
+                <input type="text" name="isbn" placeholder="ISBN 입력 (쉼표로 구분)" style="width: 300px; padding: 8px;">
+                <button type="submit">📚 ISBN으로 도서 동기화</button>
+            </form>
+        </div>
 
-            <table>
+        <h3>디버깅 데이터</h3>
+        <pre th:text="${#lists.size(books)}"></pre>
+
+
+
+        <!-- 도서 목록 -->
+        <div class="table-wrapper">
+            <table id="booksTable">
                 <thead>
                 <tr>
-                    <th>이름</th>
-                    <th>전화번호</th>
-                    <th>이메일</th>
-                    <th>생년월일</th>
-                    <th>등급</th>
-                    <th>상태</th>
-                    <th>수정</th>
+                    <th>도서 ID</th>
+                    <th>제목</th>
+                    <th>출판일</th>
+                    <th>출판사</th>
+                    <th>ISBN</th>
+                    <th>판매가</th>
+                    <th>포장 가능 여부</th>
+                    <th>재고</th>
+                    <th>판매상태</th>
+                    <th>수정/삭제</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="member : ${members}">
-                    <form th:action="@{/adminpage/update}" method="post">
-
-                        <!-- 이름 수정 -->
-                        <td><input type="text" th:name="name" th:value="${member.name}" /></td>
-
-                        <!-- 전화번호 수정 -->
-                        <td><input type="text" th:name="phone" th:value="${member.phone}" /></td>
-
-                        <!-- 이메일 수정 -->
-                        <td><input type="email" th:name="email" th:value="${member.email}" /></td>
-
-                        <!-- 생년월일 수정 -->
-                        <td><input type="date" th:name="birth" th:value="${member.birth}" /></td>
-
-                        <td><input type="text" th:name="membergrade" th:value="${member.memberGradeName}"/></td>
-
-                        <td><input type="text" th:name="memberstatus" th:value="${member.memberStateName}"/></td>
-<!--                        <td th:text="${member.memberGradeName}">등급</td>-->
-<!--                        <td th:text="${member.memberStateName}">상태</td>-->
-
-<!--                        &lt;!&ndash; 등급 &ndash;&gt;-->
-<!--                        <td>-->
-<!--                            <select th:name="memberGrade">-->
-<!--                                <option th:value="${member.memberGradeId}" th:text="${member.memberGradeName}" selected="selected"></option>-->
-<!--                                <option value="1">일반</option>-->
-<!--                                <option value="2">VIP</option>-->
-<!--                                &lt;!&ndash; 다른 등급 옵션을 추가 &ndash;&gt;-->
-<!--                            </select>-->
-<!--                        </td>-->
-
-                        <!-- 상태 -->
-<!--                        <select th:name="memberState">-->
-<!--                            &lt;!&ndash; 이미 존재하는 상태를 선택할 수 있도록 현재 상태 표시 &ndash;&gt;-->
-<!--                            <option th:value="${member.memberStatus.id}" th:text="${member.memberStatus.name}" selected="selected"></option>-->
-
-<!--                            &lt;!&ndash; memberStatusList를 순회하여 상태를 옵션으로 추가 &ndash;&gt;-->
-<!--                            <option th:each="status : ${memberStatusList}" th:value="${status.id}" th:text="${status.name}"></option>-->
-                        </select>
-                        <td><button type="submit">수정</button> </td>
-                    </form>
+                <tr th:each="book : ${books}">
+                    <td th:text="${book.sellingBookId}"></td>
+                    <td th:text="${book.bookTitle}"></td>
+                    <td th:text="${book.bookPubDate}"></td>
+                    <td th:text="${book.publisher}"></td>
+                    <td th:text="${book.bookIsbn13}"></td>
+                    <td th:text="${book.sellingBookPrice}"></td>
+                    <td th:text="${book.sellingBookPackageable ? 'Yes' : 'No'}"></td>
+                    <td th:text="${book.sellingBookStock}"></td>
+                    <td th:text="${book.sellingBookStatus}"></td>
+                    <td>
+                        <a th:href="@{/admin/books/edit/{id}(id=${book.sellingBookId})}">수정</a>
+                        <form th:action="@{/api/admin/selling-books/{id}(id=${book.sellingBookId})}" method="post">
+                            <button type="submit">삭제</button>
+                        </form>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -282,7 +319,7 @@
             <div class="pagination">
                 <!-- 이전 버튼 -->
                 <a th:if="${currentPage > 0}"
-                   th:href="@{'/adminpage'(page=${currentPage - 1})}"
+                   th:href="@{'/admin/selling-books'(page=${currentPage - 1})}"
                    class="prev">
                     이전
                 </a>
@@ -292,54 +329,38 @@
 
                 <!-- 다음 버튼 -->
                 <a th:if="${currentPage < totalPages - 1}"
-                   th:href="@{'/adminpage'(page=${currentPage + 1})}"
+                   th:href="@{'/admin/selling-books'(page=${currentPage + 1})}"
                    class="next">
                     다음
                 </a>
             </div>
         </div>
-<!--        <div class="group active" data-section="book-management">-->
-<!--            <a href="/admin/selling-books" >도서 관리</a>-->
-<!--        </div>-->
-
-        <div id="coupon-management" class="section">
-            <h2>쿠폰 관리</h2>
-            <p>여기에 쿠폰 crud 구현</p>
-        </div>
-        <div id="coupon-policy-management" class="section">
-            <h2>쿠폰 정책 관리</h2>
-            <p>여기에 쿠폰 정책 crud 구현</p>
-        </div>
-        <div id="tag-management" class="section">
-            <h2>태그 관리</h2>
-            <p>여기에 태그 crud 구현</p>
-        </div>
-        <div id="category-management" class="section">
-            <h2>카테고리 관리</h2>
-            <p>여기에 카테고리 crud 구현</p>
-        </div>
-
     </div>
 </main>
+
 <footer>
     <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
     <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>
     <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
 </footer>
+
 <script>
-    const sidebarItems = document.querySelectorAll('.sidebar .group');
-    const sections = document.querySelectorAll('.section');
+    function filterBooks() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const table = document.getElementById('booksTable');
+        const rows = table.getElementsByTagName('tr');
 
-    sidebarItems.forEach(item => {
-        item.addEventListener('click', () => {
-            sidebarItems.forEach(i => i.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
+        for (let i = 1; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName('td');
+            const titleCell = cells[1] ? cells[1].textContent.toLowerCase() : '';
 
-            item.classList.add('active');
-            const sectionId = item.getAttribute('data-section');
-            document.getElementById(sectionId).classList.add('active');
-        });
-    });
+            if (titleCell.includes(input)) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+    }
 </script>
 </body>
 </html>
