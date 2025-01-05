@@ -17,6 +17,7 @@
         <th>가격</th>
         <th>수량</th>
         <th>상태</th>
+        <th>포장</th>
     </tr>
     </thead>
     <tbody>
@@ -30,7 +31,16 @@
         <td th:text="${orderProduct.getPrice()}"></td>
         <td th:text="${orderProduct.getQuantity()}"></td>
         <td th:text="${orderProduct.getStatus()}"></td>
+        <td th:if="${orderProduct.getOrderProductWrapping() != null}">
+            <span th:text="${orderProduct.getOrderProductWrapping().getName()}"></span> /
+            <span th:text="${orderProduct.getOrderProductWrapping().getPrice()}"></span> 원
+            <span th:text="${orderProduct.getOrderProductWrapping().getQuantity()}"></span> 개
+        </td>
+        <td th:unless="${orderProduct.getOrderProductWrapping() != null}">
+            <span>X</span>
+        </td>
     </tr>
+
     </tbody>
 </table>
 
@@ -57,6 +67,22 @@
 </table>
 
 <h2>결제정보</h2>
+<table>
+    <tbody>
+    <tr>
+        <td>상품금액</td>
+        <td>10000원</td>
+    </tr>
+    <tr>
+        <td>할인금액</td>
+        <td>1000원</td>
+    </tr>
+    <tr>
+        <td>배송비</td>
+        <td>3000원</td>
+    </tr>
+    </tbody>
+</table>
 <table>
     <thead>
     <tr>
