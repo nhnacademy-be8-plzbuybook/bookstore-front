@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const shippingFeeEl = document.getElementById("shippingFee"); // 배송비 표시 요소
     const totalAmountEl = document.getElementById("totalAmount"); // 총결제금액 표시 요소
 
-
     // 주문 총액 계산 함수
     function calculateTotal() {
         let orderAmount = 0;
@@ -28,11 +27,12 @@ document.addEventListener("DOMContentLoaded", function () {
             orderAmount += (price * quantity) + (wrappingPrice * wrappingQuantity);
         });
 
-        const feeDeliveryThreshold = parseInt(document.getElementById("feeDeliveryThreshold").value);
-        const defaultDeliveryFee = parseInt(document.getElementById("defaultDeliveryFee").value);
-        console.log(feeDeliveryThreshold);
-        console.log(defaultDeliveryFee);
+        const feeDeliveryThreshold = parseInt(document.getElementById("freeDeliveryThreshold").value) || 0;
+        const defaultDeliveryFee = parseInt(document.getElementById("defaultDeliveryFee").value) || 0;
+
+        // 배송비 계산 (기준 금액을 넘으면 무료 배송)
         const shippingFee = orderAmount < feeDeliveryThreshold ? defaultDeliveryFee : 0;
+
         // 결제 금액 계산
         const totalAmount = orderAmount + shippingFee;
 
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function getOrderRequest() {
     const receipt = document.getElementById("receipt").value;
-    const receiptPhone =document.getElementById("receiptPhone").value;
+    const receiptPhone = document.getElementById("receiptPhone").value;
     const zipCode = document.getElementById("zipCode").value;
     const localAddress = document.getElementById("localAddress").value;
     const detailAddress = document.getElementById("detailAddress").value;
