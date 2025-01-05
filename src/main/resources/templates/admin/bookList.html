@@ -84,25 +84,62 @@
             margin-bottom: 20px;
         }
 
+        /* 버튼 컨테이너 */
         .button-container {
-            text-align: right;
-            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+            align-items: center;
+            padding: 20px;
         }
 
-        .button-container button {
-            background-color: #28a745;
-            color: white;
+        button {
+            padding: 8px 12px;
             border: none;
-            padding: 10px 20px;
-            font-size: 14px;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
 
-        .button-container button:hover {
-            background-color: #218838;
+        button:hover {
+            opacity: 0.9;
         }
+
+        .add-button {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .sync-button {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .isbn-button {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        /* 동기화 폼 */
+        .sync-form,
+        .isbn-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sync-form input,
+        .isbn-form input,
+        .sync-form select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 120px;
+        }
+
+        .isbn-form input {
+            width: 250px;
+        }
+
 
         .search-container {
             margin-bottom: 20px;
@@ -253,22 +290,41 @@
     <div class="content">
         <h2>도서 관리</h2>
 
-        <!-- 도서 검색 -->
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="책 제목으로 검색" oninput="filterBooks()">
-            <button onclick="filterBooks()">검색</button>
-        </div>
-
-        <!-- 도서 등록 버튼 -->
         <div class="button-container">
-            <button onclick="location.href='/admin/bookregister.html'">+ 도서 추가</button>
-            <form action="/api/books/sync" method="post" style="display:inline;">
-                <button type="submit">📚 알라딘 최신 도서 동기화</button>
+            <!-- 새 도서 추가 -->
+            <button onclick="location.href='/admin/bookregister.html'" class="add-button">
+                + 도서 추가
+            </button>
+
+            <!-- 알라딘 도서 동기화 -->
+            <form action="/api/books/sync" method="post" class="sync-form">
+                <label for="queryType">Query:</label>
+                <select name="queryType" id="queryType">
+                    <option value="ItemNewAll">신간 전체</option>
+                    <option value="Bestseller">베스트셀러</option>
+                    <option value="BlogBest">블로거 베스트</option>
+                </select>
+
+                <label for="searchTarget">Target:</label>
+                <select name="searchTarget" id="searchTarget">
+                    <option value="Book">국내 도서</option>
+                    <option value="Foreign">외국 도서</option>
+                </select>
+
+                <label for="start">Start:</label>
+                <input type="number" name="start" id="start" value="1" min="1">
+
+                <label for="maxResults">Max:</label>
+                <input type="number" name="maxResults" id="maxResults" value="50" min="1">
+
+                <button type="submit" class="sync-button">📚 동기화</button>
             </form>
-            <!-- ISBN 입력 및 동기화 폼 -->
-            <form action="/admin/books/sync/isbn" method="post" style="display:inline;">
-                <input type="text" name="isbn" placeholder="ISBN 입력 (쉼표로 구분)" style="width: 300px; padding: 8px;">
-                <button type="submit">📚 ISBN으로 도서 동기화</button>
+
+            <!-- ISBN 입력 및 동기화 -->
+            <form action="/api/books/sync/isbn" method="post" class="isbn-form">
+                <label for="isbn">ISBN:</label>
+                <input type="text" name="isbn" id="isbn" placeholder="쉼표로 구분된 ISBN 입력">
+                <button type="submit" class="isbn-button">📚 ISBN 동기화</button>
             </form>
         </div>
 

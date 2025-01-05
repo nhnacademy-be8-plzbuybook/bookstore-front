@@ -34,7 +34,7 @@ public interface BookClient {
             @RequestParam(defaultValue = "10") int size
     );
 
-    // 관리자 기능
+    // 관리자 기능 도서 등록
     @PostMapping("/api/admin/selling-books")
     BookDetailResponseDto registerSellingBook(@RequestBody BookDetailResponseDto registerDto);
 
