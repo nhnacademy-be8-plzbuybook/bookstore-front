@@ -74,7 +74,7 @@ function getOrderRequest() {
 
     const orderProducts = getOrderProducts();
 
-    const orderRequest = {
+    return {
         deliveryWishDate: deliveryWishDate,
         orderProducts: orderProducts,
         orderDeliveryAddress: {
@@ -89,8 +89,6 @@ function getOrderRequest() {
         orderPrice: orderAmount,
         nonMemberPassword: nonMemberPassword
     }
-
-    return orderRequest;
 }
 
 function getOrderProducts() {
