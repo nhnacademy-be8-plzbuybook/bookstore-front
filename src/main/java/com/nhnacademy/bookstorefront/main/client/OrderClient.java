@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "GATEWAY", contextId = "orderClient")
 public interface OrderClient {
 
-    @GetMapping("/api/my/orders")
+    @GetMapping("/api/orders/my")
     ResponseEntity<Page<OrderDto>> getMemberOrders(@ModelAttribute OrderSearchRequestDto searchRequest, Pageable pageable);
 
     @GetMapping("/api/orders")
@@ -24,7 +24,7 @@ public interface OrderClient {
     @PostMapping("/api/orders/non-member")
     ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
 
-    @PostMapping("/api/orders")
+    @PostMapping("/api/orders/member")
     ResponseEntity<OrderSaveResponseDto> requestMemberOrder(@RequestBody MemberOrderRequestDto orderSaveRequest);
 
     @PostMapping("/api/orders/{order-id}/complete")
