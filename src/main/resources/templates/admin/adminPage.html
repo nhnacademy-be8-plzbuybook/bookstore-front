@@ -217,7 +217,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="member : ${members}">
-                    <form th:action="@{/adminpage/update}" method="post">
+                    <form th:action="@{/adminpage/update}" method="post" th:object="${member}">
 
                         <!-- 이름 수정 -->
                         <td><input type="text" th:name="name" th:value="${member.name}" /></td>
@@ -231,29 +231,27 @@
                         <!-- 생년월일 수정 -->
                         <td><input type="date" th:name="birth" th:value="${member.birth}" /></td>
 
-                        <td><input type="text" th:name="membergrade" th:value="${member.memberGradeName}"/></td>
+                        <td>
+                            <select th:name="memberGradeId">
+                                <option th:each="grade : ${memberGradeList}"
+                                        th:value="${grade.memberGradeId}"
+                                        th:text="${grade.memberGradeName}"
+                                        th:selected="${grade.memberGradeName == member.memberGradeName}">
+                                </option>
+                            </select>
+                        </td>
 
-                        <td><input type="text" th:name="memberstatus" th:value="${member.memberStateName}"/></td>
-<!--                        <td th:text="${member.memberGradeName}">등급</td>-->
-<!--                        <td th:text="${member.memberStateName}">상태</td>-->
+                         <td>
+                        <select th:name="memberStateId">
+                            <option th:each="status : ${memberStatusList}"
+                                    th:value="${status.memberStateId}"
+                                    th:text="${status.memberStateName}"
+                                    th:selected="${status.memberStateName == member.memberStateName}">
+                            </option>
+                        </select>
+                         </td>
 
-<!--                        &lt;!&ndash; 등급 &ndash;&gt;-->
-<!--                        <td>-->
-<!--                            <select th:name="memberGrade">-->
-<!--                                <option th:value="${member.memberGradeId}" th:text="${member.memberGradeName}" selected="selected"></option>-->
-<!--                                <option value="1">일반</option>-->
-<!--                                <option value="2">VIP</option>-->
-<!--                                &lt;!&ndash; 다른 등급 옵션을 추가 &ndash;&gt;-->
-<!--                            </select>-->
-<!--                        </td>-->
 
-                        <!-- 상태 -->
-<!--                        <select th:name="memberState">-->
-<!--                            &lt;!&ndash; 이미 존재하는 상태를 선택할 수 있도록 현재 상태 표시 &ndash;&gt;-->
-<!--                            <option th:value="${member.memberStatus.id}" th:text="${member.memberStatus.name}" selected="selected"></option>-->
-
-<!--                            &lt;!&ndash; memberStatusList를 순회하여 상태를 옵션으로 추가 &ndash;&gt;-->
-<!--                            <option th:each="status : ${memberStatusList}" th:value="${status.id}" th:text="${status.name}"></option>-->
                         </select>
                         <td><button type="submit">수정</button> </td>
                     </form>
