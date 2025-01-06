@@ -16,8 +16,6 @@ import java.util.List;
 @FeignClient(name = "GATEWAY", contextId = "bookClient")
 public interface BookSearchClient {
 
-//    @GetMapping("/api/books")
-//    List<BookSearchResponseDto> searchBook(@RequestParam String searchKeyword);
 
     @GetMapping("/api/books")
     BookSearchPagedResponseDto searchBook(

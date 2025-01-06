@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 책사조잉 관리자 페이지 📚</title>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header .menu a,
+        header .icons a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        header .menu a:hover,
+        header .icons a:hover {
+            color: #f1f1f1;
+        }
+
+        main {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .sidebar .group {
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .sidebar .group.active,
+        .sidebar .group:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h3 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .form-container form label {
+            font-size: 14px;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-container form input,
+        .form-container form select {
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-container form input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .form-container form button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-container form button:hover {
+            background-color: #555;
+        }
+
+        .table-wrapper {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f1f1f1;
+        }
+
+        table td {
+            background-color: #fff;
+        }
+
+        table .action-buttons button {
+            padding: 5px 10px;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        table .action-buttons .edit {
+            background-color: #007bff;
+        }
+
+        table .action-buttons .delete {
+            background-color: #dc3545;
+        }
+
+        /* 설명과 카테고리 사이 간격 추가 */
+        #editor {
+            margin-bottom: 20px; /* 설명 아래 간격 추가 */
+        }
+
+        /* 카테고리 라벨 간격 추가 */
+        label[for="category"] {
+            margin-top: 20px; /* 설명과 카테고리 사이 간격 */
+            display: block; /* 라벨을 블록 요소로 설정 */
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #00aaff;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo">📚 책사조잉 📚</div>
+    <nav class="menu">
+        <a href="#">홈</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="/logout">로그아웃</a>
+    </div>
+</header>
+<main>
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <div class="group active" data-section="member-management">회원 관리</div>
+        <div class="group active" data-section="book-management">도서 관리</div>
+        <div class="group" data-section="coupon-management">쿠폰 관리</div>
+        <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
+        <div class="group" data-section="tag-management">태그 관리</div>
+        <div class="group" data-section="category-management">카테고리 관리</div>
+
+    </div>
+
+    <!-- 메인 콘텐츠 -->
+    <div class="content">
+        <h2>도서 관리</h2>
+        <!-- 도서 등록 폼 -->
+        <div class="form-container">
+            <h3>도서 등록</h3>
+            <form action="/books/register" method="POST">
+                <label for="bookTitle">제목</label>
+                <input type="text" id="bookTitle" name="bookTitle" required>
+
+                <label for="isbn">ISBN</label>
+                <input type="text" id="isbn" name="isbn" required>
+
+                <label for="publishDate">출판일자</label>
+                <input type="date" id="publishDate" name="publishDate" required>
+
+                <label for="author">작가</label>
+                <input type="text" id="author" name="author" required>
+
+                <label for="regularPrice">정가</label>
+                <input type="number" id="regularPrice" name="regularPrice" required>
+
+                <label for="salePrice">판매가</label>
+                <input type="number" id="salePrice" name="salePrice" required>
+
+                <label for="stock">재고</label>
+                <input type="number" id="stock" name="stock" required>
+
+                <label>
+                    <input type="checkbox" id="isPackable" name="isPackable">
+                    포장 가능 여부
+                </label>
+
+                <label for="publisher">출판사</label>
+                <input type="text" id="publisher" name="publisher" required>
+
+
+                <label for="editor" class="form-label">설명:</label>
+                <div id="editor"></div>
+
+
+                <label for="category">카테고리</label>
+                <input type="text" id="category" name="category" required>
+
+                <label for="bookImage">도서 이미지</label>
+                <input type="file" id="bookImage" name="bookImage" accept="image/*">
+
+                <button type="submit">등록</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
+    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>
+    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
+</footer>
+<!-- TUI Editor CSS -->
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
+<!-- TUI Editor JS -->
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
+<script>
+    const Editor = toastui.Editor;
+
+    // 옵션
+    const editor = new Editor({
+        el: document.querySelector('#editor'),
+        height: '600px',
+        initialEditType: 'markdown',
+        previewStyle: 'vertical'
+    });
+
+
+</script>
+</body>
+</html>
