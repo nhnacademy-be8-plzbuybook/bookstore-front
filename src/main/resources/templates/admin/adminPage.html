@@ -161,6 +161,23 @@
             font-weight: bold;
             border: 1px solid #f5c6cb;
         }
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #00aaff;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 <body>
@@ -180,7 +197,7 @@
     <!-- 사이드바 -->
     <div class="sidebar">
         <div class="group active" data-section="member-management">회원 관리</div>
-        <div class="group" data-section="book-management">도서 관리</div>
+        <div class="group active" data-section="book-management" onclick="location.href='/admin/selling-books'">도서 관리 </div>
         <div class="group" data-section="coupon-management">쿠폰 관리</div>
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
         <div class="group" data-section="tag-management">태그 관리</div>
@@ -279,10 +296,10 @@
                 </a>
             </div>
         </div>
-        <div id="book-management" class="section">
-            <h2>도서 관리</h2>
-            <p>여기에 도서 crud 구현</p>
-        </div>
+<!--        <div class="group active" data-section="book-management">-->
+<!--            <a href="/admin/selling-books" >도서 관리</a>-->
+<!--        </div>-->
+
         <div id="coupon-management" class="section">
             <h2>쿠폰 관리</h2>
             <p>여기에 쿠폰 crud 구현</p>
@@ -302,6 +319,11 @@
 
     </div>
 </main>
+<footer>
+    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
+    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>
+    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
+</footer>
 <script>
     const sidebarItems = document.querySelectorAll('.sidebar .group');
     const sections = document.querySelectorAll('.section');
