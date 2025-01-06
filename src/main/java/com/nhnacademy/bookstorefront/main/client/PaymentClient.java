@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstorefront.main.client;
 
-import com.nhnacademy.bookstorefront.main.dto.PaymentConfirmResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.payment.PaymentConfirmResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.payment.PaymentConfirmRequestDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;

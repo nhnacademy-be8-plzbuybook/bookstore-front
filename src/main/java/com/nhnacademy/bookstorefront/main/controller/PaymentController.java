@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
-import com.nhnacademy.bookstorefront.main.dto.PaymentConfirmResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.payment.PaymentConfirmResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.payment.PaymentConfirmRequestDto;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import com.nhnacademy.bookstorefront.main.service.PaymentService;
