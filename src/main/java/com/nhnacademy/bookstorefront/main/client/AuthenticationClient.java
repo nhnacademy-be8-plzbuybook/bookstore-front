@@ -7,6 +7,7 @@ import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberModifyRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.auth.UpdateLastLoginRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
@@ -74,5 +75,11 @@ public interface AuthenticationClient {
     //role 요청
     @GetMapping("/api/auth/role")
     ResponseEntity<String> getRoleFromToken(@RequestHeader("Authorization") String token);
+
+    @PostMapping("/api/members/last-login")
+    void updateLastLogin(@RequestBody UpdateLastLoginRequestDto updateLastLoginRequestDto);
+
+    @PostMapping("/api/members/status/dormant")
+    ResponseEntity<String> updateDormantMembers();
 
 }
