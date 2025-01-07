@@ -1,3 +1,11 @@
+document.querySelectorAll('.wishDate').forEach(radio => {
+    radio.addEventListener('change', function () {
+        const dateInput = document.getElementById('delivery-wish-date');
+        dateInput.style.display = (this.value === 'custom') ? 'block' : 'none';
+    });
+});
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const orderTable = document.getElementById("orderTable"); // 상품 테이블
     const orderAmountEl = document.getElementById("orderAmount"); // 주문금액 표시 요소
