@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorefront.main.client;
 
 
 import com.nhnacademy.bookstorefront.main.dto.*;
+import com.nhnacademy.bookstorefront.main.dto.book.CategoryRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
@@ -65,6 +66,10 @@ public interface BookClient {
     //카테고리 검색
     @GetMapping("/api/categories")
     ResponseEntity<List<CategorySimpleResponseDto>> searchCategories(@RequestParam String keyword);
+
+    @PostMapping("/api/categories")
+    ResponseEntity<Void> saveCategory(@RequestBody CategoryRegisterDto categoryRegisterDto);
+
 
 
 }
