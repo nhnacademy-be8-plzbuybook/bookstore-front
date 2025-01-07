@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorefront.main.client;
 
+import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -40,6 +41,10 @@ public interface MemberClient {
     @GetMapping("/api/members/status/all")
     List<MemberStatus> getAllMemberStatus();
 
+    //전체 등급 호출(관리자 페이지)
+    @GetMapping("/api/members/grade/all")
+    List<MemberGrade> getAllMemberGrade();
+
 
     @PostMapping("/api/member-selling-books/like/{sellingBookId}")
     ResponseEntity<Long> toggleLike(@PathVariable("sellingBookId") Long sellingBookId);
@@ -47,6 +52,18 @@ public interface MemberClient {
     // 포인트 내역 조회
     @GetMapping("/api/members/{memberId}/points")
     List<MemberPointResponseDto> getMemberPoints(@PathVariable("memberId") Long memberId);
+
+    //회원 수정(관리자 페이지)
+    @PostMapping("/api/members/email")
+    ResponseEntity<Void> updateMember(@RequestBody MemberModifyByAdminRequestDto memberModifyByAdminRequestDto);
+
+    //회원이 좋아요 누른 책 호출(마이 페이지)
+    @GetMapping("/api/members/{memberId}/liked-books")
+    Page<BookDetailResponseDto> getLikedBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "16") int size,
+            @PathVariable Long memberId
+    );
 }
 
 

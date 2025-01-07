@@ -25,17 +25,22 @@ import java.util.List;
 public class PageController {
 
     private final AuthenticationService authenticationService;
-
-    //테스트용
     private final AuthenticationClient authenticationClient;
     private final MemberClient memberClient;
 
     @GetMapping("/mypage")
-    public String mypage(Model model) {
+    public String mypage( @RequestParam(defaultValue = "0") int page,
+                          @RequestParam(defaultValue = "16") int size,
+                          Model model) {
         MyPageDto myPageDto = authenticationService.getMyPage();
-        //테스트용
-//        List<BookDetailResponseDto> books = authenticationClient.getBooks();
-//        model.addAttribute("books", books);
+
+
+        Page<BookDetailResponseDto> likedBooks = memberClient.getLikedBooks(page, size, myPageDto.getMemberId());
+
+        model.addAttribute("books", likedBooks.getContent());
+        model.addAttribute("currentPage", likedBooks.getNumber());
+        model.addAttribute("totalPages", likedBooks.getTotalPages());
+
 
         //회원 수정전 정보 표시
         model.addAttribute("member", myPageDto);
@@ -73,7 +78,7 @@ public class PageController {
             model.addAttribute("errorMessage", "회원 정보 수정에 실패했습니다.");
         }
 
-        return "redirect:/mypage";
+        return "redirect:/login";
     }
 
     @PostMapping("/mypage/address")

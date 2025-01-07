@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstorefront.main.service.impl;
 
 import com.nhnacademy.bookstorefront.main.client.PaymentClient;
-import com.nhnacademy.bookstorefront.main.dto.PaymentConfirmResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.payment.PaymentConfirmResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.payment.PaymentConfirmRequestDto;
 import com.nhnacademy.bookstorefront.main.service.PaymentService;
 import lombok.RequiredArgsConstructor;

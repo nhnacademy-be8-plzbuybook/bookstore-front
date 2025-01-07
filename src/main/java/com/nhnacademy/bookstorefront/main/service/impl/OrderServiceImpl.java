@@ -2,7 +2,7 @@ package com.nhnacademy.bookstorefront.main.service.impl;
 
 import com.nhnacademy.bookstorefront.common.exception.ConflictException;
 import com.nhnacademy.bookstorefront.main.client.OrderClient;
-import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;

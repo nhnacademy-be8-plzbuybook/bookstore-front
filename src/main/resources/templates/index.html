@@ -24,9 +24,12 @@
         }
 
         header .logo {
+            text-decoration: none;
+            color: inherit;
             font-size: 24px;
             font-weight: bold;
         }
+
 
         header .menu a,
         header .icons a {
@@ -122,11 +125,28 @@
         button:hover {
             background-color: #444;
         }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #00aaff;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 <header>
-    <div class="logo">📚 책사조잉 📚</div>
+    <a href="/" class = "logo">📚 책사조잉 📚</a>
     <nav class="menu">
         <a href="/">Home</a>
         <a href="#">국내도서</a>
@@ -203,7 +223,11 @@
     </ul>
 </nav>
 
-
+<footer>
+    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
+    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>
+    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
+</footer>
 <script src="/script/books.js"></script>
 
 <script>

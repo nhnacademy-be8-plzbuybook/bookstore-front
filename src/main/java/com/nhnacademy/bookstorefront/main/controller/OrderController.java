@@ -1,12 +1,15 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
-import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
+import com.nhnacademy.bookstorefront.main.client.BookClient;
+import com.nhnacademy.bookstorefront.main.client.MemberClient;
+import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
+import com.nhnacademy.bookstorefront.main.service.WrappingPaperService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +19,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Controller
 public class OrderController {
     private final OrderService orderService;
+    private final BookClient bookClient;
+    private final WrappingPaperService wrappingPaperService;
+    private final DeliveryFeePolicyService deliveryFeePolicyService;
+    private final MemberClient memberClient;
 
     /**
      * 비회원 주문페이지
@@ -27,8 +37,19 @@ public class OrderController {
      * @return
      */
     @GetMapping("/non-member/order/receipt")
-    public String OrderReceipt() {
-        return "order/non_member_receipt";
+    public String nonMemberOrderReceipt(@RequestParam("productId")List<Long> productId,
+                                        @RequestParam("quantity") List<Integer> quantity,
+                                        Model model) {
+        List<OrderReceiptProduct> books = new ArrayList<>();
+        for (int i = 0; i < productId.size(); i++) {
+            BookDetailResponseDto bookDetail = bookClient.getSellingBook(productId.get(i));
+            books.add(new OrderReceiptProduct(bookDetail, quantity.get(i)));
+        }
+
+        model.addAttribute("wrappingPapers", wrappingPaperService.getWrappingPapers());
+        model.addAttribute("books", books);
+        model.addAttribute("deliveryFeePolicy", deliveryFeePolicyService.getGeneralPolicy());
+        return "order/nonMember/receipt";
     }
 
 
@@ -38,8 +59,32 @@ public class OrderController {
      * @return
      */
     @GetMapping("/order/receipt")
-    public String memberOrderReceipt() {
-        return "order/member_receipt";
+    public String memberOrderReceipt(@RequestParam("productId")List<Long> productId,
+                                     @RequestParam("quantity") List<Integer> quantity,
+                                     Model model) {
+
+        // 책 정보
+        List<OrderReceiptProduct> books = new ArrayList<>();
+        for (int i = 0; i < productId.size(); i++) {
+            BookDetailResponseDto bookDetail = bookClient.getSellingBook(productId.get(i));
+            books.add(new OrderReceiptProduct(bookDetail, quantity.get(i)));
+        }
+
+        // 회원주소
+        List<MemberAddressResponseDto> addressList = memberClient.getAddressListByMemberEmail();
+        // 회원기본주소
+        MemberAddressResponseDto defaultAddress = addressList.stream()
+                .filter(MemberAddressResponseDto::getDefaultAddress)
+                .findFirst()
+                .orElse(null);
+
+        //회원 포인트
+        model.addAttribute("wrappingPapers", wrappingPaperService.getWrappingPapers());
+        model.addAttribute("books", books);
+        model.addAttribute("deliveryFeePolicy", deliveryFeePolicyService.getGeneralPolicy());
+        model.addAttribute("addressList", addressList);
+        model.addAttribute("defaultAddress", defaultAddress);
+        return "order/member/receipt";
     }
 
 
@@ -53,7 +98,8 @@ public class OrderController {
     @GetMapping("/orders/{order-id}")
     public String orderDetail(@PathVariable("order-id") String orderId,
                               Model model) {
-        //TODO: 주문상세정보 불러오기
+        // 주문상세 DTO
+
         OrderDetail orderDetail = orderService.getOrderDetail(orderId);
         model.addAttribute("orderDetail", orderDetail);
 
@@ -70,10 +116,11 @@ public class OrderController {
      * @return
      */
     @GetMapping("/my/orders")
-    public String getMemberOrders(@ModelAttribute OrderSearchRequestDto searchRequest,
+    public String getMemberOrders(@RequestParam(required = false) OrderSearchRequestDto searchRequest,
                                   Pageable pageable,
                                   Model model) {
         Page<OrderDto> orderPage = orderService.getMemberOrders(searchRequest, pageable);
+
         model.addAttribute("orderPage", orderPage);
 
         return "order/myOrderList";

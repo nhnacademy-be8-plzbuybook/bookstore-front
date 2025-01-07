@@ -1,6 +1,6 @@
 package com.nhnacademy.bookstorefront.main.client;
 
-import com.nhnacademy.bookstorefront.main.dto.OrderSaveResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.*;
 @FeignClient(name = "GATEWAY", contextId = "orderClient")
 public interface OrderClient {
 
-    @GetMapping("/api/my/orders")
-    ResponseEntity<Page<OrderDto>> getMemberOrders(@ModelAttribute OrderSearchRequestDto searchRequest, Pageable pageable);
+    @GetMapping("/api/orders/my")
+    ResponseEntity<Page<OrderDto>> getMemberOrders(@RequestParam(required = false) OrderSearchRequestDto searchRequest, Pageable pageable);
 
     @GetMapping("/api/orders")
     ResponseEntity<Page<OrderDto>> getAllOrders(@ModelAttribute OrderSearchRequestDto searchRequest, Pageable pageable);
@@ -24,7 +24,7 @@ public interface OrderClient {
     @PostMapping("/api/orders/non-member")
     ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
 
-    @PostMapping("/api/orders")
+    @PostMapping("/api/orders/member")
     ResponseEntity<OrderSaveResponseDto> requestMemberOrder(@RequestBody MemberOrderRequestDto orderSaveRequest);
 
     @PostMapping("/api/orders/{order-id}/complete")

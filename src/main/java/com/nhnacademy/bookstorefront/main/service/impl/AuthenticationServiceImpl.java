@@ -39,19 +39,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 throw new LoginFailException("이미 탈퇴한 회원입니다.");
             }
 
+            if ("DORMANT".equals(loginResponse.memberStateName())) {
+                throw new LoginFailException("휴면 상태 회원입니다.");
+            }
+
             return loginResponse;
 
-        } catch (LoginFailException e) {
+        } catch (LoginFailException | FeignException e) {
             log.error("Login failed: {}", e.getMessage());
-            throw e;
-        } catch (FeignException e) {
-            log.error("Feign Client error: {}", e.getMessage());
-            throw new LoginFailException("로그인 중 오류가 발생했습니다.");
-        } catch (Exception e) {
-            log.error("Unexpected login error: {}", e.getMessage());
             throw new LoginFailException("로그인 중 오류가 발생했습니다.");
         }
     }
+
 
     @Override
     public OauthLoginResponseDto processOauthLogin(String code) {
