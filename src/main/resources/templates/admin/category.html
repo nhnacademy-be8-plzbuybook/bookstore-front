@@ -631,6 +631,33 @@
         </form>
 
     <!-- 카테고리 목록 -->
+<!--    <div class="table-wrapper">-->
+<!--      <table id="categoryTable">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--          <th>ID</th>-->
+<!--          <th>카테고리 이름</th>-->
+<!--          <th>수정/삭제</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        &lt;!&ndash; 카테고리 항목들 &ndash;&gt;-->
+<!--        <tr th:each="category : ${categories}">-->
+<!--          <td th:text="${category.categoryId}"></td>-->
+<!--          <td th:text="${category.categoryName}"></td>-->
+<!--          <td class="action-buttons">-->
+<!--            <button class="edit" th:href="@{/admin/category/edit/{id}(id=${category.categoryId})}">수정</button>-->
+<!--            <form th:action="@{/admin/category/{id}(id=${category.categoryId})}" method="post">-->
+<!--              <input type="hidden" name="_method" value="delete" />-->
+<!--              <button type="submit">삭제</button>-->
+<!--            </form>-->
+
+<!--          </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--      </table>-->
+<!--    </div>-->
+    <!-- 카테고리 목록 -->
     <div class="table-wrapper">
       <table id="categoryTable">
         <thead>
@@ -651,7 +678,6 @@
               <input type="hidden" name="_method" value="delete" />
               <button type="submit">삭제</button>
             </form>
-
           </td>
         </tr>
         </tbody>
@@ -659,11 +685,19 @@
     </div>
 
     <!-- 페이징 버튼 -->
-<!--    <div class="pagination">-->
-<!--      <a th:if="${currentPage > 0}" th:href="@{'/admin/category'(page=${currentPage - 1})}" class="prev">이전</a>-->
-<!--      <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">10</span></span>-->
-<!--      <a th:if="${currentPage < totalPages - 1}" th:href="@{'/admin/category'(page=${currentPage + 1})}" class="next">다음</a>-->
-<!--    </div>-->
+    <div class="pagination">
+      <!-- 이전 페이지 버튼 -->
+      <a th:if="${currentPage > 0}" th:href="@{'/admin/category'(page=${currentPage - 1}, keyword=${keyword})}" class="prev">이전</a>
+
+      <!-- 페이지 번호 표시 -->
+      <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">10</span></span>
+
+      <!-- 다음 페이지 버튼 -->
+      <a th:if="${currentPage < totalPages - 1}" th:href="@{'/admin/category'(page=${currentPage + 1}, keyword=${keyword})}" class="next">다음</a>
+    </div>
+
+
+
   </div>
 </main>
 

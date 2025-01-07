@@ -65,8 +65,10 @@ public interface BookClient {
 
     //카테고리 검색
     @GetMapping("/api/categories")
-    ResponseEntity<List<CategorySimpleResponseDto>> searchCategories(@RequestParam String keyword);
-
+    ResponseEntity<Page<CategorySimpleResponseDto>> searchCategories(
+            @RequestParam String keyword,
+            @RequestParam int page,
+            @RequestParam int size);
     @PostMapping("/api/categories")
     ResponseEntity<Void> saveCategory(@RequestBody CategoryRegisterDto categoryRegisterDto);
 
