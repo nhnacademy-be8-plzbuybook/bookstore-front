@@ -34,11 +34,13 @@ public class PageController {
                           Model model) {
         MyPageDto myPageDto = authenticationService.getMyPage();
 
+
         Page<BookDetailResponseDto> likedBooks = memberClient.getLikedBooks(page, size, myPageDto.getMemberId());
 
         model.addAttribute("books", likedBooks.getContent());
         model.addAttribute("currentPage", likedBooks.getNumber());
         model.addAttribute("totalPages", likedBooks.getTotalPages());
+
 
         //회원 수정전 정보 표시
         model.addAttribute("member", myPageDto);
@@ -76,7 +78,7 @@ public class PageController {
             model.addAttribute("errorMessage", "회원 정보 수정에 실패했습니다.");
         }
 
-        return "redirect:/mypage";
+        return "redirect:/login";
     }
 
     @PostMapping("/mypage/address")

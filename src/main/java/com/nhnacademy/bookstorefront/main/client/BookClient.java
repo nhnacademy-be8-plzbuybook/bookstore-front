@@ -2,6 +2,8 @@ package com.nhnacademy.bookstorefront.main.client;
 
 
 import com.nhnacademy.bookstorefront.main.dto.*;
+import com.nhnacademy.bookstorefront.main.dto.book.CategoryRegisterDto;
+import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +62,20 @@ public interface BookClient {
     // 알라딘 API를 통해 ISBN 리스트로 도서 동기화
     @PostMapping("/api/books/sync/isbn")
     ResponseEntity<Void> syncBooksByIsbns(@RequestBody List<String> sellingbookId);
+
+    //카테고리 검색
+    @GetMapping("/api/categories")
+    ResponseEntity<Page<CategorySimpleResponseDto>> searchCategories(
+            @RequestParam String keyword,
+            @RequestParam int page,
+            @RequestParam int size);
+    @PostMapping("/api/categories")
+    ResponseEntity<Void> saveCategory(@RequestBody CategoryRegisterDto categoryRegisterDto);
+
+    @DeleteMapping("/api/categories/{categoryId}")
+    ResponseEntity<Void> deleteCategory(@PathVariable("categoryId") Long categoryId);
+
+
 
 
 }
