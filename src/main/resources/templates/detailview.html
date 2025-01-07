@@ -250,13 +250,15 @@
             <!-- 버튼 -->
             <div class="button-group">
                 <button class="cart-btn" onclick="addToCart()">장바구니 담기</button>
-                <button class="buy-btn" onclick="buyNow()">바로 구매</button>
-            </div>
 
-            <!-- 모달 트리거 버튼 -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#choiceModal">
-                바로구매
-            </button>
+                <!-- 바로 구매 버튼 -->
+                <button class="buy-btn"
+                        th:if="${isLoggedIn}"
+                        onclick="buyNow()">바로 구매</button>
+                <button class="buy-btn"
+                        th:if="${!isLoggedIn}"
+                        onclick="showModal()">바로 구매</button>
+            </div>
 
             <!-- 모달 -->
             <div class="modal fade" id="choiceModal" tabindex="-1" aria-labelledby="choiceModalLabel" aria-hidden="true">
@@ -264,7 +266,6 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="choiceModalLabel">로그인이 필요한 서비스입니다.</h5>
-                            <!-- X 버튼 -->
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-footer">
@@ -296,23 +297,22 @@
     function buyNow() {
         const sellingBookId = [[${book.getSellingBookId()}]];
         const quantity = document.getElementById("quantity").value;
-        window.location.href=`/order/receipt?productId=${sellingBookId}&quantity=${quantity}`;
+        window.location.href = `/order/receipt?productId=${sellingBookId}&quantity=${quantity}`;
+    }
+
+    function showModal() {
+        const modal = new bootstrap.Modal(document.getElementById('choiceModal'));
+        modal.show();
     }
 
     document.getElementById('doLogin').addEventListener('click', function () {
-        const modal = new bootstrap.Modal(document.getElementById('choiceModal'));
-        modal.hide();
-        // 로그인 페이지로 이동
         window.location.href = "/login";
     });
 
     document.getElementById('doNonMemberOrder').addEventListener('click', function () {
-        const modal = new bootstrap.Modal(document.getElementById('choiceModal'));
-        modal.hide();
-        // 비회원 주문 페이지로 이동
         const sellingBookId = [[${book.getSellingBookId()}]];
         const quantity = document.getElementById("quantity").value;
-        window.location.href=`/non-member/order/receipt?productId=${sellingBookId}&quantity=${quantity}`;
+        window.location.href = `/non-member/order/receipt?productId=${sellingBookId}&quantity=${quantity}`;
     });
 </script>
 </body>
