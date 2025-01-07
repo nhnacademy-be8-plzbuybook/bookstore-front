@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class MemberCouponGetResponseDto{
+    Long id; // 쿠폰의 식별 ID
     String code; //쿠폰 코드 필수
     String status; //쿠폰 상태 (미사용, 사용완료, 기한만료, 취소) 필수
     LocalDateTime issuedAt; //발급 날짜 필수
