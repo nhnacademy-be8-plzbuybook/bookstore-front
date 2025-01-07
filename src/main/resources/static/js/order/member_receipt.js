@@ -1,32 +1,9 @@
-// // const dummyOrderData =
-// //     {
-// //         deliveryWishDate: "2024-12-31",
-// //         usedPoint: 0,
-// //         orderProducts: [
-// //             {
-// //                 productId: 250,
-// //                 price: 15000,
-// //                 quantity: 1,
-// //                 wrapping: {
-// //                     wrappingPaperId: 1,
-// //                     quantity: 1,
-// //                     price: 3000
-// //                 }
-// //             }
-// //         ],
-// //         orderDeliveryAddress: {
-// //             locationAddress: "광주광역시 동구 필문대로 309(서석동, 조선대학교) 조선대5길 65",
-// //             zipCode: "61452",
-// //             detailAddress: "IT융합대학 별관 1층 컴퓨터공학과",
-// //             recipient: "김태현",
-// //             recipientPhone: "062-230-7381"
-// //         },
-// //         deliveryFee: 3000,
-// //         orderPrice: 18000
-// //     }
-//
-//
-
+document.querySelectorAll('.wishDate').forEach(radio => {
+    radio.addEventListener('change', function () {
+        const dateInput = document.getElementById('delivery-wish-date');
+        dateInput.style.display = (this.value === 'custom') ? 'block' : 'none';
+    });
+});
 
 let receipt = document.getElementById("receipt");
 let receiptPhone = document.getElementById("receiptPhone");
