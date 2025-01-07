@@ -1,0 +1,706 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--  <title>📚 카테고리 관리 📚</title>-->
+<!--  <link rel="stylesheet" href="https://uicdn.toast.com/tui-editor/latest/tui-editor.css">-->
+<!--  <style>-->
+<!--    /* 기본 스타일은 기존 템플릿과 동일 */-->
+<!--    body {-->
+<!--      font-family: 'Arial', sans-serif;-->
+<!--      background-color: #f9f9f9;-->
+<!--      margin: 0;-->
+<!--      padding: 0;-->
+<!--    }-->
+
+<!--    header {-->
+<!--      background-color: #333;-->
+<!--      padding: 15px 20px;-->
+<!--      color: white;-->
+<!--      display: flex;-->
+<!--      justify-content: space-between;-->
+<!--      align-items: center;-->
+<!--    }-->
+
+<!--    header .logo {-->
+<!--      text-decoration: none;-->
+<!--      color: inherit;-->
+<!--      font-size: 24px;-->
+<!--      font-weight: bold;-->
+<!--    }-->
+
+<!--    header .menu a,-->
+<!--    header .icons a {-->
+<!--      color: white;-->
+<!--      text-decoration: none;-->
+<!--      margin: 0 15px;-->
+<!--      font-size: 16px;-->
+<!--    }-->
+
+<!--    header .menu a:hover,-->
+<!--    header .icons a:hover {-->
+<!--      color: #f1f1f1;-->
+<!--    }-->
+
+<!--    main {-->
+<!--      display: flex;-->
+<!--      gap: 20px;-->
+<!--      padding: 20px;-->
+<!--    }-->
+
+<!--    .sidebar {-->
+<!--      width: 220px;-->
+<!--      background-color: #fff;-->
+<!--      border-radius: 8px;-->
+<!--      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);-->
+<!--      padding: 20px;-->
+<!--    }-->
+
+<!--    .sidebar .group {-->
+<!--      display: block;-->
+<!--      text-decoration: none;-->
+<!--      color: inherit;-->
+<!--      padding: 12px;-->
+<!--      border-radius: 4px;-->
+<!--      cursor: pointer;-->
+<!--      margin-bottom: 10px;-->
+<!--      font-size: 16px;-->
+<!--      transition: background-color 0.3s;-->
+<!--      text-align: center;-->
+<!--    }-->
+
+<!--    .sidebar .group.active,-->
+<!--    .sidebar .group:hover {-->
+<!--      background-color: #ddd;-->
+<!--      color: black;-->
+<!--    }-->
+
+<!--    .content {-->
+<!--      flex: 1;-->
+<!--      padding: 20px;-->
+<!--      background-color: #fff;-->
+<!--      border-radius: 8px;-->
+<!--      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);-->
+<!--    }-->
+
+<!--    .content h2 {-->
+<!--      font-size: 24px;-->
+<!--      color: #333;-->
+<!--      margin-bottom: 20px;-->
+<!--    }-->
+
+<!--    /* 버튼 및 폼 스타일 */-->
+<!--    .button-container {-->
+<!--      display: flex;-->
+<!--      justify-content: flex-end;-->
+<!--      gap: 20px;-->
+<!--      align-items: center;-->
+<!--      padding: 20px;-->
+<!--    }-->
+
+<!--    button {-->
+<!--      padding: 8px 12px;-->
+<!--      border: none;-->
+<!--      border-radius: 4px;-->
+<!--      cursor: pointer;-->
+<!--    }-->
+
+<!--    button:hover {-->
+<!--      opacity: 0.9;-->
+<!--    }-->
+
+<!--    .add-button {-->
+<!--      background-color: #28a745;-->
+<!--      color: white;-->
+<!--    }-->
+
+<!--    .search-container {-->
+<!--      margin-bottom: 20px;-->
+<!--    }-->
+
+<!--    .search-container input {-->
+<!--      width: calc(100% - 110px);-->
+<!--      padding: 10px;-->
+<!--      font-size: 14px;-->
+<!--      border: 1px solid #ddd;-->
+<!--      border-radius: 4px;-->
+<!--    }-->
+
+<!--    .search-container button {-->
+<!--      background-color: #007bff;-->
+<!--      color: white;-->
+<!--      border: none;-->
+<!--      padding: 10px 20px;-->
+<!--      font-size: 14px;-->
+<!--      border-radius: 4px;-->
+<!--      cursor: pointer;-->
+<!--      transition: background-color 0.3s;-->
+<!--    }-->
+
+<!--    .search-container button:hover {-->
+<!--      background-color: #0056b3;-->
+<!--    }-->
+
+<!--    .table-wrapper {-->
+<!--      margin-top: 20px;-->
+<!--      overflow-x: auto;-->
+<!--    }-->
+
+<!--    table {-->
+<!--      width: 100%;-->
+<!--      border-collapse: collapse;-->
+<!--    }-->
+
+<!--    table th,-->
+<!--    table td {-->
+<!--      padding: 10px;-->
+<!--      text-align: left;-->
+<!--      border: 1px solid #ddd;-->
+<!--    }-->
+
+<!--    table th {-->
+<!--      background-color: #f1f1f1;-->
+<!--    }-->
+
+<!--    table td {-->
+<!--      background-color: #fff;-->
+<!--    }-->
+
+<!--    table .action-buttons button {-->
+<!--      padding: 5px 10px;-->
+<!--      border: none;-->
+<!--      color: white;-->
+<!--      border-radius: 4px;-->
+<!--      cursor: pointer;-->
+<!--      font-size: 12px;-->
+<!--    }-->
+
+<!--    table .action-buttons .edit {-->
+<!--      background-color: #007bff;-->
+<!--    }-->
+
+<!--    table .action-buttons .delete {-->
+<!--      background-color: #dc3545;-->
+<!--    }-->
+
+<!--    /* 페이징 */-->
+<!--    .pagination {-->
+<!--      display: flex;-->
+<!--      justify-content: center;-->
+<!--      gap: 10px;-->
+<!--      margin-top: 20px;-->
+<!--    }-->
+
+<!--    .pagination a {-->
+<!--      text-decoration: none;-->
+<!--      padding: 8px 16px;-->
+<!--      border: 1px solid #ddd;-->
+<!--      background-color: #f9f9f9;-->
+<!--      color: #333;-->
+<!--      border-radius: 4px;-->
+<!--      transition: background-color 0.3s;-->
+<!--    }-->
+
+<!--    .pagination a:hover {-->
+<!--      background-color: #ddd;-->
+<!--    }-->
+
+<!--    .pagination .disabled {-->
+<!--      color: #ccc;-->
+<!--      cursor: not-allowed;-->
+<!--    }-->
+
+<!--    footer {-->
+<!--      background-color: #333;-->
+<!--      color: white;-->
+<!--      padding: 15px 20px;-->
+<!--      text-align: center;-->
+<!--    }-->
+
+<!--    footer a {-->
+<!--      color: #00aaff;-->
+<!--      text-decoration: none;-->
+<!--      margin: 0 5px;-->
+<!--    }-->
+
+<!--    footer a:hover {-->
+<!--      text-decoration: underline;-->
+<!--    }-->
+<!--  </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<header>-->
+<!--  <a href="/" class="logo">📚 책사조잉 📚</a>-->
+<!--  <nav class="menu">-->
+<!--    <a href="/">홈</a>-->
+<!--    <a href="#">도서 관리</a>-->
+<!--    <a href="#">카테고리 관리</a>-->
+<!--    <a href="#">추천도서</a>-->
+<!--  </nav>-->
+<!--  <div class="icons">-->
+<!--    <a href="/logout">로그아웃</a>-->
+<!--  </div>-->
+<!--</header>-->
+<!--<main>-->
+<!--  &lt;!&ndash; 사이드바 &ndash;&gt;-->
+<!--  <div class="sidebar">-->
+<!--    <a href="/adminpage" class="group">회원 관리</a>-->
+<!--    <a href="/admin/selling-books" class="group">도서 관리</a>-->
+<!--    <div class="group active" data-section="category-management">카테고리 관리</div>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; 메인 콘텐츠 &ndash;&gt;-->
+<!--  <div class="content">-->
+<!--    <h2>카테고리 관리</h2>-->
+
+<!--    <div class="button-container">-->
+<!--      &lt;!&ndash; 카테고리 추가 버튼 &ndash;&gt;-->
+<!--      <button onclick="location.href='/admin/category/register'" class="add-button">+ 카테고리 추가</button>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 카테고리 검색 &ndash;&gt;-->
+<!--    <form th:action="@{/admin/category}" method="get">-->
+<!--      <label for="keyword">검색어:</label>-->
+<!--      <input type="text" id="keyword" name="keyword" placeholder="카테고리 검색어를 입력하세요">-->
+<!--      <button type="submit">검색</button>-->
+<!--    </form>-->
+
+
+<!--    &lt;!&ndash; 카테고리 목록 &ndash;&gt;-->
+<!--    <div class="table-wrapper">-->
+<!--      <table id="categoryTable">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--          <th>ID</th>-->
+<!--          <th>카테고리 이름</th>-->
+<!--          <th>수정/삭제</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        &lt;!&ndash; 카테고리 항목들 &ndash;&gt;-->
+<!--        <tr th:each="category : ${categories}">-->
+<!--          <td th:text="${category.categoryId}"></td>-->
+<!--          <td th:text="${category.categoryName}"></td>-->
+<!--          <td class="action-buttons">-->
+<!--            <button class="edit" th:href="@{/admin/category/edit/{id}(id=${category.categoryId})}">수정</button>-->
+<!--            <form th:action="@{/api/admin/category/{id}(id=${category.categoryId})}" method="post">-->
+<!--              <button type="submit" class="delete">삭제</button>-->
+<!--            </form>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--      </table>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 페이징 버튼 &ndash;&gt;-->
+<!--&lt;!&ndash;    <div class="pagination">&ndash;&gt;-->
+<!--&lt;!&ndash;      <a th:if="${currentPage > 0}" th:href="@{'/admin/category'(page=${currentPage - 1})}" class="prev">이전</a>&ndash;&gt;-->
+<!--&lt;!&ndash;      <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">10</span></span>&ndash;&gt;-->
+<!--&lt;!&ndash;      <a th:if="${currentPage < totalPages - 1}" th:href="@{'/admin/category'(page=${currentPage + 1})}" class="next">다음</a>&ndash;&gt;-->
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+<!--  </div>-->
+<!--</main>-->
+
+<!--<footer>-->
+<!--  <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>-->
+<!--  <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank">PlzBuyBook GitHub</a></p>-->
+<!--  <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>-->
+<!--</footer>-->
+
+<!--<script>-->
+<!--  // 카테고리 검색-->
+<!--  function searchCategories() {-->
+<!--    const input = document.getElementById('categorySearchInput').value.toLowerCase();-->
+<!--    // 검색 결과를 처리하는 로직 추가-->
+<!--  }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 카테고리 관리 📚</title>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui-editor/latest/tui-editor.css">
+  <style>
+    /* 기본 스타일은 기존 템플릿과 동일 */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #333;
+      padding: 15px 20px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header .logo {
+      text-decoration: none;
+      color: inherit;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    header .menu a,
+    header .icons a {
+      color: white;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 16px;
+    }
+
+    header .menu a:hover,
+    header .icons a:hover {
+      color: #f1f1f1;
+    }
+
+    main {
+      display: flex;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .sidebar .group {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      padding: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 10px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+      text-align: center;
+    }
+
+    .sidebar .group.active,
+    .sidebar .group:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .content {
+      flex: 1;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .content h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    /* 버튼 및 폼 스타일 */
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+      gap: 20px;
+      align-items: center;
+      padding: 20px;
+    }
+
+    button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .add-button {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .search-container {
+      margin-bottom: 20px;
+    }
+
+    .search-container input {
+      width: calc(100% - 110px);
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .search-container button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .search-container button:hover {
+      background-color: #0056b3;
+    }
+
+    .table-wrapper {
+      margin-top: 20px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table th,
+    table td {
+      padding: 10px;
+      text-align: left;
+      border: 1px solid #ddd;
+    }
+
+    table th {
+      background-color: #f1f1f1;
+    }
+
+    table td {
+      background-color: #fff;
+    }
+
+    table .action-buttons button {
+      padding: 5px 10px;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    table .action-buttons .edit {
+      background-color: #007bff;
+    }
+
+    table .action-buttons .delete {
+      background-color: #dc3545;
+    }
+
+    /* 페이징 */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .pagination a {
+      text-decoration: none;
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+      color: #333;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    .pagination a:hover {
+      background-color: #ddd;
+    }
+
+    .pagination .disabled {
+      color: #ccc;
+      cursor: not-allowed;
+    }
+
+    footer {
+      background-color: #333;
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+    }
+
+    footer a {
+      color: #00aaff;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* 모달 창 스타일 */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+      overflow: auto;
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 50%;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <a href="/" class="logo">📚 책사조잉 📚</a>
+  <nav class="menu">
+    <a href="/">홈</a>
+    <a href="#">도서 관리</a>
+    <a href="#">카테고리 관리</a>
+    <a href="#">추천도서</a>
+  </nav>
+  <div class="icons">
+    <a href="/logout">로그아웃</a>
+  </div>
+</header>
+<main>
+  <!-- 사이드바 -->
+  <div class="sidebar">
+    <a href="/adminpage" class="group">회원 관리</a>
+    <a href="/admin/selling-books" class="group">도서 관리</a>
+    <div class="group active" data-section="category-management">카테고리 관리</div>
+  </div>
+
+  <!-- 메인 콘텐츠 -->
+  <div class="content">
+    <h2>카테고리 관리</h2>
+
+    <div class="button-container">
+      <!-- 카테고리 추가 버튼 -->
+      <button id="openModal" class="add-button">+ 카테고리 추가</button>
+    </div>
+
+    <!-- 카테고리 검색 -->
+        <form th:action="@{/admin/category}" method="get">
+          <label for="keyword">검색어:</label>
+          <input type="text" id="keyword" name="keyword" placeholder="카테고리 검색어를 입력하세요">
+          <button type="submit">검색</button>
+        </form>
+
+    <!-- 카테고리 목록 -->
+    <div class="table-wrapper">
+      <table id="categoryTable">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>카테고리 이름</th>
+          <th>설명</th>
+          <th>수정/삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 카테고리 항목들 -->
+        <tr th:each="category : ${categories}">
+          <td th:text="${category.categoryId}"></td>
+          <td th:text="${category.categoryName}"></td>
+          <td class="action-buttons">
+            <button class="edit" th:href="@{/admin/category/edit/{id}(id=${category.categoryId})}">수정</button>
+            <form th:action="@{/api/admin/category/{id}(id=${category.categoryId})}" method="post">
+              <button type="submit" class="delete">삭제</button>
+            </form>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 페이징 버튼 -->
+<!--    <div class="pagination">-->
+<!--      <a th:if="${currentPage > 0}" th:href="@{'/admin/category'(page=${currentPage - 1})}" class="prev">이전</a>-->
+<!--      <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">10</span></span>-->
+<!--      <a th:if="${currentPage < totalPages - 1}" th:href="@{'/admin/category'(page=${currentPage + 1})}" class="next">다음</a>-->
+<!--    </div>-->
+  </div>
+</main>
+
+<!-- 카테고리 추가 모달 -->
+<div id="categoryModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <h3>카테고리 추가</h3>
+    <form action="/api/admin/category" method="post">
+      <input type="text" name="categoryName" placeholder="카테고리 이름" required>
+      <input type="text" name="categoryDescription" placeholder="설정할 상위 카테고리" required>
+      <button type="submit">추가</button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
+  <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank">PlzBuyBook GitHub</a></p>
+  <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
+</footer>
+
+<script>
+  // 모달 열기
+  document.getElementById('openModal').onclick = function() {
+    document.getElementById('categoryModal').style.display = "block";
+  }
+
+  // 모달 닫기
+  function closeModal() {
+    document.getElementById('categoryModal').style.display = "none";
+  }
+
+  // 카테고리 검색
+  function searchCategories() {
+    const input = document.getElementById('categorySearchInput').value.toLowerCase();
+    // 검색 결과를 처리하는 로직 추가
+  }
+</script>
+</body>
+</html>
