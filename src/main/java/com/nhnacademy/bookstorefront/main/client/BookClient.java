@@ -70,6 +70,10 @@ public interface BookClient {
     @PostMapping("/api/categories")
     ResponseEntity<Void> saveCategory(@RequestBody CategoryRegisterDto categoryRegisterDto);
 
+    @DeleteMapping("/api/categories/{categoryId}")
+    ResponseEntity<Void> deleteCategory(@PathVariable("categoryId") Long categoryId);
+
+
 
 
 }

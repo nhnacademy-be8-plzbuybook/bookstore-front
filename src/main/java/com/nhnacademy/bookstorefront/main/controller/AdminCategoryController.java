@@ -37,5 +37,13 @@ public class AdminCategoryController {
 
         return "redirect:/admin/category";
     }
+    @RequestMapping(value = "/admin/category/{id}", method = RequestMethod.POST)
+    public String deleteCategory(@PathVariable("id") Long categoryId,
+                                 @RequestParam("_method") String method) {
+        if ("delete".equals(method)) {
+            bookClient.deleteCategory(categoryId);
+        }
+        return "redirect:/admin/category";
+    }
 
 }

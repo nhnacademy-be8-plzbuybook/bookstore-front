@@ -647,9 +647,11 @@
           <td th:text="${category.categoryName}"></td>
           <td class="action-buttons">
             <button class="edit" th:href="@{/admin/category/edit/{id}(id=${category.categoryId})}">수정</button>
-            <form th:action="@{/api/admin/category/{id}(id=${category.categoryId})}" method="post">
-              <button type="submit" class="delete">삭제</button>
+            <form th:action="@{/admin/category/{id}(id=${category.categoryId})}" method="post">
+              <input type="hidden" name="_method" value="delete" />
+              <button type="submit">삭제</button>
             </form>
+
           </td>
         </tr>
         </tbody>
