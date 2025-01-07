@@ -22,6 +22,8 @@
         }
 
         header .logo {
+            text-decoration: none;
+            color: inherit;
             font-size: 24px;
             font-weight: bold;
         }
@@ -54,6 +56,9 @@
         }
 
         .sidebar .group {
+            display: block; /* a 태그를 블록 요소로 변경 */
+            text-decoration: none; /* 기본 밑줄 제거 */
+            color: inherit; /* 기본 색상 상속 */
             padding: 12px;
             border-radius: 4px;
             cursor: pointer;
@@ -182,9 +187,9 @@
 </head>
 <body>
 <header>
-    <div class="logo">📚 책사조잉 📚</div>
+    <a href="/" class = "logo">📚 책사조잉 📚</a>
     <nav class="menu">
-        <a href="#">홈</a>
+        <a href="/">홈</a>
         <a href="#">국내도서</a>
         <a href="#">외국도서</a>
         <a href="#">추천도서</a>
@@ -197,7 +202,7 @@
     <!-- 사이드바 -->
     <div class="sidebar">
         <div class="group active" data-section="member-management">회원 관리</div>
-        <div class="group active" data-section="book-management" onclick="location.href='/admin/selling-books'">도서 관리 </div>
+        <a href="/admin/selling-books" class="group">도서 관리</a>
         <div class="group" data-section="coupon-management">쿠폰 관리</div>
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
         <div class="group" data-section="tag-management">태그 관리</div>
