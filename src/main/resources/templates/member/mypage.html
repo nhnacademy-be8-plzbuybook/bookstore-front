@@ -172,6 +172,33 @@
             font-weight: bold;
         }
 
+        /* 책 목록 스타일 */
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .book {
+            text-align: center;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .book img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .book div {
+            font-size: 14px;
+            color: #333;
+        }
+
         .highlight {
             background-color: #fffbe6;
             font-weight: bold;
@@ -387,7 +414,7 @@
 <header>
     <div class="logo">📚 책사조잉 📚</div>
     <nav class="menu">
-        <a href="#">Home</a>
+        <a href="/index">Home</a>
         <a href="#">국내도서</a>
         <a href="#">외국도서</a>
         <a href="#">추천도서</a>
@@ -448,10 +475,11 @@
         <div class="section" id="likes">
             <h2>좋아요 도서</h2>
             <div class="book-list">
-                <!-- main에 책 나오게 했음 (수정 필요) -->
                 <div class="book" th:each="book : ${books}">
-                    <img th:src="${book.imageUrl}" th:alt="${book.bookTitle}">
-                    <div th:text="${book.bookTitle}"></div>
+                    <a th:href="'/book/detail/' + ${book.sellingBookId}">
+                        <img th:src="${book.imageUrl}" th:alt="${book.bookTitle}">
+                        <div th:text="${book.bookTitle}"></div>
+                    </a>
                 </div>
             </div>
         </div>
