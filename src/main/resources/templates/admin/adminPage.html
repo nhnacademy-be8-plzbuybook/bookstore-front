@@ -183,6 +183,67 @@
             text-decoration: underline;
         }
 
+        /* 포인트 조건 테이블 */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        /* 수정 입력 필드 */
+        input[type="text"], input[type="number"], input[type="date"], select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+
+        /* 수정 버튼 */
+        button {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* 수정 버튼 */
+        button[type="submit"] {
+            background-color: #007bff;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -207,6 +268,7 @@
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
         <div class="group" data-section="tag-management">태그 관리</div>
         <div class="group" data-section="category-management">카테고리 관리</div>
+        <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
 
     </div>
 
@@ -320,6 +382,45 @@
         <div id="category-management" class="section">
             <h2>카테고리 관리</h2>
             <p>여기에 카테고리 crud 구현</p>
+        </div>
+
+        <!-- 포인트 조건 관리 -->
+        <div id="point-condition-management" class="section">
+            <h2>포인트 조건 관리</h2>
+
+            <!-- 성공 메시지 표시 -->
+            <div th:if="${successMessage}" class="alert success">
+                <p th:text="${successMessage}"></p>
+            </div>
+
+            <!-- 실패 메시지 표시 -->
+            <div th:if="${errorMessage}" class="alert error">
+                <p th:text="${errorMessage}"></p>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>조건 이름</th>
+                        <th>조건 포인트</th>
+                        <th>조건 비율</th>
+                        <th>수정</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- pointConditions 목록을 반복하여 테이블에 표시 -->
+                    <tr th:each="pointCondition : ${pointConditions}">
+                        <form th:action="@{/adminpage/points-conditions/update/{id}(id=${pointCondition.id})}" method="post" th:object="${pointCondition}">
+                            <td><input type="text" th:name="pointConditionName" th:value="${pointCondition.pointConditionName}" /></td>
+                            <td><input type="number" th:name="conditionPoint" th:value="${pointCondition.conditionPoint}" /></td>
+                            <td><input type="number" step="0.01" th:name="conditionPercentage" th:value="${pointCondition.conditionPercentage}" /></td>
+                            <td><button type="submit">수정</button></td>
+                        </form>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>

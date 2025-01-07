@@ -1,6 +1,8 @@
 package com.nhnacademy.bookstorefront.main.client;
 
 import com.nhnacademy.bookstorefront.main.dto.Member.*;
+import com.nhnacademy.bookstorefront.main.dto.point.PointConditionRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.point.PointConditionResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.data.domain.Page;
@@ -55,6 +57,16 @@ public interface MemberClient {
     //회원 수정(관리자 페이지)
     @PostMapping("/api/members/email")
     ResponseEntity<Void> updateMember(@RequestBody MemberModifyByAdminRequestDto memberModifyByAdminRequestDto);
+
+    // 포인트 조건
+    @PostMapping("/api/points/conditions")
+    ResponseEntity<PointConditionResponseDto> createPointCondition(@RequestBody PointConditionRequestDto pointConditionRequestDto);
+
+    @GetMapping("/api/points/conditions")
+    ResponseEntity<List<PointConditionResponseDto>> getAllPointConditions();
+
+    @PostMapping("/api/points/conditions/{id}")
+    ResponseEntity<PointConditionResponseDto> updatePointCondition(@PathVariable Long id, @RequestBody PointConditionRequestDto pointConditionRequestDto);
 }
 
 
