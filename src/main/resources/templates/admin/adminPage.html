@@ -241,6 +241,8 @@
                 <tr th:each="member : ${members}">
                     <form th:action="@{/adminpage/update}" method="post" th:object="${member}">
 
+                        <input type="hidden" th:name="originalEmail" th:value="${member.email}" />
+
                         <!-- 이름 수정 -->
                         <td><input type="text" th:name="name" th:value="${member.name}" /></td>
 

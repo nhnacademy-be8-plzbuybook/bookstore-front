@@ -18,6 +18,9 @@ public class MemberModifyByAdminRequestDto {
     //이름전화번호 이메일 생년 월일 등급 상태
 
     @NotBlank
+    private String originalEmail;
+
+    @NotBlank
     @Size(max = 100)
     private String name;
 
