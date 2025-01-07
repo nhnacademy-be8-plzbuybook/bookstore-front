@@ -34,8 +34,6 @@ public class PageController {
     public String mypage(Model model) {
         MyPageDto myPageDto = authenticationService.getMyPage();
         //테스트용
-//        List<BookDetailResponseDto> books = authenticationClient.getBooks();
-//        model.addAttribute("books", books);
 
         //회원 수정전 정보 표시
         model.addAttribute("member", myPageDto);
@@ -73,7 +71,7 @@ public class PageController {
             model.addAttribute("errorMessage", "회원 정보 수정에 실패했습니다.");
         }
 
-        return "redirect:/mypage";
+        return "redirect:/login";
     }
 
     @PostMapping("/mypage/address")
