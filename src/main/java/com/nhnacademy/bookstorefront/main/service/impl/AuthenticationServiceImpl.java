@@ -39,10 +39,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 throw new LoginFailException("이미 탈퇴한 회원입니다.");
             }
 
-            if ("DORMANT".equals(loginResponse.memberStateName())) {
-                throw new LoginFailException("휴면 상태 회원입니다.");
-            }
-
             return loginResponse;
 
         } catch (LoginFailException | FeignException e) {
