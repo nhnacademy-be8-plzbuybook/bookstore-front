@@ -318,21 +318,82 @@
 
         <div id="coupon-management" class="section">
             <h2>쿠폰 관리</h2>
-            <p>여기에 쿠폰 crud 구현</p>
-            <!-- 회원에게 쿠폰 발급 -->
+            <!-- 쿠폰 생성 -->
+            <h3>쿠폰 생성</h3>
+            <form action="/admin/coupons" method="post">
+                <label for="expired-at">만료일</label>
+                <input type="datetime-local" id="expired-at" name="expiredAt" required><br>
+
+                <label for="coupon-policy-id">적용할 쿠폰정책 ID</label>
+                <input type="number" id="coupon-policy-id" name="couponPolicyId" required><br>
+
+                <button type="submit">쿠폰 생성</button>
+            </form>
 
             <!-- 쿠폰 조회 -->
+            <table>
+                <thead>
+                <tr>
+                    <th>쿠폰 ID</th>
+                    <th>코드</th>
+                    <th>상태</th>
+                    <th>생성일</th>
+                    <th>만료일</th>
+                    <th>쿠폰정책 ID</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each = "coupon : ${coupons}">
+                    <td th:text="${coupon.id()}"></td>
+                    <td th:text="${coupon.code()}"></td>
+                    <td th:text="${coupon.status()}"></td>
+                    <td th:text="${#temporals.format(coupon.issuedAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#temporals.format(coupon.expiredAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${coupon.policyId()}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <form action="/admin/coupons" method="get">
+                <label for="get-coupon-page">페이지 번호:</label>
+                <input type="number" id="get-coupon-page" name="page" th:value="${currentPage}" min="0" required>
+
+                <label for="get-coupon-pageSize">페이지 크기:</label>
+                <input type="number" id="get-coupon-pageSize" name="pageSize" th:value="${pageSize}" min="1" required>
+
+                <button type="submit">조회</button>
+            </form>
+
+            <script>
+                document.getElementById('currentDateTime').value = new Date().toISOString();
+            </script>
+
+                        <div class="pagination">
+                            <a th:if="${currentPage > 0}"
+                               th:href="@{/admin/coupons(page=${currentPage - 1}, pageSize=${pageSize})}">
+                                이전
+                            </a>
+                            <span>페이지 <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
+                            <a th:if="${currentPage < totalPages - 1}"
+                               th:href="@{/admin/coupons(page=${currentPage + 1}, pageSize=${pageSize})}">
+                                다음
+                            </a>
+                        </div>
+
+            <!-- 회원에게 쿠폰 발급 -->
+
 
             <!-- 발급 내역 조회 -->
 
             <!-- 사용 내역 조회 -->
 
+
         </div>
+
         <div id="coupon-policy-management" class="section">
             <h2>쿠폰 정책 관리</h2>
             <!-- 쿠폰정책 생성(고정/비율 할인) -->
             <h3>쿠폰 정책 생성</h3>
-            <form action="/admin/coupon-policies/create" method="post">
+            <form action="/admin/coupon-policies" method="post">
                 <label for="name">쿠폰 이름:</label>
                 <input type="text" id="name" name="name" value="DEFAULT_NAME" required><br>
 

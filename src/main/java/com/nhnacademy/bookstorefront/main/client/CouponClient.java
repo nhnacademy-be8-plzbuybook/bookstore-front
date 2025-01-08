@@ -3,10 +3,13 @@ package com.nhnacademy.bookstorefront.main.client;
 import com.nhnacademy.bookstorefront.main.dto.coupon.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @FeignClient(name = "GATEWAY", contextId = "couponClient")
 public interface CouponClient {
@@ -18,8 +21,8 @@ public interface CouponClient {
     // 활성화된 쿠폰정책 조회
     @GetMapping("/api/coupon-policies")
     ResponseEntity<Page<CouponPolicyResponseDto>> findActiveCouponPolicies(@RequestParam(defaultValue = "true") boolean couponActive,
-                                                                                  @RequestParam(defaultValue = "0") @Min(0) int page,
-                                                                                  @RequestParam(defaultValue = "10") @Min(1) int pageSize);
+                                                                           @RequestParam(defaultValue = "0") @Min(0) int page,
+                                                                           @RequestParam(defaultValue = "10") @Min(1) int pageSize);
 
     // 쿠폰타켓 생성
     @PostMapping("/api/coupon-targets")
@@ -28,6 +31,16 @@ public interface CouponClient {
     // 쿠폰생성
     @PostMapping("/api/coupons")
     ResponseEntity<CouponCreateResponseDto> createCoupon(@RequestBody @Valid CouponCreateRequestDto createRequest);
+
+    // 쿠폰 전체 목록 조회
+    @GetMapping("api/coupons")
+    ResponseEntity<Page<CouponResponseDto>> getAllCoupons(@RequestParam @Min(0) int page, @RequestParam @Min(1)int pageSize);
+
+    // 현재 시간을 기준으로 사용가능한 쿠폰 목록 조회
+    @GetMapping("/api/coupons/active")
+    ResponseEntity<Page<CouponResponseDto>> getActiveCoupons(@RequestParam("currentDateTime") @NotNull LocalDateTime currentDateTime,
+                                                             @RequestParam(defaultValue = "0") @Min(0) int page,
+                                                             @RequestParam(defaultValue = "10") @Min(1) int pageSize);
 
     // 특정 쿠폰을 주문 상품에 적용하여 (쿠폰서버에서) 할인 계산
     @PostMapping("/api/member-coupons/member/{member-id}/coupon/{coupon-id}/calculate")
