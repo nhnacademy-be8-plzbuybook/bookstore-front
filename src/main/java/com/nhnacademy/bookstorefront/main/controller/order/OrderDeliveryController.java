@@ -18,6 +18,11 @@ public class OrderDeliveryController {
     public String registerOrderDelivery(@PathVariable("order-id") String orderId,
                                         @Valid @ModelAttribute OrderDeliveryRegisterRequestDto registerRequest) {
         orderDeliveryService.registerOrderDelivery(orderId, registerRequest);
-        return "redirect:/admin/orders";
+        return "redirect:/admin/orders/" + orderId;
     }
+
+//    @GetMapping("/api/orders/{order-id}/deliveries")
+//    public String trackingOrderDelivery(@RequestParam("tracking-number") String trackingNumber) {
+//
+//    }
 }

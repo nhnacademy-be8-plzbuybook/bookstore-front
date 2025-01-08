@@ -1,9 +1,9 @@
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f9f9f9;
-}
+/*body {*/
+/*    font-family: Arial, sans-serif;*/
+/*    margin: 0;*/
+/*    padding: 20px;*/
+/*    background-color: #f9f9f9;*/
+/*}*/
 
 h1, h2 {
     color: #333;
@@ -27,7 +27,7 @@ th, td {
 }
 
 th {
-    background-color: #000000;
+    background-color: #8b95a1;
     color: white;
 }
 

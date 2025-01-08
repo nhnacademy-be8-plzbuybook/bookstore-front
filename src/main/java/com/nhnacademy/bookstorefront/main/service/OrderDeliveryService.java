@@ -3,5 +3,5 @@ package com.nhnacademy.bookstorefront.main.service;
 import com.nhnacademy.bookstorefront.main.dto.OrderDeliveryRegisterRequestDto;
 
 public interface OrderDeliveryService {
-    String registerOrderDelivery(String orderId, OrderDeliveryRegisterRequestDto registerRequest);
+    void registerOrderDelivery(String orderId, OrderDeliveryRegisterRequestDto registerRequest);
 }

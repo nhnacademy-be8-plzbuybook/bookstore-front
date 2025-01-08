@@ -9,6 +9,7 @@ import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderReq
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public interface OrderClient {
     ResponseEntity<Page<OrderDto>> getMemberOrders(@RequestParam(required = false) OrderSearchRequestDto searchRequest, Pageable pageable);
 
     @GetMapping("/api/orders")
-    ResponseEntity<Page<OrderDto>> getAllOrders(@ModelAttribute OrderSearchRequestDto searchRequest, Pageable pageable);
+    ResponseEntity<Page<OrderDto>> getAllOrders(@SpringQueryMap OrderSearchRequestDto searchRequest, Pageable pageable);
 
     @PostMapping("/api/orders/non-member")
     ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
@@ -37,6 +38,6 @@ public interface OrderClient {
 
     //orderDelivery
     @PostMapping("/api/orders/{order-id}/deliveries")
-    ResponseEntity<?> registerOrderDelivery(@PathVariable("order-id") String orderId,
+    ResponseEntity<Void> registerOrderDelivery(@PathVariable("order-id") String orderId,
                                             @Valid @RequestBody OrderDeliveryRegisterRequestDto registerRequest);
 }
