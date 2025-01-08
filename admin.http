@@ -8,3 +8,19 @@ GET http://localhost:8080/admin/books
 
 ###
 GET http://localhost:8080/api/admin/selling-books?page=0&size=10
+
+###
+POST http://localhost:8080/api/admin/selling-books/register
+Content-Type: application/json
+
+{
+  "bookTitle": "Sample Book",
+  "bookIsbn13": "9781234567890",
+  "sellingBookPrice": 15000,
+  "sellingBookStock": 10,
+  "sellingBookPackageable": true,
+  "sellingBookStatus": "SELLING",
+  "categories": ["Fiction", "Adventure"],
+  "imageUrl": "http://example.com/image.jpg"
+}
+
