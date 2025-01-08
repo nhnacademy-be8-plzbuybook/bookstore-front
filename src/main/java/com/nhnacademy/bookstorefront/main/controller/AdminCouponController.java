@@ -1,20 +1,16 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.client.CouponClient;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCreateRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicyResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicySaveRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.coupon.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -67,10 +63,19 @@ public class AdminCouponController {
         return "admin/adminPage";
     }
 
-    // 특정 기간의 쿠폰 이력 목록 조회
-
-
     // 회원에게 쿠폰 발급
+    @PostMapping("/admin/member-coupons")
+    public ResponseEntity<String> createMemberCoupon(@ModelAttribute MemberCouponCreateRequestDto memberCouponCreateRequestDto, Model model) {
+        try {
+            couponClient.createMemberCoupon(memberCouponCreateRequestDto);
+            model.addAttribute("successMessage", "쿠폰 발급이 성공적으로 완료되었습니다!");
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "쿠폰 발급에 실패하였습니다: " + e.getMessage());
+        }
+
+        return ResponseEntity.ok("쿠폰 발급이 성공적으로 완료되었습니다!");
+    }
+
 
     // 쿠폰 ID로 회원에게 쿠폰 발급 조회
 

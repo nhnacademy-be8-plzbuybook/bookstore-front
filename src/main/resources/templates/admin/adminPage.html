@@ -380,8 +380,18 @@
                         </div>
 
             <!-- 회원에게 쿠폰 발급 -->
+            <h3>회원 쿠폰 발급</h3>
+            <button onclick="openCouponPopup()">회원 쿠폰 발급</button>
 
-
+            <script>
+                function openCouponPopup() {
+                    const popup = window.open(
+                        '/admin/member-coupon-popup',
+                        '쿠폰 발급',
+                        'width=400,height=300,scrollbars=no,resizable=no'
+                    );
+                }
+            </script>
             <!-- 발급 내역 조회 -->
 
             <!-- 사용 내역 조회 -->
