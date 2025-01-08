@@ -160,6 +160,7 @@
         <a th:if="${role == null and !isLoggedIn}" href="/login" id="login-btn">로그인</a>
         <a th:if="${role == null and !isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>
         <a th:if="${isLoggedIn}" href="/logout" id="logout-btn">로그아웃</a>
+        <a href="/carts" id="cart-btn">장바구니</a>
     </div>
 </header>
 

@@ -188,6 +188,7 @@
         <a th:if="${role == null and !isLoggedIn}" href="/login" id="login-btn">로그인</a>
         <a th:if="${role == null and !isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>
         <a th:if="${isLoggedIn}" href="/logout" id="logout-btn">로그아웃</a>
+        <a href="/carts" id="cart-btn">장바구니</a>
     </div>
 </header>
 
@@ -367,8 +368,37 @@
 <script th:inline="javascript">
 
     function addToCart() {
-        alert("장바구니에 담겼습니다!");
+        const sellingBookId = [[${book.getSellingBookId()}]];
+        const quantity = document.getElementById("quantity").value;
+
+        // JSON 데이터 생성
+        const data = {
+            sellingBookId: sellingBookId,
+            quantity: quantity
+        };
+
+        // AJAX 요청 (Fetch API 사용)
+        fetch('/carts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // 요청 본문이 JSON임을 명시
+            },
+            body: JSON.stringify(data) // JavaScript 객체를 JSON 문자열로 변환
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("장바구니에 담겼습니다!");
+                } else {
+                    alert("장바구니에 담는 데 실패했습니다.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("장바구니에 담는 데 오류가 발생했습니다.");
+            });
     }
+
+
 
     function buyNow() {
         const sellingBookId = [[${book.getSellingBookId()}]];
