@@ -15,6 +15,12 @@ public interface CouponClient {
     @PostMapping("/api/coupon-policies")
     ResponseEntity<CouponPolicyResponseDto> createCouponPolicy(@RequestBody @Valid CouponPolicySaveRequestDto couponPolicySaveRequestDto);
 
+    // 활성화된 쿠폰정책 조회
+    @GetMapping("/api/coupon-policies")
+    ResponseEntity<Page<CouponPolicyResponseDto>> findActiveCouponPolicies(@RequestParam(defaultValue = "true") boolean couponActive,
+                                                                                  @RequestParam(defaultValue = "0") @Min(0) int page,
+                                                                                  @RequestParam(defaultValue = "10") @Min(1) int pageSize);
+
     // 쿠폰타켓 생성
     @PostMapping("/api/coupon-targets")
     ResponseEntity<CouponTargetResponseDto> createCouponTarget(@RequestBody @Valid CouponTargetSaveRequestDto couponTargetSaveRequestDto);

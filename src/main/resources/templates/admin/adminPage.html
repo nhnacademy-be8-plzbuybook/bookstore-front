@@ -95,6 +95,7 @@
         .section.active {
             display: block;
         }
+
         .table-wrapper {
             overflow-x: auto;
             margin-bottom: 20px;
@@ -166,6 +167,7 @@
             font-weight: bold;
             border: 1px solid #f5c6cb;
         }
+
         footer {
             background-color: #333;
             color: white;
@@ -187,7 +189,7 @@
 </head>
 <body>
 <header>
-    <a href="/" class = "logo">📚 책사조잉 📚</a>
+    <a href="/" class="logo">📚 책사조잉 📚</a>
     <nav class="menu">
         <a href="/">홈</a>
         <a href="#">국내도서</a>
@@ -241,19 +243,19 @@
                 <tr th:each="member : ${members}">
                     <form th:action="@{/adminpage/update}" method="post" th:object="${member}">
 
-                        <input type="hidden" th:name="originalEmail" th:value="${member.email}" />
+                        <input type="hidden" th:name="originalEmail" th:value="${member.email}"/>
 
                         <!-- 이름 수정 -->
-                        <td><input type="text" th:name="name" th:value="${member.name}" /></td>
+                        <td><input type="text" th:name="name" th:value="${member.name}"/></td>
 
                         <!-- 전화번호 수정 -->
-                        <td><input type="text" th:name="phone" th:value="${member.phone}" /></td>
+                        <td><input type="text" th:name="phone" th:value="${member.phone}"/></td>
 
                         <!-- 이메일 수정 -->
-                        <td><input type="email" th:name="email" th:value="${member.email}" /></td>
+                        <td><input type="email" th:name="email" th:value="${member.email}"/></td>
 
                         <!-- 생년월일 수정 -->
-                        <td><input type="date" th:name="birth" th:value="${member.birth}" /></td>
+                        <td><input type="date" th:name="birth" th:value="${member.birth}"/></td>
 
                         <td>
                             <select th:name="memberGradeId">
@@ -265,19 +267,21 @@
                             </select>
                         </td>
 
-                         <td>
-                        <select th:name="memberStateId">
-                            <option th:each="status : ${memberStatusList}"
-                                    th:value="${status.memberStateId}"
-                                    th:text="${status.memberStateName}"
-                                    th:selected="${status.memberStateName == member.memberStateName}">
-                            </option>
-                        </select>
-                         </td>
+                        <td>
+                            <select th:name="memberStateId">
+                                <option th:each="status : ${memberStatusList}"
+                                        th:value="${status.memberStateId}"
+                                        th:text="${status.memberStateName}"
+                                        th:selected="${status.memberStateName == member.memberStateName}">
+                                </option>
+                            </select>
+                        </td>
 
 
                         </select>
-                        <td><button type="submit">수정</button> </td>
+                        <td>
+                            <button type="submit">수정</button>
+                        </td>
                     </form>
                 </tr>
                 </tbody>
@@ -303,9 +307,9 @@
                 </a>
             </div>
         </div>
-<!--        <div class="group active" data-section="book-management">-->
-<!--            <a href="/admin/selling-books" >도서 관리</a>-->
-<!--        </div>-->
+        <!--        <div class="group active" data-section="book-management">-->
+        <!--            <a href="/admin/selling-books" >도서 관리</a>-->
+        <!--        </div>-->
 
         <div id="coupon-management" class="section">
             <h2>쿠폰 관리</h2>
@@ -321,12 +325,147 @@
         </div>
         <div id="coupon-policy-management" class="section">
             <h2>쿠폰 정책 관리</h2>
-            <p>여기에 쿠폰 정책 crud 구현</p>
-            <!-- 쿠폰정책 생성(고정 금액) -->
+            <!-- 쿠폰정책 생성(고정/비율 할인) -->
+            <h3>쿠폰 정책 생성</h3>
+            <form action="/admin/coupon-policies/create" method="post">
+                <label for="name">쿠폰 이름:</label>
+                <input type="text" id="name" name="name" value="DEFAULT_NAME" required><br>
 
-            <!-- 쿠폰정책 생성(퍼센트 금액) -->
+                <label for="saleType">할인 유형:</label>
+                <select id="saleType" name="saleType" required onchange="updateDiscountRatio()">
+                    <option value="AMOUNT">AMOUNT</option>
+                    <option value="RATIO">RATIO</option>
+                </select><br>
 
+                <label for="minimumAmount">쿠폰사용 최소금액:</label>
+                <input type="number" id="minimumAmount" name="minimumAmount" value="0.0" step="0.01" min="0"
+                       required><br>
+
+                <label for="discountLimit">최대 할인금액:</label>
+                <input type="number" id="discountLimit" name="discountLimit" value="0.0" step="0.01" min="0.0" required><br>
+
+                <label for="discountRatio">할인율:</label>
+                <input type="number" id="discountRatio" name="discountRatio" value="0" min="0" max="100" required>%<br>
+                <input type="hidden" id="discountRatioHidden" name="discountRatio" value="0">
+
+                <label for="isStackable">중복 사용 가능:</label>
+                <input type="checkbox" id="isStackable" name="isStackable" value="true" checked><br>
+                <input type="hidden" name="isStackable" value="false">
+
+                <label for="couponScope">쿠폰 적용범위:</label>
+                <input type="text" id="couponScope" name="couponScope" value="DEFAULT_SCOPE" required><br>
+
+                <label for="startDate">시작 날짜:</label>
+                <input type="datetime-local" id="startDate" name="startDate" value="2025-01-01T00:00" required><br>
+
+                <label for="endDate">종료 날짜:</label>
+                <input type="datetime-local" id="endDate" name="endDate" value="2025-01-01T23:59" required><br>
+
+                <label for="couponActive">활성화 여부:</label>
+                <input type="checkbox" id="couponActive" name="couponActive" value="true" checked><br>
+                <input type="hidden" name="couponActive" value="false">
+
+                <button type="submit">쿠폰 정책 생성</button>
+            </form>
+
+            <script>
+                function updateDiscountRatio() {
+                    const saleType = document.getElementById('saleType').value;
+                    const discountRatioField = document.getElementById('discountRatio');
+                    const discountRatioHidden = document.getElementById('discountRatioHidden');
+
+                    if (saleType === 'AMOUNT') {
+                        discountRatioField.value = 0;
+                        discountRatioField.disabled = true;
+                        discountRatioHidden.value = 0
+                    } else if (saleType === 'RATIO') {
+                        discountRatioField.value = 0;
+                        discountRatioField.disabled = false;
+                        discountRatioHidden.value = 0;
+                    }
+                }
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    updateDiscountRatio();
+                });
+            </script>
+
+            <!-- 유효한 쿠폰정책 조회 -->
+            <h3>쿠폰 정책 조회</h3>
+
+            <p>현재 페이지: <span th:text="${currentPage + 1}"></span> / 총 페이지: <span th:text="${totalPages}"></span></p>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>이름</th>
+                    <th>할인 유형</th>
+                    <th>최소 금액</th>
+                    <th>최대 할인</th>
+                    <th>할인율</th>
+                    <th>중복 여부</th>
+                    <th>적용범위</th>
+                    <th>시작일</th>
+                    <th>종료일</th>
+                    <th>활성화 상태</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="couponPolicy : ${couponPolicies}">
+                    <td th:text="${couponPolicy.id}"></td>
+                    <td th:text="${couponPolicy.name}"></td>
+                    <td th:text="${couponPolicy.saleType}"></td>
+                    <td th:text="${couponPolicy.minimumAmount}"></td>
+                    <td th:text="${couponPolicy.discountLimit}"></td>
+                    <td th:text="${couponPolicy.discountRatio}"></td>
+                    <td th:text="${couponPolicy.isStackable ? '가능' : '불가능'}"></td>
+                    <td th:text="${couponPolicy.couponScope}"></td>
+                    <td th:text="${couponPolicy.startDate}"></td>
+                    <td th:text="${couponPolicy.endDate}"></td>
+                    <td th:text="${couponPolicy.couponActive ? '활성화' : '비활성화'}"></td>
+                </tr>
+                </tbody>
+            </table>
+
+            <form action="/admin/coupon-policies" method="get">
+                <input type="hidden" name="couponActive" value="true">
+
+                <label for="page">페이지 번호:</label>
+                <input type="number" id="page" name="page" value="0" min="0" required>
+
+                <label for="pageSize">페이지 크기:</label>
+                <input type="number" id="pageSize" name="pageSize" value="10" min="10" required>
+
+                <button type="submit">조회</button>
+            </form>
+
+            <div class="pagination">
+                <a th:if="${currentPage > 0}"
+                   th:href="@{/admin/coupon-policies(couponActive=true, page=${currentPage - 1}, pageSize=${pageSize})}">이전</a>
+
+                <span>페이지 <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
+
+                <a th:if="${currentPage < totalPages - 1}"
+                   th:href="@{/admin/coupon-policies(couponActive=true, page=${currentPage + 1}, pageSize=${pageSize})}">다음</a>
+            </div>
+
+            <script>
+                const pageInput = document.getElementById('page');
+
+
+                pageInput.form.addEventListener('submit', function (event) {
+                    const actualPage = parseInt(pageInput.value, 10) - 1;
+                    if (actualPage < 0) {
+                        alert("페이지 번호는 1 이상이어야 합니다.");
+                        event.preventDefault();
+                    } else {
+                        pageInput.value = actualPage;
+                    }
+                });
+            </script>
         </div>
+
         <div id="tag-management" class="section">
             <h2>태그 관리</h2>
             <p>여기에 태그 crud 구현</p>
@@ -340,7 +479,8 @@
 </main>
 <footer>
     <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>
+    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook
+        GitHub</a></p>
     <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
 </footer>
 <script>
