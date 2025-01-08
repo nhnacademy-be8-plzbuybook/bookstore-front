@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>주문배송 등록</title>
+</head>
+<body>
+<form th:action="@{/orders/${orderId}/deliveries}" method="POST">
+    <h2>배송사</h2>
+    <select name="deliveryCompany">
+        <option value="">배송사 선택</option>
+        <option value="cj">CJ 대한통운</option>
+        <option value="lotte">롯데택배</option>
+        <option value="hanjin">한진택배</option>
+    </select>
+
+    <h2>운송장 번호</h2>
+    <div>
+        <input type="text" name="trackingNumber" placeholder="운송장번호를 입력해주세요.">
+    </div>
+
+    <button type="submit">주문배송 등록하기</button>
+</form>
+</body>
+</html>
