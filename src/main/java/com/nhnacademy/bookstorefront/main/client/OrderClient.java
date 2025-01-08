@@ -1,11 +1,13 @@
 package com.nhnacademy.bookstorefront.main.client;
 
+import com.nhnacademy.bookstorefront.main.dto.OrderDeliveryRegisterRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,4 +34,9 @@ public interface OrderClient {
 
     @GetMapping("/api/orders/{order-id}")
     ResponseEntity<OrderDetail> getOrderDetail(@PathVariable("order-id") String orderId);
+
+    //orderDelivery
+    @PostMapping("/api/orders/{order-id}/deliveries")
+    ResponseEntity<?> registerOrderDelivery(@PathVariable("order-id") String orderId,
+                                            @Valid @RequestBody OrderDeliveryRegisterRequestDto registerRequest);
 }

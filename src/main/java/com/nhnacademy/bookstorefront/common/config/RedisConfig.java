@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorefront.config;
+package com.nhnacademy.bookstorefront.common.config;
 
 
 import com.nhnacademy.bookstorefront.skm.properties.SKMProperties;

@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorefront.interceptor;
+package com.nhnacademy.bookstorefront.common.interceptor;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
