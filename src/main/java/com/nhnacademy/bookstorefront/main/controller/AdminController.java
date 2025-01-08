@@ -5,6 +5,9 @@ import com.nhnacademy.bookstorefront.main.client.PointClient;
 import com.nhnacademy.bookstorefront.main.dto.Member.*;
 import com.nhnacademy.bookstorefront.main.dto.point.PointConditionRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.point.PointConditionResponseDto;
+import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,21 +22,32 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     private final MemberClient memberClient;
-    private final PointClient pointClient;
+    private final PointClient pointClient;    
+    private final AuthenticationService authenticationService;
+    private final AuthenticationClient authenticationClient;
 
-    public AdminController(MemberClient memberClient, PointClient pointClient) {
+    public AdminController(MemberClient memberClient, AuthenticationService authenticationService, AuthenticationClient authenticationClient, PointClient pointClient) {
         this.memberClient = memberClient;
+        this.authenticationService = authenticationService;
+        this.authenticationClient = authenticationClient;
         this.pointClient = pointClient;
+
     }
 
     @GetMapping("/adminpage")
     public String adminPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            Model model) {
+            Model model,
+            HttpServletRequest request) {
         MemberSearchRequestDto memberSearchRequestDto = new MemberSearchRequestDto();
         memberSearchRequestDto.setPage(page);
         memberSearchRequestDto.setSize(size);
+
+        String token = getTokenFromCookies(request);
+        if (token == null || !isAdmin(token)) {
+            return "error/403";
+        }
 
 
         ResponseEntity<Page<MemberSearchResponseDto>> response = memberClient.getMembers(memberSearchRequestDto);
@@ -104,6 +118,23 @@ public class AdminController {
         model.addAttribute("pointConditions", pointConditions);
 
         return "redirect:/adminpage";
+    }
+  
+    private String getTokenFromCookies(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean isAdmin(String token) {
+        String role = authenticationClient.getRoleFromToken("Bearer " + token).getBody();
+        return "ADMIN".equals(role);
+
     }
 
 }

@@ -172,6 +172,33 @@
             font-weight: bold;
         }
 
+        /* 책 목록 스타일 */
+        .book-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .book {
+            text-align: center;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .book img {
+            width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .book div {
+            font-size: 14px;
+            color: #333;
+        }
+
         .highlight {
             background-color: #fffbe6;
             font-weight: bold;
@@ -380,14 +407,13 @@
             font-size: 16px;
         }
 
-
     </style>
 </head>
 <body>
 <header>
     <div class="logo">📚 책사조잉 📚</div>
     <nav class="menu">
-        <a href="#">Home</a>
+        <a href="/index">Home</a>
         <a href="#">국내도서</a>
         <a href="#">외국도서</a>
         <a href="#">추천도서</a>
@@ -406,6 +432,7 @@
         <div class="group" data-section="address">주소 설정</div>
         <div class="group" data-section="coupon">보유 쿠폰</div>
         <div class="group" data-section="withdraw">회원 탈퇴</div>
+        <div class="group" data-section="order-management">주문 관리</div>
     </div>
     <div class="content">
         <div class="section active" id="grade-benefits">
@@ -448,10 +475,11 @@
         <div class="section" id="likes">
             <h2>좋아요 도서</h2>
             <div class="book-list">
-                <!-- main에 책 나오게 했음 (수정 필요) -->
                 <div class="book" th:each="book : ${books}">
-                    <img th:src="${book.imageUrl}" th:alt="${book.bookTitle}">
-                    <div th:text="${book.bookTitle}"></div>
+                    <a th:href="'/book/detail/' + ${book.sellingBookId}">
+                        <img th:src="${book.imageUrl}" th:alt="${book.bookTitle}">
+                        <div th:text="${book.bookTitle}"></div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -659,6 +687,47 @@
                 <button type="submit" class="withdraw-btn">회원 탈퇴</button>
             </form>
         </div>
+        <div class="section" id="order-management">
+            <link rel="stylesheet" href="/css/order/allOrderList.css">
+            <h2>주문 관리</h2>
+            <div class="search-filter">
+                <input type="text" id="searchKeyword" placeholder="주문 번호, 고객명 검색" />
+                <select id="statusFilter">
+                    <option value="">주문 상태</option>
+                    <option value="completed">배송 완료</option>
+                    <option value="pending">배송 중</option>
+                    <option value="cancelled">취소</option>
+                </select>
+                <input type="date" id="startDate" />
+                <input type="date" id="endDate" />
+                <button onclick="applyFilters()">검색</button>
+            </div>
+
+            <table id="orderTable">
+                <thead>
+                <tr>
+                    <th>주문명</th>
+                    <th>주문 상태</th>
+                    <th>주문 날짜</th>
+                    <th>결제금액</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order: ${orderPage.getContent()}">
+                    <td><a th:href="@{/orders/{orderId}(orderId=${order.getId()})}" th:text="${order.getOrderName()}"></a></td>
+                    <td><span class="status-tag status-completed" th:text="${order.getOrderStatus()}"></span></td>
+                    <td th:text="${order.getOrderDate()}">2025-01-02</td>
+                    <td th:text="${order.getPaymentAmount()}">₩50,000</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <button>1</button>
+                <button>2</button>
+                <button>3</button>
+            </div>
+        </div>
     </div>
 </main>
 <script>
@@ -714,7 +783,25 @@
             });
         });
     });
+    function applyFilters() {
+        const keyword = document.getElementById("searchKeyword").value;
+        const status = document.getElementById("statusFilter").value;
+        const startDate = document.getElementById("startDate").value;
+        const endDate = document.getElementById("endDate").value;
 
+        // 필터 적용 후, 테이블 데이터를 갱신하는 로직을 추가하면 됩니다.
+        console.log("검색 키워드:", keyword, "상태:", status, "시작일:", startDate, "종료일:", endDate);
+    }
+
+    function viewOrderDetails(orderId) {
+        // 주문 상세 페이지로 이동하거나 모달을 띄울 수 있습니다.
+        alert("주문 상세 보기: " + orderId);
+    }
+
+    function changeStatus(orderId) {
+        // 주문 상태 변경 기능 구현
+        alert("주문 상태 변경: " + orderId);
+    }
 
 </script>
 </body>

@@ -43,6 +43,7 @@ public class BookDetailController {
         }
         model.addAttribute("book", bookDetail);
         model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("role", role);
 
 
         return "detailview";
