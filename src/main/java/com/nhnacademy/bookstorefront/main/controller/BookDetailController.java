@@ -4,6 +4,9 @@ import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
+import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,9 +44,18 @@ public class BookDetailController {
                 role = authenticationClient.getRoleFromToken("Bearer " + token).getBody();
             }
         }
+
+
+        MyPageDto myPageDto = authenticationService.getMyPage();
+        Long memberId = myPageDto.getMemberId();
+
+        Long OrderProductId = bookClient.getOrderProductBySellingBookId(sellingBookId).getBody();
+
         model.addAttribute("book", bookDetail);
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("role", role);
+        model.addAttribute("memberId", memberId);
+        model.addAttribute("orderProductId", OrderProductId);
 
 
         return "detailview";
@@ -79,6 +91,17 @@ public class BookDetailController {
 
         // 상세 페이지로 리다이렉트
         return "redirect:/book/detail/" + sellingBookId;
+    }
+
+    @PostMapping("/book/detail/review")
+    public ResponseEntity<ReviewResponseDto> makeReview(@RequestParam Long memberId,
+                                                          @RequestParam Long orderProductId,
+                                                          @RequestParam int score,
+                                                          @RequestParam String content) {
+        ReviewCreateRequestDto reviewCreateRequestDto = new ReviewCreateRequestDto(memberId, orderProductId, score, content);
+        ResponseEntity<ReviewResponseDto> responseEntity = bookClient.createReview(reviewCreateRequestDto);
+
+        return ResponseEntity.ok(responseEntity.getBody());
     }
 
 }
