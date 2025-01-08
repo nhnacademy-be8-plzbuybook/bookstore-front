@@ -2,6 +2,8 @@ package com.nhnacademy.bookstorefront.main.client;
 
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.*;
+import com.nhnacademy.bookstorefront.main.dto.point.PointConditionRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.point.PointConditionResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.data.domain.Page;
