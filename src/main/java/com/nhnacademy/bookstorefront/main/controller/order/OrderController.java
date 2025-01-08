@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorefront.main.controller;
+package com.nhnacademy.bookstorefront.main.controller.order;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
@@ -115,16 +115,16 @@ public class OrderController {
      * @param model
      * @return
      */
-//    @GetMapping("/my/orders")
-//    public String getMemberOrders(@RequestParam(required = false) OrderSearchRequestDto searchRequest,
-//                                  Pageable pageable,
-//                                  Model model) {
-//        Page<OrderDto> orderPage = orderService.getMemberOrders(searchRequest, pageable);
-//
-//        model.addAttribute("orderPage", orderPage);
-//
-//        return "order/myOrderList";
-//    }
+    @GetMapping("/my/orders")
+    public String getMemberOrders(@RequestParam(required = false) OrderSearchRequestDto searchRequest,
+                                  Pageable pageable,
+                                  Model model) {
+        Page<OrderDto> orderPage = orderService.getMemberOrders(searchRequest, pageable);
+
+        model.addAttribute("orderPage", orderPage);
+
+        return "order/myOrderList";
+    }
 
 
     /**
@@ -142,7 +142,7 @@ public class OrderController {
         Page<OrderDto> orderList = orderService.getAllOrders(searchRequest, pageable);
         model.addAttribute("orderList", orderList);
 
-        return "order/allOrderList";
+        return "order_list";
     }
 
 
