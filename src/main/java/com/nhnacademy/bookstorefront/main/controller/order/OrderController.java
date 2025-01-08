@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorefront.main.controller;
+package com.nhnacademy.bookstorefront.main.controller.order;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
@@ -49,7 +49,7 @@ public class OrderController {
         model.addAttribute("wrappingPapers", wrappingPaperService.getWrappingPapers());
         model.addAttribute("books", books);
         model.addAttribute("deliveryFeePolicy", deliveryFeePolicyService.getGeneralPolicy());
-        return "order/nonMember/receipt";
+        return "order/user/nonMember/order_receipt";
     }
 
 
@@ -84,12 +84,12 @@ public class OrderController {
         model.addAttribute("deliveryFeePolicy", deliveryFeePolicyService.getGeneralPolicy());
         model.addAttribute("addressList", addressList);
         model.addAttribute("defaultAddress", defaultAddress);
-        return "order/member/receipt";
+        return "order/user/member/order_receipt";
     }
 
 
     /**
-     * 주문 상세조회
+     * 사용자 주문 상세조회
      *
      * @param orderId
      * @param model
@@ -103,12 +103,12 @@ public class OrderController {
         OrderDetail orderDetail = orderService.getOrderDetail(orderId);
         model.addAttribute("orderDetail", orderDetail);
 
-        return "order/detail";
+        return "order/user/order_detail";
     }
 
 
     /**
-     * 내 주문목록 조회
+     * 회원 주문목록 조회
      *
      * @param searchRequest
      * @param pageable
@@ -123,12 +123,12 @@ public class OrderController {
 
         model.addAttribute("orderPage", orderPage);
 
-        return "order/myOrderList";
+        return "order/user/member/order_list";
     }
 
 
     /**
-     * 전체 주문목록 조회 (관리자용)
+     * 관리자 주문목록 조회
      *
      * @param searchRequest
      * @param pageable
@@ -142,7 +142,7 @@ public class OrderController {
         Page<OrderDto> orderList = orderService.getAllOrders(searchRequest, pageable);
         model.addAttribute("orderList", orderList);
 
-        return "order/allOrderList";
+        return "order/admin/order_list";
     }
 
 

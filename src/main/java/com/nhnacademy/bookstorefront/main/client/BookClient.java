@@ -25,30 +25,44 @@ public interface BookClient {
     @GetMapping("/api/selling-books/{sellingBookId}")
     BookDetailResponseDto getSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
 
-//    @PostMapping("/api/selling-books/like/{sellingBookId}")
-//    ResponseEntity<Long> toggleLike(@PathVariable("sellingBookId") Long sellingBookId);
-
     // 관리자용 도서 목록 조회 (페이징 처리만)
-    @GetMapping("/api/admin/selling-books")
+    @GetMapping("/api/selling-books")
     Page<AdminSellingBookRegisterDto> adminGetBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     );
 
-    // 관리자 기능 도서 등록
-    @PostMapping("/api/admin/selling-books")
-    BookDetailResponseDto registerSellingBook(@RequestBody BookDetailResponseDto registerDto);
-
+    /**
+     * 관리자 도서관리에서 도서 수정 api
+     * @param sellingBookId
+     * @param updateDto
+     * @return
+     */
     @PutMapping("/api/admin/selling-books/{sellingBookId}")
-    BookDetailResponseDto updateSellingBook(
+    AdminBookRegisterDto updateSellingBook(
             @PathVariable("sellingBookId") Long sellingBookId,
-            @RequestBody BookDetailResponseDto updateDto
+            @RequestBody AdminBookRegisterDto updateDto
     );
 
+
+    /**
+     * 관리자 도서관리에서 도서 삭제 api
+     * @param sellingBookId
+     */
     @DeleteMapping("/api/admin/selling-books/{sellingBookId}")
     void deleteSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
 
+    /**
+     * 관리자 도서관리에서 도서 등록 api
+     * @param registerDto
+     * @return
+     */
+    @PostMapping("/api/admin/selling-books/register")
+    AdminBookRegisterDto registerSellingBook(@RequestBody AdminBookRegisterDto registerDto);
 
+
+
+    // TODO 2개
     // 최신 도서 동기화
     @PostMapping("/api/books/sync")
     ResponseEntity<Void> syncBooksFromListApi(
@@ -102,4 +116,7 @@ public interface BookClient {
 
 
 
-    }
+    
+
+
+}
