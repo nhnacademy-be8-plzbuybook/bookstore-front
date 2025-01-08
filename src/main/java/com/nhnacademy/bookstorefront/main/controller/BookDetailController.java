@@ -3,6 +3,7 @@ package com.nhnacademy.bookstorefront.main.controller;
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
+import com.nhnacademy.bookstorefront.main.dto.AdminSellingBookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import jakarta.servlet.http.Cookie;
@@ -25,6 +26,21 @@ public class BookDetailController {
     private final MemberClient memberClient;
     private final AuthenticationService authenticationService;
     private final AuthenticationClient authenticationClient;
+
+
+
+
+//    @GetMapping("/api/books/admin")
+//    public String registerBookPage() {
+//        return "admin/bookregister";
+//    }
+
+
+//    @PostMapping("/api/books/adminregister")
+//    public String registerBook(AdminSellingBookRegisterDto adminSellingBookRegisterDto) {
+//        bookClient.registerSellingBook(adminSellingBookRegisterDto); // bookClient를 통해 데이터 전송
+//        return "redirect:/admin/bookList";
+//    }
 
 
     @GetMapping("/book/detail/{sellingBookId}")

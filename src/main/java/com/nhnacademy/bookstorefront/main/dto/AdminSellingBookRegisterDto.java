@@ -10,6 +10,7 @@ import java.util.List;
 
 @Getter
 @Setter
+//예를 감싸는 클래수,,,,,,,,,
 public class AdminSellingBookRegisterDto {
     private Long sellingBookId; // 판매도서 ID
     private String bookTitle; // 제목

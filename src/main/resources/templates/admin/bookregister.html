@@ -242,51 +242,72 @@
     <!-- 메인 콘텐츠 -->
     <div class="content">
         <h2>도서 관리</h2>
-        <!-- 도서 등록 폼 -->
+
+<!--        &lt;!&ndash; 이미지 업로드 섹션 &ndash;&gt;-->
+<!--        <div class="form-container">-->
+<!--            <h3>도서 이미지 업로드</h3>-->
+<!--            <form id="imageUploadForm" enctype="multipart/form-data">-->
+<!--                <label for="bookImage">도서 이미지</label>-->
+<!--                <input type="file" id="bookImage" name="bookImage" accept="image/*" required>-->
+<!--                <button type="button" id="uploadImageButton">이미지 업로드</button>-->
+<!--            </form>-->
+<!--            <form action="/api/objects/upload_url" method="post">-->
+<!--                <input type="text" name="url" placeholder="이미지 URL" required>-->
+<!--                <button type="submit">업로드 URL</button>-->
+<!--            </form>-->
+<!--            <p id="imageUploadStatus"></p>-->
+<!--        </div>-->
+
         <div class="form-container">
             <h3>도서 등록</h3>
-            <form action="/api/books" method="POST">
+            <form id="bookForm" action="/admin/selling-books/register" method="POST">
                 <label for="bookTitle">제목</label>
                 <input type="text" id="bookTitle" name="bookTitle" required>
 
-                <label for="isbn">ISBN</label>
-                <input type="text" id="isbn" name="isbn" required>
+                <label for="bookIsbn13">ISBN</label>
+                <input type="text" id="bookIsbn13" name="bookIsbn13" required>
 
-                <label for="publishDate">출판일자</label>
-                <input type="date" id="publishDate" name="publishDate" required>
+                <label for="publisher">출판사 가져올거임 맵핑하기</label>
+                <input type="text" id="publisher" name="publisher" required>
 
-                <label for="author">작가</label>
-                <input type="text" id="author" name="author" required>
+                <label for="bookPubDate">출판일자</label>
+                <input type="date" id="bookPubDate" name="bookPubDate" required>
 
-                <label for="regularPrice">정가</label>
-                <input type="number" id="regularPrice" name="regularPrice" required>
+                <label for="bookIndex">목차</label>
+                <textarea id="bookIndex" name="bookIndex"></textarea>
 
-                <label for="salePrice">판매가</label>
-                <input type="number" id="salePrice" name="salePrice" required>
+                <label for="description" class="form-label">설명</label>
+                <!-- WYSIWYG 에디터를 표시할 영역 -->
+                <div id="editor"></div>
+                <!-- 에디터 내용을 서버로 보낼 숨겨진 필드 -->
+                <input type="hidden" id="description" name="bookDescription">
 
-                <label for="stock">재고</label>
-                <input type="number" id="stock" name="stock" required>
+                <label for="bookPriceStandard">정가</label>
+                <input type="number" id="bookPriceStandard" name="bookPriceStandard" required>
+
+                <label for="sellingBookPrice">판매가</label>
+                <input type="number" id="sellingBookPrice" name="sellingBookPrice" required>
+
+                <label for="sellingBookStock">재고</label>
+                <input type="number" id="sellingBookStock" name="sellingBookStock" required>
 
                 <label>
-                    <input type="checkbox" id="isPackable" name="isPackable">
+                    <input type="checkbox" id="sellingBookPackageable" name="sellingBookPackageable">
                     포장 가능 여부
                 </label>
 
-                <label for="publisher">출판사</label>
-                <input type="text" id="publisher" name="publisher" required>
+                <label for="imageUrl">이미지 URL 파일 업로드 매핑 </label>
+                <input type="url" id="imageUrl" name="imageUrl" placeholder="이미지 URL을 입력하세요">
+
+                <label for="authors">작가 </label>
+                <input type="text" id="authors" name="authors" placeholder="작가를 ,(쉼표)로 구분하여 입력하세요" required>
 
 
-                <label for="editor" class="form-label">설명:</label>
-                <div id="editor"></div>
 
+                <label for="categories">카테고리</label>
+                <input type="text" id="categories" name="categories" placeholder="카테고리를 ,(쉼표)로 구분하여 입력하세요" required>
 
-                <label for="category">카테고리</label>
-                <input type="text" id="category" name="category" required>
-
-                <label for="bookImage">도서 이미지</label>
-                <input type="file" id="bookImage" name="bookImage" accept="image/*">
-
-                <button type="submit">등록</button>
+                <button type="submit"  class ="add-button">등록</button>
             </form>
         </div>
     </div>
@@ -306,13 +327,44 @@
     const Editor = toastui.Editor;
 
     // 옵션
-    const editor = new Editor({
+    const editor = new toastui.Editor({
         el: document.querySelector('#editor'),
-        height: '600px',
-        initialEditType: 'markdown',
-        previewStyle: 'vertical'
+        height: '400px',
+        initialEditType: 'wysiwyg',
+        previewStyle: 'vertical',
+        placeholder: '도서 설명을 입력하세요...',
     });
 
+    document.getElementById('uploadImageButton').addEventListener('click', async () => {
+        const imageForm = document.getElementById('imageUploadForm');
+        const formData = new FormData(imageForm);
+
+        try {
+            const response = await fetch('/api/objects/upload_url', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('imageUrl').value = data.url;
+                document.getElementById('imageUploadStatus').innerText = '이미지 업로드 성공!';
+            } else {
+                document.getElementById('imageUploadStatus').innerText = '이미지 업로드 실패!';
+            }
+        } catch (error) {
+            console.error('이미지 업로드 에러:', error);
+            document.getElementById('imageUploadStatus').innerText = '업로드 중 오류 발생!';
+        }
+    });
+
+    // 폼 제출 이벤트 핸들러
+    document.getElementById('bookForm').addEventListener('submit', function (event) {
+        // 에디터 내용 가져오기
+        const editorContent = editor.getHTML();
+        // 숨겨진 input 필드에 에디터 내용 설정
+        document.getElementById('description').value = editorContent;
+    });
 
 </script>
 </body>

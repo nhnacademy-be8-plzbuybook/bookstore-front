@@ -297,9 +297,10 @@
 
         <div class="button-container">
             <!-- 새 도서 추가 -->
-            <button onclick="location.href='/admin/selling-books/register'" class="add-button">
-                + 도서 추가
-            </button>
+            <form action="/admin/selling-books/register" method="GET">
+                <button type="submit" class="add-button">+ 도서 추가</button>
+            </form>
+
 
             <!-- 알라딘 도서 동기화 -->
             <form action="/api/books/sync" method="post" class="sync-form">
@@ -367,10 +368,17 @@
                     <td th:text="${book.sellingBookStock}"></td>
                     <td th:text="${book.sellingBookStatus}"></td>
                     <td>
-                        <a th:href="@{/admin/books/edit/{id}(id=${book.sellingBookId})}">수정</a>
-                        <form th:action="@{/api/admin/selling-books/{id}(id=${book.sellingBookId})}" method="post">
-                            <button type="submit">삭제</button>
+                        <!-- 수정 버튼 -->
+                        <form action="/admin/selling-books/update/${book.sellingBookId}" method="POST">
+                            <button type="submit" style="background-color: forestgreen; color: white;">수정</button>
                         </form>
+
+                        <!-- 삭제 버튼 -->
+                        <form action="/admin/selling-books/delete/${book.sellingBookId}" method="POST">
+                            <button type="submit" style="background-color: red; color: white;">삭제</button>
+                        </form>
+
+
                     </td>
                 </tr>
                 </tbody>
