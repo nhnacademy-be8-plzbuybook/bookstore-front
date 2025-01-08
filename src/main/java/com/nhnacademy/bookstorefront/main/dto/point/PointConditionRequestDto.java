@@ -15,6 +15,7 @@ public class PointConditionRequestDto {
     private String pointConditionName;
     private Integer conditionPoint;
     private BigDecimal conditionPercentage;
+    private boolean status;
 
 
 }

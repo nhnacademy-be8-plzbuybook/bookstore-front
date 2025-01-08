@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
-import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
+import com.nhnacademy.bookstorefront.main.client.PointClient;
 import com.nhnacademy.bookstorefront.main.dto.Member.*;
 import com.nhnacademy.bookstorefront.main.dto.point.PointConditionRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.point.PointConditionResponseDto;
@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,12 +19,12 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     private final MemberClient memberClient;
-//    private final PointClient pointClient;
+    private final PointClient pointClient;
 
-    public AdminController(MemberClient memberClient) {
+    public AdminController(MemberClient memberClient, PointClient pointClient) {
         this.memberClient = memberClient;
+        this.pointClient = pointClient;
     }
-//    public AdminController(PointClient pointClient) { this.pointClient = pointClient; }
 
     @GetMapping("/adminpage")
     public String adminPage(
@@ -38,7 +39,9 @@ public class AdminController {
         ResponseEntity<Page<MemberSearchResponseDto>> response = memberClient.getMembers(memberSearchRequestDto);
         List<MemberStatus> memberStatusList = memberClient.getAllMemberStatus();
         List<MemberGrade> memberGradeList = memberClient.getAllMemberGrade();
-        List<PointConditionResponseDto> pointConditions = response.getBody();
+
+        ResponseEntity<List<PointConditionResponseDto>> pointResponse = pointClient.getAllPointConditions();
+        List<PointConditionResponseDto> pointConditions = pointResponse.getBody();
         model.addAttribute("pointConditions", pointConditions);
 
 
@@ -57,29 +60,57 @@ public class AdminController {
         return "redirect:/adminpage";
     }
 
-    // 포인트 조건 등록
     @PostMapping("/adminpage/points-conditions/create")
-    public String createPointCondition(@ModelAttribute PointConditionRequestDto pointConditionRequestDto) {
-        memberClient.createPointCondition(pointConditionRequestDto);
-        return "redirect:/adminpage/points-conditions";
+    public String createPointCondition(@ModelAttribute PointConditionRequestDto pointConditionRequestDto, RedirectAttributes redirectAttributes) {
+        if (pointConditionRequestDto.getConditionPoint() == null && pointConditionRequestDto.getConditionPercentage() == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "포인트와 비율은 반드시 하나만 입력해야 합니다.");
+            return "redirect:/adminpage";
+        }
+
+        if (pointConditionRequestDto.getConditionPoint() != null && pointConditionRequestDto.getConditionPercentage() != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "포인트와 비율 중 하나만 입력할 수 있습니다.");
+            return "redirect:/adminpage";
+        }
+
+        try {
+            // 포인트 조건 생성
+            pointClient.createPointCondition(pointConditionRequestDto);
+            redirectAttributes.addFlashAttribute("successMessage", "포인트 조건이 생성되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "포인트 조건 생성에 실패했습니다.");
+        }
+
+        return "redirect:/adminpage";
     }
 
-//    // 포인트 조건 목록 조회
-//    @GetMapping("/adminpage/points-conditions")
-//    public String getPointConditions(Model model) {
-//        ResponseEntity<List<PointConditionResponseDto>> response = memberClient.getAllPointConditions();
-//        List<PointConditionResponseDto> pointConditions = response.getBody();
-//        model.addAttribute("pointConditions", pointConditions);
-//        return "admin/adminPage/points-conditions"; // 포인트 조건 관리 페이지로 이동
-//    }
 
-    // 포인트 조건 수정
     @PostMapping("/adminpage/points-conditions/update/{id}")
-    public String updatePointCondition(@PathVariable Long id, @ModelAttribute PointConditionRequestDto pointConditionRequestDto) {
-        memberClient.updatePointCondition(id, pointConditionRequestDto);
-        return "redirect:/adminpage/points-conditions";
+    public String updatePointCondition(@PathVariable Long id, @ModelAttribute PointConditionRequestDto pointConditionRequestDto, Model model) {
+        if (pointConditionRequestDto.getConditionPoint() == null && pointConditionRequestDto.getConditionPercentage() == null) {
+            model.addAttribute("pointConditionRequestDto", pointConditionRequestDto);
+            return "redirect:/adminpage";
+        }
+
+        if (pointConditionRequestDto.getConditionPoint() != null && pointConditionRequestDto.getConditionPercentage() != null) {
+            model.addAttribute("errorMessage", "포인트와 비율 중 하나만 입력할 수 있습니다.");
+            model.addAttribute("pointConditionRequestDto", pointConditionRequestDto);
+            return "redirect:/adminpage";
+        }
+
+        pointClient.updatePointCondition(id, pointConditionRequestDto);
+
+        ResponseEntity<List<PointConditionResponseDto>> pointResponse = pointClient.getAllPointConditions();
+        List<PointConditionResponseDto> pointConditions = pointResponse.getBody();
+        model.addAttribute("pointConditions", pointConditions);
+
+        return "redirect:/adminpage";
     }
-
-
 
 }
+
+
+
+
+
+
+

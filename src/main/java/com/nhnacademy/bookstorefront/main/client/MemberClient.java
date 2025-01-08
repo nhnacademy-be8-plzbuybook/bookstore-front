@@ -57,16 +57,6 @@ public interface MemberClient {
     //회원 수정(관리자 페이지)
     @PostMapping("/api/members/email")
     ResponseEntity<Void> updateMember(@RequestBody MemberModifyByAdminRequestDto memberModifyByAdminRequestDto);
-
-    // 포인트 조건
-    @PostMapping("/api/points/conditions")
-    ResponseEntity<PointConditionResponseDto> createPointCondition(@RequestBody PointConditionRequestDto pointConditionRequestDto);
-
-    @GetMapping("/api/points/conditions")
-    ResponseEntity<List<PointConditionResponseDto>> getAllPointConditions();
-
-    @PostMapping("/api/points/conditions/{id}")
-    ResponseEntity<PointConditionResponseDto> updatePointCondition(@PathVariable Long id, @RequestBody PointConditionRequestDto pointConditionRequestDto);
 }
 
 
