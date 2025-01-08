@@ -145,6 +145,22 @@ public class OrderController {
         return "order/admin/order_list";
     }
 
+    /**
+     * 관리자 주문 상세 조회
+     *
+     * @param orderId
+     * @param model
+     * @return
+     */
+    @GetMapping("/admin/orders/{order-id}")
+    public String getAdminOrderDetail(@PathVariable("order-id") String orderId,
+                                      Model model) {
+        OrderDetail orderDetail = orderService.getOrderDetail(orderId);
+        model.addAttribute("orderDetail", orderDetail);
+
+        return "order/admin/order_detail";
+    }
+
 
     /**
      * 비회원 주문요청
