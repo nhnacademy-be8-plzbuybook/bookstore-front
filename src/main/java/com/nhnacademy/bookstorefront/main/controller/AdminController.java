@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
+import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
 import com.nhnacademy.bookstorefront.main.client.PointClient;
 import com.nhnacademy.bookstorefront.main.dto.Member.*;
