@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>주문배송 등록</title>
+</head>
+<body>
+<div th:fragment="orderDeliveryRegisterForm(orderId)">
+    <h2>주문배송 정보를 등록해주세요.</h2>
+    <form th:action="@{/api/orders/{orderId}/deliveries(orderId=${orderId})}" method="POST">
+        <table>
+            <tbody>
+            <tr>
+                <td>배송사</td>
+                <td>
+                    <select name="deliveryCompany">
+                        <option value="">배송사 선택</option>
+                        <option value="cj">CJ 대한통운</option>
+                        <option value="lotte">롯데택배</option>
+                        <option value="hanjin">한진택배</option>
+                    </select>
+                </td>
+                <td>
+                    <button type="submit">주문배송 등록하기</button>
+                </td>
+            </tr>
+            <tr>
+                <td>운송장 번호</td>
+                <td>
+                    <input type="text" name="trackingNumber" placeholder="운송장번호를 입력해주세요.">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </form>
+</div>
+<script>
+
+</script>
+</body>
+</html>

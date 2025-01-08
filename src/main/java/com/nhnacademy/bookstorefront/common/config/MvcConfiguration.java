@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorefront.common;
+package com.nhnacademy.bookstorefront.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.CacheControl;

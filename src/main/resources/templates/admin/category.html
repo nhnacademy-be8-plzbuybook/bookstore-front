@@ -562,12 +562,22 @@
       overflow: auto;
     }
 
+    /*.modal-content {*/
+    /*  background-color: white;*/
+    /*  margin: 10% auto;*/
+    /*  padding: 20px;*/
+    /*  border-radius: 8px;*/
+    /*  width: 50%;*/
+    /*}*/
     .modal-content {
-      background-color: white;
-      margin: 10% auto;
+      position: relative;
+      margin: 5% auto;
       padding: 20px;
+      background-color: white;
       border-radius: 8px;
-      width: 50%;
+      width: 500px; /* 고정된 너비 */
+      max-height: 70%; /* 고정된 높이 */
+      overflow-y: auto; /* 내용이 넘칠 경우 스크롤 */
     }
 
     .close {
@@ -630,41 +640,14 @@
           <button type="submit">검색</button>
         </form>
 
-    <!-- 카테고리 목록 -->
-<!--    <div class="table-wrapper">-->
-<!--      <table id="categoryTable">-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--          <th>ID</th>-->
-<!--          <th>카테고리 이름</th>-->
-<!--          <th>수정/삭제</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        &lt;!&ndash; 카테고리 항목들 &ndash;&gt;-->
-<!--        <tr th:each="category : ${categories}">-->
-<!--          <td th:text="${category.categoryId}"></td>-->
-<!--          <td th:text="${category.categoryName}"></td>-->
-<!--          <td class="action-buttons">-->
-<!--            <button class="edit" th:href="@{/admin/category/edit/{id}(id=${category.categoryId})}">수정</button>-->
-<!--            <form th:action="@{/admin/category/{id}(id=${category.categoryId})}" method="post">-->
-<!--              <input type="hidden" name="_method" value="delete" />-->
-<!--              <button type="submit">삭제</button>-->
-<!--            </form>-->
 
-<!--          </td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--      </table>-->
-<!--    </div>-->
-    <!-- 카테고리 목록 -->
     <div class="table-wrapper">
       <table id="categoryTable">
         <thead>
         <tr>
           <th>ID</th>
           <th>카테고리 이름</th>
-          <th>수정/삭제</th>
+          <th>삭제</th>
         </tr>
         </thead>
         <tbody>
@@ -673,7 +656,6 @@
           <td th:text="${category.categoryId}"></td>
           <td th:text="${category.categoryName}"></td>
           <td class="action-buttons">
-            <button class="edit" th:href="@{/admin/category/edit/{id}(id=${category.categoryId})}">수정</button>
             <form th:action="@{/admin/category/{id}(id=${category.categoryId})}" method="post">
               <input type="hidden" name="_method" value="delete" />
               <button type="submit">삭제</button>
