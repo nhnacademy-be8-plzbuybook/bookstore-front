@@ -14,7 +14,7 @@ public class OrderDto {
     // 주문 id
     private String id;
     // 주문일
-    private LocalDateTime orderDate;
+    private LocalDateTime orderedAt;
     // 주문상태
     private String orderStatus;
     // 주문 상품 썸네일

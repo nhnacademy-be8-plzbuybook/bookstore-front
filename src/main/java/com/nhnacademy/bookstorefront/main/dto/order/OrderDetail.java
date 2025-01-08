@@ -14,8 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class OrderDetail {
+    private String orderId;
     private List<OrderProductDto> orderProducts;
     private OrderDeliveryAddressDto orderDeliveryAddress;
+    private OrderDeliveryDto orderDelivery;
     private PaymentDto payment;
     private BigDecimal deliveryFee;
     private BigDecimal orderPrice;
