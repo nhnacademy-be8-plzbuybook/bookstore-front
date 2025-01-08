@@ -97,17 +97,43 @@ public class AdminBookController {
     // TODO 동기화 버튼
 
     @PostMapping("/sync")
-    public ResponseEntity<Void> syncBooks() {
-        bookClient.syncBooksFromListApi("ItemNewAll", "Book", 3, 50);
-        return ResponseEntity.ok().build();
+    public String syncBooks(
+            @RequestParam("queryType") String queryType,
+            @RequestParam("searchTarget") String searchTarget,
+            @RequestParam("start") int start,
+            @RequestParam("maxResults") int maxResults
+    ) {
+        try {
+            log.info("Received sync request: queryType={}, searchTarget={}, start={}, maxResults={}",
+                    queryType, searchTarget, start, maxResults);
+
+            bookClient.syncBooksFromListApi(queryType, searchTarget, start, maxResults);
+            // 성공 시 리다이렉트
+            return "redirect:/admin/selling-books";
+        } catch (Exception e) {
+            log.error("도서 동기화 중 오류 발생: {}", e.getMessage());
+            // 실패 시 리다이렉트
+            return "redirect:/admin/selling-books?error=true";
+        }
     }
 
     @PostMapping("/sync/isbn")
-    public ResponseEntity<Void> syncBooksByIsbns(@RequestParam String isbn) {
-        // 쉼표로 구분된 ISBN 리스트를 파싱
-        List<String> isbns = List.of(isbn.split(","));
-        bookClient.syncBooksByIsbns(isbns);
-        return ResponseEntity.ok().build();
+    public String syncBooksByIsbns(@RequestParam String isbn) {
+        try {
+            // 쉼표로 구분된 ISBN 리스트를 파싱
+            List<String> isbns = List.of(isbn.split(","));
+            bookClient.syncBooksByIsbns(isbns);
+            log.info("ISBN 동기화 성공: {}", isbns);
+
+            // 성공 시 리다이렉트
+            return "redirect:/admin/selling-books";
+        } catch (Exception e) {
+            log.error("ISBN 동기화 중 오류 발생: {}", e.getMessage());
+
+            // 실패 시 리다이렉트
+            return "redirect:/admin/selling-books?error=true";
+        }
     }
+
 }
 

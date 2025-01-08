@@ -282,12 +282,12 @@
 <main>
     <!-- 사이드바 -->
     <div class="sidebar">
-        <div class="group active" data-section="member-management">회원 관리</div>
+        <a href="/adminpage" class="group" data-section="member-management">회원 관리</a>
         <a href="/admin/selling-books" class="group">도서 관리</a>
         <div class="group" data-section="coupon-management">쿠폰 관리</div>
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
         <div class="group" data-section="tag-management">태그 관리</div>
-        <div class="group" data-section="category-management">카테고리 관리</div>
+        <div href= ""class="group" data-section="category-management">카테고리 관리</div>
 
     </div>
 
@@ -303,31 +303,31 @@
 
 
             <!-- 알라딘 도서 동기화 -->
-            <form action="/api/books/sync" method="post" class="sync-form">
+            <form action="/admin/selling-books/sync" method="post" class="sync-form">
                 <label for="queryType">Query:</label>
                 <select name="queryType" id="queryType">
-                    <option value="ItemNewAll">신간 전체</option>
-                    <option value="Bestseller">베스트셀러</option>
-                    <option value="BlogBest">블로거 베스트</option>
+                    <option value="ItemNewAll">ItemNewAll</option>
+                    <option value="Bestseller">Bestseller</option>
+                    <option value="BlogBest">BolgBest</option>
                 </select>
 
                 <label for="searchTarget">Target:</label>
                 <select name="searchTarget" id="searchTarget">
-                    <option value="Book">국내 도서</option>
-                    <option value="Foreign">외국 도서</option>
+                    <option value="Book">Book</option>
+                    <option value="Foreign">Foreign</option>
                 </select>
 
                 <label for="start">Start:</label>
                 <input type="number" name="start" id="start" value="1" min="1">
 
                 <label for="maxResults">Max:</label>
-                <input type="number" name="maxResults" id="maxResults" value="50" min="1">
+                <input type="number" name="maxResults" id="maxResults" value="10" min="1">
 
                 <button type="submit" class="sync-button">📚 동기화</button>
             </form>
 
             <!-- ISBN 입력 및 동기화 -->
-            <form action="/api/books/sync/isbn" method="post" class="isbn-form">
+            <form action="/admin/selling-books/sync/isbn" method="post" class="isbn-form">
                 <label for="isbn">ISBN:</label>
                 <input type="text" name="isbn" id="isbn" placeholder="쉼표로 구분된 ISBN 입력">
                 <button type="submit" class="isbn-button">📚 ISBN 동기화</button>
