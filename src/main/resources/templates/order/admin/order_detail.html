@@ -5,19 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자용 주문상세</title>
     <link rel="stylesheet" href="/css/order/detail.css">
+    <link rel="stylesheet" href="/css/layout/layout.css">
 </head>
 <body>
+<th:block th:replace="~{/layout/layout::headerFragment}"></th:block>
 <h1>관리자용 주문상세</h1>
+
 <h2>주문정보</h2>
-
-<h3>주문번호</h3>
-<span th:text="${orderDetail.getOrderNumber()}"></span>
-
-<h3>주문일자</h3>
-<span th:text="${#temporals.format(orderDetail.getOrderedAt(), 'yyyy/MM/dd HH:mm')}"></span>
-
-<h3>주문상태</h3>
-<span th:text="${orderDetail.getStatus()}"></span>
+<table>
+    <thead>
+    <tr>
+        <th>주문번호</th>
+        <th>주문시각</th>
+        <th>주문상태</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:text="${orderDetail.getOrderNumber()}"></td>
+        <td th:text="${#temporals.format(orderDetail.getOrderedAt(), 'yyyy/MM/dd HH:mm')}"></td>
+        <td th:text="${orderDetail.getStatus()}"></td>
+    </tr>
+    </tbody>
+</table>
 
 
 <h2>주문상품</h2>
@@ -38,7 +48,8 @@
             <img th:src="${orderProduct.getImageUrl()}" th:alt="${orderProduct.getBookTitle()}">
         </td>
         <td>
-            <a th:href="@{/book/detail/{id}(id=${orderProduct.getBookId()})}" th:text="${orderProduct.getBookTitle()}"></a>
+            <a th:href="@{/book/detail/{id}(id=${orderProduct.getBookId()})}"
+               th:text="${orderProduct.getBookTitle()}"></a>
         </td>
         <td th:text="${orderProduct.getPrice()}"></td>
         <td th:text="${orderProduct.getQuantity()}"></td>
@@ -60,6 +71,9 @@
 <span th:text="${orderDetail.getDeliveryWishDate()}"></span>
 
 <h2>주문 배송 정보</h2>
+<!--주문배송 등록 폼-->
+<div th:replace="~{/order/admin/orderDelivery/register_form::orderDeliveryRegisterForm}"></div>
+
 <table>
     <thead>
     <tr>
@@ -82,7 +96,6 @@
 </table>
 
 
-
 <h2>결제정보</h2>
 <table>
     <tbody>
@@ -95,7 +108,7 @@
         <td th:text="${orderDetail.getUsedPoint()}"></td>
     </tr>
     <tr>
-<!--        쿠폰할인금액 등 추가-->
+        <!--        쿠폰할인금액 등 추가-->
         <td>할인금액</td>
         <td>1000원</td>
     </tr>
@@ -123,5 +136,10 @@
     </tr>
     </tbody>
 </table>
+
+<button>저장</button>
+
+<!--footer 레이아웃-->
+<th:block th:replace="~{/layout/layout::footerLayout}"></th:block>
 </body>
 </html>
