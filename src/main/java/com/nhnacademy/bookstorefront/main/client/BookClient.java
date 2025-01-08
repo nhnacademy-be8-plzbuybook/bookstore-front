@@ -2,6 +2,11 @@ package com.nhnacademy.bookstorefront.main.client;
 
 
 import com.nhnacademy.bookstorefront.main.dto.*;
+import com.nhnacademy.bookstorefront.main.dto.book.CategoryRegisterDto;
+import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
+import jakarta.validation.Valid;
 import com.nhnacademy.bookstorefront.main.dto.book.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
@@ -88,6 +93,13 @@ public interface BookClient {
     @DeleteMapping("/api/categories/{categoryId}")
     ResponseEntity<Void> deleteCategory(@PathVariable("categoryId") Long categoryId);
 
+
+    @PostMapping("/api/reviews")
+    ResponseEntity<ReviewResponseDto> createReview(@RequestBody ReviewCreateRequestDto reviewRequestDto);
+
+    @GetMapping("/api/order-product/by-selling-book/{sellingBookId}")
+    ResponseEntity<Long> getOrderProductBySellingBookId(@PathVariable("sellingBookId") Long sellingBookId);
+
     @PostMapping("/api/tags")
     ResponseEntity<Void> saveTag(@RequestBody TagRegisterDto tagRegisterDto);
 
@@ -116,7 +128,6 @@ public interface BookClient {
 
 
 
-    
 
 
 }
