@@ -2,8 +2,7 @@ package com.nhnacademy.bookstorefront.main.client;
 
 
 import com.nhnacademy.bookstorefront.main.dto.*;
-import com.nhnacademy.bookstorefront.main.dto.book.CategoryRegisterDto;
-import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.book.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -89,8 +88,35 @@ public interface BookClient {
     @DeleteMapping("/api/categories/{categoryId}")
     ResponseEntity<Void> deleteCategory(@PathVariable("categoryId") Long categoryId);
 
+    @PostMapping("/api/tags")
+    ResponseEntity<Void> saveTag(@RequestBody TagRegisterDto tagRegisterDto);
+
+    @GetMapping("/api/tags")
+    ResponseEntity<List<TagResponseDto>> getAllTags(@RequestParam String keyword);
+
+    @DeleteMapping("/api/tags/{tagId}")
+    ResponseEntity<Void> deleteTag(@PathVariable("tagId") Long tagId);
+
+    @GetMapping("/api/book-tags")
+    ResponseEntity<List<BookTagResponseDto>> getAllBookTags(@RequestParam Long tagId);
+
+    @PostMapping("/api/book-tags")
+    ResponseEntity<Void> saveBookTag(@RequestParam Long bookId, @RequestParam Long tagId);
+
+    @DeleteMapping("/api/book-tags")
+    ResponseEntity<Void> deleteBookTag(@RequestParam Long bookId, @RequestParam Long tagId);
+
+    @GetMapping("/api/tags/{tagId}")
+    ResponseEntity<String> getTagNameByTagId(@PathVariable Long tagId);
 
 
+
+
+
+
+
+
+    
 
 
 }
