@@ -6,6 +6,8 @@ import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrder
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface OrderService {
     OrderSaveResponseDto requestNonMemberOrder(NonMemberOrderRequestDto orderSaveRequestDto);
     OrderSaveResponseDto requestMemberOrder(MemberOrderRequestDto orderSaveRequestDto);
@@ -14,4 +16,5 @@ public interface OrderService {
     Page<OrderDto> getAllOrders(OrderSearchRequestDto searchRequest, Pageable pageable);
     OrderDetail getOrderDetail(String orderId);
     String getNonMemberOrderId(NonMemberOrderDetailAccessRequestDto accessRequest);
+    List<String> getOrderStatuses();
 }

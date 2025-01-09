@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(name = "GATEWAY", contextId = "orderClient")
 public interface OrderClient {
 
@@ -46,4 +48,7 @@ public interface OrderClient {
 
     @PutMapping("/api/orders/order-products/{order-product-id}/purchase-confirm")
     ResponseEntity<Void> confirmPurchase(@PathVariable("order-product-id") Long orderProductId);
+
+    @GetMapping("/api/orders/order-status")
+    ResponseEntity<List<String>> getOrderStatuses();
 }

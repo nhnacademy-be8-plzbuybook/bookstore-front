@@ -30,11 +30,10 @@
         <tr>
             <th>주문 번호</th>
             <th>주문 상품</th>
-            <th>고객 이름</th>
+            <th>고객 아이디</th>
             <th>주문 상태</th>
             <th>주문 날짜</th>
             <th>결제 금액</th>
-            <th>액션</th>
         </tr>
         </thead>
         <tbody>
@@ -42,15 +41,11 @@
             <td>
                 <a th:href="@{/admin/orders/{id}(id=${order.getId()})}" th:text="${order.getId()}"></a>
             </td>
-            <td th:text="${order.getOrderName()}">#00123</td>
-            <td th:text="${order.getOrderer()}">홍길동</td>
-            <td><span class="status-tag status-completed" th:text="${order.getOrderStatus()}">배송 완료</span></td>
-            <td th:text="${#temporals.format(order.getOrderedAt(), 'yyyy/MM/dd HH:mm')}">2025-01-02</td>
-            <td th:text="${order.getPaymentAmount()}">₩50,000</td>
-            <td class="action-btns">
-                <button onclick="viewOrderDetails(123)">상세보기</button>
-                <button onclick="changeStatus(123)">상태 변경</button>
-            </td>
+            <td th:text="${order.getOrderName()}"></td>
+            <td th:text="${order.getOrderer()}"></td>
+            <td><span class="status-tag status-completed" th:text="${order.getOrderStatus()}"></span></td>
+            <td th:text="${#temporals.format(order.getOrderedAt(), 'yyyy/MM/dd HH:mm')}"></td>
+            <td th:text="${order.getPaymentAmount()}">/td>
         </tr>
         </tbody>
     </table>

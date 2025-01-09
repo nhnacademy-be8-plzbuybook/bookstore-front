@@ -163,6 +163,7 @@ public class OrderController {
         return "order/admin/order_list";
     }
 
+
     /**
      * 관리자 주문 상세 조회
      *
@@ -174,7 +175,10 @@ public class OrderController {
     public String getAdminOrderDetail(@PathVariable("order-id") String orderId,
                                       Model model) {
         OrderDetail orderDetail = orderService.getOrderDetail(orderId);
+        List<String> orderStatuses = orderService.getOrderStatuses();
+
         model.addAttribute("orderDetail", orderDetail);
+        model.addAttribute("orderStatuses", orderStatuses);
 
         return "order/admin/order_detail";
     }
