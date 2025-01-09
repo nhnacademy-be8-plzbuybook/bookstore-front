@@ -12,6 +12,7 @@ import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import com.nhnacademy.bookstorefront.main.service.WrappingPaperService;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -230,4 +231,13 @@ public class OrderController {
     public ResponseEntity<Void> confirmPurchase(@PathVariable("order-product-id") Long orderProductId) {
         return orderClient.confirmPurchase(orderProductId);
     }
+
+    @PatchMapping("/api/orders/{order-id}/status")
+    public ResponseEntity<Void> changeOrderStatus(@PathVariable("order-id") String orderId,
+                                                  @RequestBody StatusDto status) {
+        orderService.modifyOrderStatus(orderId, status);
+
+        return ResponseEntity.ok().build();
+    }
+
 }

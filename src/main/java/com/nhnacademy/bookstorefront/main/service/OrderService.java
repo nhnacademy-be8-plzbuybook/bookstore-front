@@ -17,4 +17,6 @@ public interface OrderService {
     OrderDetail getOrderDetail(String orderId);
     String getNonMemberOrderId(NonMemberOrderDetailAccessRequestDto accessRequest);
     List<String> getOrderStatuses();
+
+    void modifyOrderStatus(String orderId, StatusDto status);
 }

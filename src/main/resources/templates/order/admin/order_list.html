@@ -28,24 +28,22 @@
     <table id="orderTable">
         <thead>
         <tr>
-            <th>주문 번호</th>
-            <th>주문 상품</th>
-            <th>고객 아이디</th>
-            <th>주문 상태</th>
-            <th>주문 날짜</th>
-            <th>결제 금액</th>
+            <th>주문일시</th>
+            <th>주문상품</th>
+            <th>주문자</th>
+            <th>주문상태</th>
+            <th>결제금액</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="order: ${orderList}">
+            <td th:text="${#temporals.format(order.getOrderedAt(), 'yyyy/MM/dd HH:mm')}"></td>
             <td>
-                <a th:href="@{/admin/orders/{id}(id=${order.getId()})}" th:text="${order.getId()}"></a>
+                <a th:href="@{/admin/orders/{id}(id=${order.getId()})}" th:text="${order.getOrderName()}"></a>
             </td>
-            <td th:text="${order.getOrderName()}"></td>
             <td th:text="${order.getOrderer()}"></td>
             <td><span class="status-tag status-completed" th:text="${order.getOrderStatus()}"></span></td>
-            <td th:text="${#temporals.format(order.getOrderedAt(), 'yyyy/MM/dd HH:mm')}"></td>
-            <td th:text="${order.getPaymentAmount()}">/td>
+            <td th:text="${order.getPaymentAmount()}"></td>
         </tr>
         </tbody>
     </table>

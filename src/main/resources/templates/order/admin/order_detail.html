@@ -21,29 +21,27 @@
             <th>주문번호</th>
             <th>주문일시</th>
             <th>주문상태</th>
-            <th>주문상태 변경</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td th:text="${orderDetail.getOrderNumber()}"></td>
             <td th:text="${#temporals.format(orderDetail.getOrderedAt(), 'yyyy/MM/dd HH:mm')}"></td>
-            <td th:text="${orderDetail.getStatus()}">
-                <select id="orderStatusComboBox">
-                    <option>기본</option>
-                    <option th:value="${orderDetail.getStatus()}" th:text="${orderDetail.getStatus()}"></option>
-                </select>
-            </td>
             <td>
-                <select>
-                    <option
-                            th:each="status: ${orderStatuses}"
-                            th:value="${status}"
-                            th:text="${status}">
-                    </option>
-                </select>
-                <button>변경</button>
-
+                <div style="display: flex; align-items: center;">
+                    <select id="orderStatusComboBox">
+                        <option
+                                th:each="status: ${orderStatuses}"
+                                th:value="${status}"
+                                th:text="${status}">
+                        </option>
+                    </select>
+                        <button style="margin-left: 10px;"
+                                id="orderStatusChangeBtn"
+                                type="submit">
+                            변경
+                        </button>
+                </div>
             </td>
         </tr>
         </tbody>
@@ -64,22 +62,22 @@
         </thead>
         <tbody>
         <tr th:each="orderProduct: ${orderDetail.getOrderProducts()}">
-<!--            이미지-->
+            <!--            이미지-->
             <td>
                 <img th:src="${orderProduct.getImageUrl()}" th:alt="${orderProduct.getBookTitle()}">
             </td>
-<!--            상품명-->
+            <!--            상품명-->
             <td>
                 <a th:href="@{/book/detail/{id}(id=${orderProduct.getBookId()})}"
                    th:text="${orderProduct.getBookTitle()}"></a>
             </td>
-<!--            가격-->
+            <!--            가격-->
             <td th:text="${orderProduct.getPrice()}"></td>
-<!--            수량-->
+            <!--            수량-->
             <td th:text="${orderProduct.getQuantity()}"></td>
-<!--            상태-->
+            <!--            상태-->
             <td th:text="${orderProduct.getStatus()}"></td>
-<!--            포장지-->
+            <!--            포장지-->
             <td th:if="${orderProduct.getOrderProductWrapping() != null}">
                 <span th:text="${orderProduct.getOrderProductWrapping().getName()}"></span> /
                 <span th:text="${orderProduct.getOrderProductWrapping().getPrice()}"></span> 원
@@ -93,98 +91,133 @@
         </tbody>
     </table>
 
-    <h2>배송희망 날짜</h2>
     <span th:text="${orderDetail.getDeliveryWishDate()}"></span>
-
-    <div th:if="${orderDetail.getOrderDelivery().getTrackingNumber() != null}">
-        <h2>주문 배송 정보</h2>
-        <table>
-            <thead>
-            <tr>
-                <th>배송사</th>
-                <th>운송장번호</th>
-                <th>등록일시</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td th:text="${orderDetail.getOrderDelivery().getDeliveryCompany()}"></td>
-                <td th:text="${orderDetail.getOrderDelivery().getTrackingNumber()}"></td>
-                <td th:text="${orderDetail.getOrderDelivery().getRegisteredAt()}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-
     <!--    주문배송이 등록되지 않았을 때 등록폼 보여줌-->
     <div th:unless="${orderDetail.getOrderDelivery().getTrackingNumber() != null}">
         <div th:replace="~{/order/admin/orderDelivery/register_form::orderDeliveryRegisterForm(orderId=${orderDetail.getOrderId()})}"></div>
     </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>받는 사람</th>
-            <th>전화번호</th>
-            <th>우편번호</th>
-            <th>주소</th>
-            <th>상세주소</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td th:text="${orderDetail.getOrderDeliveryAddress().getRecipient()}"></td>
-            <td th:text="${orderDetail.getOrderDeliveryAddress().getRecipientPhone()}"></td>
-            <td th:text="${orderDetail.getOrderDeliveryAddress().getZipCode()}"></td>
-            <td th:text="${orderDetail.getOrderDeliveryAddress().getLocationAddress()}"></td>
-            <td th:text="${orderDetail.getOrderDeliveryAddress().getDetailAddress()}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <h2>주문 배송 정보</h2>
+    <div class="section">
+        <!-- 배송 정보 -->
+        <div class="table-wrapper">
+            <h3>배송 정보</h3>
+            <table>
+                <tbody>
+                <tr>
+                    <td>배송희망날짜</td>
+                    <td th:if="${orderDetail.getDeliveryWishDate() != null}"
+                        th:text="${orderDetail.getDeliveryWishDate()}"></td>
+                    <td th:unless="${orderDetail.getDeliveryWishDate() != null}">
+                        없음
+                    </td>
+                </tr>
+                <tr>
+                    <td>배송사</td>
+                    <td th:if="${orderDetail.getOrderDelivery().getDeliveryCompany() != null}"
+                        th:text="${orderDetail.getOrderDelivery().getDeliveryCompany()}"></td>
+                </tr>
+                <tr>
+                    <td>운송장번호</td>
+                    <td th:if="${orderDetail.getOrderDelivery().getTrackingNumber()!= null}"
+                        th:text="${orderDetail.getOrderDelivery().getTrackingNumber()}"></td>
+                </tr>
+                <tr>
+                    <td>등록일시</td>
+                    <td th:if="${orderDetail.getOrderDelivery().getRegisteredAt() != null}"
+                        th:text="${#temporals.format(orderDetail.getOrderDelivery().getRegisteredAt(), 'yyyy/MM/dd HH:mm')}"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button>배송완료 처리</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 배송 주소 -->
+        <div class="table-wrapper">
+            <h3>배송 주소</h3>
+            <table>
+                <tbody>
+                <tr>
+                    <td>받는사람</td>
+                    <td th:text="${orderDetail.getOrderDeliveryAddress().getRecipient()}"></td>
+                </tr>
+                <tr>
+                    <td>전화번호</td>
+                    <td th:text="${orderDetail.getOrderDeliveryAddress().getRecipientPhone()}"></td>
+                </tr>
+                <tr>
+                    <td>우편번호</td>
+                    <td th:text="${orderDetail.getOrderDeliveryAddress().getZipCode()}"></td>
+                </tr>
+                <tr>
+                    <td>주소</td>
+                    <td th:text="${orderDetail.getOrderDeliveryAddress().getLocationAddress()}"></td>
+                </tr>
+                <tr>
+                    <td>상세주소</td>
+                    <td th:text="${orderDetail.getOrderDeliveryAddress().getDetailAddress()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 
-    <h2>결제정보</h2>
-    <table>
-        <tbody>
-        <tr>
-            <td>주문금액</td>
-            <td th:text="${orderDetail.getOrderPrice()}">10000원</td>
-        </tr>
-        <tr>
-            <td>사용포인트</td>
-            <td th:text="${orderDetail.getUsedPoint()}"></td>
-        </tr>
-        <tr>
-            <!--        쿠폰할인금액 등 추가-->
-            <td>할인금액</td>
-            <td>1000원</td>
-        </tr>
-        <tr>
-            <td>배송비</td>
-            <td th:text="${orderDetail.getDeliveryFee()}"></td>
-        </tr>
-        </tbody>
-    </table>
-    <table>
-        <thead>
-        <tr>
-            <th>결제수단</th>
-            <th>제공사</th>
-            <th>결제금액</th>
-            <th>결제일자</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td th:text="${orderDetail.getPayment().getMethod()}"></td>
-            <td th:text="${orderDetail.getPayment().getEasyPayProvider()}"></td>
-            <td th:text="${orderDetail.getPayment().getAmount()}"></td>
-            <td th:text="${orderDetail.getPayment().getPaidAt()}"></td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="section">
+        <!-- 결제정보 -->
+        <div class="table-wrapper">
+            <h3>결제정보</h3>
+            <table>
+                <tbody>
+                <tr>
+                    <td>주문금액</td>
+                    <td th:text="${orderDetail.getOrderPrice()}">10000원</td>
+                </tr>
+                <tr>
+                    <td>사용포인트</td>
+                    <td th:text="${orderDetail.getUsedPoint()}"></td>
+                </tr>
+                <tr>
+                    <td>할인금액</td>
+                    <td>1000원</td>
+                </tr>
+                <tr>
+                    <td>배송비</td>
+                    <td th:text="${orderDetail.getDeliveryFee()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <button>저장</button>
+        <!-- 결제수단 -->
+        <div class="table-wrapper">
+            <h3>결제수단</h3>
+            <table>
+                <tbody>
+                <tr>
+                    <td>결제수단</td>
+                    <td th:text="${orderDetail.getPayment().getMethod()}"></td>
+                </tr>
+                <tr>
+                    <td>제공사</td>
+                    <td th:text="${orderDetail.getPayment().getEasyPayProvider()}"></td>
+                </tr>
+                <tr>
+                    <td>결제금액</td>
+                    <td th:text="${orderDetail.getPayment().getAmount()}"></td>
+                </tr>
+                <tr>
+                    <td>결제일자</td>
+                    <td th:text="${orderDetail.getPayment().getPaidAt()}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 
@@ -193,12 +226,39 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
-<script>
+
+<script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', () => {
         const orderStatusComboBox = document.getElementById("orderStatusComboBox");
-        const defaultValue = [[${orderDetail.getStatus()}]]
+        const defaultValue = [[${orderDetail.getStatus()}]];
         orderStatusComboBox.value = defaultValue;
-    })
+
+        const orderStatusChangeBtn = document.getElementById("orderStatusChangeBtn");
+        orderStatusChangeBtn.addEventListener('click', async () => {
+            const orderId = [[${orderDetail.getOrderId()}]];
+            const status = orderStatusComboBox.value;
+
+            const response = await fetch(`/api/orders/${orderId}/status`, {
+                method: 'PATCH',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ status: status })
+
+            })
+
+            if (!response.ok) {
+                alert("주문상태 변경이 실패했습니다.");
+                return;
+            }
+            alert(`주문상태을 ${status}로 변경 완료`);
+            window.location.reload();
+        })
+    });
+
+
+
+
 </script>
 </body>
 

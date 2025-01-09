@@ -67,16 +67,14 @@
             <td th:unless="${orderProduct.getOrderProductWrapping() != null}">
                 <span>X</span>
             </td>
-            <td th:if="${orderProduct.getStatus().equals('DELIVERED')}">
+            <td th:if="${orderProduct.getStatus().equals('배송완료')}">
                 <button type="button" id="purchase-confirm-btn" th:attr="onclick=|purchaseConfirm(${orderProduct.getOrderProductId()})|" >구매확정</button>
             </td>
-            <td th:if="${orderProduct.getStatus().equals('PURCHASE_CONFIRMED')}">
+            <td th:if="${orderProduct.getStatus().equals('구매확정')}">
                 <button type="button">리뷰작성</button>
                 <!--TODO: 리뷰 작성 페이지로 이동하는 링크 추가-->
             </td>
-
         </tr>
-
         </tbody>
     </table>
 

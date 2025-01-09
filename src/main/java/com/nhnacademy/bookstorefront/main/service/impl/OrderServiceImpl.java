@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -116,6 +115,15 @@ public class OrderServiceImpl implements OrderService {
             return response.getBody();
         } catch (FeignException e) {
             throw new RuntimeException("주문상태를 가져오는 중 오류가 발생했습니다..");
+        }
+    }
+
+    @Override
+    public void modifyOrderStatus(String orderId, StatusDto status) {
+        try {
+            orderClient.modifyOrderStatus(orderId, status);
+        } catch (FeignException e) {
+            throw new RuntimeException("주문상태 변경 중 오류가 발생했습니다.");
         }
     }
 }

@@ -38,7 +38,7 @@ public interface OrderClient {
     //orderDelivery
     @PostMapping("/api/orders/{order-id}/deliveries")
     ResponseEntity<Void> registerOrderDelivery(@PathVariable("order-id") String orderId,
-                                            @Valid @RequestBody OrderDeliveryRegisterRequestDto registerRequest);
+                                               @Valid @RequestBody OrderDeliveryRegisterRequestDto registerRequest);
 
     @PostMapping("/api/orders/non-member/access")
     ResponseEntity<String> nonMemberOrderAccess(@RequestBody NonMemberOrderDetailAccessRequestDto accessRequest);
@@ -51,4 +51,8 @@ public interface OrderClient {
 
     @GetMapping("/api/orders/order-status")
     ResponseEntity<List<String>> getOrderStatuses();
+
+    @PutMapping("/api/orders/{order-id}/status")
+    ResponseEntity<Void> modifyOrderStatus(@PathVariable("order-id") String orderId,
+                                           @RequestBody StatusDto status);
 }
