@@ -33,14 +33,12 @@ public interface CouponClient {
     ResponseEntity<CouponCreateResponseDto> createCoupon(@RequestBody @Valid CouponCreateRequestDto createRequest);
 
     // 쿠폰 전체 목록 조회
-    @GetMapping("api/coupons")
+    @GetMapping("/api/coupons")
     ResponseEntity<Page<CouponResponseDto>> getAllCoupons(@RequestParam @Min(0) int page, @RequestParam @Min(1)int pageSize);
 
-    // 현재 시간을 기준으로 사용가능한 쿠폰 목록 조회
-    @GetMapping("/api/coupons/active")
-    ResponseEntity<Page<CouponResponseDto>> getActiveCoupons(@RequestParam("currentDateTime") @NotNull LocalDateTime currentDateTime,
-                                                             @RequestParam(defaultValue = "0") @Min(0) int page,
-                                                             @RequestParam(defaultValue = "10") @Min(1) int pageSize);
+    // 모든 회원쿠폰 정보 목록 조회
+    @GetMapping("/api/member-coupons")
+    ResponseEntity<Page<MemberCouponResponseDto>> getAllMemberCoupons(@RequestParam @NotNull @Min(0) int page, @RequestParam @NotNull @Min(1) int pageSize);
 
     // 특정 쿠폰을 주문 상품에 적용하여 (쿠폰서버에서) 할인 계산
     @PostMapping("/api/member-coupons/member/{member-id}/coupon/{coupon-id}/calculate")
