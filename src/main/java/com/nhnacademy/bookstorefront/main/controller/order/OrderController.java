@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorefront.main.controller.order;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
+import com.nhnacademy.bookstorefront.main.client.OrderClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
@@ -30,6 +31,7 @@ public class OrderController {
     private final WrappingPaperService wrappingPaperService;
     private final DeliveryFeePolicyService deliveryFeePolicyService;
     private final MemberClient memberClient;
+    private final OrderClient orderClient;
 
     /**
      * 비회원 주문페이지
@@ -218,5 +220,10 @@ public class OrderController {
     public ResponseEntity<String> completeOrder(@PathVariable("order-id") String orderId) {
         String completedOrderId = orderService.completeOrder(orderId);
         return ResponseEntity.status(HttpStatus.OK).body(completedOrderId);
+    }
+
+    @PutMapping("/api/orders/order-products/{order-product-id}/purchase-confirm")
+    public ResponseEntity<Void> confirmPurchase(@PathVariable("order-product-id") Long orderProductId) {
+        return orderClient.confirmPurchase(orderProductId);
     }
 }

@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Getter
 public class OrderProductDto {
+    private Long orderProductId;
     private String imageUrl;
     private String bookTitle;
     private Long bookId;

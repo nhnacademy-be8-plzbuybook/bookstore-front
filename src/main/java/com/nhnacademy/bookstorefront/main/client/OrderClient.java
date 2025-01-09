@@ -40,4 +40,10 @@ public interface OrderClient {
 
     @PostMapping("/api/orders/non-member/access")
     ResponseEntity<String> nonMemberOrderAccess(@RequestBody NonMemberOrderDetailAccessRequestDto accessRequest);
+
+    @PutMapping("/api/orders/order-products/{order-product-id}/status")
+    ResponseEntity<Void> patchOrderProductStatus(@RequestBody OrderProductStatusPatchRequestDto statusPatchRequest);
+
+    @PutMapping("/api/orders/order-products/{order-product-id}/purchase-confirm")
+    ResponseEntity<Void> confirmPurchase(@PathVariable("order-product-id") Long orderProductId);
 }
