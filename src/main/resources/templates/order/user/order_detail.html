@@ -44,6 +44,7 @@
             <th>수량</th>
             <th>상태</th>
             <th>포장</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -66,6 +67,10 @@
             <td th:unless="${orderProduct.getOrderProductWrapping() != null}">
                 <span>X</span>
             </td>
+            <td th:if="${orderProduct.getStatus().equals('DELIVERED')}">
+
+            </td>
+
         </tr>
 
         </tbody>
@@ -133,7 +138,7 @@
             <td th:text="${orderDetail.getPayment().getMethod()}"></td>
             <td th:text="${orderDetail.getPayment().getEasyPayProvider()}"></td>
             <td th:text="${orderDetail.getPayment().getAmount()}"></td>
-            <td th:text="${orderDetail.getPayment().getPaidAt()}"></td>
+            <td th:text="${#temporals.format(orderDetail.getPayment().getPaidAt(), 'yyyy/MM/dd HH:mm')}"></td>
         </tr>
         </tbody>
     </table>

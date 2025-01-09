@@ -37,7 +37,7 @@ public class OrderController {
      * @return
      */
     @GetMapping("/non-member/order/receipt")
-    public String nonMemberOrderReceipt(@RequestParam("productId")List<Long> productId,
+    public String nonMemberOrderReceipt(@RequestParam("productId") List<Long> productId,
                                         @RequestParam("quantity") List<Integer> quantity,
                                         Model model) {
         List<OrderReceiptProduct> books = new ArrayList<>();
@@ -52,6 +52,23 @@ public class OrderController {
         return "order/user/nonMember/order_receipt";
     }
 
+    /**
+     * 비회원주문 상세조회 접근 페이지
+     *
+     * @return
+     */
+    @GetMapping("/non-member/order")
+    public String nonMemberOrderDetailAccess() {
+        return "order/user/nonMember/order_detail_access";
+    }
+
+
+    @PostMapping("/api/non-member/order/access")
+    public String accessNonMemberOrderDetail(@ModelAttribute NonMemberOrderDetailAccessRequestDto accessRequest) {
+        String orderId = orderService.getNonMemberOrderId(accessRequest);
+
+        return "redirect:/orders/" + orderId;
+    }
 
     /**
      * 회원 주문페이지
@@ -59,10 +76,9 @@ public class OrderController {
      * @return
      */
     @GetMapping("/order/receipt")
-    public String memberOrderReceipt(@RequestParam("productId")List<Long> productId,
+    public String memberOrderReceipt(@RequestParam("productId") List<Long> productId,
                                      @RequestParam("quantity") List<Integer> quantity,
                                      Model model) {
-
         // 책 정보
         List<OrderReceiptProduct> books = new ArrayList<>();
         for (int i = 0; i < productId.size(); i++) {
