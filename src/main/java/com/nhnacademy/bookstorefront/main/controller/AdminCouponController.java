@@ -78,7 +78,20 @@ public class AdminCouponController {
         return "admin/adminPage";
     }
 
-    // 특정 기간의 쿠폰 이력 조회
+    // 쿠폰 ID에 해당하는 쿠폰 이력 목록 조회
+    @GetMapping("/admin/coupon-histories/{coupon-id}")
+    public String getCouponHistories(@PathVariable("coupon-id") Long couponId, @RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "10") int pageSize, Model model) {
+        Page<CouponHistoryResponseDto> couponHistories = couponClient.getHistoryByCouponId(couponId, page, pageSize).getBody();
+
+        model.addAttribute("couponHistories", couponHistories);
+        model.addAttribute("couponId", couponId);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("totalPages", couponHistories != null ? couponHistories.getTotalPages() : 0);
+
+        return "admin/adminPage";
+    }
 
 
 }

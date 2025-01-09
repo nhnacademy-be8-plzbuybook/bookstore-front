@@ -443,7 +443,60 @@
             </div>
 
             <!-- 사용 내역 조회 -->
+            <h3>쿠폰이력 조회</h3>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>쿠폰이력 ID</th>
+                            <th>쿠폰 ID</th>
+                            <th>상태</th>
+                            <th>변경일</th>
+                            <th>사유</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="couponHistory : ${couponHistories}">
+                            <td th:text="${couponHistory.historyId()}"></td>
+                            <td th:text="${couponHistory.couponId()}"></td>
+                            <td th:text="${couponHistory.status()}"></td>
+                            <td th:text="${#temporals.format(couponHistory.changeDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td th:text="${couponHistory.reason()}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <form onsubmit="redirectToCouponHistories(event)">
+                    <label for="couponId">쿠폰 ID:</label>
+                    <input type="number" id="couponId" name="couponId" required>
+                    <br><br>
 
+                    <label for="couponHistoriesPage">페이지 번호:</label>
+                    <input type="number" id="couponHistoriesPage" name="page" value="0" min="0" required>
+                    <br><br>
+
+                    <label for="couponHistoriesPageSize">페이지 크기:</label>
+                    <input type="number" id="couponHistoriesPageSize" name="pageSize" value="10" min="1" required>
+                    <br><br>
+
+                    <button type="submit">조회</button>
+                </form>
+                <script>
+                    function redirectToCouponHistories(event) {
+                        event.preventDefault();
+
+                        const couponId = document.getElementById('couponId').value;
+                        const page = document.getElementById('couponHistoriesPage').value;
+                        const pageSize = document.getElementById('couponHistoriesPageSize').value;
+
+                        if (couponId) {
+                            const url = `/admin/coupon-histories/${couponId}?page=${page}&pageSize=${pageSize}`;
+                            window.location.href = url;
+                        } else {
+                            alert('쿠폰 ID를 입력해주세요.');
+                        }
+                    }
+                </script>
+            </div>
 
         </div>
 
