@@ -19,6 +19,9 @@
             <th>주문번호</th>
             <th>주문일시</th>
             <th>주문상태</th>
+            <th th:if="${orderDetail.getOrderDelivery().getTrackingNumber() != null}">
+                배송조회
+            </th>
         </tr>
         </thead>
         <tbody>
