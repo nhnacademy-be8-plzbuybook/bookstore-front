@@ -99,7 +99,6 @@
     </div>
 </header>
 <main class="container mt-5">
-    <h1>장바구니</h1>
     <form th:action="@{/carts}" method="post">
         <div id="cartItems">
             <div th:each="item : ${cartItems}">
@@ -113,10 +112,11 @@
                 <p>
                     수량:
                     <input type="number" name="quantity" th:value="${item.quantity}" min="1" />
-                    <input type="hidden" name="sellingBookId" th:value="${item.sellingBookId}" />
                 </p>
-                <!--<button class="btn btn-primary" type="submit">수량 수정</button> -->
-                <button class="btn btn-danger" th:onclick="'removeFromCart(' + ${item.sellingBookId} + ')'">삭제</button>
+                <button class="btn btn-warning" type="button"
+                        th:attr="data-selling-book-id=${item.sellingBookId}, data-quantity=${item.quantity}, data-cart-book-id=${item.cartBookId}"
+                        onclick="updateItem(this)">수정</button>
+<!--                <button class="btn btn-danger" th:onclick="'removeFromCart(' + ${item.sellingBookId} + ')'">삭제</button>-->
             </div>
             <p th:if="${#lists.isEmpty(cartItems)}">장바구니가 비어 있습니다.</p>
         </div>
@@ -125,7 +125,40 @@
         <button class="btn btn-primary" th:onclick="'checkout()'">주문하기</button>
     </div>
 </main>
-
+<script>
+    function updateItem(button) {
+        const sellingBookId = button.getAttribute('data-selling-book-id');
+        const cartBookId = button.getAttribute('data-cart-book-id');
+        const quantity = button.getAttribute('data-quantity');
+        const updatedQuantity = prompt("수정할 수량을 입력하세요:", quantity);
+        if (updatedQuantity !== null) {
+            fetch('/carts', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cartBookId: Number(cartBookId),
+                    sellingBookId: Number(sellingBookId),
+                    quantity: Number(updatedQuantity)
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('수정 중 오류가 발생했습니다.');
+                });
+        }
+    }
+</script>
 <footer>
     <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
 </footer>

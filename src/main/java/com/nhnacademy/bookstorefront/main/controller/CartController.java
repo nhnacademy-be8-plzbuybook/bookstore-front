@@ -1,8 +1,6 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
-import com.nhnacademy.bookstorefront.main.client.BookClient;
-import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.cart.request.CreateCartBookRequest;
 import com.nhnacademy.bookstorefront.main.dto.cart.request.DeleteCartBookRequest;
 import com.nhnacademy.bookstorefront.main.dto.cart.request.UpdateCartBookRequest;
@@ -17,7 +15,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CartController {
@@ -75,12 +75,17 @@ public class CartController {
 
     @PutMapping ("/carts")
     @ResponseBody
-    public String updateCartBook(@RequestBody UpdateCartBookRequest updateCartBookRequest) {
-        try{
+    public ResponseEntity<Map<String, Object>> updateCartBook(@RequestBody UpdateCartBookRequest updateCartBookRequest) {
+        Map<String, Object> response = new HashMap<>();
+        try {
             cartService.updateCartBook(updateCartBookRequest);
-            return "redirect:cart/myCart";
-        } catch(Exception e) {
-            return "index";
+            response.put("success", true);
+            response.put("message", "장바구니가 수정되었습니다.");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "장바구니 수정 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
