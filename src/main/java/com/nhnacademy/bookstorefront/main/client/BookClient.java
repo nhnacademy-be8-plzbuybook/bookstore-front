@@ -104,7 +104,9 @@ public interface BookClient {
     ResponseEntity<Void> saveTag(@RequestBody TagRegisterDto tagRegisterDto);
 
     @GetMapping("/api/tags")
-    ResponseEntity<List<TagResponseDto>> getAllTags(@RequestParam String keyword);
+    ResponseEntity<Page<TagResponseDto>> getAllTags(@RequestParam(required = false) String keyword,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "10") int size);
 
     @DeleteMapping("/api/tags/{tagId}")
     ResponseEntity<Void> deleteTag(@PathVariable("tagId") Long tagId);

@@ -338,6 +338,22 @@
         </tbody>
       </table>
     </div>
+
+    <!-- 페이지네이션 -->
+    <div class="pagination">
+      <!-- 이전 버튼 -->
+      <span th:if="${currentPage > 0}">
+    <a th:href="@{/admin/tag(page=${currentPage - 1}, size=${pageSize}, keyword=${keyword})}">이전</a>
+  </span>
+
+      <!-- 페이지 번호 표시 -->
+      <span>Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>
+
+      <!-- 다음 버튼 -->
+      <span th:if="${currentPage < totalPages - 1}">
+    <a th:href="@{/admin/tag(page=${currentPage + 1}, size=${pageSize}, keyword=${keyword})}">다음</a>
+  </span>
+    </div>
   </div>
 </main>
 
