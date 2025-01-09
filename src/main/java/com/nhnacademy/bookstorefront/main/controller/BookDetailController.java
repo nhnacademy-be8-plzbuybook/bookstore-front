@@ -62,16 +62,16 @@ public class BookDetailController {
         }
 
 
-        MyPageDto myPageDto = authenticationService.getMyPage();
-        Long memberId = myPageDto.getMemberId();
+//        MyPageDto myPageDto = authenticationService.getMyPage();
+//        Long memberId = myPageDto.getMemberId();
 
-        Long OrderProductId = bookClient.getOrderProductBySellingBookId(sellingBookId).getBody();
+//        Long OrderProductId = bookClient.getOrderProductBySellingBookId(sellingBookId).getBody();
 
         model.addAttribute("book", bookDetail);
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("role", role);
-        model.addAttribute("memberId", memberId);
-        model.addAttribute("orderProductId", OrderProductId);
+//        model.addAttribute("memberId", memberId);
+//        model.addAttribute("orderProductId", OrderProductId);
 
 
         return "detailview";
@@ -109,15 +109,15 @@ public class BookDetailController {
         return "redirect:/book/detail/" + sellingBookId;
     }
 
-    @PostMapping("/book/detail/review")
-    public ResponseEntity<ReviewResponseDto> makeReview(@RequestParam Long memberId,
-                                                          @RequestParam Long orderProductId,
-                                                          @RequestParam int score,
-                                                          @RequestParam String content) {
-        ReviewCreateRequestDto reviewCreateRequestDto = new ReviewCreateRequestDto(memberId, orderProductId, score, content);
-        ResponseEntity<ReviewResponseDto> responseEntity = bookClient.createReview(reviewCreateRequestDto);
-
-        return ResponseEntity.ok(responseEntity.getBody());
-    }
+//    @PostMapping("/book/detail/review")
+//    public ResponseEntity<ReviewResponseDto> makeReview(@RequestParam Long memberId,
+//                                                          @RequestParam Long orderProductId,
+//                                                          @RequestParam int score,
+//                                                          @RequestParam String content) {
+//        ReviewCreateRequestDto reviewCreateRequestDto = new ReviewCreateRequestDto(memberId, orderProductId, score, content);
+//        ResponseEntity<ReviewResponseDto> responseEntity = bookClient.createReview(reviewCreateRequestDto);
+//
+//        return ResponseEntity.ok(responseEntity.getBody());
+//    }
 
 }
