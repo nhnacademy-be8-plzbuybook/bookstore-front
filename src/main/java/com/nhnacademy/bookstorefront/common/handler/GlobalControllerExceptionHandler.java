@@ -1,8 +1,10 @@
 package com.nhnacademy.bookstorefront.common.handler;
 
 import com.nhnacademy.bookstorefront.common.exception.LoginFailException;
+import com.nhnacademy.bookstorefront.common.exception.NonMemberAccessFailException;
 import com.nhnacademy.bookstorefront.common.exception.OauthMemberNotRegisteredException;
 import feign.FeignException;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -32,5 +34,12 @@ public class GlobalControllerExceptionHandler {
         }
         // 나머지 재로그인 처리
         return "redirect:/login";
+    }
+
+    @ExceptionHandler(NonMemberAccessFailException.class)
+    public String handleNonMemberAccessFail(NonMemberAccessFailException e,
+                                            Model model) {
+        return "redirect:/non-member/order";
+
     }
 }

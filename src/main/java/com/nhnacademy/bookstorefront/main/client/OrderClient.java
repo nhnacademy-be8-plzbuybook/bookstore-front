@@ -1,10 +1,7 @@
 package com.nhnacademy.bookstorefront.main.client;
 
 import com.nhnacademy.bookstorefront.main.dto.OrderDeliveryRegisterRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
 import jakarta.validation.Valid;
@@ -40,4 +37,7 @@ public interface OrderClient {
     @PostMapping("/api/orders/{order-id}/deliveries")
     ResponseEntity<Void> registerOrderDelivery(@PathVariable("order-id") String orderId,
                                             @Valid @RequestBody OrderDeliveryRegisterRequestDto registerRequest);
+
+    @PostMapping("/api/orders/non-member/access")
+    ResponseEntity<String> nonMemberOrderAccess(@RequestBody NonMemberOrderDetailAccessRequestDto accessRequest);
 }

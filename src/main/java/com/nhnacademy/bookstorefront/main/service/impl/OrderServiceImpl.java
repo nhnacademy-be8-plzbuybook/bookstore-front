@@ -1,11 +1,9 @@
 package com.nhnacademy.bookstorefront.main.service.impl;
 
 import com.nhnacademy.bookstorefront.common.exception.ConflictException;
+import com.nhnacademy.bookstorefront.common.exception.NonMemberAccessFailException;
 import com.nhnacademy.bookstorefront.main.client.OrderClient;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
@@ -109,5 +107,17 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("페이지를 가져오는 중 오류가 발생했습니다.");
         }
         return response.getBody();
+    }
+
+    @Override
+    public String getNonMemberOrderId(NonMemberOrderDetailAccessRequestDto accessRequest) {
+        try {
+            ResponseEntity<String> response = orderClient.nonMemberOrderAccess(accessRequest);
+            return response.getBody();
+        } catch (FeignException.NotFound | FeignException.Forbidden e) {
+            throw new NonMemberAccessFailException(e.getMessage());
+        } catch (FeignException e) {
+            throw new RuntimeException(e.getMessage());
+        }
     }
 }
