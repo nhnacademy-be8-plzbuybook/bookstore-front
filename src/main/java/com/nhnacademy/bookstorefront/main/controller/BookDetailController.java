@@ -5,6 +5,7 @@ import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
 import com.nhnacademy.bookstorefront.main.dto.AdminSellingBookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.book.BookTagResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 
 @Slf4j
@@ -50,6 +53,7 @@ public class BookDetailController {
     public String getBookDetail(@PathVariable Long sellingBookId, Model model,HttpServletRequest request) {
         // 쇼핑몰 서버에서 특정 책 데이터 가져오기
         BookDetailResponseDto bookDetail = bookClient.getSellingBook(sellingBookId);
+        List<BookTagResponseDto> bookTagResponseDto = bookClient.getBookTagsByBookId(bookDetail.getBookId()).getBody();
         boolean isLoggedIn = authenticationService.isLoggedIn(request);
         log.info("bookDetail: {}", bookDetail);
         String role = null;
@@ -70,6 +74,7 @@ public class BookDetailController {
         model.addAttribute("book", bookDetail);
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("role", role);
+        model.addAttribute("bookTags", bookTagResponseDto);
 //        model.addAttribute("memberId", memberId);
 //        model.addAttribute("orderProductId", OrderProductId);
 

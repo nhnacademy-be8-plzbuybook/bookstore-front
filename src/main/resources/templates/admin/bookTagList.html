@@ -347,11 +347,10 @@
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <h3>태그 추가</h3>
-    <form action="/admin/tag" method="post">
+    <form action="/admin/book-tag" method="post">
       <label>
-        <input type="text" name="tagName" placeholder="태그 이름" required>
-        <input type="text" name="bookId" placeholder="도서 아이디" required>
-
+        <input type="text" name="bookId" placeholder="여기에 추가할 도서 아이디를 입력하세요" required>
+        <input type="hidden" name="tagId" th:value="${tagId}">
       </label>
 
       <button type="submit">추가</button>

@@ -121,8 +121,8 @@ public interface BookClient {
     @GetMapping("/api/tags/{tagId}")
     ResponseEntity<String> getTagNameByTagId(@PathVariable Long tagId);
 
-
-
+    @GetMapping("/api/book-tags/{bookId}")
+    ResponseEntity<List<BookTagResponseDto>> getBookTagsByBookId(@PathVariable Long bookId);
 
 
 
