@@ -38,8 +38,8 @@ public class GlobalControllerExceptionHandler {
 
     @ExceptionHandler(NonMemberAccessFailException.class)
     public String handleNonMemberAccessFail(NonMemberAccessFailException e,
-                                            Model model) {
+                                            RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("message", e.getMessage());
         return "redirect:/non-member/order";
-
     }
 }

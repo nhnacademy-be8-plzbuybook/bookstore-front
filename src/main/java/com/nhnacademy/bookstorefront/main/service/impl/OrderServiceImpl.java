@@ -115,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
             ResponseEntity<String> response = orderClient.nonMemberOrderAccess(accessRequest);
             return response.getBody();
         } catch (FeignException.NotFound | FeignException.Forbidden e) {
-            throw new NonMemberAccessFailException(e.getMessage());
+            throw new NonMemberAccessFailException("잘못된 주문번호 또는 비밀번호입니다.");
         } catch (FeignException e) {
             throw new RuntimeException(e.getMessage());
         }
