@@ -9,7 +9,7 @@
 
     <style>
         /* 공통 스타일 */
-        body {
+        html, body {
             font-family: 'Arial', sans-serif;
             background-color: #f9f9f9;
             margin: 0;
@@ -47,22 +47,52 @@
 
         main {
             padding: 20px;
+            position: relative; /* 상대 위치 지정 */
+        }
+        .cart-item {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        /* 버튼 */
-        button {
-            padding: 12px 20px;
-            background-color: #333;
-            color: white;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+        .cart-item img {
+            max-width: 100px;
+            border-radius: 5px;
+        }
+
+        .cart-item h5 {
+            font-size: 18px;
+            margin: 0 0 10px 0;
+        }
+
+        .cart-item p {
+            margin: 5px 0;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            border-radius: 5px;
             transition: background-color 0.3s;
         }
 
-        button:hover {
-            background-color: #444;
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
         }
 
         footer {
@@ -82,6 +112,20 @@
             text-decoration: underline;
         }
 
+        .cart-actions {
+            display: flex;
+            justify-content: flex-end; /* 오른쪽 정렬 */
+            align-items: center; /* 수직 중앙 정렬 */
+            margin-top: 20px;
+            position: absolute; /* 절대 위치 지정 */
+            right: 20px; /* 오른쪽 여백 */
+            bottom: 20px; /* 아래쪽 여백 */
+        }
+
+        .cart-actions .btn {
+            margin-left: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -99,33 +143,74 @@
     </div>
 </header>
 <main class="container mt-5">
-    <form th:action="@{/carts}" method="post">
-        <div id="cartItems">
-            <div th:each="item : ${cartItems}">
+    <div id="cartItems">
+        <div th:each="item : ${cartItems}" class="cart-item row align-items-center">
+            <div class="col-auto">
+                <input type="checkbox" class="form-check-input" name="selectedItems" th:value="${item.cartBookId}">
+            </div>
+            <div class="col-auto">
+                <img th:src="${item.imageUrl}" alt="책 이미지" class="img-fluid" />
+            </div>
+            <div class="col">
                 <h5 th:text="${item.bookTitle}">책 제목</h5>
-                <p>
-                    <img th:src="${item.imageUrl}" alt="책 이미지" />
+                <p>가격: <span th:text="${item.sellingBookPrice}">가격</span>원</p>
+                <p>수량:
+                    <input type="number" value="1" min="1" class="form-control w-50 d-inline" th:value="${item.quantity}" />
                 </p>
-                <p>
-                    가격: <span th:text="${item.sellingBookPrice}">가격</span>원
-                </p>
-                <p>
-                    수량:
-                    <input type="number" name="quantity" th:value="${item.quantity}" min="1" />
-                </p>
+            </div>
+            <div class="col-auto">
                 <button class="btn btn-warning" type="button"
                         th:attr="data-selling-book-id=${item.sellingBookId}, data-quantity=${item.quantity}, data-cart-book-id=${item.cartBookId}"
                         onclick="updateItem(this)">수정</button>
-<!--                <button class="btn btn-danger" th:onclick="'removeFromCart(' + ${item.sellingBookId} + ')'">삭제</button>-->
+                <button class="btn btn-danger" type="button"
+                        th:attr="data-cart-book-id=${item.cartBookId}, data-cart-id=${item.cartId}"
+                        onclick="deleteItem(this)">삭제</button>
             </div>
-            <p th:if="${#lists.isEmpty(cartItems)}">장바구니가 비어 있습니다.</p>
+            <div class="cart-actions">
+                <button class="btn btn-danger me-2" type="button" th:attr="data-cart-id=${cartId}" onclick="deleteAllItems(this)">장바구니 전체 비우기</button>
+                <button class="btn btn-primary" type="button" th:attr="data-selling-book-id=${item.sellingBookId}" onclick="buyNow()">주문하기</button>
+            </div>
         </div>
-    </form>
-    <div class="mt-4">
-        <button class="btn btn-primary" th:onclick="'checkout()'">주문하기</button>
+
+        <p th:if="${#lists.isEmpty(cartItems)}">장바구니가 비어 있습니다.</p>
     </div>
+
 </main>
-<script>
+<script th:inline="javascript">
+
+    function buyNow() {
+        const selectedItems = document.querySelectorAll('input[name="selectedItems"]:checked');
+
+        if (selectedItems.length === 0) {
+            alert("주문할 상품을 선택하세요.");
+            return;
+        }
+
+        const params = new URLSearchParams();
+
+        selectedItems.forEach(item => {
+            const sellingBookId = item.value;
+            const quantityInput = item.closest('.cart-item').querySelector('input[type="number"]');
+
+            if (quantityInput) {
+                const quantity = quantityInput.value;
+
+                // productId와 quantity를 URLSearchParams에 추가
+                params.append('productId', sellingBookId);
+                params.append('quantity', quantity);
+            } else {
+                console.error("수량 입력 필드를 찾을 수 없습니다."); // 디버깅을 위한 로그
+            }
+        });
+
+        // URL 생성
+        const url = `/order/receipt?${params.toString()}`;
+
+        console.log(`Redirecting to: ${url}`); // 디버깅을 위한 로그
+        window.location.href = url;
+    }
+
+
     function updateItem(button) {
         const sellingBookId = button.getAttribute('data-selling-book-id');
         const cartBookId = button.getAttribute('data-cart-book-id');
@@ -158,9 +243,64 @@
                 });
         }
     }
+
+    function deleteItem(button) {
+        const cartBookId = button.getAttribute('data-cart-book-id');
+        const cartId = button.getAttribute('data-cart-id');
+        console.log(cartBookId, cartId);
+        if (confirm("정말로 이 상품을 삭제하시겠습니까?")) {
+            fetch(`/carts`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cartId: Number(cartId),
+                    cartBookId: Number(cartBookId)
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('삭제 중 오류가 발생했습니다.');
+                });
+        }
+    }
+
+    function deleteAllItems(button) {
+        const cartId = button.getAttribute('data-cart-id');
+        if (confirm("장바구니의 모든 상품을 삭제하시겠습니까?")) {
+            fetch(`/carts/${Number(cartId)}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('삭제 중 오류가 발생했습니다.');
+                });
+        }
+    }
+
 </script>
-<footer>
-    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-</footer>
+<th:block th:replace="~{/layout/layout :: footerLayout}"></th:block>
 </body>
 </html>
