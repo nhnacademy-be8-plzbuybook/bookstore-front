@@ -1,5 +1,7 @@
 package com.nhnacademy.bookstorefront.main.service;
 
+import com.nhnacademy.bookstorefront.main.dto.OrderCancelRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
@@ -18,5 +20,7 @@ public interface OrderService {
     String getNonMemberOrderId(NonMemberOrderDetailAccessRequestDto accessRequest);
     List<String> getOrderStatuses();
 
+    void cancelOrderProduct(String orderId, OrderProductCancelRequestDto cancelRequest);
+    void cancelOrder(String orderId, OrderCancelRequestDto cancelRequest);
     void modifyOrderStatus(String orderId, StatusDto status);
 }
