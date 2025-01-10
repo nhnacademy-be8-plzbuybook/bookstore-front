@@ -3,6 +3,8 @@ package com.nhnacademy.bookstorefront.main.service.impl;
 import com.nhnacademy.bookstorefront.common.exception.ConflictException;
 import com.nhnacademy.bookstorefront.common.exception.NonMemberAccessFailException;
 import com.nhnacademy.bookstorefront.main.client.OrderClient;
+import com.nhnacademy.bookstorefront.main.dto.OrderCancelRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
@@ -115,6 +117,24 @@ public class OrderServiceImpl implements OrderService {
             return response.getBody();
         } catch (FeignException e) {
             throw new RuntimeException("주문상태를 가져오는 중 오류가 발생했습니다..");
+        }
+    }
+
+    @Override
+    public void cancelOrder(String orderId, OrderCancelRequestDto cancelRequest) {
+        try {
+            orderClient.cancelOrder(orderId, cancelRequest);
+        } catch (FeignException e) {
+            throw new RuntimeException("주문취소 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public void cancelOrderProduct(String orderId, OrderProductCancelRequestDto cancelRequest) {
+        try {
+            orderClient.cancelOrderProduct(orderId, cancelRequest);
+        } catch (FeignException e) {
+            throw new RuntimeException("주문취소 중 오류가 발생했습니다.");
         }
     }
 

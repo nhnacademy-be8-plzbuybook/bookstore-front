@@ -6,6 +6,7 @@ import com.nhnacademy.bookstorefront.main.client.OrderClient;
 import com.nhnacademy.bookstorefront.main.client.PointClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.OrderCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
@@ -244,6 +245,20 @@ public class OrderController {
         orderService.modifyOrderStatus(orderId, status);
 
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 주문취소
+     *
+     * @param orderId 주문아이디
+     * @param cancelRequest 주문취소요청 DTO
+     * @return Void
+     */
+    @PostMapping("/api/orders/{order-id}/cancel")
+    public ResponseEntity<Void> cancelOrder(@PathVariable("order-id") String orderId,
+                                            @RequestBody OrderCancelRequestDto cancelRequest) {
+        orderService.cancelOrder(orderId, cancelRequest);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }

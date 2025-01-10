@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>배송비정책 관리</title>
+</head>
+<body>
+<h1>배송비정책 관리</h1>
+<form method="POST" action="#">
+    <table>
+        <thead>
+        <tr>
+            <th>정책이름</th>
+            <th>기본배송비</th>
+            <th>무료배송 기준금액</th>
+            <th>관리</th>
+        </tr>
+        </thead>
+        <tr>
+            <td>
+                <input type="text" name="deliveryPolicyName" placeholder="정책이름을 입력해주세요.">
+            </td>
+            <td>
+                <input type="number" name="defaultDeliveryFee" placeholder="기본배송비를 입력해주세요.">
+            </td>
+            <td>
+                <input type="number" name="freeDeliveryThreshold" placeholder="무료배송 기준금액을 입력해주세요.">
+            </td>
+            <td>
+                <button type="submit">등록</button>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                <button>수정</button>
+                <button>삭제</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
