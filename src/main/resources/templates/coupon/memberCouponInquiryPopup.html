@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 쿠폰 조회</title>
+</head>
+<body>
+    <h3>회원 쿠폰 조회</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>회원 쿠폰 ID</th>
+                <th>회원 ID</th>
+                <th>쿠폰 코드</th>
+                <th>쿠폰 상태</th>
+                <th>발급일</th>
+                <th>만료일</th>
+                <th>쿠폰 정책 이름</th>
+                <th>할인 타입</th>
+                <th>최소 금액</th>
+                <th>최대 할인 금액</th>
+                <th>할인 비율</th>
+                <th>중복 사용 여부</th>
+                <th>쿠폰 적용 범위</th>
+                <th>쿠폰 정책 유효 여부</th>
+            </tr>
+        </thead>
+        <tbody id="memberCouponsTable">
+
+        </tbody>
+    </table>
+    <form action="/admin/member-coupons" method="get" id="memberCouponForm">
+        <label for="currentPage">페이지 번호:</label>
+        <input type="number" id="currentPage" name="currentPage" min="0" value="0"><br><br>
+
+        <label for="pageSize">페이지 크기:</label>
+        <input type="number" id="pageSize" name="pageSize" min="1" value="10"><br><br>
+
+        <button type="submit">조회</button>
+    </form>
+
+    <script>
+        document.getElementById('memberCouponForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const page = document.getElementById('currentPage').value;
+            const pageSize = document.getElementById('pageSize').value;
+
+            const url = `/admin/member-coupons?page=${page}&pageSize=${pageSize}`;
+            window.location.href = url;
+        });
+    </script>
+</body>
+</html>

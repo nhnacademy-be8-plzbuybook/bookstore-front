@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 @Builder
 public record ReadCartBookResponse(
+        Long cartId,
         Long cartBookId,
         Long sellingBookId,
         String bookTitle,

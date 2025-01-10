@@ -7,6 +7,7 @@ import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
 import com.nhnacademy.bookstorefront.main.dto.AdminSellingBookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.book.BookTagResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
@@ -60,6 +61,7 @@ public class BookDetailController {
         // 쇼핑몰 서버에서 특정 책 데이터 가져오기
         BookDetailResponseDto bookDetail = bookClient.getSellingBook(sellingBookId);
         Long bookId = bookDetail.getSellingBookId();
+        List<BookTagResponseDto> bookTagResponseDto = bookClient.getBookTagsByBookId(bookDetail.getBookId()).getBody();
         boolean isLoggedIn = authenticationService.isLoggedIn(request);
         log.info("bookDetail: {}", bookDetail);
         String role = null;
@@ -87,6 +89,7 @@ public class BookDetailController {
         model.addAttribute("role", role);
         model.addAttribute("memberId", memberId);
         model.addAttribute("orderProductId", orderProductId);
+        model.addAttribute("bookTags", bookTagResponseDto);
 
 
         return "detailview";

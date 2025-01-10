@@ -9,6 +9,7 @@ import com.nhnacademy.bookstorefront.main.dto.point.PointConditionResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+@Slf4j
 @Controller
 public class AdminController {
 
@@ -78,7 +81,7 @@ public class AdminController {
     @PostMapping("/adminpage/points-conditions/create")
     public String createPointCondition(@ModelAttribute PointConditionRequestDto pointConditionRequestDto, RedirectAttributes redirectAttributes) {
         if (pointConditionRequestDto.getConditionPoint() == null && pointConditionRequestDto.getConditionPercentage() == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "포인트와 비율은 반드시 하나만 입력해야 합니다.");
+            redirectAttributes.addFlashAttribute("errorMessage", "포인트와 비율 중 하나를 입력해야 합니다.");
             return "redirect:/adminpage";
         }
 
@@ -87,13 +90,7 @@ public class AdminController {
             return "redirect:/adminpage";
         }
 
-        try {
-            // 포인트 조건 생성
             pointClient.createPointCondition(pointConditionRequestDto);
-            redirectAttributes.addFlashAttribute("successMessage", "포인트 조건이 생성되었습니다.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "포인트 조건 생성에 실패했습니다.");
-        }
 
         return "redirect:/adminpage";
     }

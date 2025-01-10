@@ -19,6 +19,7 @@
             <th>주문번호</th>
             <th>주문일시</th>
             <th>주문상태</th>
+            <th> </th>
         </tr>
         </thead>
         <tbody>
@@ -26,8 +27,11 @@
             <td th:text="${orderDetail.getOrderNumber()}"></td>
             <td th:text="${#temporals.format(orderDetail.getOrderedAt(), 'yyyy/MM/dd HH:mm')}"></td>
             <td th:text="${orderDetail.getStatus()}"></td>
-            <td th:if="${orderDetail.getOrderDelivery().getTrackingNumber() != null}">
+            <td th:if="${orderDetail.getStatus().equals('배송완료') and orderDetail.getOrderDelivery().getTrackingNumber() != null}">
                 <a th:href="@{https://link.tracker.delivery/track(client_id='2mnplmpcj0hf723toi68kcdeal', carrier_id='kr.cjlogistics',tracking_number=${orderDetail.getOrderDelivery().getTrackingNumber()})}">배송조회</a>
+            </td>
+            <td th:if="${orderDetail.getStatus().equals('결제대기') or orderDetail.getStatus().equals('결제완료')}">
+                <button>주문취소</button>
             </td>
         </tr>
         </tbody>
@@ -44,6 +48,7 @@
             <th>수량</th>
             <th>상태</th>
             <th>포장</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
@@ -66,8 +71,14 @@
             <td th:unless="${orderProduct.getOrderProductWrapping() != null}">
                 <span>X</span>
             </td>
+            <td th:if="${orderProduct.getStatus().equals('배송완료')}">
+                <button type="button" id="purchase-confirm-btn" th:attr="onclick=|purchaseConfirm(${orderProduct.getOrderProductId()})|" >구매확정</button>
+            </td>
+            <td th:if="${orderProduct.getStatus().equals('구매확정')}">
+                <button type="button">리뷰작성</button>
+                <!--TODO: 리뷰 작성 페이지로 이동하는 링크 추가-->
+            </td>
         </tr>
-
         </tbody>
     </table>
 
@@ -133,7 +144,7 @@
             <td th:text="${orderDetail.getPayment().getMethod()}"></td>
             <td th:text="${orderDetail.getPayment().getEasyPayProvider()}"></td>
             <td th:text="${orderDetail.getPayment().getAmount()}"></td>
-            <td th:text="${orderDetail.getPayment().getPaidAt()}"></td>
+            <td th:text="${#temporals.format(orderDetail.getPayment().getPaidAt(), 'yyyy/MM/dd HH:mm')}"></td>
         </tr>
         </tbody>
     </table>
@@ -142,5 +153,19 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
+<script>
+    async function purchaseConfirm(orderProductId) {
+       const response = await fetch(`/api/orders/order-products/${Number(orderProductId)}/purchase-confirm`, {
+           method: 'PUT',
+       });
+
+       if (!response.ok) {
+           alert("주문상품 구매확정이 실패했습니다. 다시 시도해 주세요.");
+           return;
+       }
+        alert("주문상품의 구매가 확정되었습니다.");
+       window.location.reload();
+    }
+</script>
 </body>
 </html>
