@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorefront.main.client;
 
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.*;
+import com.nhnacademy.bookstorefront.main.dto.point.MemberPointUseRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.point.PointConditionRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.point.PointConditionResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -51,9 +52,6 @@ public interface MemberClient {
     @PostMapping("/api/member-selling-books/like/{sellingBookId}")
     ResponseEntity<Long> toggleLike(@PathVariable("sellingBookId") Long sellingBookId);
 
-    // 포인트 내역 조회
-    @GetMapping("/api/members/{memberId}/points")
-    List<MemberPointResponseDto> getMemberPoints(@PathVariable("memberId") Long memberId);
 
     //회원 수정(관리자 페이지)
     @PostMapping("/api/members/email")
@@ -66,6 +64,7 @@ public interface MemberClient {
             @RequestParam(defaultValue = "16") int size,
             @PathVariable Long memberId
     );
+
 }
 
 
