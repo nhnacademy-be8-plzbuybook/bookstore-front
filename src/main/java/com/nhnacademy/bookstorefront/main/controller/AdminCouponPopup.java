@@ -8,8 +8,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AdminCouponPopup {
 
-    @GetMapping("/admin/member-coupon-popup")
-    public String showMemberCouponPopup() {
+    @GetMapping("/admin/member-coupons/issue-popup")
+    public String showMemberCouponIssuePopup() {
         return "coupon/memberCouponPopup";
+    }
+
+    @GetMapping("/admin/member-coupons/inquiry-popup")
+    public String showMemberCouponInquiryPopup() {
+        return "coupon/memberCouponInquiryPopup";
     }
 }

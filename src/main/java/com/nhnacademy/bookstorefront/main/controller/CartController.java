@@ -91,24 +91,37 @@ public class CartController {
 
     @DeleteMapping("/carts/{cartId}")
     @ResponseBody
-    public String deleteCartBook(@PathVariable("cartId") Long cartId) {
+    public ResponseEntity<Map<String, Object>> deleteAllCartBook(@PathVariable("cartId") Long cartId, Model model) {
+        model.addAttribute("cartId", cartId);
+        Map<String, Object> response = new HashMap<>();
         try{
-            cartService.deleteCart(cartId);
-            return "cart/myCart";
+            cartService.deleteAllCartBook(cartId);
+            response.put("success", true);
+            response.put("message", "장바구니가 비워졌습니다.");
+            return ResponseEntity.ok(response);
         } catch(Exception e) {
-            return "index";
+            response.put("success", false);
+            response.put("message", "장바구니 비우기 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
     @DeleteMapping("/carts")
-    public String deleteAllCartBook(DeleteCartBookRequest deleteCartBookRequest) {
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> deleteCartBook(@RequestBody DeleteCartBookRequest deleteCartBookRequest) {
+        Map<String, Object> response = new HashMap<>();
         try{
             cartService.deleteCartBook(deleteCartBookRequest);
-            return "cart/myCart";
+            response.put("success", true);
+            response.put("message", "장바구니에서 상품이 삭제되었습니다.");
+            return ResponseEntity.ok(response);
         } catch(Exception e) {
-            return "index";
+            response.put("success", false);
+            response.put("message", "장바구니 상품 삭제 실패");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
 
     private String getTokenFromCookies(HttpServletRequest request) {
         if (request.getCookies() != null) {

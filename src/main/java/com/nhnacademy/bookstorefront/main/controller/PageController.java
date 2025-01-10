@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
+import com.nhnacademy.bookstorefront.main.client.PointClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.*;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
@@ -30,6 +31,7 @@ public class PageController {
     private final AuthenticationService authenticationService;
     private final AuthenticationClient authenticationClient;
     private final MemberClient memberClient;
+    private final PointClient pointClient;
     private final OrderService orderService;
 
     @GetMapping("/mypage")
@@ -61,7 +63,7 @@ public class PageController {
 
 
         model.addAttribute("coupons", response.getContent());
-        List<MemberPointResponseDto> points = memberClient.getMemberPoints(myPageDto.getMemberId());
+        List<MemberPointResponseDto> points = pointClient.getMemberPoints(myPageDto.getMemberId());
         model.addAttribute("points", points);
 
         BigDecimal totalPoints = points.stream()

@@ -3,6 +3,7 @@ package com.nhnacademy.bookstorefront.main.controller.order;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
 import com.nhnacademy.bookstorefront.main.client.OrderClient;
+import com.nhnacademy.bookstorefront.main.client.PointClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
@@ -33,6 +34,7 @@ public class OrderController {
     private final DeliveryFeePolicyService deliveryFeePolicyService;
     private final MemberClient memberClient;
     private final OrderClient orderClient;
+    private final PointClient pointClient;
 
     /**
      * 비회원 주문페이지
@@ -97,12 +99,16 @@ public class OrderController {
                 .findFirst()
                 .orElse(null);
 
+
         //회원 포인트
+        Integer availablePoints = pointClient.getAvailablePoints().getBody();
+
         model.addAttribute("wrappingPapers", wrappingPaperService.getWrappingPapers());
         model.addAttribute("books", books);
         model.addAttribute("deliveryFeePolicy", deliveryFeePolicyService.getGeneralPolicy());
         model.addAttribute("addressList", addressList);
         model.addAttribute("defaultAddress", defaultAddress);
+        model.addAttribute("availablePoints", availablePoints);
         return "order/user/member/order_receipt";
     }
 
