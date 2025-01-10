@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>책 검색</title>
+    <link rel="stylesheet" href="/css/coupon/coupon-search-cateogry.css">
+</head>
+<body>
+<div th:fragment="categorySearchFragment">
+
+    <div class="category-list">
+        <div th:each="category : ${searchResult}">
+            <div class="category-item">
+                <div th:text="${category.categoryName}"></div>
+                <button type="button" th:onclick="'selectCategory(' + ${category.categoryId} + ')'">선택</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination">
+        <a th:if="${currentPage > 0}"
+           th:href="@{/admin/coupon-category-search(searchKeyword=${searchKeyword}, page=${currentPage - 1})}">이전</a>
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{/admin/coupon-category-search(searchKeyword=${searchKeyword}, page=${i})}"
+               th:text="${i + 1}" th:classappend="${i == currentPage} ? 'active' : ''"></a>
+        </span>
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{/admin/coupon-category-search(searchKeyword=${searchKeyword}, page=${currentPage + 1})}">다음</a>
+    </div>
+</div>
+
+</body>
+</html>
