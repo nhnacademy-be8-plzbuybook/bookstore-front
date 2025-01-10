@@ -26,7 +26,7 @@ public interface CouponClient {
 
     // 쿠폰타켓 생성
     @PostMapping("/api/coupon-targets")
-    ResponseEntity<CouponTargetResponseDto> createCouponTarget(@RequestBody @Valid CouponTargetSaveRequestDto couponTargetSaveRequestDto);
+    ResponseEntity<CouponTargetResponseDto> createCouponTarget(@RequestBody CouponTargetSaveRequestDto couponTargetSaveRequestDto);
 
     // 쿠폰생성
     @PostMapping("/api/coupons")
