@@ -17,7 +17,7 @@ import java.util.List;
 public class ReviewCreateRequestDto {
     private Long memberId;
 
-    private Long orderProductId;
+    private Long sellingBookId;
 
     private Integer score;
 

@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -60,13 +61,11 @@ public class BookDetailController {
     public String getBookDetail(@PathVariable Long sellingBookId, Model model,HttpServletRequest request) {
         // 쇼핑몰 서버에서 특정 책 데이터 가져오기
         BookDetailResponseDto bookDetail = bookClient.getSellingBook(sellingBookId);
-        Long bookId = bookDetail.getSellingBookId();
         List<BookTagResponseDto> bookTagResponseDto = bookClient.getBookTagsByBookId(bookDetail.getBookId()).getBody();
         boolean isLoggedIn = authenticationService.isLoggedIn(request);
         log.info("bookDetail: {}", bookDetail);
         String role = null;
         Long memberId = null;
-        Long orderProductId = null;
 
         if(isLoggedIn) {
             String token = getTokenFromCookies(request);
@@ -74,10 +73,6 @@ public class BookDetailController {
                 role = authenticationClient.getRoleFromToken("Bearer " + token).getBody();
                 MyPageDto myPageDto = authenticationService.getMyPage();
                 memberId = myPageDto.getMemberId();
-                try {
-                    orderProductId = bookClient.getOrderProductBySellingBookId(bookId).getBody();
-                } catch (FeignException.NotFound e) {
-                }
             }
         }
 
@@ -88,7 +83,6 @@ public class BookDetailController {
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("role", role);
         model.addAttribute("memberId", memberId);
-        model.addAttribute("orderProductId", orderProductId);
         model.addAttribute("bookTags", bookTagResponseDto);
 
 
@@ -129,21 +123,21 @@ public class BookDetailController {
 
     @PostMapping("/book/detail/review")
     public String makeReview(@RequestParam Long memberId,
-                             @RequestParam(required = false) Long orderProductId,
+                             @RequestParam Long sellingBookId,
                              @RequestParam int score,
                              @RequestParam String content,
                              @RequestParam(required = false) List<MultipartFile> images,
-                             @RequestParam Long sellingBookId,
                              Model model) {
-
-        if (orderProductId == null) {
-            model.addAttribute("message", "주문한 상품에 대해서만 리뷰를 작성할 수 있습니다.");
-            return "error/review-error";
-        }
 
         try {
 
-            ReviewCreateRequestDto reviewCreateRequestDto = new ReviewCreateRequestDto(memberId, orderProductId, score, content);
+            if (images == null || images.isEmpty()) {
+                images = null;
+            } else {
+                images.removeIf(image -> image.isEmpty() || image.getOriginalFilename().isEmpty());
+            }
+
+            ReviewCreateRequestDto reviewCreateRequestDto = new ReviewCreateRequestDto(memberId,sellingBookId, score, content);
             String reviewRequestDtoJson = new ObjectMapper().writeValueAsString(reviewCreateRequestDto);
 
             ResponseEntity<ReviewResponseDto> response = bookClient.createReview(reviewRequestDtoJson, images);
