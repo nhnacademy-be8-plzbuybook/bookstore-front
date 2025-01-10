@@ -6,7 +6,6 @@ import com.nhnacademy.bookstorefront.main.dto.book.CategoryRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
-import jakarta.validation.Valid;
 import com.nhnacademy.bookstorefront.main.dto.book.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
@@ -38,16 +37,23 @@ public interface BookClient {
     );
 
     /**
-     * 관리자 도서관리에서 도서 수정 api
+     * 관리자 도서관리에서 도서 수정 - 불러오기
+     * @param sellingBookId
+     * @param
+     * @return
+     */
+    @GetMapping("/api/admin/selling-books/{sellingBookId}")
+    AdminBookRegisterDto getUpdateForm(@PathVariable("sellingBookId") Long sellingBookId);
+
+    /**
+     * 관리자 도서 관리에서 도서 수정 - 수정후 데이터베이스 반영
      * @param sellingBookId
      * @param updateDto
      * @return
      */
     @PutMapping("/api/admin/selling-books/{sellingBookId}")
-    AdminBookRegisterDto updateSellingBook(
-            @PathVariable("sellingBookId") Long sellingBookId,
-            @RequestBody AdminBookRegisterDto updateDto
-    );
+    void updateSellingBook(@PathVariable("sellingBookId") Long sellingBookId,
+                           @RequestBody AdminBookRegisterDto updateDto);
 
 
     /**
@@ -66,8 +72,22 @@ public interface BookClient {
     AdminBookRegisterDto registerSellingBook(@RequestBody AdminBookRegisterDto registerDto);
 
 
+    // 판매 책 등록
+    @PostMapping("/api/admin/selling-books/selling-register")
+    void registerSellingBooks(@RequestBody SellingBookRegisterDto sellingBookDto);
 
-    // TODO 2개
+    // 판매 책 수정
+    @PostMapping("/api/admin/selling-books/{sellingBookId}")
+    SellingBookRegisterDto updateSellingBook(
+            @PathVariable("sellingBookId") Long sellingBookId,
+            @RequestBody SellingBookRegisterDto sellingBookDto);
+
+    // 판매 책 목록 조회
+    @GetMapping("/api/admin/selling-books/selling-list")
+    Page<SellingBookRegisterDto> getSellingBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size);
+
     // 최신 도서 동기화
     @PostMapping("/api/books/sync")
     ResponseEntity<Void> syncBooksFromListApi(
@@ -120,14 +140,6 @@ public interface BookClient {
 
     @GetMapping("/api/tags/{tagId}")
     ResponseEntity<String> getTagNameByTagId(@PathVariable Long tagId);
-
-
-
-
-
-
-
-
 
 
 }

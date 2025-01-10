@@ -284,10 +284,11 @@
     <div class="sidebar">
         <a href="/adminpage" class="group" data-section="member-management">회원 관리</a>
         <a href="/admin/selling-books" class="group">도서 관리</a>
+        <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
         <div class="group" data-section="coupon-management">쿠폰 관리</div>
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
         <div class="group" data-section="tag-management">태그 관리</div>
-        <div href= ""class="group" data-section="category-management">카테고리 관리</div>
+        <div href= "/admin/category" class="group" data-section="category-management">카테고리 관리</div>
 
     </div>
 
@@ -369,12 +370,13 @@
                     <td th:text="${book.sellingBookStatus}"></td>
                     <td>
                         <!-- 수정 버튼 -->
-                        <form action="/admin/selling-books/update/${book.sellingBookId}" method="POST">
+                        <form th:action="@{'/admin/selling-books/update/' + ${book.sellingBookId}}" method="GET">
                             <button type="submit" style="background-color: forestgreen; color: white;">수정</button>
                         </form>
+                        <p th:text="${book.sellingBookId}">[책 ID가 여기에 표시됩니다]</p>
 
                         <!-- 삭제 버튼 -->
-                        <form action="/admin/selling-books/delete/${book.sellingBookId}" method="POST">
+                        <form th:action="@{'/admin/selling-books/delete/' + ${book.sellingBookId}}" method="POST">
                             <button type="submit" style="background-color: red; color: white;">삭제</button>
                         </form>
 

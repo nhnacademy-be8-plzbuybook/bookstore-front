@@ -24,3 +24,19 @@ Content-Type: application/json
   "imageUrl": "http://example.com/image.jpg"
 }
 
+
+### 판매도서 등록
+POST http://localhost:8080/api/admin/selling-books/selling-register
+Host: localhost:8080
+Content-Type: application/json
+Accept: application/json
+
+{
+  "bookId": 1,
+  "price": 15000,
+  "packageable": true,
+  "stock": 20,
+  "status": "SELLING",
+  "sellingBookViewCount": 0,
+  "used": false
+}
