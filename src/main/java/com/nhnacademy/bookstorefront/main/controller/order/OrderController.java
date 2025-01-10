@@ -101,14 +101,14 @@ public class OrderController {
 
 
         //회원 포인트
-        //Integer availablePoints = pointClient.getAvailablePoints().getBody();
+        Integer availablePoints = pointClient.getAvailablePoints().getBody();
 
         model.addAttribute("wrappingPapers", wrappingPaperService.getWrappingPapers());
         model.addAttribute("books", books);
         model.addAttribute("deliveryFeePolicy", deliveryFeePolicyService.getGeneralPolicy());
         model.addAttribute("addressList", addressList);
         model.addAttribute("defaultAddress", defaultAddress);
-        //model.addAttribute("availablePoints", availablePoints);
+        model.addAttribute("availablePoints", availablePoints);
         return "order/user/member/order_receipt";
     }
 
