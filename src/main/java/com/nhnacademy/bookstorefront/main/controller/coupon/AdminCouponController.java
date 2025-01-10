@@ -1,33 +1,21 @@
-package com.nhnacademy.bookstorefront.main.controller;
+package com.nhnacademy.bookstorefront.main.controller.coupon;
 
 import com.nhnacademy.bookstorefront.main.client.CouponClient;
 import com.nhnacademy.bookstorefront.main.dto.coupon.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 public class AdminCouponController {
     private final CouponClient couponClient;
-
-    // 쿠폰정책 등록
-    @PostMapping("/admin/coupon-policies")
-    public String createCouponPolicy(@ModelAttribute CouponPolicySaveRequestDto couponPolicySaveRequestDto, Model model) {
-        couponClient.createCouponPolicy(couponPolicySaveRequestDto);
-        return "redirect:/adminpage";
-    }
 
     // 쿠폰생성
     @PostMapping("/admin/coupons")
@@ -45,7 +33,6 @@ public class AdminCouponController {
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("totalPages", coupons != null ? coupons.getTotalPages() : 0);
-
 
         return "admin/adminPage";
     }
