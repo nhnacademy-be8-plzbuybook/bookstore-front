@@ -91,7 +91,17 @@
         <tr>
             <td>포인트 사용</td>
             <td>
-                <input type="text" id="usedPoint"> / <span>1000p(현재 포인트)</span>
+                <input type="number" id="usedPoint" name="usedPoint" min="0"
+                       th:placeholder="'0 / ' + ${availablePoints} + 'p (현재 포인트)'" />
+                <span th:text="'/ ' + ${availablePoints} + 'p (현재 포인트)'"></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button id="applyPointBtn" type="button">포인트 적용</button>
+            </td>
+            <td>
+                <span id="usedPointDisplay">0</span> 원 적용됨
             </td>
         </tr>
     </table>
