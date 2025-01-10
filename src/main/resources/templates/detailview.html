@@ -264,7 +264,12 @@
                 </div>
             </form>
 
-
+            <div class="tags mb-3">
+                <h5>태그</h5>
+                <ul class="list-inline">
+                    <li class="list-inline-item badge bg-primary text-light" th:each="tag : ${bookTags}" th:text="${tag.tagName}"></li>
+                </ul>
+            </div>
             <!-- 버튼 -->
             <div class="button-group">
                 <button class="cart-btn" onclick="addToCart()">장바구니 담기</button>
