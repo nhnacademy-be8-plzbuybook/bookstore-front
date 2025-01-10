@@ -27,8 +27,8 @@ public interface CartClient {
     ResponseEntity<Long> updateCartBook(@RequestBody UpdateCartBookRequest updateCartBookRequest);
 
     @DeleteMapping("/api/bookstore/carts/{cartId}") // 유저에 해당하는 모든 장바구니 삭제.
-    ResponseEntity<String> deleteCartBook(@PathVariable("cartId") Long cartId);
+    ResponseEntity<String> deleteAllCart(@PathVariable("cartId") Long cartId);
 
     @DeleteMapping("/api/bookstore/carts") // 유저가 가진 장바구니에서 해당 책 장바구니 삭제
-    ResponseEntity<String> deleteAllCartBook(@RequestBody DeleteCartBookRequest deleteCartCartBookRequest);
+    ResponseEntity<String> deleteCartBook(@RequestBody DeleteCartBookRequest deleteCartCartBookRequest);
 }

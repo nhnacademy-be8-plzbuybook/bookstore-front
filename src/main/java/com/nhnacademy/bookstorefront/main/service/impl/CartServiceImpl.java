@@ -23,10 +23,6 @@ public class CartServiceImpl implements CartService {
         return cartClient.createCartBook(createCartBookRequest).getBody();
     }
 
-    @Override
-    public List<ReadCartBookResponse> getCartBook(Long cartBookId) {
-        return cartClient.getCartBook(cartBookId).getBody();
-    }
 
     @Override
     public List<ReadCartBookResponse> getCartBooks() {
@@ -39,13 +35,13 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public String deleteCart(Long cartId) {
-        return cartClient.deleteCartBook(cartId).getBody();
+    public String deleteAllCartBook(Long cartId) {
+        return cartClient.deleteAllCart(cartId).getBody();
     }
 
     @Override
     public String deleteCartBook(DeleteCartBookRequest deleteCartBookRequest) {
-        return cartClient.deleteAllCartBook(deleteCartBookRequest).getBody();
+        return cartClient.deleteCartBook(deleteCartBookRequest).getBody();
     }
 
 }
