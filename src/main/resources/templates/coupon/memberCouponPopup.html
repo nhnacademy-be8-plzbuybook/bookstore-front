@@ -17,8 +17,7 @@
     </form>
 
     <script>
-        function submitAndClose() {
-            const form = document.getElementById('memberCouponForm');
+        function submitAndClose(form) {
             form.submit();
             alert('쿠폰 발급이 완료되었습니다');
             setTimeout(() => {

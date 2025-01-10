@@ -8,6 +8,10 @@ import com.nhnacademy.bookstorefront.main.dto.book.TagResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +26,24 @@ public class AdminTagController {
     @Autowired
     private final BookClient bookClient;
 
+
     @GetMapping("/admin/tag")
-    public String adminTagList(Model model,@RequestParam(required = false) String keyword) {
-        List<TagResponseDto> tagResponseDtoList = bookClient.getAllTags(keyword).getBody();
-        model.addAttribute("tags", tagResponseDtoList);
-        model.addAttribute("keyword", keyword);
+    public String adminTagList(
+            Model model,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page, // 페이지 번호
+            @RequestParam(defaultValue = "10") int size // 페이지 크기
+    ) {
+        // 페이징된 태그 리스트 가져오기
+        Page<TagResponseDto> tagResponseDtoPage = bookClient.getAllTags(keyword, page,size).getBody();
+
+        // 모델에 페이지 데이터 추가
+        model.addAttribute("tags", tagResponseDtoPage.getContent()); // 태그 목록
+        model.addAttribute("keyword", keyword); // 검색어
+        model.addAttribute("currentPage", page); // 현재 페이지
+        model.addAttribute("totalPages", tagResponseDtoPage.getTotalPages()); // 전체 페이지 수
+        model.addAttribute("totalElements", tagResponseDtoPage.getTotalElements()); // 전체 요소 수
+        model.addAttribute("pageSize", size); // 페이지 크기
 
         return "admin/tag";
     }
@@ -52,6 +69,7 @@ public class AdminTagController {
     public String bookTagList(Model model, @RequestParam Long tagId, HttpServletRequest request) {
         List<BookTagResponseDto> bookTagResponseDto = bookClient.getAllBookTags(tagId).getBody();
         String tagName = bookClient.getTagNameByTagId(tagId).getBody();
+        model.addAttribute("tagId", tagId);
         model.addAttribute("bookTags", bookTagResponseDto);
         model.addAttribute("currentUri", request.getRequestURI());
         model.addAttribute("tagName", tagName);
@@ -60,9 +78,9 @@ public class AdminTagController {
     }
 
     @PostMapping("/admin/book-tag")
-    public String bookTagSave(@RequestParam Long tagId, @RequestParam Long bookId) {
+    public String bookTagSave(@RequestParam Long bookId,@RequestParam Long tagId, Model model) {
         bookClient.saveBookTag(bookId, tagId);
-        return "redirect:/admin/book-tag";
+        return "redirect:/admin/book-tag?tagId=" + tagId;
     }
 
     @RequestMapping(value = "/admin/book-tag/delete", method = RequestMethod.POST)
@@ -72,6 +90,7 @@ public class AdminTagController {
         }
         return "redirect:/admin/book-tag?tagId=" + tagId;
     }
+
 
 
 }
