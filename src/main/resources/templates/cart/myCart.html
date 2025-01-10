@@ -189,12 +189,10 @@
         const params = new URLSearchParams();
 
         selectedItems.forEach(item => {
-            const sellingBookId = item.value;
+            const sellingBookId = item.closest('.cart-item').querySelector('button').getAttribute('data-selling-book-id');
             const quantityInput = item.closest('.cart-item').querySelector('input[type="number"]');
-
             if (quantityInput) {
                 const quantity = quantityInput.value;
-
                 // productId와 quantity를 URLSearchParams에 추가
                 params.append('productId', sellingBookId);
                 params.append('quantity', quantity);
