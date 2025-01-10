@@ -2,6 +2,8 @@ package com.nhnacademy.bookstorefront.main.controller.order;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
+import com.nhnacademy.bookstorefront.main.client.OrderClient;
+import com.nhnacademy.bookstorefront.main.client.PointClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
@@ -11,6 +13,7 @@ import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import com.nhnacademy.bookstorefront.main.service.WrappingPaperService;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -30,6 +33,8 @@ public class OrderController {
     private final WrappingPaperService wrappingPaperService;
     private final DeliveryFeePolicyService deliveryFeePolicyService;
     private final MemberClient memberClient;
+    private final OrderClient orderClient;
+    private final PointClient pointClient;
 
     /**
      * 비회원 주문페이지
@@ -37,7 +42,7 @@ public class OrderController {
      * @return
      */
     @GetMapping("/non-member/order/receipt")
-    public String nonMemberOrderReceipt(@RequestParam("productId")List<Long> productId,
+    public String nonMemberOrderReceipt(@RequestParam("productId") List<Long> productId,
                                         @RequestParam("quantity") List<Integer> quantity,
                                         Model model) {
         List<OrderReceiptProduct> books = new ArrayList<>();
@@ -52,6 +57,23 @@ public class OrderController {
         return "order/user/nonMember/order_receipt";
     }
 
+    /**
+     * 비회원주문 상세조회 접근 페이지
+     *
+     * @return
+     */
+    @GetMapping("/non-member/order")
+    public String nonMemberOrderDetailAccess() {
+        return "order/user/nonMember/order_detail_access";
+    }
+
+
+    @PostMapping("/api/non-member/order/access")
+    public String accessNonMemberOrderDetail(@ModelAttribute NonMemberOrderDetailAccessRequestDto accessRequest) {
+        String orderId = orderService.getNonMemberOrderId(accessRequest);
+
+        return "redirect:/orders/" + orderId;
+    }
 
     /**
      * 회원 주문페이지
@@ -59,10 +81,9 @@ public class OrderController {
      * @return
      */
     @GetMapping("/order/receipt")
-    public String memberOrderReceipt(@RequestParam("productId")List<Long> productId,
+    public String memberOrderReceipt(@RequestParam("productId") List<Long> productId,
                                      @RequestParam("quantity") List<Integer> quantity,
                                      Model model) {
-
         // 책 정보
         List<OrderReceiptProduct> books = new ArrayList<>();
         for (int i = 0; i < productId.size(); i++) {
@@ -78,12 +99,16 @@ public class OrderController {
                 .findFirst()
                 .orElse(null);
 
+
         //회원 포인트
+        Integer availablePoints = pointClient.getAvailablePoints().getBody();
+
         model.addAttribute("wrappingPapers", wrappingPaperService.getWrappingPapers());
         model.addAttribute("books", books);
         model.addAttribute("deliveryFeePolicy", deliveryFeePolicyService.getGeneralPolicy());
         model.addAttribute("addressList", addressList);
         model.addAttribute("defaultAddress", defaultAddress);
+        model.addAttribute("availablePoints", availablePoints);
         return "order/user/member/order_receipt";
     }
 
@@ -145,6 +170,7 @@ public class OrderController {
         return "order/admin/order_list";
     }
 
+
     /**
      * 관리자 주문 상세 조회
      *
@@ -156,7 +182,10 @@ public class OrderController {
     public String getAdminOrderDetail(@PathVariable("order-id") String orderId,
                                       Model model) {
         OrderDetail orderDetail = orderService.getOrderDetail(orderId);
+        List<String> orderStatuses = orderService.getOrderStatuses();
+
         model.addAttribute("orderDetail", orderDetail);
+        model.addAttribute("orderStatuses", orderStatuses);
 
         return "order/admin/order_detail";
     }
@@ -203,4 +232,18 @@ public class OrderController {
         String completedOrderId = orderService.completeOrder(orderId);
         return ResponseEntity.status(HttpStatus.OK).body(completedOrderId);
     }
+
+    @PutMapping("/api/orders/order-products/{order-product-id}/purchase-confirm")
+    public ResponseEntity<Void> confirmPurchase(@PathVariable("order-product-id") Long orderProductId) {
+        return orderClient.confirmPurchase(orderProductId);
+    }
+
+    @PatchMapping("/api/orders/{order-id}/status")
+    public ResponseEntity<Void> changeOrderStatus(@PathVariable("order-id") String orderId,
+                                                  @RequestBody StatusDto status) {
+        orderService.modifyOrderStatus(orderId, status);
+
+        return ResponseEntity.ok().build();
+    }
+
 }

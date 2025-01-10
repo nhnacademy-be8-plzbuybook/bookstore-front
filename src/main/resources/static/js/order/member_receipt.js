@@ -64,6 +64,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const shippingFeeEl = document.getElementById("shippingFee"); // 배송비 표시 요소
     const totalAmountEl = document.getElementById("totalAmount"); // 총결제금액 표시 요소
 
+    // 포인트 적용
+    const applyPointBtn = document.getElementById("applyPointBtn");
+    applyPointBtn.addEventListener('click', () => {
+        const usePointDisplay = document.getElementById("usedPointDisplay");
+        usePointDisplay.innerText = document.getElementById("usedPoint").value;
+    });
+
+
     // 주문 총액 계산 함수
     function calculateTotal() {
         let orderAmount = 0;

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>쿠폰조회</title>
+</head>
+<body>
+
+<!-- 쿠폰 조회 -->
+<table>
+    <thead>
+    <tr>
+        <th>쿠폰 ID</th>
+        <th>코드</th>
+        <th>상태</th>
+        <th>생성일</th>
+        <th>만료일</th>
+        <th>쿠폰정책 ID</th>
+        <th>선택</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="coupon : ${coupons}">
+        <td th:text="${coupon.id()}"></td>
+        <td th:text="${coupon.code()}"></td>
+        <td th:text="${coupon.status()}"></td>
+        <td th:text="${#temporals.format(coupon.issuedAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+        <td th:text="${#temporals.format(coupon.expiredAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+        <td th:text="${coupon.policyId()}"></td>
+        <td>
+            <button type="button" onclick="selectCoupon(${coupon.id})">선택</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<form action="/admin/coupons" method="get">
+    <label for="couponsPage">페이지 번호:</label>
+    <input type="number" id="couponsPage" name="page" th:value="${currentPage ?: 0}" min="0" required>
+
+    <label for="couponsPageSize">페이지 크기:</label>
+    <input type="number" id="couponsPageSize" name="pageSize" th:value="${pageSize ?: 10}" min="1"
+           required>
+
+    <button type="submit">조회</button>
+</form>
+<script>
+    document.getElementById('currentDateTime').value = new Date().toISOString();
+</script>
+</body>
+</html>

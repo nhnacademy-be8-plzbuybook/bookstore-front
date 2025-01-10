@@ -485,49 +485,110 @@
             </div>
         </div>
 
-        <!-- 포인트 -->
+<!--        &lt;!&ndash; 포인트 &ndash;&gt;-->
+<!--        <div class="section" id="points">-->
+<!--            <h2>포인트 내역</h2>-->
+<!--            <p>총 포인트: <strong th:text="${#numbers.formatDecimal(totalPoints, 0, 0)}">0</strong></p>-->
+
+<!--            <table>-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th>적립 날짜</th>-->
+<!--                    <th>사유</th>-->
+<!--                    <th>포인트</th>-->
+<!--                    <th>만료 날짜</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                &lt;!&ndash; 포인트 내역이 없을 때 &ndash;&gt;-->
+<!--                <tr th:if="${#lists.isEmpty(points)}">-->
+<!--                    <td colspan="4" class="empty-message">포인트 내역이 없습니다.</td>-->
+<!--                </tr>-->
+
+<!--                &lt;!&ndash; 포인트 내역 출력 &ndash;&gt;-->
+<!--                <tr th:each="point : ${points}">-->
+<!--                    <td th:text="${#temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss')}">적립 날짜</td>-->
+<!--                    <td>-->
+<!--                <span th:switch="${point.pointConditionName}">-->
+<!--                    <span th:case="'SIGN_UP'">회원가입</span>-->
+<!--                    <span th:case="'BOOK_PURCHASE'">도서구매</span>-->
+<!--                    <span th:case="'REVIEW'">리뷰작성</span>-->
+<!--                    <span th:case="'PHOTO_REVIEW'">사진리뷰작성</span>-->
+<!--                    <span th:case="*">기타</span>-->
+<!--                </span>-->
+<!--                    </td>-->
+<!--                    <td th:text="${#numbers.formatDecimal(point.point, 0, 0)}">포인트</td>-->
+<!--                    <td th:text="${#temporals.format(point.endDate, 'yyyy-MM-dd HH:mm:ss')}">만료 날짜</td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+<!--            </table>-->
+
+<!--            &lt;!&ndash; 오류 메시지 &ndash;&gt;-->
+<!--            <div th:if="${errorMessage}">-->
+<!--                <p class="error" th:text="${errorMessage}">오류가 발생했습니다.</p>-->
+<!--            </div>-->
+<!--        </div>-->
+
         <div class="section" id="points">
             <h2>포인트 내역</h2>
             <p>총 포인트: <strong th:text="${#numbers.formatDecimal(totalPoints, 0, 0)}">0</strong></p>
 
+            <!-- 전체/적립/사용 버튼 -->
+            <div class="filter-buttons">
+                <button id="filterAll" class="filter-btn active">전체</button>
+                <button id="filterSave" class="filter-btn">적립</button>
+                <button id="filterUse" class="filter-btn">사용</button>
+            </div>
+
+            <!-- 포인트 테이블 -->
             <table>
                 <thead>
                 <tr>
-                    <th>적립 날짜</th>
+                    <th>날짜</th>
+                    <th>유형</th>
                     <th>사유</th>
                     <th>포인트</th>
                     <th>만료 날짜</th>
                 </tr>
                 </thead>
-                <tbody>
-                <!-- 포인트 내역이 없을 때 -->
-                <tr th:if="${#lists.isEmpty(points)}">
-                    <td colspan="4" class="empty-message">포인트 내역이 없습니다.</td>
-                </tr>
-
+                <tbody id="pointTableBody">
                 <!-- 포인트 내역 출력 -->
-                <tr th:each="point : ${points}">
-                    <td th:text="${#temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss')}">적립 날짜</td>
-                    <td>
-                <span th:switch="${point.pointConditionName}">
-                    <span th:case="'SIGN_UP'">회원가입</span>
-                    <span th:case="'BOOK_PURCHASE'">도서구매</span>
-                    <span th:case="'REVIEW'">리뷰작성</span>
-                    <span th:case="'PHOTO_REVIEW'">사진리뷰작성</span>
-                    <span th:case="*">기타</span>
-                </span>
+                <tr th:each="point : ${points}" class="point-row" th:data-type="${point.type}">
+                    <!-- 날짜 -->
+                    <td th:text="${point.type == 'SAVE' ? #temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss') : (point.usingDate != null ? #temporals.format(point.usingDate, 'yyyy-MM-dd HH:mm:ss') : '-')}">
+                        날짜
                     </td>
+
+                    <!-- 유형 -->
+                    <td th:text="${point.type == 'SAVE' ? '적립' : '사용'}">유형</td>
+
+                    <!-- 사유: 적립일 때만 표시 -->
+                    <td th:if="${point.type == 'SAVE'}">
+            <span th:switch="${point.name}">
+                <span th:case="'SIGN_UP'">회원가입</span>
+                <span th:case="'BOOK_PURCHASE'">도서구매</span>
+                <span th:case="'REVIEW'">리뷰작성</span>
+                <span th:case="'PHOTO_REVIEW'">사진리뷰작성</span>
+                <span th:case="*">기타</span>
+            </span>
+                    </td>
+                    <td th:if="${point.type == 'USE'}">-</td> <!-- 사용 내역일 경우 사유는 표시하지 않음 -->
+
+                    <!-- 포인트 -->
                     <td th:text="${#numbers.formatDecimal(point.point, 0, 0)}">포인트</td>
-                    <td th:text="${#temporals.format(point.endDate, 'yyyy-MM-dd HH:mm:ss')}">만료 날짜</td>
+
+                    <!-- 만료 날짜 -->
+                    <td th:if="${point.type == 'SAVE'}" th:text="${#temporals.format(point.endDate, 'yyyy-MM-dd HH:mm:ss')}">만료 날짜</td>
+                    <td th:if="${point.type == 'USE'}">-</td> <!-- 사용 내역일 경우 만료 날짜는 없음 -->
                 </tr>
                 </tbody>
             </table>
 
-            <!-- 오류 메시지 -->
             <div th:if="${errorMessage}">
                 <p class="error" th:text="${errorMessage}">오류가 발생했습니다.</p>
             </div>
         </div>
+
 
         <div class="section" id="edit-info">
             <h2>회원 정보 수정</h2>
@@ -803,6 +864,43 @@
         // 주문 상태 변경 기능 구현
         alert("주문 상태 변경: " + orderId);
     }
+
+    // 포인트 관련
+    document.addEventListener("DOMContentLoaded", () => {
+        // 버튼 요소 가져오기
+        const filterAllBtn = document.getElementById("filterAll");
+        const filterSaveBtn = document.getElementById("filterSave");
+        const filterUseBtn = document.getElementById("filterUse");
+        const pointRows = document.querySelectorAll(".point-row");
+
+        // 버튼 클릭 이벤트 핸들러
+        function filterPoints(type) {
+            // 모든 행 숨기기
+            pointRows.forEach(row => {
+                const rowType = row.getAttribute("data-type"); // data-type 속성 값
+                if (type === "ALL" || rowType === type) {
+                    row.style.display = ""; // 표시
+                } else {
+                    row.style.display = "none"; // 숨기기
+                }
+            });
+
+            // 버튼 활성화 상태 업데이트
+            document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+            if (type === "ALL") filterAllBtn.classList.add("active");
+            else if (type === "SAVE") filterSaveBtn.classList.add("active");
+            else if (type === "USE") filterUseBtn.classList.add("active");
+        }
+
+        // 이벤트 리스너 등록
+        filterAllBtn.addEventListener("click", () => filterPoints("ALL"));
+        filterSaveBtn.addEventListener("click", () => filterPoints("SAVE"));
+        filterUseBtn.addEventListener("click", () => filterPoints("USE"));
+
+        // 기본적으로 전체 내역 표시
+        filterPoints("ALL");
+    });
+
 
 </script>
 </body>

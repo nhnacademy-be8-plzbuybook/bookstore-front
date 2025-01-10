@@ -214,7 +214,7 @@
         <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
 
         <a href="/admin/category" class="group">카테고리 관리</a>
-
+        <a href="/admin/coupon-register">관리자 쿠폰 페이지(테스트)</a>
 
     </div>
 
@@ -344,7 +344,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each = "coupon : ${coupons}">
+                <tr th:each="coupon : ${coupons}">
                     <td th:text="${coupon.id()}"></td>
                     <td th:text="${coupon.code()}"></td>
                     <td th:text="${coupon.status()}"></td>
@@ -355,193 +355,153 @@
                 </tbody>
             </table>
             <form action="/admin/coupons" method="get">
-                <label for="get-coupon-page">페이지 번호:</label>
-                <input type="number" id="get-coupon-page" name="page" th:value="${currentPage}" min="0" required>
+                <label for="couponsPage">페이지 번호:</label>
+                <input type="number" id="couponsPage" name="page" th:value="${currentPage ?: 0}" min="0" required>
 
-                <label for="get-coupon-pageSize">페이지 크기:</label>
-                <input type="number" id="get-coupon-pageSize" name="pageSize" th:value="${pageSize}" min="1" required>
+                <label for="couponsPageSize">페이지 크기:</label>
+                <input type="number" id="couponsPageSize" name="pageSize" th:value="${pageSize ?: 10}" min="1"
+                       required>
 
                 <button type="submit">조회</button>
             </form>
-
             <script>
                 document.getElementById('currentDateTime').value = new Date().toISOString();
             </script>
 
-                        <div class="pagination">
-                            <a th:if="${currentPage > 0}"
-                               th:href="@{/admin/coupons(page=${currentPage - 1}, pageSize=${pageSize})}">
-                                이전
-                            </a>
-                            <span>페이지 <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
-                            <a th:if="${currentPage < totalPages - 1}"
-                               th:href="@{/admin/coupons(page=${currentPage + 1}, pageSize=${pageSize})}">
-                                다음
-                            </a>
-                        </div>
-
             <!-- 회원에게 쿠폰 발급 -->
             <h3>회원 쿠폰 발급</h3>
-            <button onclick="openCouponPopup()">회원 쿠폰 발급</button>
+            <button onclick="openCouponIssuePopup()">회원 쿠폰 발급</button>
 
             <script>
-                function openCouponPopup() {
+                function openCouponIssuePopup() {
                     const popup = window.open(
-                        '/admin/member-coupon-popup',
+                        '/admin/member-coupons/issue-popup',
                         '쿠폰 발급',
                         'width=400,height=300,scrollbars=no,resizable=no'
                     );
                 }
             </script>
+
             <!-- 발급 내역 조회 -->
+            <h3>회원 쿠폰 목록</h3>
+            <div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>회원 쿠폰 ID</th>
+                        <th>회원 ID</th>
+                        <th>쿠폰 ID</th>
+                        <th>쿠폰 코드</th>
+                        <th>쿠폰 상태</th>
+                        <th>발급일</th>
+                        <th>만료일</th>
+                        <th>쿠폰정책 ID</th>
+                        <th>쿠폰 정책 이름</th>
+                        <th>할인 타입</th>
+                        <th>최소 금액</th>
+                        <th>최대 할인 금액</th>
+                        <th>할인 비율</th>
+                        <th>중복 사용 여부</th>
+                        <th>쿠폰 적용 범위</th>
+                        <th>쿠폰 정책 유효 여부</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="memberCoupon : ${memberCoupons}">
+                        <td th:text="${memberCoupon.memberCouponId()}"></td>
+                        <td th:text="${memberCoupon.memberId()}"></td>
+                        <td th:text="${memberCoupon.coupon.couponId()}"></td>
+                        <td th:text="${memberCoupon.coupon.code()}"></td>
+                        <td th:text="${memberCoupon.coupon.status()}"></td>
+                        <td th:text="${#temporals.format(memberCoupon.coupon.issuedAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${#temporals.format(memberCoupon.coupon.expiredAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${memberCoupon.coupon.couponPolicyId()}"></td>
+                        <td th:text="${memberCoupon.coupon.name()}"></td>
+                        <td th:text="${memberCoupon.coupon.saleType()}"></td>
+                        <td th:text="${memberCoupon.coupon.minimumAmount()}"></td>
+                        <td th:text="${memberCoupon.coupon.discountLimit()}"></td>
+                        <td th:text="${memberCoupon.coupon.discountRatio()}"></td>
+                        <td th:text="${memberCoupon.coupon.isStackable() ? '가능' : '불가능'}"></td>
+                        <td th:text="${memberCoupon.coupon.couponScope()}"></td>
+                        <td th:text="${memberCoupon.coupon.couponActive() ? '유효' : '만료'}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <form action="/admin/member-coupons" method="get" id="memberCouponForm">
+                    <label for="memberCouponsPage">페이지 번호:</label>
+                    <input type="number" id="memberCouponsPage" name="page" min="0"
+                           th:value="${currentPage ?: 0}" required>
+                    <br><br>
 
-            <!-- 사용 내역 조회 -->
+                    <label for="memberCouponsPageSize">페이지 크기:</label>
+                    <input type="number" id="memberCouponsPageSize" name="pageSize" min="1"
+                           th:value="${pageSize ?: 10}" required>
+                    <br><br>
 
+                    <button type="submit">조회</button>
+                </form>
 
-        </div>
-
-        <div id="coupon-policy-management" class="section">
-            <h2>쿠폰 정책 관리</h2>
-            <!-- 쿠폰정책 생성(고정/비율 할인) -->
-            <h3>쿠폰 정책 생성</h3>
-            <form action="/admin/coupon-policies" method="post">
-                <label for="name">쿠폰 이름:</label>
-                <input type="text" id="name" name="name" value="DEFAULT_NAME" required><br>
-
-                <label for="saleType">할인 유형:</label>
-                <select id="saleType" name="saleType" required onchange="updateDiscountRatio()">
-                    <option value="AMOUNT">AMOUNT</option>
-                    <option value="RATIO">RATIO</option>
-                </select><br>
-
-                <label for="minimumAmount">쿠폰사용 최소금액:</label>
-                <input type="number" id="minimumAmount" name="minimumAmount" value="0.0" step="0.01" min="0"
-                       required><br>
-
-                <label for="discountLimit">최대 할인금액:</label>
-                <input type="number" id="discountLimit" name="discountLimit" value="0.0" step="0.01" min="0.0" required><br>
-
-                <label for="discountRatio">할인율:</label>
-                <input type="number" id="discountRatio" name="discountRatio" value="0" min="0" max="100" required>%<br>
-                <input type="hidden" id="discountRatioHidden" name="discountRatio" value="0">
-
-                <label for="isStackable">중복 사용 가능:</label>
-                <input type="checkbox" id="isStackable" name="isStackable" value="true" checked><br>
-                <input type="hidden" name="isStackable" value="false">
-
-                <label for="couponScope">쿠폰 적용범위:</label>
-                <input type="text" id="couponScope" name="couponScope" value="DEFAULT_SCOPE" required><br>
-
-                <label for="startDate">시작 날짜:</label>
-                <input type="datetime-local" id="startDate" name="startDate" value="2025-01-01T00:00" required><br>
-
-                <label for="endDate">종료 날짜:</label>
-                <input type="datetime-local" id="endDate" name="endDate" value="2025-01-01T23:59" required><br>
-
-                <label for="couponActive">활성화 여부:</label>
-                <input type="checkbox" id="couponActive" name="couponActive" value="true" checked><br>
-                <input type="hidden" name="couponActive" value="false">
-
-                <button type="submit">쿠폰 정책 생성</button>
-            </form>
-
-            <script>
-                function updateDiscountRatio() {
-                    const saleType = document.getElementById('saleType').value;
-                    const discountRatioField = document.getElementById('discountRatio');
-                    const discountRatioHidden = document.getElementById('discountRatioHidden');
-
-                    if (saleType === 'AMOUNT') {
-                        discountRatioField.value = 0;
-                        discountRatioField.disabled = true;
-                        discountRatioHidden.value = 0
-                    } else if (saleType === 'RATIO') {
-                        discountRatioField.value = 0;
-                        discountRatioField.disabled = false;
-                        discountRatioHidden.value = 0;
-                    }
-                }
-
-                document.addEventListener('DOMContentLoaded', () => {
-                    updateDiscountRatio();
-                });
-            </script>
-
-            <!-- 유효한 쿠폰정책 조회 -->
-            <h3>쿠폰 정책 조회</h3>
-
-            <p>현재 페이지: <span th:text="${currentPage + 1}"></span> / 총 페이지: <span th:text="${totalPages}"></span></p>
-
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>이름</th>
-                    <th>할인 유형</th>
-                    <th>최소 금액</th>
-                    <th>최대 할인</th>
-                    <th>할인율</th>
-                    <th>중복 여부</th>
-                    <th>적용범위</th>
-                    <th>시작일</th>
-                    <th>종료일</th>
-                    <th>활성화 상태</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="couponPolicy : ${couponPolicies}">
-                    <td th:text="${couponPolicy.id}"></td>
-                    <td th:text="${couponPolicy.name}"></td>
-                    <td th:text="${couponPolicy.saleType}"></td>
-                    <td th:text="${couponPolicy.minimumAmount}"></td>
-                    <td th:text="${couponPolicy.discountLimit}"></td>
-                    <td th:text="${couponPolicy.discountRatio}"></td>
-                    <td th:text="${couponPolicy.isStackable ? '가능' : '불가능'}"></td>
-                    <td th:text="${couponPolicy.couponScope}"></td>
-                    <td th:text="${couponPolicy.startDate}"></td>
-                    <td th:text="${couponPolicy.endDate}"></td>
-                    <td th:text="${couponPolicy.couponActive ? '활성화' : '비활성화'}"></td>
-                </tr>
-                </tbody>
-            </table>
-
-            <form action="/admin/coupon-policies" method="get">
-                <input type="hidden" name="couponActive" value="true">
-
-                <label for="page">페이지 번호:</label>
-                <input type="number" id="page" name="page" value="0" min="0" required>
-
-                <label for="pageSize">페이지 크기:</label>
-                <input type="number" id="pageSize" name="pageSize" value="10" min="10" required>
-
-                <button type="submit">조회</button>
-            </form>
-
-            <div class="pagination">
-                <a th:if="${currentPage > 0}"
-                   th:href="@{/admin/coupon-policies(couponActive=true, page=${currentPage - 1}, pageSize=${pageSize})}">이전</a>
-
-                <span>페이지 <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
-
-                <a th:if="${currentPage < totalPages - 1}"
-                   th:href="@{/admin/coupon-policies(couponActive=true, page=${currentPage + 1}, pageSize=${pageSize})}">다음</a>
             </div>
 
-            <script>
-                const pageInput = document.getElementById('page');
+            <!-- 사용 내역 조회 -->
+            <h3>쿠폰이력 조회</h3>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>쿠폰이력 ID</th>
+                            <th>쿠폰 ID</th>
+                            <th>상태</th>
+                            <th>변경일</th>
+                            <th>사유</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="couponHistory : ${couponHistories}">
+                            <td th:text="${couponHistory.historyId()}"></td>
+                            <td th:text="${couponHistory.couponId()}"></td>
+                            <td th:text="${couponHistory.status()}"></td>
+                            <td th:text="${#temporals.format(couponHistory.changeDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td th:text="${couponHistory.reason()}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <form onsubmit="redirectToCouponHistories(event)">
+                    <label for="couponId">쿠폰 ID:</label>
+                    <input type="number" id="couponId" name="couponId" required>
+                    <br><br>
 
+                    <label for="couponHistoriesPage">페이지 번호:</label>
+                    <input type="number" id="couponHistoriesPage" name="page" value="0" min="0" required>
+                    <br><br>
 
-                pageInput.form.addEventListener('submit', function (event) {
-                    const actualPage = parseInt(pageInput.value, 10) - 1;
-                    if (actualPage < 0) {
-                        alert("페이지 번호는 1 이상이어야 합니다.");
+                    <label for="couponHistoriesPageSize">페이지 크기:</label>
+                    <input type="number" id="couponHistoriesPageSize" name="pageSize" value="10" min="1" required>
+                    <br><br>
+
+                    <button type="submit">조회</button>
+                </form>
+                <script>
+                    function redirectToCouponHistories(event) {
                         event.preventDefault();
-                    } else {
-                        pageInput.value = actualPage;
+
+                        const couponId = document.getElementById('couponId').value;
+                        const page = document.getElementById('couponHistoriesPage').value;
+                        const pageSize = document.getElementById('couponHistoriesPageSize').value;
+
+                        if (couponId) {
+                            const url = `/admin/coupon-histories/${couponId}?page=${page}&pageSize=${pageSize}`;
+                            window.location.href = url;
+                        } else {
+                            alert('쿠폰 ID를 입력해주세요.');
+                        }
                     }
-                });
-            </script>
+                </script>
+            </div>
+
         </div>
+
+
 
         <div id="tag-management" class="section">
             <h2>태그 관리</h2>
@@ -562,19 +522,15 @@
                     <p th:text="${errorMessage}"></p>
                 </div>
 
-                <label for="pointConditionName">이름</label>
-                <input type="text" id="pointConditionName" name="pointConditionName" placeholder="조건 이름을 입력하세요" required>
+              <label for="pointConditionName">이름</label>
+                <input type="text" id="pointConditionName" name="name" placeholder="조건 이름을 입력하세요" required>
+
 
                 <label for="conditionPoint">포인트</label>
                 <input type="number" id="conditionPoint" name="conditionPoint" placeholder="포인트를 입력하세요">
 
                 <label for="conditionPercentage">비율</label>
                 <input type="number" id="conditionPercentage" name="conditionPercentage" placeholder="비율을 입력하세요" step="0.01">
-
-                <label for="status">상태</label>
-                <select id="status" name="status">
-                    <option value="1">활성</option>
-                </select>
 
                 <button type="submit">생성</button>
             </form>
@@ -594,7 +550,7 @@
                     <tbody>
                     <tr th:each="pointCondition : ${pointConditions}">
                         <form th:action="@{/adminpage/points-conditions/update/{id}(id=${pointCondition.id})}" method="post" th:object="${pointCondition}">
-                            <td><input type="text" th:name="pointConditionName" th:value="${pointCondition.pointConditionName}" /></td>
+                            <td><input type="text" th:name="name" th:value="${pointCondition.name}" /></td>
                             <td><input type="number" th:name="conditionPoint" th:value="${pointCondition.conditionPoint}" /></td>
                             <td><input type="number" step="0.01" th:name="conditionPercentage" th:value="${pointCondition.conditionPercentage}" /></td>
                             <td>
@@ -611,7 +567,6 @@
             </div>
         </div>
 
-
     </div>
 </main>
 <footer>
@@ -620,20 +575,20 @@
         GitHub</a></p>
     <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
 </footer>
-<script>
-    const sidebarItems = document.querySelectorAll('.sidebar .group');
-    const sections = document.querySelectorAll('.section');
+<!--<script>-->
+<!--    const sidebarItems = document.querySelectorAll('.sidebar .group');-->
+<!--    const sections = document.querySelectorAll('.section');-->
 
-    sidebarItems.forEach(item => {
-        item.addEventListener('click', () => {
-            sidebarItems.forEach(i => i.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
+<!--    sidebarItems.forEach(item => {-->
+<!--        item.addEventListener('click', () => {-->
+<!--            sidebarItems.forEach(i => i.classList.remove('active'));-->
+<!--            sections.forEach(section => section.classList.remove('active'));-->
 
-            item.classList.add('active');
-            const sectionId = item.getAttribute('data-section');
-            document.getElementById(sectionId).classList.add('active');
-        });
-    });
-</script>
+<!--            item.classList.add('active');-->
+<!--            const sectionId = item.getAttribute('data-section');-->
+<!--            document.getElementById(sectionId).classList.add('active');-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
 </body>
 </html>

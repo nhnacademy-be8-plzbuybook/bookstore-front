@@ -1,10 +1,7 @@
 package com.nhnacademy.bookstorefront.main.client;
 
 import com.nhnacademy.bookstorefront.main.dto.OrderDeliveryRegisterRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
 import jakarta.validation.Valid;
@@ -14,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @FeignClient(name = "GATEWAY", contextId = "orderClient")
 public interface OrderClient {
@@ -39,5 +38,21 @@ public interface OrderClient {
     //orderDelivery
     @PostMapping("/api/orders/{order-id}/deliveries")
     ResponseEntity<Void> registerOrderDelivery(@PathVariable("order-id") String orderId,
-                                            @Valid @RequestBody OrderDeliveryRegisterRequestDto registerRequest);
+                                               @Valid @RequestBody OrderDeliveryRegisterRequestDto registerRequest);
+
+    @PostMapping("/api/orders/non-member/access")
+    ResponseEntity<String> nonMemberOrderAccess(@RequestBody NonMemberOrderDetailAccessRequestDto accessRequest);
+
+    @PutMapping("/api/orders/order-products/{order-product-id}/status")
+    ResponseEntity<Void> patchOrderProductStatus(@RequestBody OrderProductStatusPatchRequestDto statusPatchRequest);
+
+    @PutMapping("/api/orders/order-products/{order-product-id}/purchase-confirm")
+    ResponseEntity<Void> confirmPurchase(@PathVariable("order-product-id") Long orderProductId);
+
+    @GetMapping("/api/orders/order-status")
+    ResponseEntity<List<String>> getOrderStatuses();
+
+    @PutMapping("/api/orders/{order-id}/status")
+    ResponseEntity<Void> modifyOrderStatus(@PathVariable("order-id") String orderId,
+                                           @RequestBody StatusDto status);
 }

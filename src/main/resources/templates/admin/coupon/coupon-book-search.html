@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>책 검색</title>
+    <link rel="stylesheet" href="/css/coupon/coupon-search-book.css">
+</head>
+<body>
+<div th:fragment="bookSearchFragment">
+
+    <div class="book-list">
+        <div th:each="book : ${searchResult}">
+            <div class="book">
+                <img th:src="${book.imageUrl}" alt="책 이미지">
+                <div th:text="${book.bookTitle}">책 제목</div>
+                <div>저자: <span th:text="${book.authorName}"></span></div>
+                <div>카테고리: <span th:text="${book.categoryName}"></span></div>
+                <div>정가: <span th:text="${book.bookPriceStandard}"></span>원</div>
+                <div>판매가: <span th:text="${book.sellingBookPrice}"></span>원</div>
+                <button type="button" th:onclick="'selectBook(' + ${book.bookId} + ')'">선택</button>
+            </div>
+        </div>
+    </div>
+    <div class="pagination">
+        <a th:if="${currentPage > 0}"
+           th:href="@{/admin/coupon-book-search(searchKeyword=${searchKeyword}, page=${currentPage - 1})}">이전</a>
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+            <a th:href="@{/admin/coupon-book-search(searchKeyword=${searchKeyword}, page=${i})}"
+               th:text="${i + 1}" th:classappend="${i == currentPage} ? 'active' : ''"></a>
+        </span>
+        <a th:if="${currentPage < totalPages - 1}"
+           th:href="@{/admin/coupon-book-search(searchKeyword=${searchKeyword}, page=${currentPage + 1})}">다음</a>
+    </div>
+</div>
+</body>
+</html>

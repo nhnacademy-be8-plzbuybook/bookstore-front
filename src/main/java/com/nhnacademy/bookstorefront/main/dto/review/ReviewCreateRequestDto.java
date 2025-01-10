@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -14,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class ReviewCreateRequestDto {
     private Long memberId;
 
-    private Long orderProductId;
+    private Long sellingBookId;
 
     private Integer score;
 

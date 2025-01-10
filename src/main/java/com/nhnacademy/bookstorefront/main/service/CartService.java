@@ -10,13 +10,11 @@ import java.util.List;
 public interface CartService {
     Long createCart(CreateCartBookRequest createCartBookRequest);
 
-    List<ReadCartBookResponse> getCartBook(Long cartBookId);
-
     List<ReadCartBookResponse> getCartBooks();
 
     Long updateCartBook(UpdateCartBookRequest updateCartBookRequest);
 
-    String deleteCart(Long cartId);
+    String deleteAllCartBook(Long cartId);
 
     String deleteCartBook(DeleteCartBookRequest deleteCartBookRequest);
 }
