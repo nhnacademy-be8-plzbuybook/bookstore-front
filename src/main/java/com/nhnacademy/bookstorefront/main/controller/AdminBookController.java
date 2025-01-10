@@ -4,14 +4,16 @@ import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.AdminBookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.AdminSellingBookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.SellingBookRegisterDto;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -73,7 +75,25 @@ public class AdminBookController {
     }
 
     /**
-     * 관리자 도서 수정
+     * 도서 책 수정 폼 데이터 가져오기
+     * @param sellingBookId
+     * @param model
+     * @return
+     */
+    @GetMapping("/update/{sellingBookId}")
+    public String getUpdateForm(@PathVariable Long sellingBookId, Model model) {
+        AdminBookRegisterDto book = bookClient.getUpdateForm(sellingBookId);
+
+        if (book == null || book.getSellingBookId() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Selling book not found.");
+        }
+
+        model.addAttribute("book", book);
+        return "admin/update";
+    }
+
+    /**
+     * 도서 수정 데이터 저장
      * @param sellingBookId
      * @param updateDto
      * @return
@@ -82,20 +102,63 @@ public class AdminBookController {
     public String updateBook(
             @PathVariable Long sellingBookId,
             @ModelAttribute @Valid AdminBookRegisterDto updateDto) {
-        log.debug("DTO received for update: {}", updateDto);
-
-        // BookClient를 통해 수정 API 호출
+        // 클라이언트를 통해 수정 API 호출
         bookClient.updateSellingBook(sellingBookId, updateDto);
 
+        // 수정 완료 후 목록 페이지로 리다이렉트
         return "redirect:/admin/selling-books";
+    }
+
+
+    /**
+     * //TODO 판매책 불러오는 get
+     * 판매 책 목록 페이지 - 관리자 도서불러올때랑똑같은데 return 파일이름이 달라 ..
+     * @param page
+     * @param size
+     * @param model
+     * @return
+     */
+    @GetMapping("/selling-list")
+    public String getSellingBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
+        Page<SellingBookRegisterDto> sellingBooks = bookClient.getSellingBooks(page, size);
+
+        sellingBooks.getContent().forEach(book -> log.debug("SellingBookRegisterDto: {}", book));
+
+
+        model.addAttribute("sellingBooks", sellingBooks.getContent());
+        model.addAttribute("currentPage", sellingBooks.getNumber());
+        model.addAttribute("totalPages", sellingBooks.getTotalPages());
+        return "admin/sellingbook"; // HTML 파일 이름
+    }
+
+
+
+    //TODO 판매책 수정후 저장하는 PUT
+    @PostMapping("/{sellingBookId}")
+    public String updateSellingBook(
+            @PathVariable Long sellingBookId,
+            @ModelAttribute @Valid SellingBookRegisterDto updateDto) {
+        // 클라이언트를 통해 수정 API 호출
+        bookClient.updateSellingBook(sellingBookId, updateDto);
+
+        // 수정 완료 후 목록 페이지로 리다이렉트
+        return "redirect:/admin/selling-books/selling-list";
     }
 
 
 
 
-
-    // TODO 동기화 버튼
-
+    /**
+     * 동기화버튼
+     * @param queryType
+     * @param searchTarget
+     * @param start
+     * @param maxResults
+     * @return
+     */
     @PostMapping("/sync")
     public String syncBooks(
             @RequestParam("queryType") String queryType,

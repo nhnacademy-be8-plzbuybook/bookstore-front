@@ -164,97 +164,112 @@
 </head>
 <body>
 <th:block th:replace="~{/layout/layout::headerFragment}"></th:block>
-<!--<header>-->
-<!--    <a href="/" class = "logo">📚 책사조잉 📚</a>-->
-<!--    <nav class="menu">-->
-<!--        <a href="/">홈</a>-->
-<!--        <a href="#">국내도서</a>-->
-<!--        <a href="#">외국도서</a>-->
-<!--        <a href="#">추천도서</a>-->
-<!--    </nav>-->
-<!--    <div class="icons">-->
-<!--        <a href="/logout">로그아웃</a>-->
-<!--    </div>-->
-<!--</header>-->
 <main>
     <!-- 사이드바 -->
     <div class="sidebar">
-<!--        <div class="group active" data-section="member-management">회원 관리</div>-->
-        <a href="/adminpage" class="group active">회원 관리</a>
-        <a href="/admin/selling-books" class="group active">도서 관리</a>
+        <a href="/adminpage" class="group">회원 관리</a>
+        <a href="/admin/selling-books" class="group">도서 관리</a>
         <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
         <div class="group" data-section="coupon-management">쿠폰 관리</div>
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
         <div class="group" data-section="tag-management">태그 관리</div>
-        <div class="group" data-section="category-management">카테고리 관리</div>
         <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
         <a href="/admin/category" class="group">카테고리 관리</a>
 
     </div>
 
-    <!-- 메인 콘텐츠 -->
     <div class="content">
-        <h2>도서 관리</h2>
+        <h2>판매 책 관리</h2>
 
-        <div class="form-container">
-            <h3>도서 등록</h3>
-            <form id="bookForm" action="/admin/selling-books/register" method="POST">
-                <label for="bookTitle">제목</label>
-                <input type="text" id="bookTitle" name="bookTitle" required>
-
-                <label for="bookIsbn13">ISBN</label>
-                <input type="text" id="bookIsbn13" name="bookIsbn13" required>
-
-                <label for="publisher">출판사 </label>
-                <input type="text" id="publisher" name="publisher" required>
-
-                <label for="bookPubDate">출판일자</label>
-                <input type="date" id="bookPubDate" name="bookPubDate" required>
-
-                <label for="bookIndex">목차</label>
-                <textarea id="bookIndex" name="bookIndex"></textarea>
-
-                <label for="description" class="form-label">설명</label>
-                <!-- WYSIWYG 에디터를 표시할 영역 -->
-                <div id="editor"></div>
-                <!-- 에디터 내용을 서버로 보낼 숨겨진 필드 -->
-                <input type="hidden" id="description" name="bookDescription">
-
-                <label for="bookPriceStandard">정가</label>
-                <input type="number" id="bookPriceStandard" name="bookPriceStandard" required>
-
-<!--                <label for="sellingBookPrice">판매가</label>-->
-<!--                <input type="number" id="sellingBookPrice" name="sellingBookPrice" required>-->
-
-<!--                <label for="sellingBookStock">재고</label>-->
-<!--                <input type="number" id="sellingBookStock" name="sellingBookStock" required>-->
-
-<!--                <label>-->
-<!--                    <input type="checkbox" id="sellingBookPackageable" name="sellingBookPackageable">-->
-<!--                    포장 가능 여부-->
-<!--                </label>-->
-
-                <label for="imageUrl">이미지 URL</label>
-                <input type="url" id="imageUrl" name="imageUrl" placeholder="이미지 URL을 입력하세요">
-
-                <label for="authors">작가 </label>
-                <input type="text" id="authors" name="authors" placeholder="작가를 ,(쉼표)로 구분하여 입력하세요" required>
-
-
-
-                <!-- 카테고리 선택 모달 -->
-                <div id="categoryModal" class="modal" style="display: none;">
-                    <div class="modal-content">
-                        <h3>카테고리 선택</h3>
-                        <ul id="categoryList"></ul>
-                        <button id="closeModal">닫기</button>
-                    </div>
-                </div>
-
-
-                <button type="submit"  class ="add-button">등록</button>
-            </form>
+        <!-- 성공 메시지 -->
+        <div th:if="${successMessage}" class="alert success">
+            <p th:text="${successMessage}"></p>
         </div>
+
+        <!-- 실패 메시지 -->
+        <div th:if="${errorMessage}" class="alert error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+
+
+        <!-- 판매 책 목록 -->
+        <h3>판매 책 목록</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>판매책 ID</th>
+                <th>Book ID</th>
+                <th>판매가</th>
+                <th>재고</th>
+                <th>도서 상태</th>
+                <th>중고 여부</th>
+                <th>조회수</th>
+                <th>선물 포장 가능 여부</th>
+                <th>수정</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="sellingBook : ${sellingBooks}">
+                <form id="sellingBookForm-${sellingBook.sellingBookId}"
+                      th:action="${sellingBook.sellingBookId != null ? '/admin/selling-books/' + sellingBook.sellingBookId : '/admin/selling-books/selling-register'}"
+                      method="post">
+                    <input type="hidden" name="sellingBookId" th:value="${sellingBook.sellingBookId ?: ''}">
+
+                    <td th:text="${sellingBook.sellingBookId != null ? sellingBook.sellingBookId : '새로 추가'}"></td> <!-- 판매책 ID -->
+                    <td th:text="${sellingBook.bookId}"></td> <!-- Book ID -->
+                    <td><input type="number" name="sellingBookPrice" th:value="${sellingBook.sellingBookPrice ?: ''}"></td>
+                    <td><input type="number" name="sellingBookStock" th:value="${sellingBook.sellingBookStock ?: ''}"></td>
+                    <td>
+                        <select name="sellingBookStatus">
+                            <option value="SELLING" th:selected="${sellingBook.sellingBookStatus == 'SELLING'}">SELLING</option>
+                            <option value="SELLEND" th:selected="${sellingBook.sellingBookStatus == 'SELLEND'}">SELLEND</option>
+                            <option value="DELETEBOOK" th:selected="${sellingBook.sellingBookStatus == 'DELETEBOOK'}">DELETEBOOK</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="used">
+                            <option value="true" th:selected="${sellingBook.used == true}">중고</option>
+                            <option value="false" th:selected="${sellingBook.used == false}">새 책</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="sellingBookViewCount" th:value="${sellingBook.sellingBookViewCount ?: 0}">
+                    </td>
+                    <td>
+                        <select name="sellingBookPackageable">
+                            <option value="true" th:selected="${sellingBook.sellingBookPackageable == true}">가능</option>
+                            <option value="false" th:selected="${sellingBook.sellingBookPackageable == false}">불가능</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="submit">저장</button>
+                    </td>
+                </form>
+            </tr>
+            </tbody>
+        </table>
+            <!-- 페이징 버튼 -->
+            <div class="pagination">
+                <!-- 이전 버튼 -->
+                <a th:if="${currentPage > 0}"
+                   th:href="@{'/admin/selling-books/selling-list'(page=${currentPage - 1})}"
+                   class="prev">
+                    이전
+                </a>
+
+                <!-- 페이지 번호 -->
+                <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">10</span></span>
+
+                <!-- 다음 버튼 -->
+                <a th:if="${currentPage < totalPages - 1}"
+                   th:href="@{'/admin/selling-books/selling-list'(page=${currentPage + 1})}"
+                   class="next">
+                    다음
+                </a>
+            </div>
+
+
     </div>
 </main>
 
@@ -343,6 +358,46 @@
         }
         document.getElementById('categoryModal').style.display = 'none';
     }
+
+
+    document.querySelectorAll(".saveButton").forEach(button => {
+        button.addEventListener("click", function () {
+            const formId = this.getAttribute("data-form-id");
+            const form = document.getElementById(formId);
+
+            const formData = new FormData(form);
+            const jsonObject = {};
+
+            formData.forEach((value, key) => {
+                jsonObject[key] = value;
+            });
+
+            const url = form.action;
+            const method = jsonObject._method || "POST"; // Hidden 필드 `_method` 값 사용
+
+            fetch(url, {
+                method: method, // PUT or POST
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(jsonObject)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("수정이 성공적으로 저장되었습니다!");
+                        window.location.reload(); // 페이지 새로고침
+                    } else {
+                        response.text().then(text => console.error("오류 응답:", text));
+                        alert("저장 실패! 다시 시도해주세요.");
+                    }
+                })
+                .catch(error => {
+                    console.error("오류 발생:", error);
+                    alert("요청 중 오류가 발생했습니다.");
+                });
+        });
+    });
+
 
 </script>
 </body>

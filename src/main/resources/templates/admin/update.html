@@ -164,27 +164,15 @@
 </head>
 <body>
 <th:block th:replace="~{/layout/layout::headerFragment}"></th:block>
-<!--<header>-->
-<!--    <a href="/" class = "logo">📚 책사조잉 📚</a>-->
-<!--    <nav class="menu">-->
-<!--        <a href="/">홈</a>-->
-<!--        <a href="#">국내도서</a>-->
-<!--        <a href="#">외국도서</a>-->
-<!--        <a href="#">추천도서</a>-->
-<!--    </nav>-->
-<!--    <div class="icons">-->
-<!--        <a href="/logout">로그아웃</a>-->
-<!--    </div>-->
-<!--</header>-->
 <main>
     <!-- 사이드바 -->
     <div class="sidebar">
-<!--        <div class="group active" data-section="member-management">회원 관리</div>-->
-        <a href="/adminpage" class="group active">회원 관리</a>
+        <!--        <div class="group active" data-section="member-management">회원 관리</div>-->
+        <a href="/adminpage" class="group">회원 관리</a>
         <a href="/admin/selling-books" class="group active">도서 관리</a>
         <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
-        <div class="group" data-section="coupon-management">쿠폰 관리</div>
-        <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
+        <a href="/admin/coupons" class="group" data-section="coupon-management">쿠폰 관리</a>
+        <a href="/admin/coupon-policies" class="group" data-section="coupon-policy-management">쿠폰 정책 관리</a>
         <div class="group" data-section="tag-management">태그 관리</div>
         <div class="group" data-section="category-management">카테고리 관리</div>
         <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
@@ -195,64 +183,51 @@
     <!-- 메인 콘텐츠 -->
     <div class="content">
         <h2>도서 관리</h2>
-
         <div class="form-container">
-            <h3>도서 등록</h3>
-            <form id="bookForm" action="/admin/selling-books/register" method="POST">
+            <h3>도서 수정</h3>
+            <form id="bookForm" action="/admin/selling-books/update" method="POST">
+                <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}" />
+
                 <label for="bookTitle">제목</label>
-                <input type="text" id="bookTitle" name="bookTitle" required>
+                <input type="text" id="bookTitle" name="bookTitle" th:value="${book.bookTitle}" required>
 
                 <label for="bookIsbn13">ISBN</label>
-                <input type="text" id="bookIsbn13" name="bookIsbn13" required>
+                <input type="text" id="bookIsbn13" name="bookIsbn13" th:value="${book.bookIsbn13}" required>
 
-                <label for="publisher">출판사 </label>
-                <input type="text" id="publisher" name="publisher" required>
+                <label for="publisher">출판사</label>
+                <input type="text" id="publisher" name="publisher" th:value="${book.publisher}" required>
 
                 <label for="bookPubDate">출판일자</label>
-                <input type="date" id="bookPubDate" name="bookPubDate" required>
+                <input type="date" id="bookPubDate" name="bookPubDate" th:value="${book.bookPubDate}" required>
 
-                <label for="bookIndex">목차</label>
-                <textarea id="bookIndex" name="bookIndex"></textarea>
-
-                <label for="description" class="form-label">설명</label>
-                <!-- WYSIWYG 에디터를 표시할 영역 -->
-                <div id="editor"></div>
-                <!-- 에디터 내용을 서버로 보낼 숨겨진 필드 -->
-                <input type="hidden" id="description" name="bookDescription">
+                <label for="bookDescription">설명</label>
+                <textarea id="bookDescription" name="bookDescription" th:text="${book.bookDescription}"></textarea>
 
                 <label for="bookPriceStandard">정가</label>
-                <input type="number" id="bookPriceStandard" name="bookPriceStandard" required>
+                <input type="number" id="bookPriceStandard" name="bookPriceStandard" th:value="${book.bookPriceStandard}" required>
 
-<!--                <label for="sellingBookPrice">판매가</label>-->
-<!--                <input type="number" id="sellingBookPrice" name="sellingBookPrice" required>-->
+                <label for="sellingBookPrice">판매가</label>
+                <input type="number" id="sellingBookPrice" name="sellingBookPrice" th:value="${book.sellingBookPrice}" required>
 
-<!--                <label for="sellingBookStock">재고</label>-->
-<!--                <input type="number" id="sellingBookStock" name="sellingBookStock" required>-->
+                <label for="sellingBookStock">재고</label>
+                <input type="number" id="sellingBookStock" name="sellingBookStock" th:value="${book.sellingBookStock}" required>
 
-<!--                <label>-->
-<!--                    <input type="checkbox" id="sellingBookPackageable" name="sellingBookPackageable">-->
-<!--                    포장 가능 여부-->
-<!--                </label>-->
+                <label>
+                    <input type="checkbox" id="sellingBookPackageable" name="sellingBookPackageable"
+                           th:checked="${book.sellingBookPackageable}" />
+                    포장 가능 여부
+                </label>
 
                 <label for="imageUrl">이미지 URL</label>
-                <input type="url" id="imageUrl" name="imageUrl" placeholder="이미지 URL을 입력하세요">
+                <input type="url" id="imageUrl" name="imageUrl" th:value="${book.imageUrl}" placeholder="이미지 URL을 입력하세요">
 
-                <label for="authors">작가 </label>
-                <input type="text" id="authors" name="authors" placeholder="작가를 ,(쉼표)로 구분하여 입력하세요" required>
+                <label for="authors">작가</label>
+                <input type="text" id="authors" name="authors" th:value="${book.authors != null ? #strings.listJoin(book.authors, ',') : ''}" placeholder="작가를 쉼표로 구분하여 입력하세요" required>
 
+                <label for="categories">카테고리</label>
+                <input type="text" id="categories" name="categories" th:value="${book.categories != null ? #strings.listJoin(book.categories, ',') : ''}" placeholder="카테고리를 쉼표로 구분하여 입력하세요" required>
 
-
-                <!-- 카테고리 선택 모달 -->
-                <div id="categoryModal" class="modal" style="display: none;">
-                    <div class="modal-content">
-                        <h3>카테고리 선택</h3>
-                        <ul id="categoryList"></ul>
-                        <button id="closeModal">닫기</button>
-                    </div>
-                </div>
-
-
-                <button type="submit"  class ="add-button">등록</button>
+                <button type="submit" class="add-button">수정</button>
             </form>
         </div>
     </div>
@@ -307,42 +282,6 @@
         // 숨겨진 input 필드에 에디터 내용 설정
         document.getElementById('description').value = editorContent;
     });
-
-    document.getElementById('openModal').addEventListener('click', function () {
-        document.getElementById('categoryModal').style.display = 'flex';
-        fetchCategories();
-    });
-
-    document.getElementById('closeModal').addEventListener('click', function () {
-        document.getElementById('categoryModal').style.display = 'none';
-    });
-
-    function fetchCategories() {
-        fetch('/categories')
-            .then(response => response.json())
-            .then(categories => {
-                const categoryList = document.getElementById('categoryList');
-                categoryList.innerHTML = '';
-                categories.forEach(category => {
-                    const li = document.createElement('li');
-                    li.textContent = category;
-                    li.addEventListener('click', function () {
-                        selectCategory(category);
-                    });
-                    categoryList.appendChild(li);
-                });
-            });
-    }
-
-    function selectCategory(category) {
-        const categoriesInput = document.getElementById('categories');
-        const currentCategories = categoriesInput.value ? categoriesInput.value.split(',') : [];
-        if (!currentCategories.includes(category)) {
-            currentCategories.push(category);
-            categoriesInput.value = currentCategories.join(',');
-        }
-        document.getElementById('categoryModal').style.display = 'none';
-    }
 
 </script>
 </body>
