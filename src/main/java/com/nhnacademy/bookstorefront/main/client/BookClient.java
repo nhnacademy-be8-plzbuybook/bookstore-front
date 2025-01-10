@@ -10,8 +10,10 @@ import jakarta.validation.Valid;
 import com.nhnacademy.bookstorefront.main.dto.book.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -94,8 +96,9 @@ public interface BookClient {
     ResponseEntity<Void> deleteCategory(@PathVariable("categoryId") Long categoryId);
 
 
-    @PostMapping("/api/reviews")
-    ResponseEntity<ReviewResponseDto> createReview(@RequestBody ReviewCreateRequestDto reviewRequestDto);
+    @PostMapping(value = "/api/reviews", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<ReviewResponseDto> createReview(@RequestPart("reviewRequestDto") String reviewRequestDto,
+                                                   @RequestPart(value = "images", required = false) List<MultipartFile> images);
 
     @GetMapping("/api/order-product/by-selling-book/{sellingBookId}")
     ResponseEntity<Long> getOrderProductBySellingBookId(@PathVariable("sellingBookId") Long sellingBookId);

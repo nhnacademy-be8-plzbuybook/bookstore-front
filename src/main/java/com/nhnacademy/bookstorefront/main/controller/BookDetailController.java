@@ -1,14 +1,19 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
 import com.nhnacademy.bookstorefront.main.dto.AdminSellingBookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
+import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
+import com.nhnacademy.bookstorefront.main.service.OrderService;
+import feign.FeignException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 
 @Slf4j
@@ -29,6 +37,7 @@ public class BookDetailController {
     private final MemberClient memberClient;
     private final AuthenticationService authenticationService;
     private final AuthenticationClient authenticationClient;
+    private final OrderService orderService;
 
 
 
@@ -50,28 +59,34 @@ public class BookDetailController {
     public String getBookDetail(@PathVariable Long sellingBookId, Model model,HttpServletRequest request) {
         // 쇼핑몰 서버에서 특정 책 데이터 가져오기
         BookDetailResponseDto bookDetail = bookClient.getSellingBook(sellingBookId);
+        Long bookId = bookDetail.getSellingBookId();
         boolean isLoggedIn = authenticationService.isLoggedIn(request);
         log.info("bookDetail: {}", bookDetail);
         String role = null;
+        Long memberId = null;
+        Long orderProductId = null;
 
         if(isLoggedIn) {
             String token = getTokenFromCookies(request);
             if(token != null) {
                 role = authenticationClient.getRoleFromToken("Bearer " + token).getBody();
+                MyPageDto myPageDto = authenticationService.getMyPage();
+                memberId = myPageDto.getMemberId();
+                try {
+                    orderProductId = bookClient.getOrderProductBySellingBookId(bookId).getBody();
+                } catch (FeignException.NotFound e) {
+                }
             }
         }
 
 
-//        MyPageDto myPageDto = authenticationService.getMyPage();
-//        Long memberId = myPageDto.getMemberId();
 
-//        Long OrderProductId = bookClient.getOrderProductBySellingBookId(sellingBookId).getBody();
 
         model.addAttribute("book", bookDetail);
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("role", role);
-//        model.addAttribute("memberId", memberId);
-//        model.addAttribute("orderProductId", OrderProductId);
+        model.addAttribute("memberId", memberId);
+        model.addAttribute("orderProductId", orderProductId);
 
 
         return "detailview";
@@ -109,15 +124,51 @@ public class BookDetailController {
         return "redirect:/book/detail/" + sellingBookId;
     }
 
-//    @PostMapping("/book/detail/review")
-//    public ResponseEntity<ReviewResponseDto> makeReview(@RequestParam Long memberId,
-//                                                          @RequestParam Long orderProductId,
-//                                                          @RequestParam int score,
-//                                                          @RequestParam String content) {
-//        ReviewCreateRequestDto reviewCreateRequestDto = new ReviewCreateRequestDto(memberId, orderProductId, score, content);
-//        ResponseEntity<ReviewResponseDto> responseEntity = bookClient.createReview(reviewCreateRequestDto);
-//
-//        return ResponseEntity.ok(responseEntity.getBody());
-//    }
+    @PostMapping("/book/detail/review")
+    public String makeReview(@RequestParam Long memberId,
+                             @RequestParam(required = false) Long orderProductId,
+                             @RequestParam int score,
+                             @RequestParam String content,
+                             @RequestParam(required = false) List<MultipartFile> images,
+                             @RequestParam Long sellingBookId,
+                             Model model) {
+
+        if (orderProductId == null) {
+            model.addAttribute("message", "주문한 상품에 대해서만 리뷰를 작성할 수 있습니다.");
+            return "error/review-error";
+        }
+
+        try {
+
+            ReviewCreateRequestDto reviewCreateRequestDto = new ReviewCreateRequestDto(memberId, orderProductId, score, content);
+            String reviewRequestDtoJson = new ObjectMapper().writeValueAsString(reviewCreateRequestDto);
+
+            ResponseEntity<ReviewResponseDto> response = bookClient.createReview(reviewRequestDtoJson, images);
+
+            if (response.getStatusCode().is4xxClientError()) {
+                return "error/review-error";
+            }
+        } catch (FeignException e) {
+            if (e.status() == 400){
+                model.addAttribute("message", "구매 확정된 책만 리뷰를 작성할 수 있습니다.");
+                return "error/review-error";
+            }
+            if (e.status() == 403){
+                model.addAttribute("message", "주문한 책만 리뷰를 작성할 수 있습니다.");
+                return "error/review-error";
+            }
+            if (e.status() == 409) {
+                model.addAttribute("message", "리뷰 작성은 한번만 가능합니다.");
+                return "error/review-error";
+            }
+
+            throw e;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return "redirect:/book/detail/" + sellingBookId;
+    }
 
 }

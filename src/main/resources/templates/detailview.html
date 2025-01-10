@@ -323,11 +323,13 @@
                 </div>
 
                 <!-- 리뷰 등록 폼 -->
-                <div class="review-form mt-4">
+                <div th:if="${isLoggedIn}" class="review-form mt-4">
                     <h3>리뷰 작성</h3>
-                    <form th:action="@{/book/detail/review}" method="POST">
+                    <form th:action="@{/book/detail/review}" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="memberId" th:value="${memberId}">
                         <input type="hidden" name="orderProductId" th:value="${orderProductId}">
+                        <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}">
+
 
                         <!-- 별점 -->
                         <div class="rating mb-3">
@@ -349,9 +351,12 @@
                             <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
                         </div>
 
+                        <input type="file" name="images" multiple>
+
                         <!-- 제출 버튼 -->
                         <button type="submit" class="btn btn-primary">리뷰 등록</button>
                     </form>
+
                 </div>
             </section>
         </div>
