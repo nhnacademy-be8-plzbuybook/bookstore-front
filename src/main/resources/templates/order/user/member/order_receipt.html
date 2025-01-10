@@ -50,33 +50,51 @@
         </tbody>
     </table>
 
-    <!-- 배송지 정보 -->
     <h2>배송지 정보 입력</h2>
-    <input type="radio" name="deliveryAddress" value="default" checked> 기본 배송지
-    <input type="radio" name="deliveryAddress" value="list"> 배송지 목록
-    <input type="radio" name="deliveryAddress" value="new"> 새 배송지
-    <table class="table">
-        <tr>
-            <td>받는 사람</td>
-            <td><input type="text" id="receipt" th:value="${defaultAddress.getRecipient()}"></td>
-        </tr>
-        <tr>
-            <td>전화번호</td>
-            <td><input type="text" id="receiptPhone" th:value="${defaultAddress.getRecipientPhone()}"></td>
-        </tr>
-        <tr>
-            <td>우편번호</td>
-            <td><input type="text" id="zipCode" th:value="${defaultAddress.getZipCode()}"></td>
-        </tr>
-        <tr>
-            <td>주소</td>
-            <td><input type="text" id="localAddress" th:value="${defaultAddress.getLocationAddress()}"></td>
-        </tr>
-        <tr>
-            <td>상세주소</td>
-            <td><input type="text" id="detailAddress" th:value="${defaultAddress.getDetailAddress()}"></td>
-        </tr>
-    </table>
+    <div>
+        <input type="radio" name="deliveryAddress" value="default" th:checked="${defaultAddress != null}"/> 기본 배송지
+        <input type="radio" name="deliveryAddress" value="list"/> 배송지 목록
+        <input type="radio" name="deliveryAddress" value="new" th:checked="${defaultAddress == null}"/> 새 배송지
+
+        <table class="table">
+            <tr>
+                <td>받는 사람</td>
+                <td>
+                    <input type="text" id="receipt"
+                           th:value="${defaultAddress != null ? defaultAddress.getRecipient() : ''}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>전화번호</td>
+                <td>
+                    <input type="text" id="receiptPhone"
+                           th:value="${defaultAddress != null ? defaultAddress.getRecipientPhone() : ''}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>우편번호</td>
+                <td>
+                    <input type="text" id="zipCode"
+                           th:value="${defaultAddress != null ? defaultAddress.getZipCode() : ''}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>주소</td>
+                <td>
+                    <input type="text" id="localAddress"
+                           th:value="${defaultAddress != null ? defaultAddress.getLocationAddress() : ''}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>상세주소</td>
+                <td>
+                    <input type="text" id="detailAddress"
+                           th:value="${defaultAddress != null ? defaultAddress.getDetailAddress() : ''}"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
 
     <!-- 배송 희망 날짜 -->
     <h2>배송 희망 날짜</h2>
@@ -137,15 +155,17 @@
 </div>
 
 <!--배송비 정책-->
-<input type="hidden" id="defaultDeliveryFee" th:value="${deliveryFeePolicy.getDefaultDeliveryFee()}" />
-<input type="hidden" id="freeDeliveryThreshold" th:value="${deliveryFeePolicy.getFreeDeliveryThreshold()}" />
+<input type="hidden" id="defaultDeliveryFee" th:value="${deliveryFeePolicy.getDefaultDeliveryFee()}"/>
+<input type="hidden" id="freeDeliveryThreshold" th:value="${deliveryFeePolicy.getFreeDeliveryThreshold()}"/>
 
 <!--기본배송지-->
-<input type="hidden" id="defaultReceipt" th:value="${defaultAddress.getRecipient()}">
-<input type="hidden" id="defaultReceiptPhone" th:value="${defaultAddress.getRecipientPhone()}">
-<input type="hidden" id="defaultZipCode" th:value="${defaultAddress.getZipCode()}">
-<input type="hidden" id="defaultLocalAddress" th:value="${defaultAddress.getLocationAddress()}">
-<input type="hidden" id="defaultDetailAddress" th:value="${defaultAddress.getDetailAddress()}">
+<div th:if="${defaultAddress != null}">
+    <input type="hidden" id="defaultReceipt" th:value="${defaultAddress.getRecipient()}">
+    <input type="hidden" id="defaultReceiptPhone" th:value="${defaultAddress.getRecipientPhone()}">
+    <input type="hidden" id="defaultZipCode" th:value="${defaultAddress.getZipCode()}">
+    <input type="hidden" id="defaultLocalAddress" th:value="${defaultAddress.getLocationAddress()}">
+    <input type="hidden" id="defaultDetailAddress" th:value="${defaultAddress.getDetailAddress()}">
+</div>
 
 
 <!-- 배송지 목록 모달 -->
