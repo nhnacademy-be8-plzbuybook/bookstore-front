@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주문상세</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/order/detail.css">
+</head>
+<body>
+<div class="container">
+    <h1>주문상세</h1>
+
+    <h2>주문정보</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>주문번호</th>
+            <th>주문일시</th>
+            <th>주문상태</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${orderDetail.getOrderNumber()}"></td>
+            <td th:text="${#temporals.format(orderDetail.getOrderedAt(), 'yyyy/MM/dd HH:mm')}"></td>
+            <td th:text="${orderDetail.getStatus()}"></td>
+            <td th:if="${orderDetail.getStatus().equals('배송완료') and orderDetail.getOrderDelivery().getTrackingNumber() != null}">
+                <a th:href="@{https://link.tracker.delivery/track(client_id='2mnplmpcj0hf723toi68kcdeal', carrier_id='kr.cjlogistics',tracking_number=${orderDetail.getOrderDelivery().getTrackingNumber()})}">배송조회</a>
+            </td>
+            <td th:if="${orderDetail.getStatus().equals('결제대기') or orderDetail.getStatus().equals('결제완료')}">
+                <button type="button" id="order-cancel-btn">
+                    주문취소
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <h2>주문상품</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>이미지</th>
+            <th>상품명</th>
+            <th>가격</th>
+            <th>수량</th>
+            <th>상태</th>
+            <th>포장</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="orderProduct: ${orderDetail.getOrderProducts()}">
+            <td>
+                <img th:src="${orderProduct.getImageUrl()}" th:alt="${orderProduct.getBookTitle()}">
+            </td>
+            <td>
+                <a th:href="@{/book/detail/{id}(id=${orderProduct.getBookId()})}"
+                   th:text="${orderProduct.getBookTitle()}"></a>
+            </td>
+            <td th:text="${orderProduct.getPrice()}"></td>
+            <td th:text="${orderProduct.getQuantity()}"></td>
+            <td th:text="${orderProduct.getStatus()}"></td>
+            <td th:if="${orderProduct.getOrderProductWrapping() != null}">
+                <span th:text="${orderProduct.getOrderProductWrapping().getName()}"></span> /
+                <span th:text="${orderProduct.getOrderProductWrapping().getPrice()}"></span> 원
+                <span th:text="${orderProduct.getOrderProductWrapping().getQuantity()}"></span> 개
+            </td>
+            <td th:unless="${orderProduct.getOrderProductWrapping() != null}">
+                <span>X</span>
+            </td>
+            <td th:if="${orderProduct.getStatus().equals('배송완료')}">
+                <button type="button" id="purchase-confirm-btn"
+                        th:attr="onclick=|purchaseConfirm(${orderProduct.getOrderProductId()})|">구매확정
+                </button>
+            </td>
+            <td th:if="${orderProduct.getStatus().equals('구매확정')}">
+                <button type="button">리뷰작성</button>
+                <!--TODO: 리뷰 작성 페이지로 이동하는 링크 추가-->
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>배송희망 날짜</h2>
+    <span th:text="${orderDetail.getDeliveryWishDate()}"></span>
+
+    <h2>주문 배송 정보</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>받는 사람</th>
+            <th>전화번호</th>
+            <th>우편번호</th>
+            <th>주소</th>
+            <th>상세주소</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${orderDetail.getOrderDeliveryAddress().getRecipient()}"></td>
+            <td th:text="${orderDetail.getOrderDeliveryAddress().getRecipientPhone()}"></td>
+            <td th:text="${orderDetail.getOrderDeliveryAddress().getZipCode()}"></td>
+            <td th:text="${orderDetail.getOrderDeliveryAddress().getLocationAddress()}"></td>
+            <td th:text="${orderDetail.getOrderDeliveryAddress().getDetailAddress()}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <h2>결제정보</h2>
+    <table>
+        <tbody>
+        <tr>
+            <td>주문금액</td>
+            <td th:text="${orderDetail.getOrderPrice()}">10000원</td>
+        </tr>
+        <tr>
+            <td>사용포인트</td>
+            <td th:text="${orderDetail.getUsedPoint()}"></td>
+        </tr>
+        <tr>
+            <!--        쿠폰할인금액 등 추가-->
+            <td>할인금액</td>
+            <td>1000원</td>
+        </tr>
+        <tr>
+            <td>배송비</td>
+            <td th:text="${orderDetail.getDeliveryFee()}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <table>
+        <thead>
+        <tr>
+            <th>결제수단</th>
+            <th>제공사</th>
+            <th>결제금액</th>
+            <th>결제일자</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${orderDetail.getPayment().getMethod()}"></td>
+            <td th:text="${orderDetail.getPayment().getEasyPayProvider()}"></td>
+            <td th:text="${orderDetail.getPayment().getAmount()}"></td>
+            <td th:text="${#temporals.format(orderDetail.getPayment().getPaidAt(), 'yyyy/MM/dd HH:mm')}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+<script th:inline="javascript">
+    async function purchaseConfirm(orderProductId) {
+        const response = await fetch(`/api/orders/order-products/${Number(orderProductId)}/purchase-confirm`, {
+            method: 'PUT',
+        });
+
+        if (!response.ok) {
+            alert("주문상품 구매확정이 실패했습니다. 다시 시도해 주세요.");
+            return;
+        }
+        alert("주문상품의 구매가 확정되었습니다.");
+        window.location.reload();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const orderCancelBtn = document.getElementById("order-cancel-btn");
+        const orderId = [[${orderDetail.getOrderId()}]];
+        orderCancelBtn.addEventListener('click', async () => {
+            const response = await fetch(`/api/orders/${orderId}/cancel`, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    cancelReason: "하드코딩된 취소사유"
+                })
+            });
+
+            if (!response.ok) {
+                alert("주문취소가 실패했습니다. 다시 시도해 주세요.");
+                return;
+            }
+            alert("주문이 취소되었습니다.");
+            window.location.reload();
+        })
+    })
+</script>
+</body>
+</html>

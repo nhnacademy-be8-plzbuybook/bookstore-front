@@ -10,6 +10,9 @@ import java.util.List;
 
 @Getter
 @Setter
+
+// 관리자 도서 리스트 불러오는 dto
+
 public class AdminSellingBookRegisterDto {
     private Long sellingBookId; // 판매도서 ID
     private String bookTitle; // 제목

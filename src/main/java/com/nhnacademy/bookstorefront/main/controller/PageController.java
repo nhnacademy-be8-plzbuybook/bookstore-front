@@ -2,10 +2,14 @@ package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
+import com.nhnacademy.bookstorefront.main.client.PointClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.*;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
+import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
+import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
+import com.nhnacademy.bookstorefront.main.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,10 +31,13 @@ public class PageController {
     private final AuthenticationService authenticationService;
     private final AuthenticationClient authenticationClient;
     private final MemberClient memberClient;
+    private final PointClient pointClient;
+    private final OrderService orderService;
 
     @GetMapping("/mypage")
     public String mypage( @RequestParam(defaultValue = "0") int page,
                           @RequestParam(defaultValue = "16") int size,
+                          @RequestParam(required = false) OrderSearchRequestDto searchRequest,
                           Model model) {
         MyPageDto myPageDto = authenticationService.getMyPage();
 
@@ -56,13 +63,17 @@ public class PageController {
 
 
         model.addAttribute("coupons", response.getContent());
-        List<MemberPointResponseDto> points = memberClient.getMemberPoints(myPageDto.getMemberId());
+        List<MemberPointResponseDto> points = pointClient.getMemberPoints(myPageDto.getMemberId());
         model.addAttribute("points", points);
 
         BigDecimal totalPoints = points.stream()
                 .map(MemberPointResponseDto::getPoint)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         model.addAttribute("totalPoints", totalPoints);
+
+        Page<OrderDto> orderPage = orderService.getMemberOrders(searchRequest, pageable);
+
+        model.addAttribute("orderPage", orderPage);
 
 
         return "member/mypage";

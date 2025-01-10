@@ -153,6 +153,23 @@
             height: 40px; /* 높이 통일 */
         }
 
+        .star-rating {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            cursor: pointer;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: #ddd;
+            transition: color 0.2s;
+        }
+
+        .star.selected {
+            color: #f39c12;
+        }
+
     </style>
 </head>
 <body>
@@ -171,6 +188,7 @@
         <a th:if="${role == null and !isLoggedIn}" href="/login" id="login-btn">로그인</a>
         <a th:if="${role == null and !isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>
         <a th:if="${isLoggedIn}" href="/logout" id="logout-btn">로그아웃</a>
+        <a href="/carts" id="cart-btn">장바구니</a>
     </div>
 </header>
 
@@ -246,7 +264,12 @@
                 </div>
             </form>
 
-
+            <div class="tags mb-3">
+                <h5>태그</h5>
+                <ul class="list-inline">
+                    <li class="list-inline-item badge bg-primary text-light" th:each="tag : ${bookTags}" th:text="${tag.tagName}"></li>
+                </ul>
+            </div>
             <!-- 버튼 -->
             <div class="button-group">
                 <button class="cart-btn" onclick="addToCart()">장바구니 담기</button>
@@ -276,7 +299,70 @@
                 </div>
             </div>
 
+            <section class="review-section mt-5">
 
+<!--                &lt;!&ndash; 리뷰 목록 &ndash;&gt;-->
+<!--                <div class="review-list">-->
+<!--                    <h3>작성된 리뷰</h3>-->
+<!--                    <div th:each="review : ${reviews}" class="review-item border-bottom py-3">-->
+<!--                        <p><strong th:text="${review.author}">작성자 이름</strong></p>-->
+<!--                        <p th:text="${review.content}">리뷰 내용</p>-->
+<!--                        <p>-->
+<!--                            평점:-->
+<!--                            <span th:text="${review.score}">5</span> / 5-->
+<!--                        </p>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+                <!-- 리뷰 목록 -->
+                <div class="review-list">
+                    <h3>작성된 리뷰</h3>
+                    <div  class="review-item border-bottom py-3">
+                        <p><strong>작성자 이름</strong></p>
+                        <p>리뷰 내용</p>
+                        <p>
+                            평점:
+                            <span>5</span> / 5
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 리뷰 등록 폼 -->
+                <div th:if="${isLoggedIn}" class="review-form mt-4">
+                    <h3>리뷰 작성</h3>
+                    <form th:action="@{/book/detail/review}" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="memberId" th:value="${memberId}">
+                        <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}">
+
+
+                        <!-- 별점 -->
+                        <div class="rating mb-3">
+                            <label for="rating" class="form-label">평점 (0~5)</label>
+                            <div class="star-rating">
+                                <!-- 별 5개 -->
+                                <span class="star" data-value="1">★</span>
+                                <span class="star" data-value="2">★</span>
+                                <span class="star" data-value="3">★</span>
+                                <span class="star" data-value="4">★</span>
+                                <span class="star" data-value="5">★</span>
+                            </div>
+                            <input type="hidden" id="score" name="score" value="0">
+                        </div>
+
+                        <!-- 리뷰 내용 -->
+                        <div class="mb-3">
+                            <label for="content" class="form-label">리뷰 내용</label>
+                            <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
+                        </div>
+
+                        <input type="file" name="images" multiple>
+
+                        <!-- 제출 버튼 -->
+                        <button type="submit" class="btn btn-primary">리뷰 등록</button>
+                    </form>
+
+                </div>
+            </section>
         </div>
     </div>
 </main>
@@ -291,8 +377,37 @@
 <script th:inline="javascript">
 
     function addToCart() {
-        alert("장바구니에 담겼습니다!");
+        const sellingBookId = [[${book.getSellingBookId()}]];
+        const quantity = document.getElementById("quantity").value;
+
+        // JSON 데이터 생성
+        const data = {
+            sellingBookId: sellingBookId,
+            quantity: quantity
+        };
+
+        // AJAX 요청 (Fetch API 사용)
+        fetch('/carts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // 요청 본문이 JSON임을 명시
+            },
+            body: JSON.stringify(data) // JavaScript 객체를 JSON 문자열로 변환
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("장바구니에 담겼습니다!");
+                } else {
+                    alert("장바구니에 담는 데 실패했습니다.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("장바구니에 담는 데 오류가 발생했습니다.");
+            });
     }
+
+
 
     function buyNow() {
         const sellingBookId = [[${book.getSellingBookId()}]];
@@ -313,6 +428,27 @@
         const sellingBookId = [[${book.getSellingBookId()}]];
         const quantity = document.getElementById("quantity").value;
         window.location.href = `/non-member/order/receipt?productId=${sellingBookId}&quantity=${quantity}`;
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const stars = document.querySelectorAll('.star');
+        const scoreInput = document.getElementById('score');
+
+        stars.forEach((star) => {
+            star.addEventListener('click', function () {
+                const value = this.getAttribute('data-value');
+                scoreInput.value = value;
+
+                // 모든 별 초기화 후, 선택된 별 활성화
+                stars.forEach((s) => s.classList.remove('selected'));
+                this.classList.add('selected');
+                let prevSibling = this.previousElementSibling;
+                while (prevSibling) {
+                    prevSibling.classList.add('selected');
+                    prevSibling = prevSibling.previousElementSibling;
+                }
+            });
+        });
     });
 </script>
 </body>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 책사조잉 관리자 페이지 📚</title>
+    <link rel="stylesheet" href="/css/layout/layout.css">
+
+    <style>
+
+        main {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .sidebar .group {
+            display: block; /* a 태그를 블록 요소로 변경 */
+            text-decoration: none; /* 기본 밑줄 제거 */
+            color: inherit; /* 기본 색상 상속 */
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .sidebar .group.active,
+        .sidebar .group:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-container {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h3 {
+            margin-bottom: 10px;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .form-container form label {
+            font-size: 14px;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-container form input,
+        .form-container form select {
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-container form input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .form-container form button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-container form button:hover {
+            background-color: #555;
+        }
+
+        .table-wrapper {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f1f1f1;
+        }
+
+        table td {
+            background-color: #fff;
+        }
+
+        table .action-buttons button {
+            padding: 5px 10px;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        table .action-buttons .edit {
+            background-color: #007bff;
+        }
+
+        table .action-buttons .delete {
+            background-color: #dc3545;
+        }
+
+        /* 설명과 카테고리 사이 간격 추가 */
+        #editor {
+            margin-bottom: 20px; /* 설명 아래 간격 추가 */
+        }
+
+        /* 카테고리 라벨 간격 추가 */
+        label[for="category"] {
+            margin-top: 20px; /* 설명과 카테고리 사이 간격 */
+            display: block; /* 라벨을 블록 요소로 설정 */
+        }
+
+    </style>
+</head>
+<body>
+<th:block th:replace="~{/layout/layout::headerFragment}"></th:block>
+<main>
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <a href="/adminpage" class="group">회원 관리</a>
+        <a href="/admin/selling-books" class="group">도서 관리</a>
+        <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
+        <div class="group" data-section="coupon-management">쿠폰 관리</div>
+        <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
+        <div class="group" data-section="tag-management">태그 관리</div>
+        <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
+        <a href="/admin/category" class="group">카테고리 관리</a>
+
+    </div>
+
+    <div class="content">
+        <h2>판매 책 관리</h2>
+
+        <!-- 성공 메시지 -->
+        <div th:if="${successMessage}" class="alert success">
+            <p th:text="${successMessage}"></p>
+        </div>
+
+        <!-- 실패 메시지 -->
+        <div th:if="${errorMessage}" class="alert error">
+            <p th:text="${errorMessage}"></p>
+        </div>
+
+
+
+        <!-- 판매 책 목록 -->
+        <h3>판매 책 목록</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>판매책 ID</th>
+                <th>Book ID</th>
+                <th>판매가</th>
+                <th>재고</th>
+                <th>도서 상태</th>
+                <th>중고 여부</th>
+                <th>조회수</th>
+                <th>선물 포장 가능 여부</th>
+                <th>수정</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="sellingBook : ${sellingBooks}">
+                <form id="sellingBookForm-${sellingBook.sellingBookId}"
+                      th:action="${sellingBook.sellingBookId != null ? '/admin/selling-books/' + sellingBook.sellingBookId : '/admin/selling-books/selling-register'}"
+                      method="post">
+                    <input type="hidden" name="sellingBookId" th:value="${sellingBook.sellingBookId ?: ''}">
+
+                    <td th:text="${sellingBook.sellingBookId != null ? sellingBook.sellingBookId : '새로 추가'}"></td> <!-- 판매책 ID -->
+                    <td th:text="${sellingBook.bookId}"></td> <!-- Book ID -->
+                    <td><input type="number" name="sellingBookPrice" th:value="${sellingBook.sellingBookPrice ?: ''}"></td>
+                    <td><input type="number" name="sellingBookStock" th:value="${sellingBook.sellingBookStock ?: ''}"></td>
+                    <td>
+                        <select name="sellingBookStatus">
+                            <option value="SELLING" th:selected="${sellingBook.sellingBookStatus == 'SELLING'}">SELLING</option>
+                            <option value="SELLEND" th:selected="${sellingBook.sellingBookStatus == 'SELLEND'}">SELLEND</option>
+                            <option value="DELETEBOOK" th:selected="${sellingBook.sellingBookStatus == 'DELETEBOOK'}">DELETEBOOK</option>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="used">
+                            <option value="true" th:selected="${sellingBook.used == true}">중고</option>
+                            <option value="false" th:selected="${sellingBook.used == false}">새 책</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" name="sellingBookViewCount" th:value="${sellingBook.sellingBookViewCount ?: 0}">
+                    </td>
+                    <td>
+                        <select name="sellingBookPackageable">
+                            <option value="true" th:selected="${sellingBook.sellingBookPackageable == true}">가능</option>
+                            <option value="false" th:selected="${sellingBook.sellingBookPackageable == false}">불가능</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button type="submit">저장</button>
+                    </td>
+                </form>
+            </tr>
+            </tbody>
+        </table>
+            <!-- 페이징 버튼 -->
+            <div class="pagination">
+                <!-- 이전 버튼 -->
+                <a th:if="${currentPage > 0}"
+                   th:href="@{'/admin/selling-books/selling-list'(page=${currentPage - 1})}"
+                   class="prev">
+                    이전
+                </a>
+
+                <!-- 페이지 번호 -->
+                <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">10</span></span>
+
+                <!-- 다음 버튼 -->
+                <a th:if="${currentPage < totalPages - 1}"
+                   th:href="@{'/admin/selling-books/selling-list'(page=${currentPage + 1})}"
+                   class="next">
+                    다음
+                </a>
+            </div>
+
+
+    </div>
+</main>
+
+<th:block th:replace="~{/layout/layout::footerLayout}"></th:block>
+
+<!-- TUI Editor CSS -->
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">
+<!-- TUI Editor JS -->
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
+<script>
+    const Editor = toastui.Editor;
+
+    // 옵션
+    const editor = new toastui.Editor({
+        el: document.querySelector('#editor'),
+        height: '400px',
+        initialEditType: 'wysiwyg',
+        previewStyle: 'vertical',
+        placeholder: '도서 설명을 입력하세요...',
+    });
+
+    document.getElementById('uploadImageButton').addEventListener('click', async () => {
+        const imageForm = document.getElementById('imageUploadForm');
+        const formData = new FormData(imageForm);
+
+        try {
+            const response = await fetch('/api/objects/upload_url', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById('imageUrl').value = data.url;
+                document.getElementById('imageUploadStatus').innerText = '이미지 업로드 성공!';
+            } else {
+                document.getElementById('imageUploadStatus').innerText = '이미지 업로드 실패!';
+            }
+        } catch (error) {
+            console.error('이미지 업로드 에러:', error);
+            document.getElementById('imageUploadStatus').innerText = '업로드 중 오류 발생!';
+        }
+    });
+
+    // 폼 제출 이벤트 핸들러
+    document.getElementById('bookForm').addEventListener('submit', function (event) {
+        // 에디터 내용 가져오기
+        const editorContent = editor.getHTML();
+        // 숨겨진 input 필드에 에디터 내용 설정
+        document.getElementById('description').value = editorContent;
+    });
+
+    document.getElementById('openModal').addEventListener('click', function () {
+        document.getElementById('categoryModal').style.display = 'flex';
+        fetchCategories();
+    });
+
+    document.getElementById('closeModal').addEventListener('click', function () {
+        document.getElementById('categoryModal').style.display = 'none';
+    });
+
+    function fetchCategories() {
+        fetch('/categories')
+            .then(response => response.json())
+            .then(categories => {
+                const categoryList = document.getElementById('categoryList');
+                categoryList.innerHTML = '';
+                categories.forEach(category => {
+                    const li = document.createElement('li');
+                    li.textContent = category;
+                    li.addEventListener('click', function () {
+                        selectCategory(category);
+                    });
+                    categoryList.appendChild(li);
+                });
+            });
+    }
+
+    function selectCategory(category) {
+        const categoriesInput = document.getElementById('categories');
+        const currentCategories = categoriesInput.value ? categoriesInput.value.split(',') : [];
+        if (!currentCategories.includes(category)) {
+            currentCategories.push(category);
+            categoriesInput.value = currentCategories.join(',');
+        }
+        document.getElementById('categoryModal').style.display = 'none';
+    }
+
+
+    document.querySelectorAll(".saveButton").forEach(button => {
+        button.addEventListener("click", function () {
+            const formId = this.getAttribute("data-form-id");
+            const form = document.getElementById(formId);
+
+            const formData = new FormData(form);
+            const jsonObject = {};
+
+            formData.forEach((value, key) => {
+                jsonObject[key] = value;
+            });
+
+            const url = form.action;
+            const method = jsonObject._method || "POST"; // Hidden 필드 `_method` 값 사용
+
+            fetch(url, {
+                method: method, // PUT or POST
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(jsonObject)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert("수정이 성공적으로 저장되었습니다!");
+                        window.location.reload(); // 페이지 새로고침
+                    } else {
+                        response.text().then(text => console.error("오류 응답:", text));
+                        alert("저장 실패! 다시 시도해주세요.");
+                    }
+                })
+                .catch(error => {
+                    console.error("오류 발생:", error);
+                    alert("요청 중 오류가 발생했습니다.");
+                });
+        });
+    });
+
+
+</script>
+</body>
+</html>

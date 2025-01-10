@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>주문완료</title>
+</head>
+<body>
+<h1>주문이 완료되었습니다.</h1>
+<table>
+  <thead>
+  <tr>
+    <th>이미지</th>
+    <th>상품명</th>
+    <th>가격</th>
+    <th>수량</th>
+    <th>상태</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each ="${}">
+    <td>
+    </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
+
+private String imageUrl;
+private String bookTitle;
+private Long bookId;
+private int quantity;
+private BigDecimal price;
+private OrderProductStatus status;
+private OrderProductWrapping orderProductWrapping;

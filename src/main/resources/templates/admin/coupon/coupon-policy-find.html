@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쿠폰 정책 조회</title>
+    <link rel="stylesheet" href="/css/coupon/coupon-register.css">
+</head>
+<body>
+    <h3>쿠폰 정책 조회</h3>
+
+    <p>현재 페이지: <span th:text="${currentPage + 1}"></span> / 총 페이지: <span th:text="${totalPages}"></span></p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>이름</th>
+            <th>할인 유형</th>
+            <th>최소 금액</th>
+            <th>최대 할인</th>
+            <th>할인율</th>
+            <th>중복 여부</th>
+            <th>적용범위</th>
+            <th>시작일</th>
+            <th>종료일</th>
+            <th>활성화 상태</th>
+            <th>선택</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="couponPolicy : ${couponPolicies}">
+            <td th:text="${couponPolicy.id()}"></td>
+            <td th:text="${couponPolicy.name()}"></td>
+            <td th:text="${couponPolicy.saleType()}"></td>
+            <td th:text="${couponPolicy.minimumAmount()}"></td>
+            <td th:text="${couponPolicy.discountLimit()}"></td>
+            <td th:text="${couponPolicy.discountRatio()}"></td>
+            <td th:text="${couponPolicy.isStackable() ? '가능' : '불가능'}"></td>
+            <td th:text="${couponPolicy.couponScope()}"></td>
+            <td th:text="${couponPolicy.startDate()}"></td>
+            <td th:text="${couponPolicy.endDate()}"></td>
+            <td th:text="${couponPolicy.couponActive() ? '활성화' : '비활성화'}"></td>
+            <td>
+                <button type="button" th:onclick="'selectPolicy(' + ${couponPolicy.id} + ')'">선택</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <a th:if="${page > 0}"
+           th:href="@{/admin/coupon-policies(couponActive=true, page=${page - 1}, pageSize=${pageSize})}">이전</a>
+
+        <span>페이지 <span th:text="${page + 1}"></span> / <span th:text="${totalPages}"></span></span>
+
+        <a th:if="${page < totalPages - 1}"
+           th:href="@{/admin/coupon-policies(couponActive=true, page=${page + 1}, pageSize=${pageSize})}">다음</a>
+    </div>
+
+    <script>
+        function selectPolicy(policyId) {
+            const selectedIdDisplay = window.opener.document.getElementById('selectedPolicyDisplay');
+            const selectedIdInput = window.opener.document.getElementById('selectedPolicyId');
+
+            if (selectedIdInput) {
+                selectedIdInput.value = policyId;
+                if (selectedIdDisplay) {
+                    selectedIdDisplay.textContent = `선택된 정책 ID: ${policyId}`;
+                }
+                alert(`선택된 정책 ID: ${policyId}`);
+            } else {
+                alert('부모창에서 정책 ID를 찾을 수 없습니다.');
+            }
+            closeModal('couponPolicyModal');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

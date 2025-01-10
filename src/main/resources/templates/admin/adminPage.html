@@ -95,6 +95,7 @@
         .section.active {
             display: block;
         }
+
         .table-wrapper {
             overflow-x: auto;
             margin-bottom: 20px;
@@ -166,6 +167,7 @@
             font-weight: bold;
             border: 1px solid #f5c6cb;
         }
+
         footer {
             background-color: #333;
             color: white;
@@ -183,11 +185,12 @@
             text-decoration: underline;
         }
 
+
     </style>
 </head>
 <body>
 <header>
-    <a href="/" class = "logo">📚 책사조잉 📚</a>
+    <a href="/" class="logo">📚 책사조잉 📚</a>
     <nav class="menu">
         <a href="/">홈</a>
         <a href="#">국내도서</a>
@@ -203,10 +206,15 @@
     <div class="sidebar">
         <div class="group active" data-section="member-management">회원 관리</div>
         <a href="/admin/selling-books" class="group">도서 관리</a>
+        <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
         <div class="group" data-section="coupon-management">쿠폰 관리</div>
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
         <div class="group" data-section="tag-management">태그 관리</div>
+        <div class="group" data-section="category-management">카테고리 관리</div>
+        <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
+
         <a href="/admin/category" class="group">카테고리 관리</a>
+        <a href="/admin/coupon-register">관리자 쿠폰 페이지(테스트)</a>
 
     </div>
 
@@ -241,19 +249,19 @@
                 <tr th:each="member : ${members}">
                     <form th:action="@{/adminpage/update}" method="post" th:object="${member}">
 
-                        <input type="hidden" th:name="originalEmail" th:value="${member.email}" />
+                        <input type="hidden" th:name="originalEmail" th:value="${member.email}"/>
 
                         <!-- 이름 수정 -->
-                        <td><input type="text" th:name="name" th:value="${member.name}" /></td>
+                        <td><input type="text" th:name="name" th:value="${member.name}"/></td>
 
                         <!-- 전화번호 수정 -->
-                        <td><input type="text" th:name="phone" th:value="${member.phone}" /></td>
+                        <td><input type="text" th:name="phone" th:value="${member.phone}"/></td>
 
                         <!-- 이메일 수정 -->
-                        <td><input type="email" th:name="email" th:value="${member.email}" /></td>
+                        <td><input type="email" th:name="email" th:value="${member.email}"/></td>
 
                         <!-- 생년월일 수정 -->
-                        <td><input type="date" th:name="birth" th:value="${member.birth}" /></td>
+                        <td><input type="date" th:name="birth" th:value="${member.birth}"/></td>
 
                         <td>
                             <select th:name="memberGradeId">
@@ -265,19 +273,21 @@
                             </select>
                         </td>
 
-                         <td>
-                        <select th:name="memberStateId">
-                            <option th:each="status : ${memberStatusList}"
-                                    th:value="${status.memberStateId}"
-                                    th:text="${status.memberStateName}"
-                                    th:selected="${status.memberStateName == member.memberStateName}">
-                            </option>
-                        </select>
-                         </td>
+                        <td>
+                            <select th:name="memberStateId">
+                                <option th:each="status : ${memberStatusList}"
+                                        th:value="${status.memberStateId}"
+                                        th:text="${status.memberStateName}"
+                                        th:selected="${status.memberStateName == member.memberStateName}">
+                                </option>
+                            </select>
+                        </td>
 
 
                         </select>
-                        <td><button type="submit">수정</button> </td>
+                        <td>
+                            <button type="submit">수정</button>
+                        </td>
                     </form>
                 </tr>
                 </tbody>
@@ -303,18 +313,196 @@
                 </a>
             </div>
         </div>
-<!--        <div class="group active" data-section="book-management">-->
-<!--            <a href="/admin/selling-books" >도서 관리</a>-->
-<!--        </div>-->
+        <!--        <div class="group active" data-section="book-management">-->
+        <!--            <a href="/admin/selling-books" >도서 관리</a>-->
+        <!--        </div>-->
 
         <div id="coupon-management" class="section">
             <h2>쿠폰 관리</h2>
-            <p>여기에 쿠폰 crud 구현</p>
+            <!-- 쿠폰 생성 -->
+            <h3>쿠폰 생성</h3>
+            <form action="/admin/coupons" method="post">
+                <label for="expired-at">만료일</label>
+                <input type="datetime-local" id="expired-at" name="expiredAt" required><br>
+
+                <label for="coupon-policy-id">적용할 쿠폰정책 ID</label>
+                <input type="number" id="coupon-policy-id" name="couponPolicyId" required><br>
+
+                <button type="submit">쿠폰 생성</button>
+            </form>
+
+            <!-- 쿠폰 조회 -->
+            <table>
+                <thead>
+                <tr>
+                    <th>쿠폰 ID</th>
+                    <th>코드</th>
+                    <th>상태</th>
+                    <th>생성일</th>
+                    <th>만료일</th>
+                    <th>쿠폰정책 ID</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="coupon : ${coupons}">
+                    <td th:text="${coupon.id()}"></td>
+                    <td th:text="${coupon.code()}"></td>
+                    <td th:text="${coupon.status()}"></td>
+                    <td th:text="${#temporals.format(coupon.issuedAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#temporals.format(coupon.expiredAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${coupon.policyId()}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <form action="/admin/coupons" method="get">
+                <label for="couponsPage">페이지 번호:</label>
+                <input type="number" id="couponsPage" name="page" th:value="${currentPage ?: 0}" min="0" required>
+
+                <label for="couponsPageSize">페이지 크기:</label>
+                <input type="number" id="couponsPageSize" name="pageSize" th:value="${pageSize ?: 10}" min="1"
+                       required>
+
+                <button type="submit">조회</button>
+            </form>
+            <script>
+                document.getElementById('currentDateTime').value = new Date().toISOString();
+            </script>
+
+            <!-- 회원에게 쿠폰 발급 -->
+            <h3>회원 쿠폰 발급</h3>
+            <button onclick="openCouponIssuePopup()">회원 쿠폰 발급</button>
+
+            <script>
+                function openCouponIssuePopup() {
+                    const popup = window.open(
+                        '/admin/member-coupons/issue-popup',
+                        '쿠폰 발급',
+                        'width=400,height=300,scrollbars=no,resizable=no'
+                    );
+                }
+            </script>
+
+            <!-- 발급 내역 조회 -->
+            <h3>회원 쿠폰 목록</h3>
+            <div>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>회원 쿠폰 ID</th>
+                        <th>회원 ID</th>
+                        <th>쿠폰 ID</th>
+                        <th>쿠폰 코드</th>
+                        <th>쿠폰 상태</th>
+                        <th>발급일</th>
+                        <th>만료일</th>
+                        <th>쿠폰정책 ID</th>
+                        <th>쿠폰 정책 이름</th>
+                        <th>할인 타입</th>
+                        <th>최소 금액</th>
+                        <th>최대 할인 금액</th>
+                        <th>할인 비율</th>
+                        <th>중복 사용 여부</th>
+                        <th>쿠폰 적용 범위</th>
+                        <th>쿠폰 정책 유효 여부</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="memberCoupon : ${memberCoupons}">
+                        <td th:text="${memberCoupon.memberCouponId()}"></td>
+                        <td th:text="${memberCoupon.memberId()}"></td>
+                        <td th:text="${memberCoupon.coupon.couponId()}"></td>
+                        <td th:text="${memberCoupon.coupon.code()}"></td>
+                        <td th:text="${memberCoupon.coupon.status()}"></td>
+                        <td th:text="${#temporals.format(memberCoupon.coupon.issuedAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${#temporals.format(memberCoupon.coupon.expiredAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${memberCoupon.coupon.couponPolicyId()}"></td>
+                        <td th:text="${memberCoupon.coupon.name()}"></td>
+                        <td th:text="${memberCoupon.coupon.saleType()}"></td>
+                        <td th:text="${memberCoupon.coupon.minimumAmount()}"></td>
+                        <td th:text="${memberCoupon.coupon.discountLimit()}"></td>
+                        <td th:text="${memberCoupon.coupon.discountRatio()}"></td>
+                        <td th:text="${memberCoupon.coupon.isStackable() ? '가능' : '불가능'}"></td>
+                        <td th:text="${memberCoupon.coupon.couponScope()}"></td>
+                        <td th:text="${memberCoupon.coupon.couponActive() ? '유효' : '만료'}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <form action="/admin/member-coupons" method="get" id="memberCouponForm">
+                    <label for="memberCouponsPage">페이지 번호:</label>
+                    <input type="number" id="memberCouponsPage" name="page" min="0"
+                           th:value="${currentPage ?: 0}" required>
+                    <br><br>
+
+                    <label for="memberCouponsPageSize">페이지 크기:</label>
+                    <input type="number" id="memberCouponsPageSize" name="pageSize" min="1"
+                           th:value="${pageSize ?: 10}" required>
+                    <br><br>
+
+                    <button type="submit">조회</button>
+                </form>
+
+            </div>
+
+            <!-- 사용 내역 조회 -->
+            <h3>쿠폰이력 조회</h3>
+            <div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>쿠폰이력 ID</th>
+                            <th>쿠폰 ID</th>
+                            <th>상태</th>
+                            <th>변경일</th>
+                            <th>사유</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="couponHistory : ${couponHistories}">
+                            <td th:text="${couponHistory.historyId()}"></td>
+                            <td th:text="${couponHistory.couponId()}"></td>
+                            <td th:text="${couponHistory.status()}"></td>
+                            <td th:text="${#temporals.format(couponHistory.changeDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                            <td th:text="${couponHistory.reason()}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <form onsubmit="redirectToCouponHistories(event)">
+                    <label for="couponId">쿠폰 ID:</label>
+                    <input type="number" id="couponId" name="couponId" required>
+                    <br><br>
+
+                    <label for="couponHistoriesPage">페이지 번호:</label>
+                    <input type="number" id="couponHistoriesPage" name="page" value="0" min="0" required>
+                    <br><br>
+
+                    <label for="couponHistoriesPageSize">페이지 크기:</label>
+                    <input type="number" id="couponHistoriesPageSize" name="pageSize" value="10" min="1" required>
+                    <br><br>
+
+                    <button type="submit">조회</button>
+                </form>
+                <script>
+                    function redirectToCouponHistories(event) {
+                        event.preventDefault();
+
+                        const couponId = document.getElementById('couponId').value;
+                        const page = document.getElementById('couponHistoriesPage').value;
+                        const pageSize = document.getElementById('couponHistoriesPageSize').value;
+
+                        if (couponId) {
+                            const url = `/admin/coupon-histories/${couponId}?page=${page}&pageSize=${pageSize}`;
+                            window.location.href = url;
+                        } else {
+                            alert('쿠폰 ID를 입력해주세요.');
+                        }
+                    }
+                </script>
+            </div>
+
         </div>
-        <div id="coupon-policy-management" class="section">
-            <h2>쿠폰 정책 관리</h2>
-            <p>여기에 쿠폰 정책 crud 구현</p>
-        </div>
+
+
+
         <div id="tag-management" class="section">
             <h2>태그 관리</h2>
             <p>여기에 태그 crud 구현</p>
@@ -324,27 +512,83 @@
             <p>여기에 카테고리 crud 구현</p>
         </div>
 
+        <!-- 포인트 조건 관리 -->
+        <div id="point-condition-management" class="section">
+            <h2>포인트 조건 관리</h2>
+
+            <h3>포인트 조건 생성</h3>
+            <form th:action="@{/adminpage/points-conditions/create}" method="post" onsubmit="return validateForm()">
+                <div th:if="${errorMessage}" class="alert error">
+                    <p th:text="${errorMessage}"></p>
+                </div>
+
+              <label for="pointConditionName">이름</label>
+                <input type="text" id="pointConditionName" name="name" placeholder="조건 이름을 입력하세요" required>
+
+
+                <label for="conditionPoint">포인트</label>
+                <input type="number" id="conditionPoint" name="conditionPoint" placeholder="포인트를 입력하세요">
+
+                <label for="conditionPercentage">비율</label>
+                <input type="number" id="conditionPercentage" name="conditionPercentage" placeholder="비율을 입력하세요" step="0.01">
+
+                <button type="submit">생성</button>
+            </form>
+
+            <h3>포인트 조건 수정</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>포인트</th>
+                        <th>비율</th>
+                        <th>상태</th>
+                        <th>수정</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="pointCondition : ${pointConditions}">
+                        <form th:action="@{/adminpage/points-conditions/update/{id}(id=${pointCondition.id})}" method="post" th:object="${pointCondition}">
+                            <td><input type="text" th:name="name" th:value="${pointCondition.name}" /></td>
+                            <td><input type="number" th:name="conditionPoint" th:value="${pointCondition.conditionPoint}" /></td>
+                            <td><input type="number" step="0.01" th:name="conditionPercentage" th:value="${pointCondition.conditionPercentage}" /></td>
+                            <td>
+                                <select th:name="status">
+                                    <option value="1" th:selected="${pointCondition.status == true}">활성</option>
+                                    <option value="0" th:selected="${pointCondition.status == false}">비활성</option>
+                                </select>
+                            </td>
+                            <td><button type="submit">수정</button></td>
+                        </form>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </main>
 <footer>
     <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>
+    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook
+        GitHub</a></p>
     <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
 </footer>
-<script>
-    const sidebarItems = document.querySelectorAll('.sidebar .group');
-    const sections = document.querySelectorAll('.section');
+<!--<script>-->
+<!--    const sidebarItems = document.querySelectorAll('.sidebar .group');-->
+<!--    const sections = document.querySelectorAll('.section');-->
 
-    sidebarItems.forEach(item => {
-        item.addEventListener('click', () => {
-            sidebarItems.forEach(i => i.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
+<!--    sidebarItems.forEach(item => {-->
+<!--        item.addEventListener('click', () => {-->
+<!--            sidebarItems.forEach(i => i.classList.remove('active'));-->
+<!--            sections.forEach(section => section.classList.remove('active'));-->
 
-            item.classList.add('active');
-            const sectionId = item.getAttribute('data-section');
-            document.getElementById(sectionId).classList.add('active');
-        });
-    });
-</script>
+<!--            item.classList.add('active');-->
+<!--            const sectionId = item.getAttribute('data-section');-->
+<!--            document.getElementById(sectionId).classList.add('active');-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
 </body>
 </html>

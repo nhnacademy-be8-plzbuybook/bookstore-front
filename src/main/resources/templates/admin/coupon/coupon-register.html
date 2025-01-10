@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쿠폰 등록 페이지</title>
+    <link rel="stylesheet" href="/css/coupon/coupon-register.css">
+    <link rel="stylesheet" href="/css/layout/layout.css">
+    <script src="/js/coupon/coupon_modal.js" defer></script>
+</head>
+<body>
+<th:block th:replace="~{/layout/layout::headerFragment}"></th:block>
+<main>
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <a href="/adminpage" class="group active" data-section="member-management">회원 관리</a>
+        <a href="/admin/selling-books" class="group">도서 관리</a>
+        <a href="/adminpage" class="group" data-section="coupon-management">쿠폰 관리</a>
+        <a href="/adminpage" class="group" data-section="coupon-policy-management">쿠폰 정책 관리</a>
+        <a href="/adminpage" class="group" data-section="tag-management">태그 관리</a>
+        <a href="/adminpage" class="group" data-section="category-management">카테고리 관리</a>
+        <a href="/adminpage" class="group" data-section="point-condition-management">포인트 조건 관리</a>
+        <a href="/admin/category" class="group">카테고리 관리</a>
+    </div>
+    <!-- 메인 콘텐츠 -->
+
+    <h1>쿠폰 정책 생성</h1><br>
+    <form action="/admin/coupon-policies" method="post">
+        <label for="name">쿠폰 이름:</label>
+        <input type="text" id="name" name="name" value="DEFAULT_NAME" required><br>
+
+        <label for="saleType">할인 유형:</label>
+        <select id="saleType" name="saleType" required onchange="updateDiscountRatio()">
+            <option value="AMOUNT">AMOUNT</option>
+            <option value="RATIO">RATIO</option>
+        </select><br>
+
+        <label for="minimumAmount">쿠폰사용 최소금액:</label>
+        <input type="number" id="minimumAmount" name="minimumAmount" value="0.0" step="0.01" min="0"
+               required><br>
+
+        <label for="discountLimit">최대 할인금액:</label>
+        <input type="number" id="discountLimit" name="discountLimit" value="0.0" step="0.01" min="0.0" required><br>
+
+        <label for="discountRatio">할인율:</label>
+        <input type="number" id="discountRatio" name="discountRatio" value="0" min="0" max="100" required>%<br>
+        <input type="hidden" id="discountRatioHidden" name="discountRatio" value="0">
+
+        <label for="isStackable">중복 사용 가능:</label>
+        <input type="checkbox" id="isStackable" name="isStackable" value="true" checked><br>
+        <input type="hidden" name="isStackable" value="false">
+
+        <label for="couponScope">쿠폰 적용범위:</label>
+        <div>
+            <button type="button" onclick="setCouponScope('ALL')">ALL</button>
+
+            <button type="button" onclick="openBookSearchModal()">책 검색</button>
+            <label for="selectedBookDisplay"></label>
+            <span id="selectedBookDisplay">선택된 책 ID: 없음</span>
+            <input type="hidden" id="selectedBookId" name="bookId">
+
+            <button type="button" onclick="openCategorySearchModal()">카테고리 검색</button>
+            <label for="selectedCategoryDisplay"></label>
+            <span id="selectedCategoryDisplay">선택된 카테고리 ID: 없음</span>
+            <input type="hidden" id="selectedCategoryId" name="categoryId">
+        </div>
+        <input type="hidden" id="couponScope" name="couponScope" value="ALL"><br>
+
+
+        <label for="startDate">시작 날짜:</label>
+        <input type="datetime-local" id="startDate" name="startDate" value="2025-01-01T00:00" required><br>
+
+        <label for="endDate">종료 날짜:</label>
+        <input type="datetime-local" id="endDate" name="endDate" value="2025-01-01T23:59" required><br>
+
+        <label for="couponActive">활성화 여부:</label>
+        <input type="checkbox" id="couponActive" name="couponActive" value="true" checked><br>
+        <input type="hidden" name="couponActive" value="false">
+
+        <button type="submit">쿠폰 정책 생성</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const policyId = urlParams.get('createdCouponPolicyId');
+            if (policyId) {
+                alert(`생성된 정책 ID: ${policyId}`);
+            }
+        });
+    </script>
+
+    <!-- 책 검색 모달 -->
+    <div id="bookSearchModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('bookSearchModal')">&times;</span>
+            <h3>책 검색</h3>
+            <div id="bookSearchContainer">
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 카테고리 검색 모달 -->
+    <div id="categorySearchModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('categorySearchModal')">&times;</span>
+            <h3>카테고리 검색</h3>
+            <div id="categorySearchContainer">
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 쿠폰정책 조회 -->
+    <button type="button" onclick="openPolicyModal('couponPolicyModal')">쿠폰 정책 조회</button>
+
+    <span id="selectedPolicyDisplay">선택된 정책 ID: 없음</span>
+    <input type="hidden" id="selectedPolicyId" name="selectedPolicyId">
+
+
+<!--    &lt;!&ndash; 쿠폰 생성 &ndash;&gt;-->
+<!--    <h3>쿠폰 생성</h3>-->
+<!--    <form action="/admin/coupons" method="post">-->
+<!--        <label for="expired-at">만료일</label>-->
+<!--        <input type="datetime-local" id="expired-at" name="expiredAt" required><br>-->
+
+<!--        <label for="coupon-policy-id">적용할 쿠폰정책 ID</label>-->
+<!--        <input type="number" id="coupon-policy-id" name="couponPolicyId" required><br>-->
+
+<!--        <button type="submit">쿠폰 생성</button>-->
+<!--    </form>-->
+
+<!--    &lt;!&ndash; 쿠폰 조회 버튼 &ndash;&gt;-->
+<!--    <button type="button" onclick="openCouponPopup()">쿠폰 조회</button>-->
+
+<!--    <script>-->
+<!--        function openCouponPopup() {-->
+<!--            window.open(-->
+<!--                '/admin/coupon-popup',-->
+<!--                '쿠폰 조회',-->
+<!--                'width=800,height=600,scrollbars=yes'-->
+<!--            );-->
+<!--        }-->
+<!--    </script>-->
+</main>
+
+<script>
+    const sidebarItems = document.querySelectorAll('.sidebar .group');
+    const sections = document.querySelectorAll('.section');
+
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', () => {
+            sidebarItems.forEach(i => i.classList.remove('active'));
+            sections.forEach(section => section.classList.remove('active'));
+
+            item.classList.add('active');
+            const sectionId = item.getAttribute('data-section');
+            document.getElementById(sectionId).classList.add('active');
+        });
+    });
+</script>
+<th:block th:replace="~{/layout/layout::footerLayout}"></th:block>
+</body>
+</html>

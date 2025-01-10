@@ -1,13 +1,14 @@
 package com.nhnacademy.bookstorefront.main.service;
 
-import com.nhnacademy.bookstorefront.main.dto.order.OrderSaveResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.OrderCancelRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface OrderService {
     OrderSaveResponseDto requestNonMemberOrder(NonMemberOrderRequestDto orderSaveRequestDto);
@@ -16,4 +17,10 @@ public interface OrderService {
     Page<OrderDto> getMemberOrders(OrderSearchRequestDto searchRequest, Pageable pageable);
     Page<OrderDto> getAllOrders(OrderSearchRequestDto searchRequest, Pageable pageable);
     OrderDetail getOrderDetail(String orderId);
+    String getNonMemberOrderId(NonMemberOrderDetailAccessRequestDto accessRequest);
+    List<String> getOrderStatuses();
+
+    void cancelOrderProduct(String orderId, OrderProductCancelRequestDto cancelRequest);
+    void cancelOrder(String orderId, OrderCancelRequestDto cancelRequest);
+    void modifyOrderStatus(String orderId, StatusDto status);
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.logging.log4j.message.StringFormattedMessage;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,9 +15,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MemberPointResponseDto {
     private Long memberPointId;
-    private String pointConditionName;
+    private String name;
     private BigDecimal point;
     private LocalDateTime addDate;
     private LocalDateTime endDate;
     private LocalDateTime usingDate;
+    private String type;
 }
