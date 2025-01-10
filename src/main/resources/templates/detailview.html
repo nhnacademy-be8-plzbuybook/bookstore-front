@@ -332,7 +332,6 @@
                     <h3>리뷰 작성</h3>
                     <form th:action="@{/book/detail/review}" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="memberId" th:value="${memberId}">
-                        <input type="hidden" name="orderProductId" th:value="${orderProductId}">
                         <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}">
 
 
