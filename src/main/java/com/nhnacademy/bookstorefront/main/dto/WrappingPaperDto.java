@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
@@ -13,4 +14,5 @@ public class WrappingPaperDto {
     private final BigDecimal price;
     private final Long stock;
     private final String imagePath;
+    private final LocalDateTime createdAt;
 }

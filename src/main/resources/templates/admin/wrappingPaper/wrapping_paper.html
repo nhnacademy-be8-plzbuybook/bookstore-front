@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>포장지 관리</title>
+</head>
+<body>
+<h1>포장지 관리</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>이미지</th>
+        <th>포장지 이름</th>
+        <th>가격</th>
+        <th>재고</th>
+        <th>생성일자</th>
+        <th>관리</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--    등록폼-->
+    <form method="POST" action="/api/wrapping-papers" enctype="multipart/form-data">
+        <tr>
+            <td>
+                <input type="file" name="imageFile" id="imageFile">
+            </td>
+            <td>
+                <input type="text" name="name" id="name" placeholder="포장지 이름을 입력해주세요.">
+            </td>
+            <td>
+                <input type="number" name="price" id="price" placeholder="가격을 입력해주세요.">
+            </td>
+            <td>
+                <input type="number" name="stock" id="stock" placeholder="재고를 입력해주세요.">
+            </td>
+            <td></td>
+            <td>
+                <button type="submit" id="saveBtn">등록</button>
+            </td>
+        </tr>
+    </form>
+
+    <!--  포장지 목록-->
+    <tr th:each="wrappingPaper: ${wrappingPapers}" th:id="'paper-row-' + ${wrappingPaper.getId()}">
+        <td>
+            <div class="view-mode">
+                <img th:src="${wrappingPaper.getImagePath()}" alt="포장지이름" style="max-width: 100px;">
+            </div>
+            <div class="edit-mode" style="display: none;">
+                <img th:src="${wrappingPaper.getImagePath()}" alt="포장지이름" style="max-width: 100px;">
+                <input type="file" class="edit-image" name="imageFile" style="display: block; margin-top: 5px;">
+            </div>
+        </td>
+        <td>
+            <span class="view-mode" th:text="${wrappingPaper.getName()}"></span>
+            <input type="text" class="edit-mode edit-name" style="display: none;" th:value="${wrappingPaper.getName()}">
+        </td>
+        <td>
+            <span class="view-mode" th:text="${wrappingPaper.getPrice()}"></span>
+            <input type="number" class="edit-mode edit-price" style="display: none;" th:value="${wrappingPaper.getPrice()}">
+        </td>
+        <td>
+            <span class="view-mode" th:text="${wrappingPaper.getStock()}"></span>
+            <input type="number" class="edit-mode edit-stock" style="display: none;" th:value="${wrappingPaper.getStock()}">
+        </td>
+        <td th:text="${#temporals.format(wrappingPaper.getCreatedAt, 'yyyy/MM/dd HH:mm')}"></td>
+        <td>
+            <div class="view-mode">
+                <button type="button" th:onclick="editMode([[${wrappingPaper.getId()}]])">수정</button>
+                <button type="button" th:onclick="remove([[${wrappingPaper.getId()}]])">삭제</button>
+            </div>
+            <div class="edit-mode" style="display: none;">
+                <button type="button" th:onclick="update([[${wrappingPaper.getId()}]])">저장</button>
+                <button type="button" th:onclick="cancelEdit([[${wrappingPaper.getId()}]])">취소</button>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+    // 삭제 기능
+    async function remove(id) {
+        const response = await fetch(`/api/wrapping-papers/${id}`, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) {
+            alert('포장지를 삭제하는데 실패했습니다.');
+            return;
+        }
+
+        alert('포장지가 삭제되었습니다.');
+        window.location.reload();
+    }
+
+    // 수정 모드 활성화
+    function editMode(id) {
+        const row = document.getElementById(`paper-row-${id}`);
+        const viewModes = row.querySelectorAll('.view-mode');
+        const editModes = row.querySelectorAll('.edit-mode');
+
+        viewModes.forEach(elem => elem.style.display = 'none');
+        editModes.forEach(elem => elem.style.display = '');
+    }
+
+    // 수정 모드 취소
+    function cancelEdit(id) {
+        const row = document.getElementById(`paper-row-${id}`);
+        const viewModes = row.querySelectorAll('.view-mode');
+        const editModes = row.querySelectorAll('.edit-mode');
+
+        viewModes.forEach(elem => elem.style.display = '');
+        editModes.forEach(elem => elem.style.display = 'none');
+    }
+
+    // 수정 내용 저장
+    async function update(id) {
+        const row = document.getElementById(`paper-row-${id}`);
+        const formData = new FormData();
+
+        // 이미지 파일 추가
+        const imageFile = row.querySelector('.edit-image').files[0];
+        if (imageFile) {
+            formData.append('imageFile', imageFile);
+        }
+
+        // 나머지 데이터 직접 추가
+        formData.append('name', row.querySelector('.edit-name').value);
+        formData.append('price', row.querySelector('.edit-price').value);
+        formData.append('stock', row.querySelector('.edit-stock').value);
+
+        try {
+            const response = await fetch(`/api/wrapping-papers/${id}`, {
+                method: 'PUT',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('수정 실패');
+            }
+
+            alert('포장지가 수정되었습니다.');
+            window.location.reload();
+        } catch (error) {
+            alert('포장지 수정에 실패했습니다.');
+            console.error('Error:', error);
+        }
+    }
+</script>
+</body>
+</html>
