@@ -1,13 +1,13 @@
 // 모달창 제어
 function openModal(url) {
     const modal = document.getElementById('couponPolicyModal');
-    const modalContent = document.getElementById('modalContent');
+    const couponPolicyModalContent = document.getElementById('couponPolicyModalContent');
 
     // 서버에서 HTML 로드
     fetch(url)
         .then(response => response.text())
         .then(html => {
-            modalContent.innerHTML = html;
+            couponPolicyModalContent.innerHTML = html;
             modal.style.display = 'block';
         })
         .catch(error => console.error('쿠폰정책 조회 오류:', error));
@@ -30,7 +30,7 @@ function selectPolicy(policyId) {
 }
 
 // 페이지 이동 처리
-function goToPage() {
+function goToPolicyPage() {
     const pageInput = document.getElementById('pageInput').value || 0;
     openModal(`/admin/coupon-policies?page=${pageInput}`);
 }

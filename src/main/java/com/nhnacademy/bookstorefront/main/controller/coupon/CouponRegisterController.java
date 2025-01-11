@@ -5,10 +5,7 @@ import com.nhnacademy.bookstorefront.main.client.BookSearchClient;
 import com.nhnacademy.bookstorefront.main.client.CouponClient;
 import com.nhnacademy.bookstorefront.main.dto.BookSearchPagedResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicyResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicySaveRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponTargetResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponTargetSaveRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.coupon.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -94,4 +91,25 @@ public class CouponRegisterController {
 
         return "redirect:/admin/coupon-register";
     }
+
+    // 쿠폰생성
+    @PostMapping("/admin/coupons")
+    public String createCoupon(@ModelAttribute CouponCreateRequestDto createRequest) {
+        couponClient.createCoupon(createRequest);
+        return "redirect:/admin/coupon-register";
+    }
+
+    // 쿠폰조회
+    @GetMapping("/admin/coupons")
+    public String getAllCoupons(@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) int pageSize, Model model) {
+        Page<CouponResponseDto> coupons = couponClient.getAllCoupons(page, pageSize).getBody();
+
+        model.addAttribute("coupons", coupons);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize", pageSize);
+        model.addAttribute("totalPages", coupons != null ? coupons.getTotalPages() : 0);
+
+        return "admin/coupon/coupon-find";
+    }
+
 }

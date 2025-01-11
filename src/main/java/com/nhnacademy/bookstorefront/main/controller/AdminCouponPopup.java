@@ -10,11 +10,11 @@ public class AdminCouponPopup {
 
     @GetMapping("/admin/member-coupons/issue-popup")
     public String showMemberCouponIssuePopup() {
-        return "coupon/memberCouponPopup";
+        return "admin/coupon/memberCouponPopup";
     }
 
     @GetMapping("/admin/member-coupons/inquiry-popup")
     public String showMemberCouponInquiryPopup() {
-        return "coupon/memberCouponInquiryPopup";
+        return "admin/coupon/memberCouponInquiryPopup";
     }
 }

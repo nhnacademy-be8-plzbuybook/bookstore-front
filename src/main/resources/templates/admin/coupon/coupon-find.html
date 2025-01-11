@@ -2,40 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>쿠폰정책조회</title>
+    <title>쿠폰조회</title>
 </head>
 <body>
+    <h3>쿠폰 조회</h3>
 
-<!-- 쿠폰정책 조회 -->
-<table>
-    <thead>
-    <tr>
-        <th>쿠폰 ID</th>
-        <th>코드</th>
-        <th>상태</th>
-        <th>생성일</th>
-        <th>만료일</th>
-        <th>쿠폰정책 ID</th>
-        <th>선택</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="coupon : ${coupons}">
-        <td th:text="${coupon.id()}"></td>
-        <td th:text="${coupon.code()}"></td>
-        <td th:text="${coupon.status()}"></td>
-        <td th:text="${#temporals.format(coupon.issuedAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
-        <td th:text="${#temporals.format(coupon.expiredAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
-        <td th:text="${coupon.policyId()}"></td>
-        <td>
-            <button type="button" onclick="selectCoupon(${coupon.id})">선택</button>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <p>현재 페이지: <span th:text="${currentPage + 1}"></span> / 총 페이지: <span th:text="${totalPages}"></span></p>
 
-<script>
-    document.getElementById('currentDateTime').value = new Date().toISOString();
-</script>
+    <!-- 페이지 이동 -->
+    <div><input type="number" id="pageInput" placeholder="페이지 번호 입력" min="0"><button type="button" onclick="goToCouponPage()">이동</button></div>
+
+    <!-- 쿠폰 조회 목록 -->
+    <table>
+        <thead>
+        <tr>
+            <th>쿠폰 ID</th>
+            <th>코드</th>
+            <th>상태</th>
+            <th>생성일</th>
+            <th>만료일</th>
+            <th>쿠폰정책 ID</th>
+            <th>선택</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="coupon : ${coupons}">
+            <td th:text="${coupon.id()}"></td>
+            <td th:text="${coupon.code()}"></td>
+            <td th:text="${coupon.status()}"></td>
+            <td th:text="${#temporals.format(coupon.issuedAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${#temporals.format(coupon.expiredAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${coupon.policyId()}"></td>
+            <td>
+                <button type="button" th:onclick="'selectCoupon(' + ${coupon.id()} + ')'">선택</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <a th:if="${currentPage > 0}" th:href="@{/admin/coupons(page=${currentPage - 1})}" th:onclick="'return updateModalContent(this.href)'">이전</a>
+
+        <a th:if="${currentPage < totalPages - 1}" th:href="@{/admin/coupons(page=${currentPage + 1})}" th:onclick="'return updateModalContent(this.href)'">다음</a>
+    </div>
+
+    <script>document.getElementById('currentDateTime').value = new Date().toISOString();</script>
 </body>
 </html>

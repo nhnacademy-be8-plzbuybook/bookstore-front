@@ -17,25 +17,6 @@ import org.springframework.web.bind.annotation.*;
 public class AdminCouponController {
     private final CouponClient couponClient;
 
-    // 쿠폰생성
-    @PostMapping("/admin/coupons")
-    public String createCoupon(@ModelAttribute CouponCreateRequestDto createRequest) {
-        couponClient.createCoupon(createRequest);
-        return "redirect:/adminpage";
-    }
-
-    // 전체 쿠폰 목록 조회
-    @GetMapping("/admin/coupons")
-    public String getAllCoupons(@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) int pageSize, Model model) {
-        Page<CouponResponseDto> coupons = couponClient.getAllCoupons(page, pageSize).getBody();
-
-        model.addAttribute("coupons", coupons);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("pageSize", pageSize);
-        model.addAttribute("totalPages", coupons != null ? coupons.getTotalPages() : 0);
-
-        return "admin/adminPage";
-    }
 
     // 회원에게 쿠폰 발급
     @PostMapping("/admin/member-coupons")
