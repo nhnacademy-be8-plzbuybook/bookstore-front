@@ -1,11 +1,16 @@
 package com.nhnacademy.bookstorefront.main.service.impl;
 
 import com.nhnacademy.bookstorefront.main.client.DeliveryFeePolicyClient;
+import com.nhnacademy.bookstorefront.main.dto.DeliveryFeePolicyCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.DeliveryFeePolicyDto;
+import com.nhnacademy.bookstorefront.main.dto.DeliveryFeePolicyModifyRequestDto;
 import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -20,4 +25,45 @@ public class DeliveryFeePolicyServiceImpl implements DeliveryFeePolicyService {
         }
         return response.getBody();
     }
+
+    @Override
+    public List<DeliveryFeePolicyDto> getPolicies() {
+        try {
+            ResponseEntity<List<DeliveryFeePolicyDto>> response = deliveryFeePolicyClient.getPolicies();
+            return response.getBody();
+        } catch (FeignException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void createPolicy(DeliveryFeePolicyCreateRequestDto createRequest) {
+        try {
+            deliveryFeePolicyClient.createPolicy(createRequest);
+        } catch (FeignException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    public void modifyPolicy(Long policyId, DeliveryFeePolicyModifyRequestDto modifyRequest) {
+        try {
+            deliveryFeePolicyClient.modifyPolicy(policyId, modifyRequest);
+        } catch (FeignException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+    }
+
+    @Override
+    public void removePolicy(Long deliveryFeePolicyId) {
+        try {
+            deliveryFeePolicyClient.removePolicy(deliveryFeePolicyId);
+        } catch (FeignException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+    }
+
+
 }
