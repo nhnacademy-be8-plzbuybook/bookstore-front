@@ -24,7 +24,7 @@ public class DeliveryFeePolicyController {
         List<DeliveryFeePolicyDto> policies = deliveryFeePolicyService.getPolicies();
         model.addAttribute("policies", policies);
 
-        return "admin/delivery_fee_policy";
+        return "admin/deliveryFeePolicy/delivery_fee_policy";
     }
 
     @PostMapping("/api/delivery-fee-policies")
