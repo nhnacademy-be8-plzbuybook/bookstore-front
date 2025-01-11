@@ -1,52 +1,54 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📚 책사조잉 관리자 페이지 📚</title>
     <link rel="stylesheet" href="https://uicdn.toast.com/tui-editor/latest/tui-editor.css">
+    <link rel="stylesheet" href="/index.css?v=1.0">
+    <link rel="stylesheet" href="/css/layout/layout.css">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
+        /*body {*/
+        /*    font-family: 'Arial', sans-serif;*/
+        /*    background-color: #f9f9f9;*/
+        /*    margin: 0;*/
+        /*    padding: 0;*/
+        /*}*/
 
-        header {
-            background-color: #333;
-            padding: 15px 20px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /*header {*/
+        /*    background-color: #333;*/
+        /*    padding: 15px 20px;*/
+        /*    color: white;*/
+        /*    display: flex;*/
+        /*    justify-content: space-between;*/
+        /*    align-items: center;*/
+        /*}*/
 
-        header .logo {
-            text-decoration: none;
-            color: inherit;
-            font-size: 24px;
-            font-weight: bold;
-        }
+        /*header .logo {*/
+        /*    text-decoration: none;*/
+        /*    color: inherit;*/
+        /*    font-size: 24px;*/
+        /*    font-weight: bold;*/
+        /*}*/
 
-        header .menu a,
-        header .icons a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 16px;
-        }
+        /*header .menu a,*/
+        /*header .icons a {*/
+        /*    color: white;*/
+        /*    text-decoration: none;*/
+        /*    margin: 0 15px;*/
+        /*    font-size: 16px;*/
+        /*}*/
 
-        header .menu a:hover,
-        header .icons a:hover {
-            color: #f1f1f1;
-        }
+        /*header .menu a:hover,*/
+        /*header .icons a:hover {*/
+        /*    color: #f1f1f1;*/
+        /*}*/
 
-        main {
-            display: flex;
-            gap: 20px;
-            padding: 20px;
-        }
+        /*main {*/
+        /*    display: flex;*/
+        /*    gap: 20px;*/
+        /*    padding: 20px;*/
+        /*}*/
 
         .sidebar {
             width: 220px;
@@ -240,45 +242,46 @@
             cursor: not-allowed;
         }
 
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-        }
+        /*.alert {*/
+        /*    padding: 15px;*/
+        /*    margin-bottom: 20px;*/
+        /*    border-radius: 5px;*/
+        /*    font-size: 16px;*/
+        /*}*/
+        /*footer {*/
+        /*    background-color: #333;*/
+        /*    color: white;*/
+        /*    padding: 15px 20px;*/
+        /*    text-align: center;*/
+        /*}*/
 
-        footer a {
-            color: #00aaff;
-            text-decoration: none;
-            margin: 0 5px;
-        }
+        /*footer a {*/
+        /*    color: #00aaff;*/
+        /*    text-decoration: none;*/
+        /*    margin: 0 5px;*/
+        /*}*/
 
-        footer a:hover {
-            text-decoration: underline;
-        }
+        /*footer a:hover {*/
+        /*    text-decoration: underline;*/
+        /*}*/
 
 
     </style>
 </head>
 <body>
-<header>
-    <a href="/" class = "logo">📚 책사조잉 📚</a>
-    <nav class="menu">
-        <a href="/">홈</a>
-        <a href="#">국내도서</a>
-        <a href="#">외국도서</a>
-        <a href="#">추천도서</a>
-    </nav>
-    <div class="icons">
-        <a href="/logout">로그아웃</a>
-    </div>
-</header>
+<th:block th:replace="~{layout/layout::headerFragment}"></th:block>
+<!--<header>-->
+<!--    <a href="/" class = "logo">📚 책사조잉 📚</a>-->
+<!--    <nav class="menu">-->
+<!--        <a href="/">홈</a>-->
+<!--        <a href="#">국내도서</a>-->
+<!--        <a href="#">외국도서</a>-->
+<!--        <a href="#">추천도서</a>-->
+<!--    </nav>-->
+<!--    <div class="icons">-->
+<!--        <a href="/logout">로그아웃</a>-->
+<!--    </div>-->
+<!--</header>-->
 <main>
     <!-- 사이드바 -->
     <div class="sidebar">
@@ -408,12 +411,12 @@
         </div>
     </div>
 </main>
-
-<footer>
-    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>
-    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
-</footer>
+<th:block th:replace="~{layout/layout::footerFragment}"></th:block>
+<!--<footer>-->
+<!--    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>-->
+<!--    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>-->
+<!--    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>-->
+<!--</footer>-->
 
 <script>
     function filterBooks() {

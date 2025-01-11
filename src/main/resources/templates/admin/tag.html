@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -373,13 +373,7 @@
 
 
 
-
-<footer>
-  <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-  <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank">PlzBuyBook GitHub</a></p>
-  <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
-</footer>
-
+<th:block th:replace="~{layout/layout::footerLayout}"></th:block>
 <script>
   // 모달 열기
   document.getElementById('openModal').onclick = function() {

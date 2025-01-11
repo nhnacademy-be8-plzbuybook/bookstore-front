@@ -1,49 +1,51 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/detail.css?v=1.1">
+    <link rel="stylesheet" href="/index.css?v=1.0">
+    <link rel="stylesheet" href="/css/layout/layout.css">
     <title th:text="${book.bookTitle} + ' - 상세정보'">책 상세정보</title>
 
     <style>
         /* 공통 스타일 */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
+        /*body {*/
+        /*    font-family: 'Arial', sans-serif;*/
+        /*    background-color: #f9f9f9;*/
+        /*    margin: 0;*/
+        /*    padding: 0;*/
+        /*}*/
 
-        header {
-            background-color: #333;
-            padding: 15px 20px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /*header {*/
+        /*    background-color: #333;*/
+        /*    padding: 15px 20px;*/
+        /*    color: white;*/
+        /*    display: flex;*/
+        /*    justify-content: space-between;*/
+        /*    align-items: center;*/
+        /*}*/
 
-        header .logo {
-            text-decoration: none;
-            color: inherit;
-            font-size: 24px;
-            font-weight: bold;
-        }
+        /*header .logo {*/
+        /*    text-decoration: none;*/
+        /*    color: inherit;*/
+        /*    font-size: 24px;*/
+        /*    font-weight: bold;*/
+        /*}*/
 
-        header .menu a,
-        header .icons a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 16px;
-        }
+        /*header .menu a,*/
+        /*header .icons a {*/
+        /*    color: white;*/
+        /*    text-decoration: none;*/
+        /*    margin: 0 15px;*/
+        /*    font-size: 16px;*/
+        /*}*/
 
-        header .menu a:hover,
-        header .icons a:hover {
-            color: #f1f1f1;
-        }
+        /*header .menu a:hover,*/
+        /*header .icons a:hover {*/
+        /*    color: #f1f1f1;*/
+        /*}*/
 
         main {
             padding: 20px;
@@ -111,22 +113,22 @@
         button:hover {
             background-color: #444;
         }
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-        }
+        /*footer {*/
+        /*    background-color: #333;*/
+        /*    color: white;*/
+        /*    padding: 15px 20px;*/
+        /*    text-align: center;*/
+        /*}*/
 
-        footer a {
-            color: #00aaff;
-            text-decoration: none;
-            margin: 0 5px;
-        }
+        /*footer a {*/
+        /*    color: #00aaff;*/
+        /*    text-decoration: none;*/
+        /*    margin: 0 5px;*/
+        /*}*/
 
-        footer a:hover {
-            text-decoration: underline;
-        }
+        /*footer a:hover {*/
+        /*    text-decoration: underline;*/
+        /*}*/
 
         .quantity-control {
             display: flex;
@@ -173,23 +175,24 @@
     </style>
 </head>
 <body>
-<header>
-    <a href="/" class = "logo">📚 책사조잉 📚</a>
-    <nav class="menu">
-        <a href="/">Home</a>
-        <a href="#">국내도서</a>
-        <a href="#">외국도서</a>
-        <a href="#">추천도서</a>
-    </nav>
-    <div class="icons">
-        <!-- 로그인 상태에 따라 버튼 표시 -->
-        <a th:if="${role == 'ADMIN'}" href="/adminpage" id="adminpage-btn">AdminPage</a>
-        <a th:if="${role == 'USER'}" href="/mypage" id="mypage-btn">MyPage</a>
-        <a th:if="${role == null and !isLoggedIn}" href="/login" id="login-btn">로그인</a>
-        <a th:if="${role == null and !isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>
-        <a th:if="${isLoggedIn}" href="/logout" id="logout-btn">로그아웃</a>
-        <a href="/carts" id="cart-btn">장바구니</a>
-    </div>
+<th:block th:replace="~{layout/layout :: headerFragment}"></th:block>
+<!--<header>-->
+<!--    <a href="/" class = "logo">📚 책사조잉 📚</a>-->
+<!--    <nav class="menu">-->
+<!--        <a href="/">Home</a>-->
+<!--        <a href="#">국내도서</a>-->
+<!--        <a href="#">외국도서</a>-->
+<!--        <a href="#">추천도서</a>-->
+<!--    </nav>-->
+<!--    <div class="icons">-->
+<!--        &lt;!&ndash; 로그인 상태에 따라 버튼 표시 &ndash;&gt;-->
+<!--        <a th:if="${role == 'ADMIN'}" href="/adminpage" id="adminpage-btn">AdminPage</a>-->
+<!--        <a th:if="${role == 'USER'}" href="/mypage" id="mypage-btn">MyPage</a>-->
+<!--        <a th:if="${role == null and !isLoggedIn}" href="/login" id="login-btn">로그인</a>-->
+<!--        <a th:if="${role == null and !isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>-->
+<!--        <a th:if="${isLoggedIn}" href="/logout" id="logout-btn">로그아웃</a>-->
+<!--        <a href="/carts" id="cart-btn">장바구니</a>-->
+<!--    </div>-->
 </header>
 
 <main>
@@ -366,12 +369,12 @@
         </div>
     </div>
 </main>
-
-<footer>
-    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>
-    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
-</footer>
+<th:block th:replace="~{layout/layout :: footerLayout}"></th:block>
+<!--<footer>-->
+<!--    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>-->
+<!--    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>-->
+<!--    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>-->
+<!--</footer>-->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
