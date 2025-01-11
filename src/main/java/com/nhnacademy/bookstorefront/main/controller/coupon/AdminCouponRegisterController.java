@@ -7,7 +7,6 @@ import com.nhnacademy.bookstorefront.main.dto.BookSearchPagedResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.*;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Controller
-public class CouponRegisterController {
+public class AdminCouponRegisterController {
     private final CouponClient couponClient;
     private final BookClient bookClient;
     private final BookSearchClient bookSearchClient;
@@ -69,7 +68,7 @@ public class CouponRegisterController {
         return "admin/coupon/coupon-category-search";
     }
 
-    // 쿠폰정책 생성 및 쿠폰 대상 생성
+    // 쿠폰정책 생성 및 쿠폰대상 생성
     @PostMapping("/admin/coupon-policies")
     public String createCouponPolicyAndTarget(
             @ModelAttribute @Valid CouponPolicySaveRequestDto couponPolicyRequestDto,
@@ -97,19 +96,6 @@ public class CouponRegisterController {
     public String createCoupon(@ModelAttribute CouponCreateRequestDto createRequest) {
         couponClient.createCoupon(createRequest);
         return "redirect:/admin/coupon-register";
-    }
-
-    // 쿠폰조회
-    @GetMapping("/admin/coupons")
-    public String getAllCoupons(@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) int pageSize, Model model) {
-        Page<CouponResponseDto> coupons = couponClient.getAllCoupons(page, pageSize).getBody();
-
-        model.addAttribute("coupons", coupons);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("pageSize", pageSize);
-        model.addAttribute("totalPages", coupons != null ? coupons.getTotalPages() : 0);
-
-        return "admin/coupon/coupon-find";
     }
 
 }
