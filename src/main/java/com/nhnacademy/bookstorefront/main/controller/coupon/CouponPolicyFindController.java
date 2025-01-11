@@ -32,9 +32,9 @@ public class CouponPolicyFindController {
 
         model.addAttribute("couponPolicies", couponPolicies);
         model.addAttribute("couponActive", couponActive);
-        model.addAttribute("page", page);
+        model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", pageSize);
-        model.addAttribute("totalPages", couponPolicies!= null ? couponPolicies.getTotalPages() : 0 );
+        model.addAttribute("totalPages", couponPolicies != null ? couponPolicies.getTotalPages() : 0);
 
         return "admin/coupon/coupon-policy-find";
     }
