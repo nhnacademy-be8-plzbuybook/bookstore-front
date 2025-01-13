@@ -248,6 +248,32 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
+        /* 페이징 CSS */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination a { /* <a> 태그에 스타일 적용 */
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            text-decoration: none; /* 링크 밑줄 제거 */
+            transition: background-color 0.3s;
+        }
+
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+
+        .pagination a:disabled { /* disabled 상태에 대한 스타일 */
+            cursor: not-allowed;
+            background-color: #eee;
+        }
     </style>
 </head>
 <body>
@@ -402,6 +428,25 @@
                             <img th:src="${image}" class="review-image" style="max-width: 200px;">
                         </div>
                     </div>
+                </div>
+
+                <!-- 페이징 버튼 -->
+                <div class="pagination">
+                    <!-- 이전 버튼 -->
+                    <a th:if="${currentPage > 0}"
+                       th:href="@{'/book/detail/' + ${book.sellingBookId} + '?page=' + (${currentPage - 1}) + '&size=' + ${size}}"
+                       class="prev">
+                        이전
+                    </a>
+
+                    <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span></span>
+
+                    <!-- 다음 버튼 -->
+                    <a th:if="${currentPage < totalPages - 1}"
+                       th:href="@{'/book/detail/' + ${book.sellingBookId} + '?page=' + (${currentPage + 1}) + '&size=' + ${size}}"
+                       class="next">
+                        다음
+                    </a>
                 </div>
 
                 <!-- 리뷰 등록 폼 -->

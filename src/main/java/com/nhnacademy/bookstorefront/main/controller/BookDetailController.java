@@ -20,6 +20,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -59,7 +62,9 @@ public class BookDetailController {
 
 
     @GetMapping("/book/detail/{sellingBookId}")
-    public String getBookDetail(@PathVariable Long sellingBookId, Model model,HttpServletRequest request) {
+    public String getBookDetail(@PathVariable Long sellingBookId, Model model,HttpServletRequest request,
+                                @RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "2") int size) {
         // 쇼핑몰 서버에서 특정 책 데이터 가져오기
         BookDetailResponseDto bookDetail = bookClient.getSellingBook(sellingBookId);
         List<BookTagResponseDto> bookTagResponseDto = bookClient.getBookTagsByBookId(bookDetail.getBookId()).getBody();
@@ -77,7 +82,7 @@ public class BookDetailController {
             }
         }
 
-        List<ReviewWithReviewImageDto> reviews = bookClient.getReviewsBySellingBookId(sellingBookId).getBody();
+        Page<ReviewWithReviewImageDto> reviews = bookClient.getReviewsByBookId(sellingBookId, page, size).getBody();
         Double avgScore = bookClient.getAverageReview(sellingBookId);
         String avg = String.format("%.2f", avgScore);
 
@@ -87,6 +92,9 @@ public class BookDetailController {
         model.addAttribute("memberId", memberId);
         model.addAttribute("bookTags", bookTagResponseDto);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("currentPage", page); // 현재 페이지
+        model.addAttribute("totalPages", reviews.getTotalPages()); // 전체 페이지 수
+        model.addAttribute("size", size);
         model.addAttribute("avgScore", avg);
 
 
