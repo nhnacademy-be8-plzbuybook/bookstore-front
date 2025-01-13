@@ -24,22 +24,25 @@ public class DeliveryFeePolicyController {
         List<DeliveryFeePolicyDto> policies = deliveryFeePolicyService.getPolicies();
         model.addAttribute("policies", policies);
 
-        return "admin/delivery_fee_policy";
+        return "admin/deliveryFeePolicy/delivery_fee_policy";
     }
 
+    @ResponseBody
     @PostMapping("/api/delivery-fee-policies")
     public ResponseEntity<Void> createDeliveryFeePolicy(@RequestBody DeliveryFeePolicyCreateRequestDto createRequest) {
         deliveryFeePolicyService.createPolicy(createRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @ResponseBody
     @PutMapping("/api/delivery-fee-policies/{policy-id}")
     public ResponseEntity<Void> modifyDeliveryFeePolicy(@PathVariable("policy-id") Long deliveryFeePolicyId,
-                                        @RequestBody DeliveryFeePolicyModifyRequestDto modifyRequest) {
+                                                        @RequestBody DeliveryFeePolicyModifyRequestDto modifyRequest) {
         deliveryFeePolicyService.modifyPolicy(deliveryFeePolicyId, modifyRequest);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @ResponseBody
     @DeleteMapping("/api/delivery-fee-policies/{policy-id}")
     public ResponseEntity<Void> removeDeliveryFeePolicy(@PathVariable("policy-id") Long deliveryFeePolicyId) {
         deliveryFeePolicyService.removePolicy(deliveryFeePolicyId);
