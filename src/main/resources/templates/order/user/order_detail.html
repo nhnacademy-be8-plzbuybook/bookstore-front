@@ -26,11 +26,11 @@
         <tr>
             <td th:text="${orderDetail.getOrderNumber()}"></td>
             <td th:text="${#temporals.format(orderDetail.getOrderedAt(), 'yyyy/MM/dd HH:mm')}"></td>
-            <td th:text="${orderDetail.getStatus()}"></td>
+            <td th:text="${orderDetail.getStatus().getStatus()}"></td>
             <td th:if="${orderDetail.getStatus().equals('배송완료') and orderDetail.getOrderDelivery().getTrackingNumber() != null}">
                 <a th:href="@{https://link.tracker.delivery/track(client_id='2mnplmpcj0hf723toi68kcdeal', carrier_id='kr.cjlogistics',tracking_number=${orderDetail.getOrderDelivery().getTrackingNumber()})}">배송조회</a>
             </td>
-            <td th:if="${orderDetail.getStatus().equals('결제대기') or orderDetail.getStatus().equals('결제완료')}">
+            <td th:if="${orderDetail.getStatus().getStatus().equals('결제대기') or orderDetail.getStatus().getStatus().equals('결제완료')}">
                 <button type="button" id="order-cancel-btn">
                     주문취소
                 </button>
@@ -88,6 +88,14 @@
                     <button type="submit">리뷰작성</button>
                 </form>
             </td>
+<!--            <td th:if="${orderDetail.getStatus().equals('결제대기') or orderDetail.getStatus().equals('결제완료')}">-->
+<!--                <form method="POST" th:action="/api/orders/order-products/${orderProduct.getOrderProductId()}/cancel">-->
+<!--                    <button type="submit">-->
+<!--                        주문취소-->
+<!--                    </button>-->
+
+<!--                </form>-->
+<!--            </td>-->
         </tr>
         </tbody>
     </table>

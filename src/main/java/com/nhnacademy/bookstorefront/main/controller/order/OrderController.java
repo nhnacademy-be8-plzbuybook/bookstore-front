@@ -7,14 +7,15 @@ import com.nhnacademy.bookstorefront.main.client.PointClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.OrderCancelRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import com.nhnacademy.bookstorefront.main.service.WrappingPaperService;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -165,8 +166,14 @@ public class OrderController {
     public String getAllOrders(@ModelAttribute OrderSearchRequestDto searchRequest,
                                Pageable pageable,
                                Model model) {
-        Page<OrderDto> orderList = orderService.getAllOrders(searchRequest, pageable);
-        model.addAttribute("orderList", orderList);
+        Page<OrderDto> orderPage = orderService.getAllOrders(searchRequest, pageable);
+        List<OrderStatus> orderStatuses = orderService.getOrderStatuses();
+
+        model.addAttribute("orderPage", orderPage);
+        model.addAttribute("orderStatuses", orderStatuses);
+        model.addAttribute("currentPage", pageable.getPageNumber());
+        model.addAttribute("totalPages", orderPage.getTotalPages());
+        model.addAttribute("totalItems", orderPage.getTotalElements());
 
         return "order/admin/order_list";
     }
@@ -183,7 +190,7 @@ public class OrderController {
     public String getAdminOrderDetail(@PathVariable("order-id") String orderId,
                                       Model model) {
         OrderDetail orderDetail = orderService.getOrderDetail(orderId);
-        List<String> orderStatuses = orderService.getOrderStatuses();
+        List<OrderStatus> orderStatuses = orderService.getOrderStatuses();
 
         model.addAttribute("orderDetail", orderDetail);
         model.addAttribute("orderStatuses", orderStatuses);
@@ -250,7 +257,7 @@ public class OrderController {
     /**
      * 주문취소
      *
-     * @param orderId 주문아이디
+     * @param orderId       주문아이디
      * @param cancelRequest 주문취소요청 DTO
      * @return Void
      */
@@ -260,5 +267,13 @@ public class OrderController {
         orderService.cancelOrder(orderId, cancelRequest);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    @PostMapping("/api/orders/order-products/{order-product-id}/cancel")
+    public ResponseEntity<Void> cancelOrderProduct(@PathVariable("order-product-id") String orderProductId,
+                                                   @RequestBody OrderProductCancelRequestDto cancelRequest) {
+        orderService.cancelOrderProduct(orderProductId, cancelRequest);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 
 }
