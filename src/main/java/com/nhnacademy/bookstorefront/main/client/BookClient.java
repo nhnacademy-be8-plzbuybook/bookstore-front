@@ -160,4 +160,12 @@ public interface BookClient {
     //책 평점
     @GetMapping("/api/books/{sellingBookId}/reviews/avg")
     Double getAverageReview(@PathVariable("sellingBookId") Long sellingBookId);
+
+    //리뷰 수정
+    @PostMapping(value = "/api/reviews/{reviewId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<Object> updateReview(@PathVariable("reviewId") Long reviewId,
+                                        @RequestParam("score") Integer score,
+                                        @RequestPart("content") String content,
+                                        @RequestPart(value = "images", required = false) List<MultipartFile> images);
+
 }
