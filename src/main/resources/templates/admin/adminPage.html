@@ -209,7 +209,7 @@
         <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
         <div class="group" data-section="coupon-management">쿠폰 관리</div>
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
-        <div class="group" data-section="tag-management">태그 관리</div>
+        <a href="/admin/tag" class="group">태그 관리</a>
         <div class="group" data-section="category-management">카테고리 관리</div>
         <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
 
@@ -575,20 +575,20 @@
         GitHub</a></p>
     <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
 </footer>
-<!--<script>-->
-<!--    const sidebarItems = document.querySelectorAll('.sidebar .group');-->
-<!--    const sections = document.querySelectorAll('.section');-->
+<script>
+    const sidebarItems = document.querySelectorAll('.sidebar .group');
+    const sections = document.querySelectorAll('.section');
 
-<!--    sidebarItems.forEach(item => {-->
-<!--        item.addEventListener('click', () => {-->
-<!--            sidebarItems.forEach(i => i.classList.remove('active'));-->
-<!--            sections.forEach(section => section.classList.remove('active'));-->
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', () => {
+            sidebarItems.forEach(i => i.classList.remove('active'));
+            sections.forEach(section => section.classList.remove('active'));
 
-<!--            item.classList.add('active');-->
-<!--            const sectionId = item.getAttribute('data-section');-->
-<!--            document.getElementById(sectionId).classList.add('active');-->
-<!--        });-->
-<!--    });-->
-<!--</script>-->
+            item.classList.add('active');
+            const sectionId = item.getAttribute('data-section');
+            document.getElementById(sectionId).classList.add('active');
+        });
+    });
+</script>
 </body>
 </html>
