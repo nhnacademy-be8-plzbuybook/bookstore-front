@@ -152,9 +152,19 @@ public interface BookClient {
 
     //sellingBookId에 해당하는 리뷰 가져오기
     @GetMapping("/api/books/{sellingBookId}/reviews")
-    ResponseEntity<List<ReviewWithReviewImageDto>> getReviewsBySellingBookId(@PathVariable("sellingBookId") Long sellingBookId);
+    ResponseEntity<Page<ReviewWithReviewImageDto>> getReviewsByBookId(@PathVariable("sellingBookId") Long sellingBookId,
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "2") int size);
 
     //책 평점
     @GetMapping("/api/books/{sellingBookId}/reviews/avg")
     Double getAverageReview(@PathVariable("sellingBookId") Long sellingBookId);
+
+    //리뷰 수정
+    @PostMapping(value = "/api/reviews/{reviewId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<Object> updateReview(@PathVariable("reviewId") Long reviewId,
+                                        @RequestParam("score") Integer score,
+                                        @RequestPart("content") String content,
+                                        @RequestPart(value = "images", required = false) List<MultipartFile> images);
+
 }
