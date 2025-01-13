@@ -33,7 +33,7 @@
                         <option
                                 th:each="status: ${orderStatuses}"
                                 th:value="${status}"
-                                th:text="${status}">
+                                th:text="${status.getStatus()}">
                         </option>
                     </select>
                     <button style="margin-left: 10px;"

@@ -6,6 +6,7 @@ import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -52,7 +53,7 @@ public interface OrderClient {
     ResponseEntity<Void> confirmPurchase(@PathVariable("order-product-id") Long orderProductId);
 
     @GetMapping("/api/orders/order-status")
-    ResponseEntity<List<String>> getOrderStatuses();
+    ResponseEntity<List<OrderStatus>> getOrderStatuses();
 
     @PutMapping("/api/orders/{order-id}/status")
     ResponseEntity<Void> modifyOrderStatus(@PathVariable("order-id") String orderId,
@@ -62,5 +63,5 @@ public interface OrderClient {
     ResponseEntity<Void> cancelOrder(@PathVariable("order-id") String orderId, @RequestBody OrderCancelRequestDto cancelRequest);
 
     @PostMapping("/api/orders/order-products/{order-product-id}/cancel")
-    ResponseEntity<Void> cancelOrderProduct(@PathVariable("order-product-id") String orderId, @RequestBody OrderProductCancelRequestDto cancelRequest);
+    ResponseEntity<Void> cancelOrderProduct(@PathVariable("order-product-id") String orderProductId, @RequestBody OrderProductCancelRequestDto cancelRequest);
 }

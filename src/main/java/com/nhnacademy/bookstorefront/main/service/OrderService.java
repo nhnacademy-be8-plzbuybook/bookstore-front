@@ -5,6 +5,7 @@ import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,9 +19,9 @@ public interface OrderService {
     Page<OrderDto> getAllOrders(OrderSearchRequestDto searchRequest, Pageable pageable);
     OrderDetail getOrderDetail(String orderId);
     String getNonMemberOrderId(NonMemberOrderDetailAccessRequestDto accessRequest);
-    List<String> getOrderStatuses();
+    List<OrderStatus> getOrderStatuses();
 
-    void cancelOrderProduct(String orderId, OrderProductCancelRequestDto cancelRequest);
+    void cancelOrderProduct(String orderProductId, OrderProductCancelRequestDto cancelRequest);
     void cancelOrder(String orderId, OrderCancelRequestDto cancelRequest);
     void modifyOrderStatus(String orderId, StatusDto status);
 }
