@@ -71,7 +71,7 @@ public interface BookClient {
      * @return
      */
     @PostMapping("/api/admin/selling-books/register")
-    AdminBookRegisterDto registerSellingBook(@RequestBody AdminBookRegisterDto registerDto);
+    AdminBookRegisterDto registerSellingBook(@RequestBody BookRegisterDto registerDto);
 
 
     // 판매 책 등록
@@ -150,5 +150,15 @@ public interface BookClient {
     @GetMapping("/api/book-tags/{bookId}")
     ResponseEntity<List<BookTagResponseDto>> getBookTagsByBookId(@PathVariable Long bookId);
 
+
+    @GetMapping("/api/categories")
+    Page<CategorySimpleResponseDto> getCategories(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size);
+
+    @GetMapping("/api/authors")
+    List<AuthorResponseDto> getAuthors(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size);
 
 }

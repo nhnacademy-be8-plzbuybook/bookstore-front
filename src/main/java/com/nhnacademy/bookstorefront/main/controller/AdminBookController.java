@@ -1,17 +1,17 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
-import com.nhnacademy.bookstorefront.main.dto.AdminBookRegisterDto;
-import com.nhnacademy.bookstorefront.main.dto.AdminSellingBookRegisterDto;
-import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.SellingBookRegisterDto;
+import com.nhnacademy.bookstorefront.main.dto.*;
+import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -54,25 +54,26 @@ public class AdminBookController {
 
 
 
-    // 관리자가 도서 추가 버튼 누르면 보이는 페이지 = 이거는 잘돼
+//     관리자가 도서 추가 버튼 누르면 보이는 페이지 = 이거는 잘돼
     @GetMapping("/register")
     public String showRegisterPage() {
-        return "admin/bookRegister"; // 등록 페이지
+        return "admin/bookregister"; // 등록 페이지
     }
 
 
-    // 도서 등록 페이지
+    // 도서 등록 처리
     @PostMapping("/register")
-    public String registerSellingBook(@ModelAttribute @Valid AdminBookRegisterDto adminSellingBookRegisterDto) {
-        log.debug("DTO received for registration: {}", adminSellingBookRegisterDto);
-
-        // BookClient를 통해 데이터 전송
-        bookClient.registerSellingBook(adminSellingBookRegisterDto);
+    public String registerSellingBook(@RequestBody @Valid BookRegisterDto bookRegisterDto) {
+        log.info("Received Book Title: {}", bookRegisterDto.getBookTitle());
+        log.info("Received Categories: {}", bookRegisterDto.getCategories());
+        log.info("Received Authors: {}", bookRegisterDto.getAuthors());
+        // 클라이언트를 통해 데이터 전송
+        bookClient.registerSellingBook(bookRegisterDto);
 
         // 성공적으로 처리된 경우 리다이렉트
         return "redirect:/admin/selling-books";
-
     }
+
 
     /**
      * 도서 책 수정 폼 데이터 가져오기

@@ -47,7 +47,13 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-<!--        <dependency>-->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!--        <dependency>-->
 <!--            <groupId>org.projectlombok</groupId>-->
 <!--            <artifactId>lombok</artifactId>-->
 <!--            <scope>annotationProcessor</scope>-->

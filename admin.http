@@ -40,3 +40,26 @@ Accept: application/json
   "sellingBookViewCount": 0,
   "used": false
 }
+
+### ㅇㅇ
+POST http://localhost:8080/api/admin/selling-books/register
+Content-Type: application/json
+
+{
+  "bookTitle": "Test Book Title",
+  "bookIndex": "4565",
+  "bookDescription": "A description of the test book.",
+  "bookPubDate": "2025-01-01",
+  "bookPriceStandard": 25.99,
+  "bookIsbn13": "1231212212",
+  "publisher": "창비",
+  "imageUrl": "http://example.com/image.jpg",
+  "categories": [
+    {"categoryId": 1,
+      "categoryName": "국내도서"
+    }
+  ],
+  "authors": ["John Doe"]
+}
+
+
