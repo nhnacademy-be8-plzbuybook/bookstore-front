@@ -153,7 +153,9 @@ public interface BookClient {
 
     //sellingBookId에 해당하는 리뷰 가져오기
     @GetMapping("/api/books/{sellingBookId}/reviews")
-    ResponseEntity<List<ReviewWithReviewImageDto>> getReviewsBySellingBookId(@PathVariable("sellingBookId") Long sellingBookId);
+    ResponseEntity<Page<ReviewWithReviewImageDto>> getReviewsByBookId(@PathVariable("sellingBookId") Long sellingBookId,
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "2") int size);
 
     //책 평점
     @GetMapping("/api/books/{sellingBookId}/reviews/avg")
