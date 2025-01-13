@@ -64,13 +64,25 @@ document.addEventListener("DOMContentLoaded", function () {
     const shippingFeeEl = document.getElementById("shippingFee"); // 배송비 표시 요소
     const totalAmountEl = document.getElementById("totalAmount"); // 총결제금액 표시 요소
 
-    // 포인트 적용
-    const applyPointBtn = document.getElementById("applyPointBtn");
-    applyPointBtn.addEventListener('click', () => {
-        const usePointDisplay = document.getElementById("usedPointDisplay");
-        usePointDisplay.innerText = document.getElementById("usedPoint").value;
-    });
+    const discountAmountEl = document.getElementById("discountAmount");
+    const usedPointInput = document.getElementById("usedPoint"); // 사용 포인트 입력 필드
+    const applyPointBtn = document.getElementById("applyPointBtn"); // 포인트 적용 버튼
 
+    let currentUsedPoint = 0; // 현재 적용된 포인트 저장
+
+    // 포인트 적용 버튼 클릭 이벤트
+    applyPointBtn.addEventListener('click', () => {
+        const usedPoint = parseInt(usedPointInput.value) || 0;
+
+        // 현재 포인트 적용 값 업데이트
+        currentUsedPoint = usedPoint;
+
+        // 할인 금액 업데이트
+        discountAmountEl.innerText = currentUsedPoint;
+
+        // 총 결제 금액 다시 계산
+        calculateTotal();
+    });
 
     // 주문 총액 계산 함수
     function calculateTotal() {
@@ -102,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const shippingFee = orderAmount < feeDeliveryThreshold ? defaultDeliveryFee : 0;
 
         // 결제 금액 계산
-        const totalAmount = orderAmount + shippingFee;
+        const totalAmount = orderAmount + shippingFee  - currentUsedPoint;
 
         // 화면에 업데이트
         orderAmountEl.innerText = orderAmount;

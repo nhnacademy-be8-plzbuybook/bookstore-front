@@ -11,5 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class MemberPointUseRequestDto {
     private String email;
-    private Integer usedPoints;
+    private Integer usedPoint;
 }
