@@ -1,5 +1,7 @@
 package com.nhnacademy.bookstorefront.main.dto;
 
+import com.nhnacademy.bookstorefront.main.dto.book.AuthorResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,11 +9,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+
 @Getter
 @Setter
-
-// 관리자 도서 리스트 불러오는 dto
-
 public class AdminBookRegisterDto {
     private Long bookId;
     private String bookTitle; // 제목
@@ -20,8 +20,8 @@ public class AdminBookRegisterDto {
     private String bookIsbn13; // ISBN
     private BigDecimal standardBookPrice; // 판매가
     private List<String> imageUrl; // 이미지 URL
-    private List<String> categories; // 카테고리 정보
-    private List<String> authors; // 작가 정보
+    private List<CategorySimpleResponseDto> categories; // 카테고리 정보
+    private List<AuthorResponseDto> authors; // 작가 정보
 
     public AdminBookRegisterDto(
             Long bookId,
@@ -31,8 +31,9 @@ public class AdminBookRegisterDto {
             String bookIsbn13,                      // ISBN
             BigDecimal standardBookPrice,            // 정가
             List<String> imageUrl,                        // 이미지 URL
-            List<String> categories,                // 카테고리 정보
-            List<String> authors                    // 작가 정보
+            List<AuthorResponseDto> authors,
+            List<CategorySimpleResponseDto> categories
+
     ) {
         this.bookId = bookId;
         this.bookTitle = bookTitle;
@@ -41,7 +42,10 @@ public class AdminBookRegisterDto {
         this.bookIsbn13 = bookIsbn13;
         this.standardBookPrice = standardBookPrice;
         this.imageUrl = imageUrl;
-        this.categories = categories;
         this.authors = authors;
+        this.categories = categories;
+
     }
+
 }
+
