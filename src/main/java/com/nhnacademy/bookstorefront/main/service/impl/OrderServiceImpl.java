@@ -147,4 +147,31 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("주문상태 변경 중 오류가 발생했습니다.");
         }
     }
+
+    @Override
+    public void completeOrderDelivery(String orderId, Long deliveryId) {
+        try {
+            orderClient.completeOrderDelivery(orderId, deliveryId);
+        } catch (FeignException e) {
+            throw new RuntimeException("배송완료처리 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public void requestReturnOrder(String orderId, OrderReturnRequestDto returnRequest) {
+        try {
+            orderClient.requestReturnOrder(orderId, returnRequest);
+        } catch (FeignException e) {
+            throw new RuntimeException("주문 반품요청 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public void completeReturningOrder(String orderId) {
+        try {
+            orderClient.completeReturningOrder(orderId);
+        } catch (FeignException e) {
+            throw new RuntimeException("주문 반품요청 중 오류가 발생했습니다.");
+        }
+    }
 }
