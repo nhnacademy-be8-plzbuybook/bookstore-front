@@ -39,10 +39,11 @@ public class PaymentController {
     public String confirmPayment(@RequestParam("orderId") String orderId,
                                  @RequestParam("paymentKey") String paymentKey,
                                  @RequestParam("amount") BigDecimal amount,
+                                 @RequestParam(value = "usedPoint", required = false) Integer usedPoint,
                                  Model model) {
 
         //TODO: /api/payments/confirm/widget에 결제 승인 요청
-        PaymentConfirmResponseDto response = paymentService.confirmPayment(new PaymentConfirmRequestDto(paymentKey, orderId, amount));
+        PaymentConfirmResponseDto response = paymentService.confirmPayment(new PaymentConfirmRequestDto(paymentKey, orderId, amount, usedPoint));
 
         //주문 완료
 //        orderService.completeOrder(orderId);
@@ -61,3 +62,4 @@ public class PaymentController {
         return "payment/fail";
     }
 }
+

@@ -58,106 +58,35 @@ document.querySelectorAll('.address-row').forEach(row => {
     });
 });
 
-// document.addEventListener("DOMContentLoaded", function () {
-//     const orderTable = document.getElementById("orderTable"); // 상품 테이블
-//     const orderAmountEl = document.getElementById("orderAmount"); // 주문금액 표시 요소
-//     const shippingFeeEl = document.getElementById("shippingFee"); // 배송비 표시 요소
-//     const discountAmountEl = document.getElementById("discountAmount");
-//     const totalAmountEl = document.getElementById("totalAmount"); // 총결제금액 표시 요소
-//     const usedPointInput = document.getElementById("usedPoint");
-//     const applyPointBtn = document.getElementById("applyPointBtn");
-//
-//
-//     let currentUsedPoint = 0;
-//
-//     // 포인트 적용 버튼 클릭 이벤트
-//     applyPointBtn.addEventListener('click', () => {
-//         const usedPoint = parseInt(usedPointInput.value) || 0;
-//         const orderAmount = parseInt(orderAmountEl.innerText) || 0;
-//         const shippingFee = parseInt(shippingFeeEl.innerText) || 0;
-//
-//         // 할인 금액 및 최종 결제 금액 계산
-//         currentUsedPoint = usedPoint; // 현재 적용된 포인트 저장
-//         discountAmountEl.innerText = usedPoint; // 할인 금액 표시
-//         totalAmountEl.innerText = (orderAmount + shippingFee - usedPoint); // 최종 결제 금액 계산
-//     });
-//
-//     // 주문 총액 계산 함수
-//     function calculateTotal() {
-//         let orderAmount = 0;
-//
-//         // 각 상품의 금액 계산
-//         orderTable.querySelectorAll("tbody tr").forEach((row) => {
-//             const quantity = parseInt(row.querySelector(".book-quantity").innerText) || 0;
-//             const price = parseInt(row.querySelector(".book-price").innerText) || 0;
-//
-//             // 포장지 추가 금액
-//             const wrappingSelect = row.querySelector(".wrapping-select");
-//             const wrappingPrice = wrappingSelect
-//                 ? parseInt(wrappingSelect.options[wrappingSelect.selectedIndex]?.getAttribute("data-price")) || 0
-//                 : 0;
-//
-//             // 포장지 수량
-//             const wrappingQuantityInput = row.querySelector(".wrapping-quantity");
-//             const wrappingQuantity = wrappingQuantityInput ? parseInt(wrappingQuantityInput.value) || 0 : 0;
-//
-//             // 상품 총액 = (상품 가격 * 수량) + (포장지 가격 * 포장지 수량)
-//             orderAmount += (price * quantity) + (wrappingPrice * wrappingQuantity);
-//         });
-//
-//         const feeDeliveryThreshold = parseInt(document.getElementById("freeDeliveryThreshold").value) || 0;
-//         const defaultDeliveryFee = parseInt(document.getElementById("defaultDeliveryFee").value) || 0;
-//
-//         // 배송비 계산 (기준 금액을 넘으면 무료 배송)
-//         const shippingFee = orderAmount < feeDeliveryThreshold ? defaultDeliveryFee : 0;
-//
-//         // 결제 금액 계산
-//         const totalAmount = orderAmount + shippingFee - currentUsedPoint;
-//
-//         // 화면에 업데이트
-//         orderAmountEl.innerText = orderAmount;
-//         shippingFeeEl.innerText = shippingFee;
-//         totalAmountEl.innerText = totalAmount;
-//     }
-//
-//     // 포장지 변경 또는 수량 변경 시 이벤트 핸들링
-//     orderTable.addEventListener("change", (event) => {
-//         if (event.target.classList.contains("wrapping-select") || event.target.classList.contains("wrapping-quantity")) {
-//             calculateTotal();
-//         }
-//     });
-//
-//     // 초기 계산 실행
-//     calculateTotal();
-// });
 document.addEventListener("DOMContentLoaded", function () {
     const orderTable = document.getElementById("orderTable"); // 상품 테이블
     const orderAmountEl = document.getElementById("orderAmount"); // 주문금액 표시 요소
     const shippingFeeEl = document.getElementById("shippingFee"); // 배송비 표시 요소
-    const discountAmountEl = document.getElementById("discountAmount"); // 할인 금액 표시 요소
-    const totalAmountEl = document.getElementById("totalAmount"); // 총 결제 금액 표시 요소
+    const totalAmountEl = document.getElementById("totalAmount"); // 총결제금액 표시 요소
+
+    const discountAmountEl = document.getElementById("discountAmount");
     const usedPointInput = document.getElementById("usedPoint"); // 사용 포인트 입력 필드
     const applyPointBtn = document.getElementById("applyPointBtn"); // 포인트 적용 버튼
 
     let currentUsedPoint = 0; // 현재 적용된 포인트 저장
-    let shippingFee = 0; // 배송비 저장
-    let orderAmount = 0; // 주문 금액 저장
 
     // 포인트 적용 버튼 클릭 이벤트
     applyPointBtn.addEventListener('click', () => {
         const usedPoint = parseInt(usedPointInput.value) || 0;
 
-        // 할인 금액 업데이트
+        // 현재 포인트 적용 값 업데이트
         currentUsedPoint = usedPoint;
-        discountAmountEl.innerText = usedPoint;
+
+        // 할인 금액 업데이트
+        discountAmountEl.innerText = currentUsedPoint;
 
         // 총 결제 금액 다시 계산
-        updateTotalAmount();
+        calculateTotal();
     });
 
     // 주문 총액 계산 함수
-    function calculateOrderAmount() {
-        orderAmount = 0;
+    function calculateTotal() {
+        let orderAmount = 0;
 
         // 각 상품의 금액 계산
         orderTable.querySelectorAll("tbody tr").forEach((row) => {
@@ -170,6 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 ? parseInt(wrappingSelect.options[wrappingSelect.selectedIndex]?.getAttribute("data-price")) || 0
                 : 0;
 
+            // 포장지 수량
             const wrappingQuantityInput = row.querySelector(".wrapping-quantity");
             const wrappingQuantity = wrappingQuantityInput ? parseInt(wrappingQuantityInput.value) || 0 : 0;
 
@@ -177,35 +107,19 @@ document.addEventListener("DOMContentLoaded", function () {
             orderAmount += (price * quantity) + (wrappingPrice * wrappingQuantity);
         });
 
-        // 주문 금액 업데이트
-        orderAmountEl.innerText = orderAmount;
-    }
-
-    // 배송비 계산 함수
-    function calculateShippingFee() {
         const feeDeliveryThreshold = parseInt(document.getElementById("freeDeliveryThreshold").value) || 0;
         const defaultDeliveryFee = parseInt(document.getElementById("defaultDeliveryFee").value) || 0;
 
         // 배송비 계산 (기준 금액을 넘으면 무료 배송)
-        shippingFee = orderAmount < feeDeliveryThreshold ? defaultDeliveryFee : 0;
+        const shippingFee = orderAmount < feeDeliveryThreshold ? defaultDeliveryFee : 0;
 
-        // 배송비 업데이트
+        // 결제 금액 계산
+        const totalAmount = orderAmount + shippingFee  - currentUsedPoint;
+
+        // 화면에 업데이트
+        orderAmountEl.innerText = orderAmount;
         shippingFeeEl.innerText = shippingFee;
-    }
-
-    // 총 결제 금액 업데이트 함수
-    function updateTotalAmount() {
-        const totalAmount = orderAmount + shippingFee - currentUsedPoint;
-
-        // 총 결제 금액 업데이트
         totalAmountEl.innerText = totalAmount;
-    }
-
-    // 초기 계산 실행
-    function calculateTotal() {
-        calculateOrderAmount();
-        calculateShippingFee();
-        updateTotalAmount();
     }
 
     // 포장지 변경 또는 수량 변경 시 이벤트 핸들링
