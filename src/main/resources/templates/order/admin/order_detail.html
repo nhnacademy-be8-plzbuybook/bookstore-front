@@ -94,7 +94,7 @@
     <span th:text="${orderDetail.getDeliveryWishDate()}"></span>
     <!--    주문배송이 등록되지 않았을 때 등록폼 보여줌-->
     <div th:unless="${orderDetail.getOrderDelivery().getTrackingNumber() != null}">
-        <div th:replace="~{/order/admin/orderDelivery/register_form::orderDeliveryRegisterForm(orderId=${orderDetail.getOrderId()})}"></div>
+        <div th:replace="~{order/admin/orderDelivery/register_form::orderDeliveryRegisterForm(orderId=${orderDetail.getOrderId()})}"></div>
     </div>
 
     <h2>주문 배송 정보</h2>
