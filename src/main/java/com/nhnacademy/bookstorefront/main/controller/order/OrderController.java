@@ -1,13 +1,15 @@
 package com.nhnacademy.bookstorefront.main.controller.order;
 
-import com.nhnacademy.bookstorefront.main.client.BookClient;
-import com.nhnacademy.bookstorefront.main.client.MemberClient;
-import com.nhnacademy.bookstorefront.main.client.OrderClient;
-import com.nhnacademy.bookstorefront.main.client.PointClient;
+import com.nhnacademy.bookstorefront.main.client.*;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.Member.MemberCouponGetResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.OrderCancelRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCalculationRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCalculationResponseDto;
+
 import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
+
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
@@ -15,8 +17,11 @@ import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import com.nhnacademy.bookstorefront.main.service.WrappingPaperService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +29,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +43,7 @@ public class OrderController {
     private final MemberClient memberClient;
     private final OrderClient orderClient;
     private final PointClient pointClient;
+    private final CouponClient couponClient;
 
     /**
      * 비회원 주문페이지
@@ -105,6 +112,10 @@ public class OrderController {
         //회원 포인트
         Integer availablePoints = pointClient.getAvailablePoints().getBody();
 
+        //회원아이디(하드코딩) -> 아이디를 가져오는 방법이 필요함
+        String email="skhrnt2945@gmail.com";
+        model.addAttribute("email", email);
+
         model.addAttribute("wrappingPapers", wrappingPaperService.getWrappingPapers());
         model.addAttribute("books", books);
         model.addAttribute("deliveryFeePolicy", deliveryFeePolicyService.getGeneralPolicy());
@@ -113,6 +124,56 @@ public class OrderController {
         model.addAttribute("availablePoints", availablePoints);
         return "order/user/member/order_receipt";
     }
+
+    /**
+     * 회원이 사용가능한 쿠폰 목록 조회 할 수 있는 주문상품 쿠폰적용 팝업 페이지
+     * @param email
+     * @param price
+     * @param quantity
+     * @param page
+     * @param pageSize
+     */
+    @GetMapping("/order/receipt/coupon-popup")
+    public String orderReceiptCouponPopup(@RequestParam String email,
+                                          @RequestParam BigDecimal price,
+                                          @RequestParam Integer quantity,
+                                          @RequestParam int page,
+                                          @RequestParam int pageSize,
+                                          Model model) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        Long memberId = memberClient.getMemberIdByMemberEmail(email).getBody();
+
+        // 회원이 보유한 쿠폰 조회
+        Page<MemberCouponGetResponseDto> coupons = couponClient.getUnusedMemberCouponsByMemberId(memberId, pageable).getBody();
+
+        model.addAttribute("email", email);
+        model.addAttribute("price", price);
+        model.addAttribute("quantity", quantity);
+        model.addAttribute("coupons", coupons);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("PageSize", pageSize);
+        model.addAttribute("totalPages", coupons != null ? coupons.getTotalPages() : 0);
+
+        return "order/user/member/order_receipt_coupon_popup";
+    }
+
+    /**
+     * 주문상품에 할인쿠폰 계산적용
+     */
+    @PostMapping("/order/receipt/coupon-popup/apply")
+    public ResponseEntity<CouponCalculationResponseDto> orderReceiptCouponPopupApply(
+            @RequestParam String email,
+            @RequestParam Long couponId,
+            @RequestBody CouponCalculationRequestDto requestDto) {
+
+        Long memberId = memberClient.getMemberIdByMemberEmail(email).getBody();
+
+        CouponCalculationResponseDto responseDto = couponClient.applyOrderProductCoupon(memberId, couponId, requestDto).getBody();
+
+        return ResponseEntity.ok(responseDto);
+    }
+
 
 
     /**

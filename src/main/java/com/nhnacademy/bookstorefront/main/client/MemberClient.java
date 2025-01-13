@@ -65,6 +65,9 @@ public interface MemberClient {
             @PathVariable Long memberId
     );
 
+    //이메일로 회원식별키 조회
+    @GetMapping("/api/members/id")
+    ResponseEntity<Long> getMemberIdByMemberEmail(@RequestParam String memberEmail);
 }
 
 

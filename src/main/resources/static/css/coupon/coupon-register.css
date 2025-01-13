@@ -177,3 +177,26 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    color: #333;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 150px;
+    text-align: center;
+}
+
+button:hover {
+    background-color: #ddd;
+    transform: translateY(-2px);
+}
+
+button:active {
+    background-color: #ccc;
+    transform: translateY(0);
+}
