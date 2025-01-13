@@ -12,6 +12,7 @@ import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.review.ReviewWithReviewImageDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import feign.FeignException;
@@ -76,14 +77,17 @@ public class BookDetailController {
             }
         }
 
-
-
+        List<ReviewWithReviewImageDto> reviews = bookClient.getReviewsBySellingBookId(sellingBookId).getBody();
+        Double avgScore = bookClient.getAverageReview(sellingBookId);
+        String avg = String.format("%.2f", avgScore);
 
         model.addAttribute("book", bookDetail);
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("role", role);
         model.addAttribute("memberId", memberId);
         model.addAttribute("bookTags", bookTagResponseDto);
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("avgScore", avg);
 
 
         return "detailview";
@@ -131,11 +135,14 @@ public class BookDetailController {
 
         try {
 
-            if (images == null || images.isEmpty()) {
-                images = null;
-            } else {
+            if (images != null) {
                 images.removeIf(image -> image.isEmpty() || image.getOriginalFilename().isEmpty());
             }
+
+            if (images == null || images.isEmpty()) {
+                images = null;
+            }
+
 
             ReviewCreateRequestDto reviewCreateRequestDto = new ReviewCreateRequestDto(memberId,sellingBookId, score, content);
             String reviewRequestDtoJson = new ObjectMapper().writeValueAsString(reviewCreateRequestDto);

@@ -61,6 +61,7 @@
             <td>
                 <a th:href="@{/book/detail/{id}(id=${orderProduct.getBookId()})}"
                    th:text="${orderProduct.getBookTitle()}"></a>
+<!--                <span th:text="${orderProduct.getBookTitle()}"></span>-->
             </td>
             <td th:text="${orderProduct.getPrice()}"></td>
             <td th:text="${orderProduct.getQuantity()}"></td>
@@ -78,9 +79,14 @@
                         th:attr="onclick=|purchaseConfirm(${orderProduct.getOrderProductId()})|">구매확정
                 </button>
             </td>
+<!--            <td th:if="${orderProduct.getStatus().equals('구매확정')}">-->
+<!--                <button type="button">리뷰작성</button>-->
+<!--                &lt;!&ndash;TODO: 리뷰 작성 페이지로 이동하는 링크 추가&ndash;&gt;-->
+<!--            </td>-->
             <td th:if="${orderProduct.getStatus().equals('구매확정')}">
-                <button type="button">리뷰작성</button>
-                <!--TODO: 리뷰 작성 페이지로 이동하는 링크 추가-->
+                <form th:action="@{/book/detail/{id}(id=${orderProduct.getBookId()})}" method="get">
+                    <button type="submit">리뷰작성</button>
+                </form>
             </td>
         </tr>
         </tbody>

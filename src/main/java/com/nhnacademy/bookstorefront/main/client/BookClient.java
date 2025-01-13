@@ -7,6 +7,7 @@ import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.*;
+import com.nhnacademy.bookstorefront.main.dto.review.ReviewWithReviewImageDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -150,5 +151,11 @@ public interface BookClient {
     @GetMapping("/api/book-tags/{bookId}")
     ResponseEntity<List<BookTagResponseDto>> getBookTagsByBookId(@PathVariable Long bookId);
 
+    //sellingBookId에 해당하는 리뷰 가져오기
+    @GetMapping("/api/books/{sellingBookId}/reviews")
+    ResponseEntity<List<ReviewWithReviewImageDto>> getReviewsBySellingBookId(@PathVariable("sellingBookId") Long sellingBookId);
 
+    //책 평점
+    @GetMapping("/api/books/{sellingBookId}/reviews/avg")
+    Double getAverageReview(@PathVariable("sellingBookId") Long sellingBookId);
 }
