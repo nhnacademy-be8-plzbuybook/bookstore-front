@@ -364,12 +364,12 @@
                     <td th:text="${book.standardBookPrice}"></td>
                     <td>
                         <!-- 수정 버튼 -->
-                        <form th:action="@{'/admin/selling-books/update/' + ${book.bookId}}" method="GET">
+                        <form th:action="@{'/admin/books/' + ${book.bookId}}" method="GET">
                             <button type="submit" style="background-color: forestgreen; color: white;">수정</button>
                         </form>
 
                         <!-- 삭제 버튼 -->
-                        <form th:action="@{'/admin/selling-books/delete/' + ${book.bookId}}" method="POST">
+                        <form th:action="@{'/admin/books/' + ${book.bookId}}" method="POST">
                             <button type="submit" style="background-color: red; color: white;">삭제</button>
                         </form>
 

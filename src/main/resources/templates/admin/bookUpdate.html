@@ -186,7 +186,7 @@
         <div class="form-container">
             <h3>도서 수정</h3>
             <form id="bookForm" action="/admin/selling-books/update" method="POST">
-                <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}" />
+                <input type="hidden" name="sellingBookId" th:value="${book.bookId}" />
 
                 <label for="bookTitle">제목</label>
                 <input type="text" id="bookTitle" name="bookTitle" th:value="${book.bookTitle}" required>
@@ -206,17 +206,7 @@
                 <label for="bookPriceStandard">정가</label>
                 <input type="number" id="bookPriceStandard" name="bookPriceStandard" th:value="${book.bookPriceStandard}" required>
 
-                <label for="sellingBookPrice">판매가</label>
-                <input type="number" id="sellingBookPrice" name="sellingBookPrice" th:value="${book.sellingBookPrice}" required>
 
-                <label for="sellingBookStock">재고</label>
-                <input type="number" id="sellingBookStock" name="sellingBookStock" th:value="${book.sellingBookStock}" required>
-
-                <label>
-                    <input type="checkbox" id="sellingBookPackageable" name="sellingBookPackageable"
-                           th:checked="${book.sellingBookPackageable}" />
-                    포장 가능 여부
-                </label>
 
                 <label for="imageUrl">이미지 URL</label>
                 <input type="url" id="imageUrl" name="imageUrl" th:value="${book.imageUrl}" placeholder="이미지 URL을 입력하세요">
