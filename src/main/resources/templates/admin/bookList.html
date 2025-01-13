@@ -350,33 +350,26 @@
                     <th>출판일</th>
                     <th>출판사</th>
                     <th>ISBN</th>
-                    <th>판매가</th>
-                    <th>포장 가능 여부</th>
-                    <th>재고</th>
-                    <th>판매상태</th>
+                    <th>정가</th>
                     <th>수정/삭제</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="book : ${books}">
-                    <td th:text="${book.sellingBookId}"></td>
+                    <td th:text="${book.bookId}"></td>
                     <td th:text="${book.bookTitle}"></td>
                     <td th:text="${book.bookPubDate}"></td>
                     <td th:text="${book.publisher}"></td>
                     <td th:text="${book.bookIsbn13}"></td>
-                    <td th:text="${book.sellingBookPrice}"></td>
-                    <td th:text="${book.sellingBookPackageable ? 'Yes' : 'No'}"></td>
-                    <td th:text="${book.sellingBookStock}"></td>
-                    <td th:text="${book.sellingBookStatus}"></td>
+                    <td th:text="${book.standardBookPrice}"></td>
                     <td>
                         <!-- 수정 버튼 -->
-                        <form th:action="@{'/admin/selling-books/update/' + ${book.sellingBookId}}" method="GET">
+                        <form th:action="@{'/admin/selling-books/update/' + ${book.bookId}}" method="GET">
                             <button type="submit" style="background-color: forestgreen; color: white;">수정</button>
                         </form>
-                        <p th:text="${book.sellingBookId}">[책 ID가 여기에 표시됩니다]</p>
 
                         <!-- 삭제 버튼 -->
-                        <form th:action="@{'/admin/selling-books/delete/' + ${book.sellingBookId}}" method="POST">
+                        <form th:action="@{'/admin/selling-books/delete/' + ${book.bookId}}" method="POST">
                             <button type="submit" style="background-color: red; color: white;">삭제</button>
                         </form>
 

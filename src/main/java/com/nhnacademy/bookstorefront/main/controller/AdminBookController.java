@@ -2,7 +2,6 @@ package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.AdminBookRegisterDto;
-import com.nhnacademy.bookstorefront.main.dto.AdminSellingBookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.SellingBookRegisterDto;
 import jakarta.validation.Valid;
@@ -36,21 +35,13 @@ public class AdminBookController {
             @RequestParam(defaultValue = "10") int size,
             Model model
     ) {
-        Page<AdminSellingBookRegisterDto> books = bookClient.adminGetBooks(page, size);
+        Page<AdminBookRegisterDto> books = bookClient.adminGetBooks(page, size);
         model.addAttribute("books", books.getContent());  // books.getContent()로 리스트만 전달
         model.addAttribute("currentPage", books.getNumber());
         model.addAttribute("totalPages", books.getTotalPages());
         return "admin/bookList";
     }
 
-
-    // 도서 상세 조회
-    @GetMapping("/{id}")
-    public String getBookDetails(@PathVariable Long id, Model model) {
-        BookDetailResponseDto book = bookClient.getSellingBook(id);
-        model.addAttribute("book", book);
-        return "admin/bookDetails"; // templates/admin/bookDetails.html
-    }
 
 
 
@@ -74,23 +65,23 @@ public class AdminBookController {
 
     }
 
-    /**
-     * 도서 책 수정 폼 데이터 가져오기
-     * @param sellingBookId
-     * @param model
-     * @return
-     */
-    @GetMapping("/update/{sellingBookId}")
-    public String getUpdateForm(@PathVariable Long sellingBookId, Model model) {
-        AdminBookRegisterDto book = bookClient.getUpdateForm(sellingBookId);
-
-        if (book == null || book.getSellingBookId() == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Selling book not found.");
-        }
-
-        model.addAttribute("book", book);
-        return "admin/update";
-    }
+//    /**
+//     * 도서 책 수정 폼 데이터 가져오기
+//     * @param sellingBookId
+//     * @param model
+//     * @return
+//     */
+//    @GetMapping("/update/{sellingBookId}")
+//    public String getUpdateForm(@PathVariable Long sellingBookId, Model model) {
+//        AdminBookRegisterDto book = bookClient.getUpdateForm(sellingBookId);
+//
+//        if (book == null || book.getSellingBookId() == null) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Selling book not found.");
+//        }
+//
+//        model.addAttribute("book", book);
+//        return "admin/update";
+//    }
 
     /**
      * 도서 수정 데이터 저장
