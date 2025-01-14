@@ -128,7 +128,7 @@
                         th:text="${#temporals.format(orderDetail.getOrderDelivery().getRegisteredAt(), 'yyyy/MM/dd HH:mm')}"></td>
                 </tr>
                 <tr>
-                    <td th:if="${orderDetail.getStatus().getStatus() != '배송완료'}">
+                    <td th:if="${orderDetail.getOrderDelivery().getTrackingNumber() != null}">
                         <button id="delivery-completion-btn">배송완료 처리</button>
                     </td>
                     <td th:if="${orderDetail.getStatus().getStatus() == '배송완료'}">
@@ -211,7 +211,7 @@
                 </tr>
                 <tr>
                     <td>할인금액</td>
-                    <td>1000원</td>
+                    <td th:text="${orderDetail.getOrderProducts()}"></td>
                 </tr>
                 <tr>
                     <td>배송비</td>
@@ -249,7 +249,7 @@
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ status: status })
+                body: JSON.stringify({status: status})
 
             })
 
@@ -262,22 +262,24 @@
         })
     });
 
-   function addDeliveryCompletionListener() {
-        const deliveryCompletionBtn = document.getElementById("delivery-completion-btn");
+    function addDeliveryCompletionListener() {
         const orderId = [[${orderDetail.getOrderId()}]];
-        deliveryCompletionBtn.addEventListener('click', async () => {
-            const response = await fetch(`/api/orders/${orderId}/deliveries/1/complete`, { //TODO: url에 deliveryId 필요한지 검토, 일단은 하드코딩
-                method: 'POST',
+        const deliveryCompletionBtn = document.getElementById("delivery-completion-btn");
+        if (deliveryCompletionBtn) {
+            deliveryCompletionBtn.addEventListener('click', async () => {
+                const response = await fetch(`/api/orders/${orderId}/deliveries/1/complete`, { //TODO: url에 deliveryId 필요한지 검토, 일단은 하드코딩
+                    method: 'POST',
 
-            })
+                })
 
-            if (!response.ok) {
-                alert("배송완료 처리가 실패했습니다.");
-                return;
-            }
-            alert(`배송완료처리 되었습니다.`);
-            window.location.reload();
-        });
+                if (!response.ok) {
+                    alert("배송완료 처리가 실패했습니다.");
+                    return;
+                }
+                alert(`배송완료처리 되었습니다.`);
+                window.location.reload();
+            });
+        }
     }
 </script>
 </body>
