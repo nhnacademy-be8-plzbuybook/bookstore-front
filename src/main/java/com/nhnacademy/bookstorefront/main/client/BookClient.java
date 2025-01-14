@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorefront.main.client;
 
 
 import com.nhnacademy.bookstorefront.main.dto.*;
+import com.nhnacademy.bookstorefront.main.dto.book.AuthorResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategoryRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
