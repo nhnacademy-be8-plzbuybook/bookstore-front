@@ -4,9 +4,9 @@ package com.nhnacademy.bookstorefront.main.client;
 import com.nhnacademy.bookstorefront.main.dto.*;
 import com.nhnacademy.bookstorefront.main.dto.book.CategoryRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.*;
+import com.nhnacademy.bookstorefront.main.dto.review.ReviewWithReviewImageDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -32,20 +32,20 @@ public interface BookClient {
     BookDetailResponseDto getSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
 
     // 관리자용 도서 목록 조회 (페이징 처리만)
-    @GetMapping("/api/selling-books")
-    Page<AdminSellingBookRegisterDto> adminGetBooks(
+    @GetMapping("/api/admin/selling-books")
+    Page<AdminBookRegisterDto> adminGetBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     );
 
-    /**
-     * 관리자 도서관리에서 도서 수정 - 불러오기
-     * @param sellingBookId
-     * @param
-     * @return
-     */
-    @GetMapping("/api/admin/selling-books/{sellingBookId}")
-    AdminBookRegisterDto getUpdateForm(@PathVariable("sellingBookId") Long sellingBookId);
+//    /**
+//     * 관리자 도서관리에서 도서 수정 - 불러오기
+//     * @param sellingBookId
+//     * @param
+//     * @return
+//     */
+//    @GetMapping("/api/admin/selling-books/{sellingBookId}")
+//    AdminBookRegisterDto getUpdateForm(@PathVariable("sellingBookId") Long sellingBookId);
 
     /**
      * 관리자 도서 관리에서 도서 수정 - 수정후 데이터베이스 반영
@@ -150,5 +150,21 @@ public interface BookClient {
     @GetMapping("/api/book-tags/{bookId}")
     ResponseEntity<List<BookTagResponseDto>> getBookTagsByBookId(@PathVariable Long bookId);
 
+    //sellingBookId에 해당하는 리뷰 가져오기
+    @GetMapping("/api/books/{sellingBookId}/reviews")
+    ResponseEntity<Page<ReviewWithReviewImageDto>> getReviewsByBookId(@PathVariable("sellingBookId") Long sellingBookId,
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "2") int size);
+
+    //책 평점
+    @GetMapping("/api/books/{sellingBookId}/reviews/avg")
+    Double getAverageReview(@PathVariable("sellingBookId") Long sellingBookId);
+
+    //리뷰 수정
+    @PostMapping(value = "/api/reviews/{reviewId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<Object> updateReview(@PathVariable("reviewId") Long reviewId,
+                                        @RequestParam("score") Integer score,
+                                        @RequestPart("content") String content,
+                                        @RequestPart(value = "images", required = false) List<MultipartFile> images);
 
 }

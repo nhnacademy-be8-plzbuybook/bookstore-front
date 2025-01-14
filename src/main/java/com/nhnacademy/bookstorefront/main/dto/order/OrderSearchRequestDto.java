@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorefront.main.dto.order;
 
+import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,13 +18,20 @@ public class OrderSearchRequestDto {
     @Nullable
     private LocalDate orderedAt;
     @Nullable
-    private String orderStatus;
+    private OrderStatus orderStatus;
+    @Nullable
+    private String orderNumber;
 
-    public OrderSearchRequestDto(@Nullable String memberId, @Nullable String productName,
-                                 @Nullable LocalDate orderedAt, @Nullable String orderStatus) {
+    public OrderSearchRequestDto(@Nullable String memberId,
+                                 @Nullable String productName,
+                                 @Nullable LocalDate orderedAt,
+                                 @Nullable OrderStatus orderStatus,
+                                 @Nullable String orderNumber
+    ) {
         this.memberId = memberId;
         this.productName = productName;
         this.orderedAt = orderedAt;
         this.orderStatus = orderStatus;
+        this.orderNumber = orderNumber;
     }
 }

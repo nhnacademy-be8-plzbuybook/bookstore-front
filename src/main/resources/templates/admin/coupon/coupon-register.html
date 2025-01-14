@@ -6,7 +6,9 @@
     <title>쿠폰 등록 페이지</title>
     <link rel="stylesheet" href="/css/coupon/coupon-register.css">
     <link rel="stylesheet" href="/css/layout/layout.css">
-    <script src="/js/coupon/coupon_modal.js" defer></script>
+    <script src="/js/coupon/coupon-register-modal.js" defer></script>
+    <script src="/js/coupon/coupon-policy-find-modal.js"></script>
+    <script src="/js/coupon/coupon-find-modal.js" defer></script>
 </head>
 <body>
 <th:block th:replace="~{layout/layout::headerFragment}"></th:block>
@@ -21,6 +23,8 @@
         <a href="/adminpage" class="group" data-section="category-management">카테고리 관리</a>
         <a href="/adminpage" class="group" data-section="point-condition-management">포인트 조건 관리</a>
         <a href="/admin/category" class="group">카테고리 관리</a>
+        <a href="/admin/coupon-register">쿠폰 제작</a>
+        <a href="/admin/coupon-issue">쿠폰 발급</a>
     </div>
     <!-- 메인 콘텐츠 -->
 
@@ -112,38 +116,45 @@
         </div>
     </div>
 
-
     <!-- 쿠폰정책 조회 -->
-    <button type="button" onclick="openPolicyModal('couponPolicyModal')">쿠폰 정책 조회</button>
+    <div>
+        <button type="button" onclick="openModal('/admin/coupon-policies?page=0')">쿠폰 정책 조회</button>
+    </div>
+    <div id="couponPolicyModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div id="couponPolicyModalContent"></div>
+        </div>
+    </div>
 
-    <span id="selectedPolicyDisplay">선택된 정책 ID: 없음</span>
-    <input type="hidden" id="selectedPolicyId" name="selectedPolicyId">
 
 
-<!--    &lt;!&ndash; 쿠폰 생성 &ndash;&gt;-->
-<!--    <h3>쿠폰 생성</h3>-->
-<!--    <form action="/admin/coupons" method="post">-->
-<!--        <label for="expired-at">만료일</label>-->
-<!--        <input type="datetime-local" id="expired-at" name="expiredAt" required><br>-->
+    <!-- 쿠폰 생성 -->
+    <h3>쿠폰 생성</h3>
+    <form action="/admin/coupons" method="post">
+        <label for="expired-at">만료일</label>
+        <input type="datetime-local" id="expired-at" name="expiredAt" required><br>
 
-<!--        <label for="coupon-policy-id">적용할 쿠폰정책 ID</label>-->
-<!--        <input type="number" id="coupon-policy-id" name="couponPolicyId" required><br>-->
+        <label for="coupon-policy-id">적용할 쿠폰정책 ID</label>
+        <input type="number" id="coupon-policy-id" name="couponPolicyId" required><br>
 
-<!--        <button type="submit">쿠폰 생성</button>-->
-<!--    </form>-->
+        <button type="submit">쿠폰 생성</button>
+    </form>
 
-<!--    &lt;!&ndash; 쿠폰 조회 버튼 &ndash;&gt;-->
-<!--    <button type="button" onclick="openCouponPopup()">쿠폰 조회</button>-->
+    <!-- 쿠폰 조회 -->
+    <div>
+        <button type="button" onclick="openCouponModal('/admin/coupons?page=0')">쿠폰 조회</button>
+    </div>
+    <div id="couponModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div id="couponModalContent">
 
-<!--    <script>-->
-<!--        function openCouponPopup() {-->
-<!--            window.open(-->
-<!--                '/admin/coupon-popup',-->
-<!--                '쿠폰 조회',-->
-<!--                'width=800,height=600,scrollbars=yes'-->
-<!--            );-->
-<!--        }-->
-<!--    </script>-->
+            </div>
+            <button type="button" onclick="closeCouponModal()">닫기</button>
+        </div>
+
+    </div>
+
+
 </main>
 
 <script>

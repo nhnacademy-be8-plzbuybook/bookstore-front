@@ -5,12 +5,8 @@ import com.nhnacademy.bookstorefront.main.client.BookSearchClient;
 import com.nhnacademy.bookstorefront.main.client.CouponClient;
 import com.nhnacademy.bookstorefront.main.dto.BookSearchPagedResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicyResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicySaveRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponTargetResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponTargetSaveRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.coupon.*;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +21,7 @@ import java.util.Objects;
 
 @RequiredArgsConstructor
 @Controller
-public class CouponRegisterController {
+public class AdminCouponRegisterController {
     private final CouponClient couponClient;
     private final BookClient bookClient;
     private final BookSearchClient bookSearchClient;
@@ -72,7 +68,7 @@ public class CouponRegisterController {
         return "admin/coupon/coupon-category-search";
     }
 
-    // 쿠폰정책 생성 및 쿠폰 대상 생성
+    // 쿠폰정책 생성 및 쿠폰대상 생성
     @PostMapping("/admin/coupon-policies")
     public String createCouponPolicyAndTarget(
             @ModelAttribute @Valid CouponPolicySaveRequestDto couponPolicyRequestDto,
@@ -94,4 +90,12 @@ public class CouponRegisterController {
 
         return "redirect:/admin/coupon-register";
     }
+
+    // 쿠폰생성
+    @PostMapping("/admin/coupons")
+    public String createCoupon(@ModelAttribute CouponCreateRequestDto createRequest) {
+        couponClient.createCoupon(createRequest);
+        return "redirect:/admin/coupon-register";
+    }
+
 }

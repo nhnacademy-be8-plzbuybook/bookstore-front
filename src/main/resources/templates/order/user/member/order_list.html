@@ -37,7 +37,7 @@
         <tbody>
         <tr th:each="order: ${orderPage.getContent()}">
             <td><a th:href="@{/orders/{orderId}(orderId=${order.getId()})}" th:text="${order.getOrderName()}"></a></td>
-            <td><span class="status-tag status-completed" th:text="${order.getOrderStatus()}"></span></td>
+            <td><span class="status-tag status-completed" th:text="${order.getOrderStatus().getStatus()}"></span></td>
             <td th:text="${#temporals.format(order.getOrderDate(), 'yyyy/MM/dd HH:mm')}">2025-01-02</td>
             <td th:text="${order.getPaymentAmount()}">₩50,000</td>
         </tr>

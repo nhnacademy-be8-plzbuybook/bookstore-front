@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>배송비정책 관리</title>
+</head>
+<body>
+<h1>배송비정책 관리</h1>
+d<table>
+    <thead>
+    <tr>
+        <th>번호</th>
+        <th>정책이름</th>
+        <th>기본배송비</th>
+        <th>무료배송 기준금액</th>
+        <th>관리</th>
+    </tr>
+    </thead>
+    <tr>
+        <td></td>
+        <td>
+            <input type="text" id="name" placeholder="정책이름을 입력해주세요.">
+        </td>
+        <td>
+            <input type="number" id="defaultDeliveryFee" placeholder="기본배송비를 입력해주세요.">
+        </td>
+        <td>
+            <input type="number" id="freeDeliveryThreshold" placeholder="무료배송 기준금액을 입력해주세요.">
+        </td>
+        <td>
+            <button type="button" id="saveBtn" onclick="registerPolicy()">등록</button>
+        </td>
+    </tr>
+    <tr th:each="policy: ${policies}" th:id="'policy-row-' + ${policy.getId()}" >
+        <td>
+            <span th:text="${policy.getId()}"></span>
+        </td>
+        <td>
+            <span th:text="${policy.getName()}"></span>
+            <input type="text" style="display: none;" th:value="${policy.getName()}" />
+        </td>
+        <td>
+            <span th:text="${policy.getDefaultDeliveryFee()}"></span>
+            <input type="number" style="display: none;" th:value="${policy.getDefaultDeliveryFee()}" />
+        </td>
+        <td>
+            <span th:text="${policy.getFreeDeliveryThreshold()}"></span>
+            <input type="number" style="display: none;" th:value="${policy.getFreeDeliveryThreshold()}" />
+        </td>
+        <td>
+            <div class="view-buttons">
+                <button type="button" th:onclick="editPolicy([[${policy.getId()}]])">수정</button>
+                <button type="button" th:onclick="removePolicy([[${policy.getId()}]])">삭제</button>
+            </div>
+            <div class="edit-buttons" style="display: none;">
+                <button type="button" th:onclick="updatePolicy([[${policy.getId()}]])">저장</button>
+                <button type="button" th:onclick="cancelEdit([[${policy.getId()}]])">취소</button>
+            </div>
+        </td>
+    </tr>
+</table>
+<script>
+    // 정책 등록
+    async function registerPolicy() {
+        const name = document.getElementById('name').value;
+        const defaultDeliveryFee = document.getElementById('defaultDeliveryFee').value;
+        const freeDeliveryThreshold = document.getElementById('freeDeliveryThreshold').value;
+        const data = {
+            name: name,
+            defaultDeliveryFee: defaultDeliveryFee,
+            freeDeliveryThreshold: freeDeliveryThreshold
+        }
+
+        const response = await fetch('/api/delivery-fee-policies', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+
+        if (!response.ok) {
+            alert('배송비정책 등록에 실패했습니다.');
+            return;
+        }
+
+        alert('배송비정책이 등록되었습니다.');
+        window.location.reload();
+    }
+
+    // 정책 삭제
+    async function removePolicy(id) {
+        const response = await fetch(`/api/delivery-fee-policies/${id}`, {
+            method: 'DELETE'
+        })
+
+        if (!response.ok) {
+            alert('배송비정책 삭제에 실패했습니다.');
+            return;
+        }
+
+        alert('배송비정책이 삭제되었습니다.');
+        window.location.reload();
+    }
+
+    // 수정 모드 활성화
+    function editPolicy(id) {
+        const row = document.getElementById(`policy-row-${id}`);
+        const spans = row.querySelectorAll('span');
+        const inputs = row.querySelectorAll('input');
+        const viewButtons = row.querySelector('.view-buttons');
+        const editButtons = row.querySelector('.edit-buttons');
+
+        // span을 숨기고 input을 보여줌
+        spans.forEach((span, index) => {
+            if (index === 0) return; // ID는 수정하지 않음
+            span.style.display = 'none';
+            inputs[index - 1].style.display = ''; // index-1 because we skip the first span (ID)
+        });
+
+        // 버튼 변경
+        viewButtons.style.display = 'none';
+        editButtons.style.display = '';
+    }
+
+    // 수정 취소
+    function cancelEdit(id) {
+        const row = document.getElementById(`policy-row-${id}`);
+        const spans = row.querySelectorAll('span');
+        const inputs = row.querySelectorAll('input');
+        const viewButtons = row.querySelector('.view-buttons');
+        const editButtons = row.querySelector('.edit-buttons');
+
+        // input을 숨기고 span을 보여줌
+        spans.forEach((span, index) => {
+            if (index === 0) return; // ID는 건너뜀
+            span.style.display = '';
+            inputs[index - 1].style.display = 'none';
+        });
+
+        // 버튼 변경
+        viewButtons.style.display = '';
+        editButtons.style.display = 'none';
+    }
+
+    // 정책 저장
+    async function updatePolicy(id) {
+        const row = document.getElementById(`policy-row-${id}`);
+        const inputs = row.querySelectorAll('input');
+        const data = {
+            name: inputs[0].value,
+            defaultDeliveryFee: inputs[1].value,
+            freeDeliveryThreshold: inputs[2].value
+        };
+
+        const response = await fetch(`/api/delivery-fee-policies/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            alert('정책 수정에 실패했습니다.');
+            return;
+        }
+
+        alert('정책이 수정되었습니다.');
+        window.location.reload();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쿠폰 발급</title>
+    <script src="/js/coupon/coupon-issue-modal.js"></script>
+    <script src="/js/coupon/coupon-member-find-modal.js"></script>
+    <script src="/js/coupon/coupon-history-modal.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            text-decoration: none;
+            color: inherit;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header .menu a,
+        header .icons a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        header .menu a:hover,
+        header .icons a:hover {
+            color: #f1f1f1;
+        }
+
+        main {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .sidebar .group {
+            display: block; /* a 태그를 블록 요소로 변경 */
+            text-decoration: none; /* 기본 밑줄 제거 */
+            color: inherit; /* 기본 색상 상속 */
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .sidebar .group.active,
+        .sidebar .group:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f1f1f1;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            color: #333;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+
+        .pagination .disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+            font-weight: bold;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            font-weight: bold;
+            border: 1px solid #f5c6cb;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #00aaff;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+
+    </style>
+</head>
+<body>
+<header>
+    <a href="/" class="logo">📚 책사조잉 📚</a>
+    <nav class="menu">
+        <a href="/">홈</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="/logout">로그아웃</a>
+    </div>
+</header>
+<main>
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <div class="group active" data-section="member-management">회원 관리</div>
+        <a href="/admin/selling-books" class="group">도서 관리</a>
+        <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
+        <div class="group" data-section="coupon-management">쿠폰 관리</div>
+        <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
+        <div class="group" data-section="tag-management">태그 관리</div>
+        <div class="group" data-section="category-management">카테고리 관리</div>
+        <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
+
+        <a href="/admin/category" class="group">카테고리 관리</a>
+        <a href="/admin/coupon-register">쿠폰 제작</a>
+        <a href="/admin/coupon-issue">쿠폰 발급</a>
+    </div>
+
+    <!-- 회원에게 쿠폰 발급 -->
+    <h3>회원 쿠폰 발급</h3>
+
+    <div>
+        <form id="couponIssueForm" action="/admin/member-coupons" method="post">
+            <label for="mcMemberId">회원 ID:</label>
+            <input type="number" id="mcMemberId" name="mcMemberId" required><br>
+
+            <label for="couponId">쿠폰 ID:</label>
+            <input type="number" id="couponId" name="couponId" required><br>
+
+            <button type="submit">발급</button>
+        </form>
+    </div>
+
+<!--    &lt;!&ndash; 회원쿠폰 발급 모달 &ndash;&gt;-->
+<!--    <div>-->
+<!--        <button type="button" onclick="openCouponIssueModal('/admin/coupon-issue')">회원 쿠폰 발급</button>-->
+<!--    </div>-->
+
+<!--    <div id="couponIssueModal" class="modal" style="display: none;">-->
+<!--        <div class="modal-content">-->
+<!--            <span class="close" onclick="closeModal('couponIssueModal')">&times;</span>-->
+<!--            <div id="couponIssueModalContent"></div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <h3>회원 쿠폰 목록</h3>
+    <div>
+        <button type="button" onclick="openCouponMemberModal('/admin/member-coupons?page=0&pageSize=5')">회원 쿠폰 목록 조회</button>
+    </div>
+
+    <div id="couponMemberModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('couponMemberModal')">&times;</span>
+            <div id="couponMemberModalContent"></div>
+        </div>
+    </div>
+
+    <!-- 쿠폰 이력 조회 -->
+    <h3>쿠폰 이력 조회</h3>
+    <div>
+        <label for="couponIdInput">쿠폰 ID:</label>
+        <input type="number" id="couponIdInput" placeholder="쿠폰 ID를 입력하세요">
+        <button type="button" onclick="searchCouponHistories()">조회하기</button>
+    </div>
+    <div id="couponHistoryModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('couponHistoryModal')">&times;</span>
+            <div id="couponHistoryModalContent"></div>
+        </div>
+    </div>
+
+
+</main>
+</body>
+</html>

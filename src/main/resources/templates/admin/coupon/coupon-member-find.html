@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 쿠폰 목록</title>
+    <script src="/js/coupon/coupon-member-find-modal.js"></script>
+</head>
+<body>
+<h3>회원 쿠폰 목록</h3>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>회원 쿠폰 ID</th>
+            <th>회원 ID</th>
+            <th>쿠폰 ID</th>
+            <th>쿠폰 코드</th>
+            <th>쿠폰 상태</th>
+            <th>발급일</th>
+            <th>만료일</th>
+            <th>쿠폰정책 ID</th>
+            <th>쿠폰 정책 이름</th>
+            <th>할인 타입</th>
+            <th>최소 금액</th>
+            <th>최대 할인 금액</th>
+            <th>할인 비율</th>
+            <th>중복 사용 여부</th>
+            <th>쿠폰 적용 범위</th>
+            <th>쿠폰 정책 유효 여부</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="memberCoupon : ${memberCoupons}">
+            <td th:text="${memberCoupon.memberCouponId()}"></td>
+            <td th:text="${memberCoupon.memberId()}"></td>
+            <td th:text="${memberCoupon.coupon.couponId()}"></td>
+            <td th:text="${memberCoupon.coupon.code()}"></td>
+            <td th:text="${memberCoupon.coupon.status()}"></td>
+            <td th:text="${#temporals.format(memberCoupon.coupon.issuedAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${#temporals.format(memberCoupon.coupon.expiredAt(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${memberCoupon.coupon.couponPolicyId()}"></td>
+            <td th:text="${memberCoupon.coupon.name()}"></td>
+            <td th:text="${memberCoupon.coupon.saleType()}"></td>
+            <td th:text="${memberCoupon.coupon.minimumAmount()}"></td>
+            <td th:text="${memberCoupon.coupon.discountLimit()}"></td>
+            <td th:text="${memberCoupon.coupon.discountRatio()}"></td>
+            <td th:text="${memberCoupon.coupon.isStackable() ? '가능' : '불가능'}"></td>
+            <td th:text="${memberCoupon.coupon.couponScope()}"></td>
+            <td th:text="${memberCoupon.coupon.couponActive() ? '유효' : '만료'}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <label for="pageInput">페이지 번호:</label>
+        <input type="number" id="pageInput" min="0" th:value="${currentPage}" style="width: 60px;">
+        <button type="button" onclick="goToMemberFindPageByInput()">이동</button>
+        <br><br>
+
+        <button th:if="${currentPage > 0}"
+                th:onclick="'goToMemberFindPage(' + (${currentPage} - 1) + ')'"
+                th:text="'이전'">
+        </button>
+
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <button th:onclick="'goToMemberFindPage(' + ${i} + ')'"
+                th:text="${i + 1}"
+                th:classappend="${i == currentPage} ? 'active' : ''">
+        </button>
+        </span>
+
+        <button th:if="${currentPage < totalPages - 1}"
+                th:onclick="'goToMemberFindPage(' + (${currentPage} + 1) + ')'"
+                th:text="'다음'">
+        </button>
+    </div>
+</div>
+</body>
+</html>

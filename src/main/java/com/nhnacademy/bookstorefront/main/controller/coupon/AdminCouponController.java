@@ -17,37 +17,18 @@ import org.springframework.web.bind.annotation.*;
 public class AdminCouponController {
     private final CouponClient couponClient;
 
-    // 쿠폰생성
-    @PostMapping("/admin/coupons")
-    public String createCoupon(@ModelAttribute CouponCreateRequestDto createRequest) {
-        couponClient.createCoupon(createRequest);
-        return "redirect:/adminpage";
-    }
-
-    // 전체 쿠폰 목록 조회
-    @GetMapping("/admin/coupons")
-    public String getAllCoupons(@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) int pageSize, Model model) {
-        Page<CouponResponseDto> coupons = couponClient.getAllCoupons(page, pageSize).getBody();
-
-        model.addAttribute("coupons", coupons);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("pageSize", pageSize);
-        model.addAttribute("totalPages", coupons != null ? coupons.getTotalPages() : 0);
-
-        return "admin/adminPage";
+    // 쿠폰 발급 페이지 폼
+    @GetMapping("/admin/coupon-issue")
+    public String couponIssue() {
+        return "admin/coupon/coupon-issue";
     }
 
     // 회원에게 쿠폰 발급
     @PostMapping("/admin/member-coupons")
-    public ResponseEntity<String> createMemberCoupon(@ModelAttribute MemberCouponCreateRequestDto memberCouponCreateRequestDto, Model model) {
-        try {
-            couponClient.createMemberCoupon(memberCouponCreateRequestDto);
-            model.addAttribute("successMessage", "쿠폰 발급이 성공적으로 완료되었습니다!");
-        } catch (Exception e) {
-            model.addAttribute("errorMessage", "쿠폰 발급에 실패하였습니다: " + e.getMessage());
-        }
+    public String createMemberCoupon(@ModelAttribute MemberCouponCreateRequestDto memberCouponCreateRequestDto, Model model) {
+        couponClient.createMemberCoupon(memberCouponCreateRequestDto);
 
-        return ResponseEntity.ok("쿠폰 발급이 성공적으로 완료되었습니다!");
+        return "admin/coupon/coupon-issue";
     }
 
     // 회원쿠폰 전체 조회
@@ -62,7 +43,7 @@ public class AdminCouponController {
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("totalPages", memberCoupons != null ? memberCoupons.getTotalPages() : 0);
 
-        return "admin/adminPage";
+        return "admin/coupon/coupon-member-find";
     }
 
     // 쿠폰 ID에 해당하는 쿠폰 이력 목록 조회
@@ -77,7 +58,7 @@ public class AdminCouponController {
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("totalPages", couponHistories != null ? couponHistories.getTotalPages() : 0);
 
-        return "admin/adminPage";
+        return "admin/coupon/coupon-histories";
     }
 
 
