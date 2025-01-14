@@ -73,13 +73,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // 포인트 적용 버튼 클릭 이벤트
     applyPointBtn.addEventListener('click', () => {
         const usedPoint = parseInt(usedPointInput.value) || 0;
+        const currentDiscount = parseInt(discountAmountEl.innerText) || 0;
 
         // 현재 포인트 적용 값 업데이트
         currentUsedPoint = usedPoint;
 
-
         // 할인 금액 업데이트
-        discountAmountEl.innerText = currentUsedPoint;
+        discountAmountEl.innerText = currentDiscount + currentUsedPoint;
 
         // 총 결제 금액 다시 계산
         calculateTotal();
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // 배송비 계산 (기준 금액을 넘으면 무료 배송)
         const shippingFee = orderAmount < feeDeliveryThreshold ? defaultDeliveryFee : 0;
 
-        // 쿠폰 할인 금액 가져오기
+        // 할인 금액 가져오기
         const discountAmount = parseInt(document.getElementById("discountAmount").value) || 0;
         console.log(`계산 중 할인 금액: ${discountAmount}`);
 
