@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/index.css?v=1.0">
@@ -673,6 +674,8 @@
                     <div th:if="${error}" class="error-message">
                         <p th:text="${error}"></p>
                     </div>
+                    <button onclick="execDaumPostcode()">주소 검색</button>
+                    <div id="postcode-container" style="display: none; border: 1px solid #000; width: 100%; height: 500px;"></div>
 
                     <label for="locationAddress">도로명 주소</label>
                     <input type="text" id="locationAddress" name="locationAddress" placeholder="도로명 주소를 입력하세요" required>
@@ -845,6 +848,7 @@
             });
         });
     });
+
     function applyFilters() {
         const keyword = document.getElementById("searchKeyword").value;
         const status = document.getElementById("statusFilter").value;
@@ -901,7 +905,25 @@
         filterPoints("ALL");
     });
 
+    function execDaumPostcode() {
+        var container = document.getElementById('postcode-container'); // 결과를 표시할 div
+        container.style.display = 'block'; // div를 보이게 설정
 
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 선택된 주소 정보를 설정
+                document.getElementById("locationAddress").value = data.roadAddress; // 도로명 주소 채우기
+
+                // 주소 입력 후 DIV 숨기기
+                container.style.display = 'none';
+            },
+            onresize: function(size) {
+                container.style.height = size.height + 'px';
+            },
+            width: '100%',
+            height: '100%'
+        }).embed(container);
+    }
 </script>
 </body>
 </html>
