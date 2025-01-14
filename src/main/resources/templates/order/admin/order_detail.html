@@ -33,7 +33,7 @@
                         <option
                                 th:each="status: ${orderStatuses}"
                                 th:value="${status}"
-                                th:text="${status}">
+                                th:text="${status.getStatus()}">
                         </option>
                     </select>
                     <button style="margin-left: 10px;"
@@ -94,7 +94,7 @@
     <span th:text="${orderDetail.getDeliveryWishDate()}"></span>
     <!--    주문배송이 등록되지 않았을 때 등록폼 보여줌-->
     <div th:unless="${orderDetail.getOrderDelivery().getTrackingNumber() != null}">
-        <div th:replace="~{/order/admin/orderDelivery/register_form::orderDeliveryRegisterForm(orderId=${orderDetail.getOrderId()})}"></div>
+        <div th:replace="~{order/admin/orderDelivery/register_form::orderDeliveryRegisterForm(orderId=${orderDetail.getOrderId()})}"></div>
     </div>
 
     <h2>주문 배송 정보</h2>
@@ -128,8 +128,11 @@
                         th:text="${#temporals.format(orderDetail.getOrderDelivery().getRegisteredAt(), 'yyyy/MM/dd HH:mm')}"></td>
                 </tr>
                 <tr>
-                    <td>
-                        <button>배송완료 처리</button>
+                    <td th:if="${orderDetail.getStatus().getStatus() != '배송완료'}">
+                        <button id="delivery-completion-btn">배송완료 처리</button>
+                    </td>
+                    <td th:if="${orderDetail.getStatus().getStatus() == '배송완료'}">
+                        <strong>배송완료</strong> <!--배송완료시간 업데이트-->
                     </td>
                 </tr>
                 </tbody>
@@ -229,6 +232,9 @@
 
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', () => {
+        // 배송완료버튼 이벤트 리스너
+        addDeliveryCompletionListener();
+
         const orderStatusComboBox = document.getElementById("orderStatusComboBox");
         const defaultValue = [[${orderDetail.getStatus()}]];
         orderStatusComboBox.value = defaultValue;
@@ -255,6 +261,24 @@
             window.location.reload();
         })
     });
+
+   function addDeliveryCompletionListener() {
+        const deliveryCompletionBtn = document.getElementById("delivery-completion-btn");
+        const orderId = [[${orderDetail.getOrderId()}]];
+        deliveryCompletionBtn.addEventListener('click', async () => {
+            const response = await fetch(`/api/orders/${orderId}/deliveries/1/complete`, { //TODO: url에 deliveryId 필요한지 검토, 일단은 하드코딩
+                method: 'POST',
+
+            })
+
+            if (!response.ok) {
+                alert("배송완료 처리가 실패했습니다.");
+                return;
+            }
+            alert(`배송완료처리 되었습니다.`);
+            window.location.reload();
+        });
+    }
 </script>
 </body>
 

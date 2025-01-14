@@ -10,25 +10,43 @@
 <body>
 
 <div class="container">
-    <h1>주문 목록 조회</h1>
-
-    <div class="search-filter">
-        <input type="text" id="searchKeyword" placeholder="주문 번호, 고객명 검색" />
-        <select id="statusFilter">
-            <option value="">주문 상태</option>
-            <option value="completed">배송 완료</option>
-            <option value="pending">배송 중</option>
-            <option value="cancelled">취소</option>
-        </select>
-        <input type="date" id="startDate" />
-        <input type="date" id="endDate" />
-        <button onclick="applyFilters()">검색</button>
+    <h1>주문 목록 조회(관리자)</h1>
+    <div>
+        <span><strong>주문상품</strong></span>
+        <input type="text" id="searchProductName" placeholder="상품명을 입력하세요"/>
     </div>
+    <div>
+        <span><strong>주문번호</strong></span>
+        <input type="text" id="searchOrderNumber" placeholder="주문 번호를 입력하세요"/>
+    </div>
+    <div>
+        <span><strong>고객명</strong></span>
+        <input type="text" id="searchMemberId" placeholder="회원 아이디를 입력하세요"/>
+    </div>
+    <div>
+        <span><strong>주문일시</strong></span>
+        <input type="date" id="orderedAt"/>
+    </div>
+
+    <div>
+        <span><strong>주문상태</strong></span>
+        <a
+                href="javascript:void(0);"
+                th:each="status: ${orderStatuses}"
+                th:text="${status.getStatus()}"
+                th:onclick="updateOrderStatus([[${status}]])"></a>
+    </div>
+    <div>
+        <button onclick="applyFilters()">검색</button>
+        <a href="/admin/orders">초기화</a>
+    </div>
+
 
     <table id="orderTable">
         <thead>
         <tr>
             <th>주문일시</th>
+            <th>주문번호</th>
             <th>주문상품</th>
             <th>주문자</th>
             <th>주문상태</th>
@@ -36,45 +54,68 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="order: ${orderList}">
+        <tr th:each="order: ${orderPage}">
             <td th:text="${#temporals.format(order.getOrderedAt(), 'yyyy/MM/dd HH:mm')}"></td>
             <td>
                 <a th:href="@{/admin/orders/{id}(id=${order.getId()})}" th:text="${order.getOrderName()}"></a>
             </td>
             <td th:text="${order.getOrderer()}"></td>
-            <td><span class="status-tag status-completed" th:text="${order.getOrderStatus()}"></span></td>
+            <td><span class="status-tag status-completed" th:text="${order.getOrderStatus().getStatus()}"></span></td>
             <td th:text="${order.getPaymentAmount()}"></td>
         </tr>
         </tbody>
     </table>
 
     <div class="pagination">
-        <button>1</button>
-        <button>2</button>
-        <button>3</button>
+        <a th:if="${currentPage > 0}" th:href="@{/admin/orders(page = ${currentPage} - 1)}">이전</a>
+        <span>현재 페이지: <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
+        <a th:if="${currentPage < totalPages - 1}" th:href="@{/admin/orders(page = ${currentPage} + 1)}">다음</a>
     </div>
 </div>
 
 <script>
     function applyFilters() {
-        const keyword = document.getElementById("searchKeyword").value;
-        const status = document.getElementById("statusFilter").value;
-        const startDate = document.getElementById("startDate").value;
-        const endDate = document.getElementById("endDate").value;
+        // 현재 URL 가져오기
+        const currentUrl = new URL(window.location.href);
 
-        // 필터 적용 후, 테이블 데이터를 갱신하는 로직을 추가하면 됩니다.
-        console.log("검색 키워드:", keyword, "상태:", status, "시작일:", startDate, "종료일:", endDate);
+        // URLSearchParams 객체 가져오기
+        const params = currentUrl.searchParams;
+
+        // 각 필터의 값 가져오기
+        const productName = document.getElementById("searchProductName").value;
+        const orderNumber = document.getElementById("searchOrderNumber").value;
+        const memberId = document.getElementById("searchMemberId").value;
+        const orderedAt = document.getElementById("orderedAt").value;
+
+        // 입력된 필터 값을 URLSearchParams에 추가 또는 수정
+        if (productName) params.set('productName', productName);
+        else params.delete('productName');
+
+        if (orderNumber) params.set('orderNumber', orderNumber);
+        else params.delete('orderNumber');
+
+        if (memberId) params.set('memberId', memberId);
+        else params.delete('memberId');
+
+        if (orderedAt) params.set('orderedAt', orderedAt);
+        else params.delete('orderedAt');
+
+
+        // 수정된 URL로 이동
+        window.location.href = `${currentUrl.pathname}?${params.toString()}`;
     }
 
-    function viewOrderDetails(orderId) {
-        // 주문 상세 페이지로 이동하거나 모달을 띄울 수 있습니다.
-        alert("주문 상세 보기: " + orderId);
+    function updateOrderStatus(status) {
+        const currentUrl = new URL(window.location.href);
+        const params = currentUrl.searchParams;
+
+        // 'orderStatus' 파라미터를 추가 또는 수정
+        params.set('orderStatus', status);
+
+        // 수정된 URL로 이동
+        window.location.href = `${currentUrl.pathname}?${params.toString()}`;
     }
 
-    function changeStatus(orderId) {
-        // 주문 상태 변경 기능 구현
-        alert("주문 상태 변경: " + orderId);
-    }
 </script>
 
 </body>

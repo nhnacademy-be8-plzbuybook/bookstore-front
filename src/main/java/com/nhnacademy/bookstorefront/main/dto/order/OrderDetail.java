@@ -1,6 +1,7 @@
 package com.nhnacademy.bookstorefront.main.dto.order;
 
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderDeliveryAddressDto;
+import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +24,7 @@ public class OrderDetail {
     private BigDecimal orderPrice;
     private LocalDateTime orderedAt;
     private LocalDate deliveryWishDate;
-    private String status;
+    private OrderStatus status;
     private int usedPoint;
     private BigDecimal couponDiscount;
     private String orderNumber;

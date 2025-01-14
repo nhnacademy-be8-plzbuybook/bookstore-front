@@ -8,6 +8,7 @@ import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -111,9 +112,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<String> getOrderStatuses() {
+    public List<OrderStatus> getOrderStatuses() {
         try {
-            ResponseEntity<List<String>> response = orderClient.getOrderStatuses();
+            ResponseEntity<List<OrderStatus>> response = orderClient.getOrderStatuses();
             return response.getBody();
         } catch (FeignException e) {
             throw new RuntimeException("주문상태를 가져오는 중 오류가 발생했습니다..");
@@ -130,11 +131,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void cancelOrderProduct(String orderId, OrderProductCancelRequestDto cancelRequest) {
+    public void cancelOrderProduct(String orderProductId, OrderProductCancelRequestDto cancelRequest) {
         try {
-            orderClient.cancelOrderProduct(orderId, cancelRequest);
+            orderClient.cancelOrderProduct(orderProductId, cancelRequest);
         } catch (FeignException e) {
-            throw new RuntimeException("주문취소 중 오류가 발생했습니다.");
+            throw new RuntimeException("주문상품 취소 중 오류가 발생했습니다.");
         }
     }
 
@@ -144,6 +145,33 @@ public class OrderServiceImpl implements OrderService {
             orderClient.modifyOrderStatus(orderId, status);
         } catch (FeignException e) {
             throw new RuntimeException("주문상태 변경 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public void completeOrderDelivery(String orderId, Long deliveryId) {
+        try {
+            orderClient.completeOrderDelivery(orderId, deliveryId);
+        } catch (FeignException e) {
+            throw new RuntimeException("배송완료처리 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public void requestReturnOrder(String orderId, OrderReturnRequestDto returnRequest) {
+        try {
+            orderClient.requestReturnOrder(orderId, returnRequest);
+        } catch (FeignException e) {
+            throw new RuntimeException("주문 반품요청 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public void completeReturningOrder(String orderId) {
+        try {
+            orderClient.completeReturningOrder(orderId);
+        } catch (FeignException e) {
+            throw new RuntimeException("주문 반품요청 중 오류가 발생했습니다.");
         }
     }
 }

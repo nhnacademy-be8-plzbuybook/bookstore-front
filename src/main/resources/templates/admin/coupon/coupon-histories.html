@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>쿠폰이력 조회</title>
+</head>
+<body>
+
+<h3>쿠폰이력 조회</h3>
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>쿠폰이력 ID</th>
+            <th>쿠폰 ID</th>
+            <th>상태</th>
+            <th>변경일</th>
+            <th>사유</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="couponHistory : ${couponHistories}">
+            <td th:text="${couponHistory.historyId()}"></td>
+            <td th:text="${couponHistory.couponId()}"></td>
+            <td th:text="${couponHistory.status()}"></td>
+            <td th:text="${#temporals.format(couponHistory.changeDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${couponHistory.reason()}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <label for="pageInput">페이지 번호:</label>
+        <input type="number" id="pageInput" min="0" th:value="${currentPage}" style="width: 60px;">
+        <button type="button" onclick="goToCouponHistoryPageByInput()">이동</button>
+        <br><br>
+
+        <button th:if="${currentPage > 0}"
+                th:onclick="'goToCouponHistoryPage(' + (${currentPage} - 1) + ')'"
+                th:text="'이전'">
+        </button>
+
+        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <button th:onclick="'goToCouponHistoryPage(' + ${i} + ')'"
+                th:text="${i + 1}"
+                th:classappend="${i == currentPage} ? 'active' : ''">
+        </button>
+        </span>
+
+        <button th:if="${currentPage < totalPages - 1}"
+                th:onclick="'goToCouponHistoryPage(' + (${currentPage} + 1) + ')'"
+                th:text="'다음'">
+        </button>
+    </div>
+</div>
+</body>
+</html>

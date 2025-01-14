@@ -3,6 +3,9 @@ package com.nhnacademy.bookstorefront.main.controller;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.*;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.AdminBookRegisterDto;
+import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.SellingBookRegisterDto;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +39,7 @@ public class AdminBookController {
             @RequestParam(defaultValue = "10") int size,
             Model model
     ) {
-        Page<AdminSellingBookRegisterDto> books = bookClient.adminGetBooks(page, size);
+        Page<AdminBookRegisterDto> books = bookClient.adminGetBooks(page, size);
         model.addAttribute("books", books.getContent());  // books.getContent()로 리스트만 전달
         model.addAttribute("currentPage", books.getNumber());
         model.addAttribute("totalPages", books.getTotalPages());
@@ -44,17 +47,9 @@ public class AdminBookController {
     }
 
 
-    // 도서 상세 조회
-    @GetMapping("/{id}")
-    public String getBookDetails(@PathVariable Long id, Model model) {
-        BookDetailResponseDto book = bookClient.getSellingBook(id);
-        model.addAttribute("book", book);
-        return "admin/bookDetails"; // templates/admin/bookDetails.html
-    }
 
 
-
-//     관리자가 도서 추가 버튼 누르면 보이는 페이지 = 이거는 잘돼
+    // 관리자가 도서 추가 버튼 누르면 보이는 페이지 = 이거는 잘돼
     @GetMapping("/register")
     public String showRegisterPage() {
         return "admin/bookregister"; // 등록 페이지
@@ -72,26 +67,26 @@ public class AdminBookController {
 
         // 성공적으로 처리된 경우 리다이렉트
         return "redirect:/admin/selling-books";
+
     }
 
-
-    /**
-     * 도서 책 수정 폼 데이터 가져오기
-     * @param sellingBookId
-     * @param model
-     * @return
-     */
-    @GetMapping("/update/{sellingBookId}")
-    public String getUpdateForm(@PathVariable Long sellingBookId, Model model) {
-        AdminBookRegisterDto book = bookClient.getUpdateForm(sellingBookId);
-
-        if (book == null || book.getSellingBookId() == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Selling book not found.");
-        }
-
-        model.addAttribute("book", book);
-        return "admin/update";
-    }
+//    /**
+//     * 도서 책 수정 폼 데이터 가져오기
+//     * @param sellingBookId
+//     * @param model
+//     * @return
+//     */
+//    @GetMapping("/update/{sellingBookId}")
+//    public String getUpdateForm(@PathVariable Long sellingBookId, Model model) {
+//        AdminBookRegisterDto book = bookClient.getUpdateForm(sellingBookId);
+//
+//        if (book == null || book.getSellingBookId() == null) {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Selling book not found.");
+//        }
+//
+//        model.addAttribute("book", book);
+//        return "admin/update";
+//    }
 
     /**
      * 도서 수정 데이터 저장

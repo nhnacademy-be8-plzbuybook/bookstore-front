@@ -1,11 +1,13 @@
 package com.nhnacademy.bookstorefront.main.client;
 
+import com.nhnacademy.bookstorefront.main.dto.Member.MemberCouponGetResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,8 +44,10 @@ public interface CouponClient {
 
     // 특정 쿠폰을 주문 상품에 적용하여 (쿠폰서버에서) 할인 계산
     @PostMapping("/api/member-coupons/member/{member-id}/coupon/{coupon-id}/calculate")
-    ResponseEntity<CouponCalculationResponseDto> applyOrderProductCoupon(@PathVariable("member-id") Long memberId, @PathVariable("coupon-id") Long couponId, @RequestBody @Valid CouponCalculationRequestDto calculationRequestDto);
+    ResponseEntity<CouponCalculationResponseDto> applyOrderProductCoupon(@PathVariable("member-id") Long memberId, @PathVariable("coupon-id") Long couponId, @RequestBody CouponCalculationRequestDto calculationRequestDto);
 
+    @GetMapping("/api/member-coupons/member/{member-id}/unused")
+    ResponseEntity<Page<MemberCouponGetResponseDto>> getUnusedMemberCouponsByMemberId(@PathVariable("member-id") Long memberId, Pageable pageable);
 
     // 쿠폰 ID에 해당하는 쿠폰 이력 목록 조회
     @GetMapping("/api/coupon-histories/{coupon-id}")
@@ -67,6 +71,5 @@ public interface CouponClient {
     ResponseEntity<Page<MemberCouponResponseDto>> getMemberCouponsByCouponId(@PathVariable("coupon-id") Long couponId,
                                                                              @RequestParam(defaultValue = "0") @Min(0) int page,
                                                                              @RequestParam(defaultValue = "10") @Min(1) int pageSize);
-
 
 }
