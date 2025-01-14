@@ -73,12 +73,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // 포인트 적용 버튼 클릭 이벤트
     applyPointBtn.addEventListener('click', () => {
         const usedPoint = parseInt(usedPointInput.value) || 0;
+        const currentDiscount = parseInt(discountAmountEl.innerText) || 0;
 
         // 현재 포인트 적용 값 업데이트
         currentUsedPoint = usedPoint;
 
         // 할인 금액 업데이트
-        discountAmountEl.innerText = currentUsedPoint;
+        discountAmountEl.innerText = currentDiscount + currentUsedPoint;
 
         // 총 결제 금액 다시 계산
         calculateTotal();
@@ -113,8 +114,12 @@ document.addEventListener("DOMContentLoaded", function () {
         // 배송비 계산 (기준 금액을 넘으면 무료 배송)
         const shippingFee = orderAmount < feeDeliveryThreshold ? defaultDeliveryFee : 0;
 
+        // 할인 금액 가져오기
+        const discountAmount = parseInt(document.getElementById("discountAmount").value) || 0;
+        console.log(`계산 중 할인 금액: ${discountAmount}`);
+
         // 결제 금액 계산
-        const totalAmount = orderAmount + shippingFee  - currentUsedPoint;
+        const totalAmount = orderAmount + shippingFee - discountAmount
 
         // 화면에 업데이트
         orderAmountEl.innerText = orderAmount;
@@ -132,8 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 초기 계산 실행
     calculateTotal();
 
-
-// 주문 버튼 클릭 이벤트 핸들러
+    // 주문 버튼 클릭 이벤트 핸들러
     document.getElementById("orderBtn").addEventListener("click", async function () {
         const orderRequest = getOrderRequest();
         console.log(orderRequest); // 결과 확인용
@@ -257,13 +261,51 @@ function openCouponPopup(button) {
     console.log('팝업 URL:', url); // 디버깅용
     window.open(url, '주문상품 쿠폰적용', 'width=800,height=600,scrollbars=yes');
 }
+
+
+
+document.querySelectorAll('.coupon-select').forEach(button => {
+    button.addEventListener('click', function () {
+        const productId = this.getAttribute('data-product-id');
+        const productPrice = this.getAttribute('data-product-price');
+        const quantity = this.getAttribute('data-product-quantity');
+        const email = this.getAttribute('data-email');
+
+        if (!productId || !productPrice || !quantity || !email) {
+            alert('쿠폰 정보가 올바르지 않습니다. 다시 시도해 주세요.');
+            return;
+        }
+
+        const url = `/order/receipt/coupon-popup?productId=${productId}&price=${productPrice}&quantity=${quantity}&email=${email}`;
+
+        window.open(url, '주문상품 쿠폰적용', 'width=800,height=600,scrollbars=yes');
+    });
+});
+
+// 팝업창 결과를 부모창으로 업데이트
+function updateProductPrice(productId, discountedPrice, discountAmount) {
+    console.log(`updateProductPrice 호출: productId=${productId}, discountedPrice=${discountedPrice}, discountAmount=${discountAmount}`);
+
+    // 할인 금액 업데이트
+    const discountAmountEl = document.getElementById("discountAmount"); // 현재 할인금액
+    const currentDiscount = parseInt(discountAmountEl.innerText) || 0;
+    const orderAmount = parseInt(document.getElementById("orderAmount").innerText) || 0;
+    const shippingFee = parseInt(document.getElementById("shippingFee").innerText) || 0;
+
+    discountAmountEl.innerText = (currentDiscount + discountAmount);
+
+    document.getElementById("totalAmount").innerText = orderAmount - discountAmount + shippingFee;
+}
+
 // 쿠폰 팝업 결과 적용
 function applyCouponToProduct(button) {
+    const productId = button.getAttribute('data-product-id');
     const couponId = button.getAttribute('data-coupon-id');
     const price = parseFloat(button.getAttribute('data-price'));
     const quantity = parseInt(button.getAttribute('data-quantity'));
     const email = button.getAttribute('data-email');
 
+    console.log('productId:', productId);
     console.log('couponId:', couponId);
     console.log('price:', price);
     console.log('quantity:', quantity);
@@ -290,56 +332,7 @@ function applyCouponToProduct(button) {
         .then(data => {
             alert('쿠폰이 성공적으로 적용되었습니다!');
             // 부모 창 업데이트
-            window.opener.updateProductPrice(data.productId, data.calculationPrice, data.discountAmount);
+            window.opener.updateProductPrice(productId, data.calculationPrice, data.discountAmount);
             window.close();
-        })
-        .catch(error => {
-            console.error('쿠폰 적용 중 오류:', error);
-            alert('쿠폰 적용 중 오류가 발생했습니다.');
         });
 }
-
-// 팝업창 결과를 부모창으로 업데이트
-function updateProductPrice(productId, discountedPrice, discountAmount) {
-    const productRow = document.querySelector(`#orderTable tr[data-product-id="${productId}"]`);
-
-    if (productRow) {
-        // 기존 가격 업데이트
-        const priceCell = productRow.querySelector(".book-price");
-        if (priceCell) {
-            priceCell.textContent = `${discountedPrice.toLocaleString()} 원`;
-        }
-
-        // 할인 금액 업데이트
-        const discountAmountEl = document.getElementById("discountAmount");
-        const currentDiscount = parseInt(discountAmountEl.innerText) || 0;
-        discountAmountEl.innerText = (currentDiscount + discountAmount).toLocaleString();
-
-        recalculateTotalAmount();
-    }
-}
-
-// 총 결제 금액 다시 계산
-function recalculateTotalAmount() {
-    const orderAmount = parseInt(document.getElementById("orderAmount").innerText) || 0;
-    const discountAmount = parseInt(document.getElementById("discountAmount").innerText) || 0;
-    const shippingFee = parseInt(document.getElementById("shippingFee").innerText) || 0;
-
-    const totalAmount = orderAmount - discountAmount + shippingFee;
-    document.getElementById("totalAmount").innerText = totalAmount.toLocaleString();
-}
-
-// document.addEventListener('DOMContentLoaded', () => {
-//     const buttons = document.querySelectorAll('.coupon-select');
-//     buttons.forEach(button => {
-//         button.addEventListener('click', () => {
-//             const productId = button.getAttribute('data-product-id');
-//             const productPrice = button.getAttribute('data-product-price');
-//             const quantity = button.getAttribute('data-product-quantity');
-//             const email = button.getAttribute('data-email');
-//
-//             const url = `/order/receipt/coupon-popup?productId=${productId}&price=${productPrice}&quantity=${quantity}&email=${email}`;
-//             window.open(url, '주문상품 쿠폰적용', 'width=800,height=600,scrollbars=yes');
-//         });
-//     });
-// });

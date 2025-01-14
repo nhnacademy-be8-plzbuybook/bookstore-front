@@ -111,7 +111,7 @@ public class OrderController {
         Integer availablePoints = pointClient.getAvailablePoints().getBody();
 
         //회원아이디(하드코딩) -> 아이디를 가져오는 방법이 필요함
-        String email="skhrnt2945@gmail.com";
+        String email="ct1@naver.com";
         model.addAttribute("email", email);
 
         model.addAttribute("wrappingPapers", wrappingPaperService.getWrappingPapers());
@@ -132,9 +132,10 @@ public class OrderController {
      * @param pageSize
      */
     @GetMapping("/order/receipt/coupon-popup")
-    public String orderReceiptCouponPopup(@RequestParam String email,
+    public String orderReceiptCouponPopup(@RequestParam("productId") Long productId,
                                           @RequestParam BigDecimal price,
                                           @RequestParam Integer quantity,
+                                          @RequestParam String email,
                                           @RequestParam int page,
                                           @RequestParam int pageSize,
                                           Model model) {
@@ -145,6 +146,7 @@ public class OrderController {
         // 회원이 보유한 쿠폰 조회
         Page<MemberCouponGetResponseDto> coupons = couponClient.getUnusedMemberCouponsByMemberId(memberId, pageable).getBody();
 
+        model.addAttribute("productId", productId);
         model.addAttribute("email", email);
         model.addAttribute("price", price);
         model.addAttribute("quantity", quantity);
