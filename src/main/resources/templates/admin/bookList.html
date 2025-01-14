@@ -302,7 +302,6 @@
                 <button type="submit" class="add-button">+ 도서 추가</button>
             </form>
 
-
             <!-- 알라딘 도서 동기화 -->
             <form action="/admin/selling-books/sync" method="post" class="sync-form">
                 <label for="queryType">Query:</label>
@@ -330,7 +329,7 @@
             <!-- ISBN 입력 및 동기화 -->
             <form action="/admin/selling-books/sync/isbn" method="post" class="isbn-form">
                 <label for="isbn">ISBN:</label>
-                <input type="text" name="isbn" id="isbn" placeholder="쉼표로 구분된 ISBN 입력">
+                <input type="text" name="isbn" id="isbn" placeholder="ISBN 입력">
                 <button type="submit" class="isbn-button">📚 ISBN 동기화</button>
             </form>
         </div>
@@ -408,23 +407,23 @@
     <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
 </footer>
 
-<script>
-    function filterBooks() {
-        const input = document.getElementById('searchInput').value.toLowerCase();
-        const table = document.getElementById('booksTable');
-        const rows = table.getElementsByTagName('tr');
+<!--<script>-->
+<!--    function filterBooks() {-->
+<!--        const input = document.getElementById('searchInput').value.toLowerCase();-->
+<!--        const table = document.getElementById('booksTable');-->
+<!--        const rows = table.getElementsByTagName('tr');-->
 
-        for (let i = 1; i < rows.length; i++) {
-            const cells = rows[i].getElementsByTagName('td');
-            const titleCell = cells[1] ? cells[1].textContent.toLowerCase() : '';
+<!--        for (let i = 1; i < rows.length; i++) {-->
+<!--            const cells = rows[i].getElementsByTagName('td');-->
+<!--            const titleCell = cells[1] ? cells[1].textContent.toLowerCase() : '';-->
 
-            if (titleCell.includes(input)) {
-                rows[i].style.display = '';
-            } else {
-                rows[i].style.display = 'none';
-            }
-        }
-    }
-</script>
+<!--            if (titleCell.includes(input)) {-->
+<!--                rows[i].style.display = '';-->
+<!--            } else {-->
+<!--                rows[i].style.display = 'none';-->
+<!--            }-->
+<!--        }-->
+<!--    }-->
+<!--</script>-->
 </body>
 </html>

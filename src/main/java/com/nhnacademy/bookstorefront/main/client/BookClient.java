@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorefront.main.client;
 
 
 import com.nhnacademy.bookstorefront.main.dto.*;
+import com.nhnacademy.bookstorefront.main.dto.book.AuthorResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategoryRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
@@ -71,7 +72,7 @@ public interface BookClient {
      * @return
      */
     @PostMapping("/api/admin/selling-books/register")
-    AdminBookRegisterDto registerSellingBook(@RequestBody AdminBookRegisterDto registerDto);
+    AdminBookRegisterDto registerSellingBook(@RequestBody BookRegisterDto registerDto);
 
 
     // 판매 책 등록
@@ -166,5 +167,15 @@ public interface BookClient {
                                         @RequestParam("score") Integer score,
                                         @RequestPart("content") String content,
                                         @RequestPart(value = "images", required = false) List<MultipartFile> images);
+
+    @GetMapping("/api/categories")
+    Page<CategorySimpleResponseDto> getCategories(
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size);
+
+    @GetMapping("/api/authors")
+    List<AuthorResponseDto> getAuthors(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size);
 
 }
