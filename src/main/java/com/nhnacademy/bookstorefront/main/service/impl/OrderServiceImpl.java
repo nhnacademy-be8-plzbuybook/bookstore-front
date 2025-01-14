@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -176,9 +177,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderReturnDto> getOrderReturns(String trackingNumber, Pageable pageable) {
+    public Page<OrderReturnDto> getOrderReturns(OrderReturnSearchRequestDto searchRequest, Pageable pageable) {
         try {
-            ResponseEntity<Page<OrderReturnDto>> response = orderClient.getOrderReturns(trackingNumber, pageable);
+            ResponseEntity<Page<OrderReturnDto>> response = orderClient.getOrderReturns(searchRequest, pageable);
             return response.getBody();
         } catch (FeignException e) {
             throw new RuntimeException("주문반품 목록을 가져오는 중 오류가 발생했습니다.");

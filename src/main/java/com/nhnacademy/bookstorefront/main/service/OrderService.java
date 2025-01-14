@@ -8,6 +8,7 @@ import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrder
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 
@@ -40,6 +41,6 @@ public interface OrderService {
 
     void completeReturningOrder(String orderId);
 
-    Page<OrderReturnDto> getOrderReturns(String trackingNumber, Pageable pageable);
+    Page<OrderReturnDto> getOrderReturns(OrderReturnSearchRequestDto searchRequest, Pageable pageable);
 
 }

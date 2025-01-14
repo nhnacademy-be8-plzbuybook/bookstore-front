@@ -44,9 +44,9 @@ public class OrderController {
     private final CouponClient couponClient;
 
     @GetMapping("/admin/order-returns")
-    public String adminOrderReturns(@RequestParam(value = "tracking-number", required = false) String trackingNumber,
+    public String adminOrderReturns(@ModelAttribute OrderReturnSearchRequestDto searchRequest,
                                     Model model, Pageable pageable) {
-        Page<OrderReturnDto> orderReturnPage = orderService.getOrderReturns(trackingNumber, pageable);
+        Page<OrderReturnDto> orderReturnPage = orderService.getOrderReturns(searchRequest, pageable);
 
         model.addAttribute("orderReturns", orderReturnPage.getContent());
         model.addAttribute("currentPage", pageable.getPageNumber());

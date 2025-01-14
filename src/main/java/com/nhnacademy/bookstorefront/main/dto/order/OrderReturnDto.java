@@ -10,5 +10,6 @@ public class OrderReturnDto {
     private String reason;
     private String trackingNumber;
     private LocalDateTime requestedAt;
+    private LocalDateTime completedAt;
     private String orderId;
 }

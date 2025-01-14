@@ -81,7 +81,7 @@ public interface OrderClient {
     ResponseEntity<Void> completeReturningOrder(@PathVariable("order-id") String orderId);
 
     @GetMapping("/api/orders/order-returns")
-    ResponseEntity<Page<OrderReturnDto>> getOrderReturns(@RequestParam(value = "tracking-number", required = false) String trackingNumber,
+    ResponseEntity<Page<OrderReturnDto>> getOrderReturns(@SpringQueryMap OrderReturnSearchRequestDto searchRequest,
                                                          Pageable pageable);
 
 }
