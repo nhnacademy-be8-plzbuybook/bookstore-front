@@ -1,0 +1,78 @@
+<div class="container mt-4">
+    <div class="d-flex mb-3">
+        <input type="text" id="searchTrackingNumber" class="form-control" placeholder="반송장번호로 검색">
+        <button id="searchButton" class="btn btn-primary ms-2">검색</button>
+    </div>
+    <div class="mb-3">
+        <!-- 버튼을 클릭하면 쿼리스트링이 동적으로 추가됨 -->
+        <button id="filterAll" class="btn btn-link">전체</button>
+        <button id="filterReturnRequested" class="btn btn-link">반품요청</button>
+        <button id="filterReturnCompleted" class="btn btn-link">반품완료</button>
+    </div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>반품 요청일시</th>
+            <th>반송장 번호</th>
+            <th>상세</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="orderReturn: ${orderReturns}">
+            <td th:text="${orderReturn.getId()}"></td>
+            <td th:text="${#temporals.format(orderReturn.getRequestedAt(), 'yyyy/MM/dd HH:mm')}"></td>
+            <td th:text="${orderReturn.getTrackingNumber()}"></td>
+            <td>
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#detailModal"
+                        th:attr="data-id=${orderReturn.getId()},
+                                  data-requested-at=${#temporals.format(orderReturn.getRequestedAt(), 'yyyy/MM/dd HH:mm')},
+                                  data-tracking-number=${orderReturn.getTrackingNumber()},
+                                  data-reason=${orderReturn.getReason()},
+                                  data-order-id=${orderReturn.getOrderId()}">
+                    보기
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <a th:if="${currentPage > 0}" th:href="@{/admin/order-returns(page = ${currentPage} - 1)}">이전</a>
+        <span>현재 페이지: <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
+        <a th:if="${currentPage < totalPages - 1}" th:href="@{/admin/order-returns(page = ${currentPage} + 1)}">다음</a>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    const updateQueryStringParameter = (key, value) => {
+        const url = new URL(window.location.href);
+        if (value) {
+            url.searchParams.set(key, value); // 쿼리스트링 추가 또는 업데이트
+        } else {
+            url.searchParams.delete(key); // 값이 없으면 쿼리스트링 제거
+        }
+        window.location.href = url.toString();
+    };
+
+    // 버튼 이벤트 등록
+    document.getElementById('filterAll').addEventListener('click', () => {
+        updateQueryStringParameter('status', null); // 전체 보기: 'status' 쿼리스트링 제거
+    });
+
+    document.getElementById('filterReturnRequested').addEventListener('click', () => {
+        updateQueryStringParameter('status', 'RETURN_REQUESTED');
+    });
+
+    document.getElementById('filterReturnCompleted').addEventListener('click', () => {
+        updateQueryStringParameter('status', 'RETURN_COMPLETED');
+    });
+
+    document.getElementById('searchButton').addEventListener('click', () => {
+        const trackingNumber = document.getElementById('searchTrackingNumber').value.trim();
+        updateQueryStringParameter('tracking-number', trackingNumber);
+    });
+</script>

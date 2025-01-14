@@ -174,4 +174,14 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("주문 반품요청 중 오류가 발생했습니다.");
         }
     }
+
+    @Override
+    public Page<OrderReturnDto> getOrderReturns(String trackingNumber, Pageable pageable) {
+        try {
+            ResponseEntity<Page<OrderReturnDto>> response = orderClient.getOrderReturns(trackingNumber, pageable);
+            return response.getBody();
+        } catch (FeignException e) {
+            throw new RuntimeException("주문반품 목록을 가져오는 중 오류가 발생했습니다.");
+        }
+    }
 }

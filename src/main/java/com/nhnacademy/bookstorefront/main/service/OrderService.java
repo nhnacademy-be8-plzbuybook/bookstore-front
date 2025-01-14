@@ -40,4 +40,6 @@ public interface OrderService {
 
     void completeReturningOrder(String orderId);
 
+    Page<OrderReturnDto> getOrderReturns(String trackingNumber, Pageable pageable);
+
 }
