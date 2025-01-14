@@ -64,8 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const shippingFeeEl = document.getElementById("shippingFee"); // 배송비 표시 요소
     const totalAmountEl = document.getElementById("totalAmount"); // 총결제금액 표시 요소
 
-
-
     // 포인트 적용
     const applyPointBtn = document.getElementById("applyPointBtn");
     applyPointBtn.addEventListener('click', () => {
@@ -125,6 +123,33 @@ document.addEventListener("DOMContentLoaded", function () {
     // 초기 계산 실행
     calculateTotal();
 
+    // 주문 버튼 클릭 이벤트 핸들러
+    document.getElementById("orderBtn").addEventListener("click", async function () {
+        const orderRequest = getOrderRequest();
+        console.log(orderRequest); // 결과 확인용
+
+        const response = await fetch("/api/orders", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(orderRequest),
+        });
+
+        if (!response.ok) {
+            alert("주문 정보를 저장하는데 실패했습니다. 다시 시도해 주세요.");
+            return;
+        }
+
+        // 응답 본문을 문자열로 읽기
+        const responseData = await response.json();
+
+        // JSON 데이터를 기반으로 쿼리 문자열 생성
+        const queryString = new URLSearchParams({
+            orderId: responseData.orderId,
+            amount: responseData.amount,
+            orderName: responseData.orderName
+        });
+        window.location.replace(`/payments/toss?${queryString}`);
+    });
 });
 
 
@@ -223,33 +248,7 @@ function openCouponPopup(button) {
     window.open(url, '주문상품 쿠폰적용', 'width=800,height=600,scrollbars=yes');
 }
 
-// 주문 버튼 클릭 이벤트 핸들러
-document.getElementById("orderBtn").addEventListener("click", async function () {
-    const orderRequest = getOrderRequest();
-    console.log(orderRequest); // 결과 확인용
 
-    const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(orderRequest),
-    });
-
-    if (!response.ok) {
-        alert("주문 정보를 저장하는데 실패했습니다. 다시 시도해 주세요.");
-        return;
-    }
-
-    // 응답 본문을 문자열로 읽기
-    const responseData = await response.json();
-
-    // JSON 데이터를 기반으로 쿼리 문자열 생성
-    const queryString = new URLSearchParams({
-        orderId: responseData.orderId,
-        amount: responseData.amount,
-        orderName: responseData.orderName
-    });
-    window.location.replace(`/payments/toss?${queryString}`);
-});
 
 document.querySelectorAll('.coupon-select').forEach(button => {
     button.addEventListener('click', function () {
@@ -268,6 +267,21 @@ document.querySelectorAll('.coupon-select').forEach(button => {
         window.open(url, '주문상품 쿠폰적용', 'width=800,height=600,scrollbars=yes');
     });
 });
+
+// 팝업창 결과를 부모창으로 업데이트
+function updateProductPrice(productId, discountedPrice, discountAmount) {
+    console.log(`updateProductPrice 호출: productId=${productId}, discountedPrice=${discountedPrice}, discountAmount=${discountAmount}`);
+
+    // 할인 금액 업데이트
+    const discountAmountEl = document.getElementById("discountAmount"); // 현재 할인금액
+    const currentDiscount = parseInt(discountAmountEl.innerText) || 0;
+    const orderAmount = parseInt(document.getElementById("orderAmount").innerText) || 0;
+    const shippingFee = parseInt(document.getElementById("shippingFee").innerText) || 0;
+
+    discountAmountEl.innerText = (currentDiscount + discountAmount);
+
+    document.getElementById("totalAmount").innerText = orderAmount - discountAmount + shippingFee;
+}
 
 // 쿠폰 팝업 결과 적용
 function applyCouponToProduct(button) {
@@ -307,38 +321,5 @@ function applyCouponToProduct(button) {
             window.opener.updateProductPrice(productId, data.calculationPrice, data.discountAmount);
             window.close();
         });
-}
-
-// 팝업창 결과를 부모창으로 업데이트
-function updateProductPrice(productId, discountedPrice, discountAmount) {
-    console.log(`updateProductPrice 호출: productId=${productId}, discountedPrice=${discountedPrice}, discountAmount=${discountAmount}`);
-
-    const productRow = document.querySelector(`#orderTable tr[data-product-id="${productId}"]`);
-
-    if (!productRow) {
-        console.error(`상품 행을 찾을 수 없습니다. productId: ${productId}`);
-        return;
-    }
-
-    // 기존 가격 업데이트
-    const priceCell = productRow.querySelector(".book-price");
-    if (!priceCell) {
-        console.error(`업데이트할 가격이 없습니다. priceCell: ${priceCell}`);
-        return;
-    }
-    priceCell.textContent = `${discountedPrice.toLocaleString()} 원`;
-    console.log(`업데이트 셀: ${priceCell.textContent}`);
-
-    // 할인 금액 업데이트
-    const discountAmountEl = document.getElementById("discountAmount");
-    if (!discountAmountEl) {
-        console.error("discountAmount 를 찾을 수 없습니다");
-        return;
-    }
-    const currentDiscount = parseInt(discountAmountEl.innerText) || 0;
-    discountAmountEl.innerText = (currentDiscount + discountAmount).toLocaleString();
-    console.log(`할인 금액 업데이트: ${discountAmountEl.innerText}`);
-
-    calculateTotal()
 }
 
