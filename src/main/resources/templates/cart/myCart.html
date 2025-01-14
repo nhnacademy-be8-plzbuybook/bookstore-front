@@ -137,6 +137,7 @@
     <div class="icons">
         <a th:if="${role == 'ADMIN'}" href="/adminpage" id="adminpage-btn">AdminPage</a>
         <a th:if="${role == 'USER'}" href="/mypage" id="mypage-btn">MyPage</a>
+        <a th:if="${role == null and !isLoggedIn}" href="/non-member/order" id="cart-btn">비회원 주문</a>"
         <a th:if="${role == null and !isLoggedIn}" href="/login" id="login-btn">로그인</a>
         <a th:if="${role == null and !isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>
         <a th:if="${isLoggedIn}" href="/logout" id="logout-btn">로그아웃</a>

@@ -158,6 +158,7 @@
         <a th:if="${role == 'ADMIN'}" href="/adminpage" id="adminpage-btn">AdminPage</a>
         <a href="/non-member/order">비회원 주문조회</a>
         <a th:if="${role == 'USER'}" href="/mypage" id="mypage-btn">MyPage</a>
+        <a th:if="${role == null and !isLoggedIn}" href="/guests/carts">비회원 장바구니</a>
         <a th:if="${role == 'USER' or !isLoggedIn}" href="/carts" id="cart-btn">장바구니</a>
         <a th:if="${role == null and !isLoggedIn}" href="/login" id="login-btn">로그인</a>
         <a th:if="${role == null and !isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>
