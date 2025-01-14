@@ -5,13 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.MemberClient;
-import com.nhnacademy.bookstorefront.main.dto.AdminSellingBookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.BookTagResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderDetail;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.review.ReviewUpdateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewWithReviewImageDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
@@ -20,6 +19,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Slf4j
@@ -59,7 +62,9 @@ public class BookDetailController {
 
 
     @GetMapping("/book/detail/{sellingBookId}")
-    public String getBookDetail(@PathVariable Long sellingBookId, Model model,HttpServletRequest request) {
+    public String getBookDetail(@PathVariable Long sellingBookId, Model model,HttpServletRequest request,
+                                @RequestParam(defaultValue = "0") int page,
+                                @RequestParam(defaultValue = "2") int size) {
         // 쇼핑몰 서버에서 특정 책 데이터 가져오기
         BookDetailResponseDto bookDetail = bookClient.getSellingBook(sellingBookId);
         List<BookTagResponseDto> bookTagResponseDto = bookClient.getBookTagsByBookId(bookDetail.getBookId()).getBody();
@@ -67,6 +72,7 @@ public class BookDetailController {
         log.info("bookDetail: {}", bookDetail);
         String role = null;
         Long memberId = null;
+        String memberEmail = null;
 
         if(isLoggedIn) {
             String token = getTokenFromCookies(request);
@@ -74,10 +80,23 @@ public class BookDetailController {
                 role = authenticationClient.getRoleFromToken("Bearer " + token).getBody();
                 MyPageDto myPageDto = authenticationService.getMyPage();
                 memberId = myPageDto.getMemberId();
+                memberEmail = myPageDto.getEmail();
             }
         }
 
-        List<ReviewWithReviewImageDto> reviews = bookClient.getReviewsBySellingBookId(sellingBookId).getBody();
+
+
+        Page<ReviewWithReviewImageDto> reviews = bookClient.getReviewsByBookId(sellingBookId, page, size).getBody();
+
+        List<ReviewWithReviewImageDto> userReviews = new ArrayList<>();
+        if (isLoggedIn) {
+            for (ReviewWithReviewImageDto review : reviews.getContent()) {
+                if (review.getEmail().equals(memberEmail)) {
+                    userReviews.add(review);
+                }
+            }
+        }
+
         Double avgScore = bookClient.getAverageReview(sellingBookId);
         String avg = String.format("%.2f", avgScore);
 
@@ -85,8 +104,13 @@ public class BookDetailController {
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("role", role);
         model.addAttribute("memberId", memberId);
+        model.addAttribute("memberEmail", memberEmail);
         model.addAttribute("bookTags", bookTagResponseDto);
         model.addAttribute("reviews", reviews);
+        model.addAttribute("userReviews", userReviews); // 자신이 작성한 리뷰만 전달
+        model.addAttribute("currentPage", page); // 현재 페이지
+        model.addAttribute("totalPages", reviews.getTotalPages()); // 전체 페이지 수
+        model.addAttribute("size", size);
         model.addAttribute("avgScore", avg);
 
 
@@ -175,4 +199,27 @@ public class BookDetailController {
         return "redirect:/book/detail/" + sellingBookId;
     }
 
+
+    @PostMapping("/book/reviews/update/{reviewId}")
+    public String updateReview(@PathVariable Long reviewId,
+                               @RequestParam("score") Integer score,
+                               @RequestParam("content") String content,
+                               @RequestParam(required = false) List<MultipartFile> images,
+                               @RequestParam("memberId") Long memberId,
+                               @RequestParam("sellingBookId") Long sellingBookId,
+                               RedirectAttributes redirectAttributes) {
+        try{
+            ResponseEntity<Object> response = bookClient.updateReview(reviewId, score, content, images);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                redirectAttributes.addFlashAttribute("successMessage", "리뷰가 성공적으로 수정되었습니다.");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "리뷰 수정 중 오류가 발생했습니다.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "리뷰 수정 권한이 없거나 오류가 발생했습니다.");
+        }
+
+        return "redirect:/book/detail/" + sellingBookId;
+    }
 }

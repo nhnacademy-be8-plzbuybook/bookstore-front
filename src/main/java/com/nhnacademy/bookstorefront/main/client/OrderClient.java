@@ -60,8 +60,21 @@ public interface OrderClient {
                                            @RequestBody StatusDto status);
 
     @PostMapping("/api/orders/{order-id}/cancel")
-    ResponseEntity<Void> cancelOrder(@PathVariable("order-id") String orderId, @RequestBody OrderCancelRequestDto cancelRequest);
+    ResponseEntity<Void> cancelOrder(@PathVariable("order-id") String orderId,
+                                     @RequestBody OrderCancelRequestDto cancelRequest);
 
     @PostMapping("/api/orders/order-products/{order-product-id}/cancel")
     ResponseEntity<Void> cancelOrderProduct(@PathVariable("order-product-id") String orderProductId, @RequestBody OrderProductCancelRequestDto cancelRequest);
+
+    @PostMapping("/api/orders/{order-id}/deliveries/{delivery-id}/complete")
+    ResponseEntity<Void> completeOrderDelivery(@PathVariable("order-id") String orderId,
+                                               @PathVariable("delivery-id") Long deliveryId);
+
+    @PostMapping("/api/orders/{order-id}/return")
+    ResponseEntity<Void> requestReturnOrder(@PathVariable("order-id") String orderId,
+                                            @RequestBody OrderReturnRequestDto returnRequest);
+
+    @PostMapping("/api/orders/{order-id}/return/complete")
+    ResponseEntity<Void> completeReturningOrder(@PathVariable("order-id") String orderId);
+
 }

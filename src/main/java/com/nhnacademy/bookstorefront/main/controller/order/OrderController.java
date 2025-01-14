@@ -17,8 +17,6 @@ import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import com.nhnacademy.bookstorefront.main.service.WrappingPaperService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -285,10 +283,8 @@ public class OrderController {
     @ResponseBody
     @PostMapping("/api/orders")
     public OrderSaveResponseDto memberOrder(@RequestBody MemberOrderRequestDto orderRequest) {
-//        OrderSaveResponseDto orderSaveResponse = new OrderSaveResponseDto("13123123", new BigDecimal("10000"), "수학의 정석 외 1건");
         OrderSaveResponseDto orderSaveResponse = orderService.requestMemberOrder(orderRequest);
         return orderSaveResponse;
-//        return null;
     }
 
 
@@ -312,7 +308,14 @@ public class OrderController {
     @PatchMapping("/api/orders/{order-id}/status")
     public ResponseEntity<Void> changeOrderStatus(@PathVariable("order-id") String orderId,
                                                   @RequestBody StatusDto status) {
-        orderService.modifyOrderStatus(orderId, status);
+
+        if (status.getStatus() == OrderStatus.RETURN_COMPLETED) {
+            orderService.completeReturningOrder(orderId);
+        } else if (status.getStatus() == OrderStatus.DELIVERED) {
+            completeOrderDelivery(orderId, 1L); // deliveryId 아직 필요하지 모르겠어서 하드코딩
+        } else {
+            orderService.modifyOrderStatus(orderId, status);
+        }
 
         return ResponseEntity.ok().build();
     }
@@ -324,18 +327,43 @@ public class OrderController {
      * @param cancelRequest 주문취소요청 DTO
      * @return Void
      */
+    @ResponseBody
     @PostMapping("/api/orders/{order-id}/cancel")
     public ResponseEntity<Void> cancelOrder(@PathVariable("order-id") String orderId,
                                             @RequestBody OrderCancelRequestDto cancelRequest) {
         orderService.cancelOrder(orderId, cancelRequest);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @ResponseBody
     @PostMapping("/api/orders/order-products/{order-product-id}/cancel")
     public ResponseEntity<Void> cancelOrderProduct(@PathVariable("order-product-id") String orderProductId,
                                                    @RequestBody OrderProductCancelRequestDto cancelRequest) {
         orderService.cancelOrderProduct(orderProductId, cancelRequest);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ResponseBody
+    @PostMapping("/api/orders/{order-id}/deliveries/{delivery-id}/complete")
+    public ResponseEntity<Void> completeOrderDelivery(@PathVariable("order-id") String orderId,
+                                                      @PathVariable("delivery-id") Long deliveryId) {
+        orderService.completeOrderDelivery(orderId, deliveryId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ResponseBody
+    @PostMapping("/api/orders/{order-id}/return")
+    public ResponseEntity<Void> requestReturnOrder(@PathVariable("order-id") String orderId,
+                                            @RequestBody OrderReturnRequestDto returnRequest) {
+        orderService.requestReturnOrder(orderId, returnRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @ResponseBody
+    @PostMapping("/api/orders/{order-id}/return/complete")
+    public ResponseEntity<Void> completeReturnOrder(@PathVariable("order-id") String orderId) {
+        orderService.completeReturningOrder(orderId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 

@@ -35,6 +35,12 @@
                     주문취소
                 </button>
             </td>
+            <td th:if="${orderDetail.getStatus().getCode() >= 2 and orderDetail.getStatus().getCode() <= 5}">
+                <button type="button" id="order-return-btn">
+                    반품요청
+                </button>
+            </td>
+
         </tr>
         </tbody>
     </table>
@@ -186,27 +192,57 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        const orderCancelBtn = document.getElementById("order-cancel-btn");
         const orderId = [[${orderDetail.getOrderId()}]];
-        orderCancelBtn.addEventListener('click', async () => {
-            const response = await fetch(`/api/orders/${orderId}/cancel`, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    cancelReason: "하드코딩된 취소사유"
-                })
-            });
 
-            if (!response.ok) {
-                alert("주문취소가 실패했습니다. 다시 시도해 주세요.");
-                return;
-            }
-            alert("주문이 취소되었습니다.");
-            window.location.reload();
-        })
+        const orderCancelBtn = document.getElementById("order-cancel-btn");
+        if (orderCancelBtn) {
+            orderCancelBtn.addEventListener('click', async () => {
+                const response = await fetch(`/api/orders/${orderId}/cancel`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        cancelReason: "하드코딩된 취소사유"
+                    })
+                });
+
+                if (!response.ok) {
+                    alert("주문취소가 실패했습니다. 다시 시도해 주세요.");
+                    return;
+                }
+                alert("주문이 취소되었습니다.");
+                window.location.reload();
+            });
+        }
+
+
+        const orderReturnBtn = document.getElementById("order-return-btn");
+        if (orderReturnBtn) {
+            orderReturnBtn.addEventListener('click', async () => {
+                const response = await fetch(`/api/orders/${orderId}/return`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        reason: "하드코딩된 반품사유"
+                    })
+                });
+
+                if (!response.ok) {
+                    alert("반품요청이 실패했습니다. 다시 시도해 주세요.");
+                    return;
+                }
+                alert("반품이 요청되었습니다.");
+                window.location.reload();
+            });
+        }
+
+
     })
+
+
 </script>
 </body>
 </html>
