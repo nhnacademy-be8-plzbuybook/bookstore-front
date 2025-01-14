@@ -21,15 +21,6 @@ public class AdminCategoryController {
     private BookClient bookClient;
 
 
-//    @GetMapping("/admin/category")
-//    public String searchCategory(Model model,  @RequestParam(required = false) String keyword) {
-//        List<CategorySimpleResponseDto> categoryList = bookClient.searchCategories(keyword).getBody();
-//        model.addAttribute("categories", categoryList);
-//        model.addAttribute("keyword", keyword);
-//        return "admin/category";
-//
-//    }
-
     @GetMapping("/admin/category")
     public String searchCategory(Model model,
                                  @RequestParam(required = false) String keyword,
