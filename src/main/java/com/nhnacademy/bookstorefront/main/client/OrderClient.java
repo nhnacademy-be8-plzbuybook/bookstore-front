@@ -6,6 +6,7 @@ import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderRequestDto;
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "GATEWAY", contextId = "orderClient")
+@FeignClient(name = "GATEW" +
+        "AY", contextId = "orderClient")
 public interface OrderClient {
 
     @GetMapping("/api/orders/my")
@@ -33,6 +35,9 @@ public interface OrderClient {
 
     @PostMapping("/api/orders/member")
     ResponseEntity<OrderSaveResponseDto> requestMemberOrder(@RequestBody MemberOrderRequestDto orderSaveRequest);
+
+    @PostMapping("/api/orders")
+    ResponseEntity<OrderSaveResponseDto> requestOrder(@RequestBody OrderRequestDto orderSaveRequest);
 
     @PostMapping("/api/orders/{order-id}/complete")
     ResponseEntity<String> completeOrder(@PathVariable("order-id") String orderId);

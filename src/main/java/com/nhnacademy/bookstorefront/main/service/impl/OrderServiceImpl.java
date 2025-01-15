@@ -8,6 +8,7 @@ import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderRequestDto;
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import feign.FeignException;
@@ -47,6 +48,21 @@ public class OrderServiceImpl implements OrderService {
     public OrderSaveResponseDto requestMemberOrder(MemberOrderRequestDto orderSaveRequestDto) {
         try {
             ResponseEntity<OrderSaveResponseDto> response = orderClient.requestMemberOrder(orderSaveRequestDto);
+            return response.getBody();
+
+        } catch (FeignException.BadRequest e) {
+            log.error("feignClient error: {}", e.getMessage());
+            throw new RuntimeException("잘못된 주문형식입니다.");
+        } catch (FeignException e) {
+            log.error("feignClient error: {}", e.getMessage());
+            throw new RuntimeException("주문 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public OrderSaveResponseDto requestOrder(OrderRequestDto orderRequest) {
+        try {
+            ResponseEntity<OrderSaveResponseDto> response = orderClient.requestOrder(orderRequest);
             return response.getBody();
 
         } catch (FeignException.BadRequest e) {

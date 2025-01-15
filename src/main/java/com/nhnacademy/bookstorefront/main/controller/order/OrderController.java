@@ -13,6 +13,7 @@ import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderRequestDto;
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
@@ -288,30 +289,38 @@ public class OrderController {
     }
 
 
-    /**
-     * 비회원 주문요청
-     *
-     * @param orderRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/api/orders/non-member")
-    public OrderSaveResponseDto nonMemberOrder(@RequestBody NonMemberOrderRequestDto orderRequest) {
-        OrderSaveResponseDto orderSaveResponse = orderService.requestNonMemberOrder(orderRequest);
-        return orderSaveResponse;
-    }
+//    /**
+//     * 비회원 주문요청
+//     *
+//     * @param orderRequest
+//     * @return
+//     */
+//    @ResponseBody
+//    @PostMapping("/api/orders/non-member")
+//    public OrderSaveResponseDto nonMemberOrder(@RequestBody NonMemberOrderRequestDto orderRequest) {
+//        OrderSaveResponseDto orderSaveResponse = orderService.requestNonMemberOrder(orderRequest);
+//        return orderSaveResponse;
+//    }
 
 
-    /**
-     * 회원 주문요청
-     *
-     * @param orderRequest
-     * @return
-     */
+//    /**
+//     * 회원 주문요청
+//     *
+//     * @param orderRequest
+//     * @return
+//     */
+//    @ResponseBody
+//    @PostMapping("/api/orders")
+//    public OrderSaveResponseDto memberOrder(@RequestBody MemberOrderRequestDto orderRequest) {
+//        OrderSaveResponseDto orderSaveResponse = orderService.requestMemberOrder(orderRequest);
+//        return orderSaveResponse;
+//    }
+
+
     @ResponseBody
     @PostMapping("/api/orders")
-    public OrderSaveResponseDto memberOrder(@RequestBody MemberOrderRequestDto orderRequest) {
-        OrderSaveResponseDto orderSaveResponse = orderService.requestMemberOrder(orderRequest);
+    public OrderSaveResponseDto requestOrder(@RequestBody OrderRequestDto orderRequest) {
+        OrderSaveResponseDto orderSaveResponse = orderService.requestOrder(orderRequest);
         return orderSaveResponse;
     }
 
