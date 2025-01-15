@@ -78,12 +78,12 @@
             <!--            상태-->
             <td th:text="${orderProduct.getStatus()}"></td>
             <!--            포장지-->
-            <td th:if="${orderProduct.getOrderProductWrapping() != null}">
+            <td th:if="${orderProduct.getOrderProductWrapping().getName() != null}">
                 <span th:text="${orderProduct.getOrderProductWrapping().getName()}"></span> /
                 <span th:text="${orderProduct.getOrderProductWrapping().getPrice()}"></span> 원
                 <span th:text="${orderProduct.getOrderProductWrapping().getQuantity()}"></span> 개
             </td>
-            <td th:unless="${orderProduct.getOrderProductWrapping() != null}">
+            <td th:unless="${orderProduct.getOrderProductWrapping().getName() != null}">
                 <span>X</span>
             </td>
         </tr>
@@ -128,7 +128,7 @@
                         th:text="${#temporals.format(orderDetail.getOrderDelivery().getRegisteredAt(), 'yyyy/MM/dd HH:mm')}"></td>
                 </tr>
                 <tr>
-                    <td th:if="${orderDetail.getOrderDelivery().getTrackingNumber() != null}">
+                    <td th:if="${orderDetail.getStatus().getStatus() == '발송완료' or orderDetail.getStatus().getStatus() == '배송중'}">
                         <button id="delivery-completion-btn">배송완료 처리</button>
                     </td>
                     <td th:if="${orderDetail.getStatus().getStatus() == '배송완료'}">
@@ -190,7 +190,7 @@
                 </tr>
                 <tr>
                     <td>결제일자</td>
-                    <td th:text="${orderDetail.getPayment().getPaidAt()}"></td>
+                    <td th:text="${orderDetail.getPayment().getRecordedAt()}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -203,7 +203,7 @@
                 <tbody>
                 <tr>
                     <td>주문금액</td>
-                    <td th:text="${orderDetail.getOrderPrice()}">10000원</td>
+                    <td th:text="${orderDetail.getOrderPrice()}"></td>
                 </tr>
                 <tr>
                     <td>사용포인트</td>
@@ -211,7 +211,11 @@
                 </tr>
                 <tr>
                     <td>할인금액</td>
-                    <td th:text="${orderDetail.getOrderProducts()}"></td>
+                    <td th:if="${orderDetail.getCouponDiscount() != null}"
+                        th:text="${orderDetail.getCouponDiscount()}"></td>
+                    <td th:unless="${orderDetail.getCouponDiscount() != null}">
+                        0원
+                    </td>
                 </tr>
                 <tr>
                     <td>배송비</td>

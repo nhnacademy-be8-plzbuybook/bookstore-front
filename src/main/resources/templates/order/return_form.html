@@ -12,19 +12,19 @@
 <div>
     <label for="tracking-number">반송장번호</label><br>
     <input type="text" id="tracking-number"/>
-
 </div>
 <button type="button" id="return-btn">반품요청하기</button>
-<script>
+<script th:inline="javascript">
     document.getElementById("return-btn").addEventListener('click', async () => {
-        const reason = document.getElementById("reason");
-        const trackingNumber = document.getElementById("tracking-number");
+        const reason = document.getElementById("reason").value;
+        const trackingNumber = document.getElementById("tracking-number").value;
         const data = {
             reason: reason,
             trackingNumber: trackingNumber
         };
 
-        const response = await fetch('/api/orders/{orderId}/return', {
+        const orderId = [[${orderId}]];
+        const response = await fetch(`/api/orders/${orderId}/return`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -38,7 +38,7 @@
         }
 
         alert("반품이 성공적으로 요청되었습니다.");
-        window.location.replace(`/orders/{orderId}`);
+        window.location.replace(`/orders/${orderId}`);
     });
 
 </script>

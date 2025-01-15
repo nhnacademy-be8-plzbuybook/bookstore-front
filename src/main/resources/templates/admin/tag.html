@@ -308,7 +308,7 @@
     </div>
 
     <!-- 태그 검색 -->
-    <form th:action="@{/admin/tag}" method="get">
+    <form th:action="@{/admin/tags}" method="get">
       <input type="text" name="keyword" placeholder="태그 이름 검색">
       <button type="submit">검색</button>
     </form>
@@ -327,10 +327,10 @@
         <tr th:each="tag : ${tags}">
           <td th:text="${tag.tagId}">1</td>
           <td>
-            <a th:href="'/admin/tag?tagId=' + ${tag.tagId}" th:text="${tag.tagName}">태그 이름</a>
+            <a th:href="@{/admin/tags/{tag-id}/books(tag-id=${tag.tagId})}" th:text="${tag.tagName}">태그 이름</a>
           </td>
           <td class="action-buttons">
-            <form th:action="@{/admin/tag/{id}(id=${tag.tagId})}" method="post">
+            <form th:action="@{/admin/tags/{id}(id=${tag.tagId})}" method="post">
               <input type="hidden" name="_method" value="delete" />
               <button type="submit">삭제</button>
             </form>
@@ -362,7 +362,7 @@
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <h3>태그 추가</h3>
-    <form action="/admin/tag" method="post">
+    <form action="/admin/tags" method="post">
       <label>
         <input type="text" name="tagName" placeholder="태그 이름" required>
       </label>

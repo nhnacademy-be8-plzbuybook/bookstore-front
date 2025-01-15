@@ -27,7 +27,7 @@ public class AdminTagController {
     private final BookClient bookClient;
 
 
-    @GetMapping("/admin/tag")
+    @GetMapping("/admin/tags")
     public String adminTagList(
             Model model,
             @RequestParam(required = false) String keyword,
@@ -64,35 +64,40 @@ public class AdminTagController {
 
     }
 
-    @PostMapping("/admin/tag")
-    public String saveTag(Model model,@RequestParam String tagName){
+    @PostMapping("/admin/tags")
+    public String saveTag(@RequestParam String tagName){
         TagRegisterDto tagRegisterDto = new TagRegisterDto();
         tagRegisterDto.setTagName(tagName);
         bookClient.saveTag(tagRegisterDto);
-        return "redirect:/admin/tag";
+        return "redirect:/admin/tags";
     }
 
-    @RequestMapping(value = "/admin/tag/{id}", method = RequestMethod.POST)
-    public String deleteTag(@PathVariable("id") Long tagId,
+    @RequestMapping(value = "/admin/tags/{tag-id}", method = RequestMethod.POST)
+    public String deleteTag(@PathVariable("tag-id") Long tagId,
                                  @RequestParam("_method") String method) {
         if ("delete".equals(method)) {
             bookClient.deleteTag(tagId);
         }
-        return "redirect:/admin/tag";
+        return "redirect:/admin/tags";
     }
 
     @PostMapping("/admin/book-tag")
     public String bookTagSave(@RequestParam Long bookId,@RequestParam Long tagId, Model model) {
+
         bookClient.saveBookTag(bookId, tagId);
-        return "redirect:/admin/book-tag?tagId=" + tagId;
+
+        return "redirect:/admin/tags/"   + tagId  + "/books";
     }
 
-    @RequestMapping(value = "/admin/book-tag/delete", method = RequestMethod.POST)
-    public String deleteBookTag(@RequestParam("tagId") Long tagId, @RequestParam Long bookId, @RequestParam("_method") String method) {
+    @RequestMapping(value = "/admin/book/{book-id}/tags/{tag-id}" , method = RequestMethod.POST)
+    public String deleteBookTag(@PathVariable(name="tag-id") Long tagId, @PathVariable(name="book-id") Long bookId, @RequestParam("_method") String method, Model model) {
         if ("delete".equals(method)) {
             bookClient.deleteBookTag(bookId,tagId);
         }
-        return "redirect:/admin/book-tag?tagId=" + tagId;
+        model.addAttribute("bookId", bookId);
+        model.addAttribute("tagId", tagId);
+
+        return "redirect:/admin/tags/"   + tagId  + "/books";
     }
 
 
