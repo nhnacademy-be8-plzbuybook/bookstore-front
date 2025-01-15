@@ -25,7 +25,6 @@ public class GuestCartServiceImpl implements GuestCartService {
     @Override
     public Long addGuestCart(CreateCartBookRequest createCartBookRequest, HttpSession session) {
         String sessionId = session.getId();
-        log.info("sessionId: {}", sessionId);
         Map<String, Long> response = guestCartClient.createGuestCartBook(createCartBookRequest, sessionId);
         return response.get("cartId");
     }
@@ -33,30 +32,26 @@ public class GuestCartServiceImpl implements GuestCartService {
     @Override
     public List<ReadCartBookResponse> getGuestCarts(HttpSession session) {
         String sessionId = session.getId();
-        log.info("sessionId: {}", sessionId);
-        return guestCartClient.getGuestCartBooks(session.getId());
+        return guestCartClient.getGuestCartBooks(sessionId);
     }
 
     @Override
     public Long updateGuestCart(Long cartId, int quantity, HttpSession session) {
         String sessionId = session.getId();
-        log.info("sessionId: {}", sessionId);
         Map<String, Long> response = guestCartClient.updateGuestCartBook(cartId, quantity, sessionId);
-        log.info("cartId: {}", response.get("cartId"));
         return response.get("cartId");
     }
 
     @Override
     public void deleteGuestCartItem(Long cartId, HttpSession session) {
         String sessionId = session.getId();
-        log.info("sessionId: {}", sessionId);
         guestCartClient.deleteGuestCartBook(cartId, sessionId);
+
     }
 
     @Override
     public void deleteAllGuestCartItems(HttpSession session) {
         String sessionId = session.getId();
-        log.info("sessionId: {}", sessionId);
         guestCartClient.deleteAllGuestCart(sessionId);
     }
 }
