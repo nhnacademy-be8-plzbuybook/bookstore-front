@@ -22,7 +22,7 @@ public interface BookClient {
 
     // 사용자 기능
     @GetMapping("/api/selling-books")
-    Page<BookDetailResponseDto> getBooks(
+    ResponseEntity<Page<SellingBookResponseDto>> getBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "sellingBookId") String sortBy,
@@ -33,7 +33,7 @@ public interface BookClient {
     BookDetailResponseDto getSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
 
     // 관리자용 도서 목록 조회 (페이징 처리만)
-    @GetMapping("/api/admin/selling-books")
+    @GetMapping("/api/books")
     Page<AdminBookRegisterDto> adminGetBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -54,7 +54,8 @@ public interface BookClient {
      * @param updateDto
      * @return
      */
-    @PutMapping("/api/admin/selling-books/{sellingBookId}")
+    // TODO 나중에 이거 구현해야함
+    @PutMapping("/api/books/{sellingBookId}")
     void updateSellingBook(@PathVariable("sellingBookId") Long sellingBookId,
                            @RequestBody AdminBookRegisterDto updateDto);
 
@@ -63,33 +64,29 @@ public interface BookClient {
      * 관리자 도서관리에서 도서 삭제 api
      * @param sellingBookId
      */
-    @DeleteMapping("/api/admin/selling-books/{sellingBookId}")
-    void deleteSellingBook(@PathVariable("sellingBookId") Long sellingBookId);
+    @DeleteMapping("/api/selling-books/{selling-book-id}")
+    ResponseEntity<Void>  deleteSellingBook(@PathVariable("selling-book-id") Long sellingBookId);
 
     /**
      * 관리자 도서관리에서 도서 등록 api
      * @param registerDto
      * @return
      */
-    @PostMapping("/api/admin/selling-books/register")
-    AdminBookRegisterDto registerSellingBook(@RequestBody BookRegisterDto registerDto);
+    @PostMapping("/api/books")
+    AdminBookRegisterDto registerBook(@RequestBody BookRegisterDto registerDto);
 
 
     // 판매 책 등록
-    @PostMapping("/api/admin/selling-books/selling-register")
+    @PostMapping("/api/selling-books")
     void registerSellingBooks(@RequestBody SellingBookRegisterDto sellingBookDto);
 
-    // 판매 책 수정
-    @PostMapping("/api/admin/selling-books/{sellingBookId}")
+
+        // 판매 책 수정
+    @PutMapping("/api/selling-books/{sellingBookId}")
     SellingBookRegisterDto updateSellingBook(
             @PathVariable("sellingBookId") Long sellingBookId,
             @RequestBody SellingBookRegisterDto sellingBookDto);
 
-    // 판매 책 목록 조회
-    @GetMapping("/api/admin/selling-books/selling-list")
-    Page<SellingBookRegisterDto> getSellingBooks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size);
 
     // 최신 도서 동기화
     @PostMapping("/api/books/sync")
@@ -129,8 +126,8 @@ public interface BookClient {
 
     @GetMapping("/api/tags")
     ResponseEntity<Page<TagResponseDto>> getAllTags(@RequestParam(required = false) String keyword,
-                                                      @RequestParam(defaultValue = "0") int page,
-                                                      @RequestParam(defaultValue = "10") int size);
+                                                    @RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "10") int size);
 
     @DeleteMapping("/api/tags/{tagId}")
     ResponseEntity<Void> deleteTag(@PathVariable("tagId") Long tagId);

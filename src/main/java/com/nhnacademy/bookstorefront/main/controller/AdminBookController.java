@@ -22,7 +22,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("/admin/selling-books")
+@RequestMapping("/admin/books")
 public class AdminBookController {
 
     private final BookClient bookClient;
@@ -52,98 +52,78 @@ public class AdminBookController {
     // 관리자가 도서 추가 버튼 누르면 보이는 페이지 = 이거는 잘돼
     @GetMapping("/register")
     public String showRegisterPage() {
-        return "admin/bookregister"; // 등록 페이지
+        return "admin/bookRegister"; // 등록 페이지
     }
 
 
     // 도서 등록 처리
     @PostMapping("/register")
-    public String registerSellingBook(@RequestBody @Valid BookRegisterDto bookRegisterDto) {
+    public String registerBook(@RequestBody @Valid BookRegisterDto bookRegisterDto) {
         log.info("Received Book Title: {}", bookRegisterDto.getBookTitle());
         log.info("Received Categories: {}", bookRegisterDto.getCategories());
         log.info("Received Authors: {}", bookRegisterDto.getAuthors());
         // 클라이언트를 통해 데이터 전송
-        bookClient.registerSellingBook(bookRegisterDto);
+        bookClient.registerBook(bookRegisterDto);
 
         // 성공적으로 처리된 경우 리다이렉트
-        return "redirect:/admin/selling-books";
+        return "redirect:/admin/books";
 
     }
 
+
+//     * 도서 수정 데이터 저장
+
+    @PostMapping("/update/{book-id}")
+    public String updateBook(
+            @PathVariable(name = "book-id") Long bookId,
+            @ModelAttribute @Valid AdminBookRegisterDto updateDto) {
+        // 클라이언트를 통해 수정 API 호출
+        bookClient.updateSellingBook(bookId, updateDto);
+
+        // 수정 완료 후 목록 페이지로 리다이렉트
+        return "redirect:/admin/books";
+    }
+
+
 //    /**
-//     * 도서 책 수정 폼 데이터 가져오기
-//     * @param sellingBookId
+//     * //TODO 판매책 불러오는 get
+//     * 판매 책 목록 페이지 - 관리자 도서불러올때랑똑같은데 return 파일이름이 달라 ..
+//     * @param page
+//     * @param size
 //     * @param model
 //     * @return
 //     */
-//    @GetMapping("/update/{sellingBookId}")
-//    public String getUpdateForm(@PathVariable Long sellingBookId, Model model) {
-//        AdminBookRegisterDto book = bookClient.getUpdateForm(sellingBookId);
+//    @GetMapping("/selling-list")
+//    public String getSellingBooks(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            Model model) {
+//        Page<SellingBookRegisterDto> sellingBooks = bookClient.getSellingBooks(page, size);
 //
-//        if (book == null || book.getSellingBookId() == null) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Selling book not found.");
-//        }
+//        sellingBooks.getContent().forEach(book -> log.debug("SellingBookRegisterDto: {}", book));
 //
-//        model.addAttribute("book", book);
-//        return "admin/update";
+//
+//        model.addAttribute("sellingBooks", sellingBooks.getContent());
+//        model.addAttribute("currentPage", sellingBooks.getNumber());
+//        model.addAttribute("totalPages", sellingBooks.getTotalPages());
+//        return "admin/sellingbook"; // HTML 파일 이름
 //    }
 
-    /**
-     * 도서 수정 데이터 저장
-     * @param sellingBookId
-     * @param updateDto
-     * @return
-     */
-    @PostMapping("/update/{sellingBookId}")
-    public String updateBook(
-            @PathVariable Long sellingBookId,
-            @ModelAttribute @Valid AdminBookRegisterDto updateDto) {
-        // 클라이언트를 통해 수정 API 호출
-        bookClient.updateSellingBook(sellingBookId, updateDto);
-
-        // 수정 완료 후 목록 페이지로 리다이렉트
-        return "redirect:/admin/selling-books";
-    }
 
 
-    /**
-     * //TODO 판매책 불러오는 get
-     * 판매 책 목록 페이지 - 관리자 도서불러올때랑똑같은데 return 파일이름이 달라 ..
-     * @param page
-     * @param size
-     * @param model
-     * @return
-     */
-    @GetMapping("/selling-list")
-    public String getSellingBooks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            Model model) {
-        Page<SellingBookRegisterDto> sellingBooks = bookClient.getSellingBooks(page, size);
-
-        sellingBooks.getContent().forEach(book -> log.debug("SellingBookRegisterDto: {}", book));
-
-
-        model.addAttribute("sellingBooks", sellingBooks.getContent());
-        model.addAttribute("currentPage", sellingBooks.getNumber());
-        model.addAttribute("totalPages", sellingBooks.getTotalPages());
-        return "admin/sellingbook"; // HTML 파일 이름
-    }
-
-
-
-    //TODO 판매책 수정후 저장하는 PUT
-    @PostMapping("/{sellingBookId}")
-    public String updateSellingBook(
-            @PathVariable Long sellingBookId,
-            @ModelAttribute @Valid SellingBookRegisterDto updateDto) {
-        // 클라이언트를 통해 수정 API 호출
-        bookClient.updateSellingBook(sellingBookId, updateDto);
-
-        // 수정 완료 후 목록 페이지로 리다이렉트
-        return "redirect:/admin/selling-books/selling-list";
-    }
-
+//    //TODO 판매책 수정후 저장하는 PUT
+//    //판매책
+//    @PostMapping("/{sellingBookId}")
+//    public String updateSellingBook(
+//            @PathVariable Long sellingBookId,
+//            @ModelAttribute @Valid SellingBookRegisterDto updateDto) {
+//        // 클라이언트를 통해 수정 API 호출
+//        bookClient.updateSellingBook(sellingBookId, updateDto);
+//
+//        // 수정 완료 후 목록 페이지로 리다이렉트
+//        return "redirect:/admin/selling-books/selling-list";
+//    }
+//
 
 
 
@@ -155,6 +135,7 @@ public class AdminBookController {
      * @param maxResults
      * @return
      */
+    //도서
     @PostMapping("/sync")
     public String syncBooks(
             @RequestParam("queryType") String queryType,
@@ -168,14 +149,14 @@ public class AdminBookController {
 
             bookClient.syncBooksFromListApi(queryType, searchTarget, start, maxResults);
             // 성공 시 리다이렉트
-            return "redirect:/admin/selling-books";
+            return "redirect:/admin/books";
         } catch (Exception e) {
             log.error("도서 동기화 중 오류 발생: {}", e.getMessage());
             // 실패 시 리다이렉트
-            return "redirect:/admin/selling-books?error=true";
+            return "redirect:/admin/books?error=true";
         }
     }
-
+    //도서
     @PostMapping("/sync/isbn")
     public String syncBooksByIsbns(@RequestParam String isbn) {
         try {
@@ -185,12 +166,12 @@ public class AdminBookController {
             log.info("ISBN 동기화 성공: {}", isbns);
 
             // 성공 시 리다이렉트
-            return "redirect:/admin/selling-books";
+            return "redirect:/admin/books";
         } catch (Exception e) {
             log.error("ISBN 동기화 중 오류 발생: {}", e.getMessage());
 
             // 실패 시 리다이렉트
-            return "redirect:/admin/selling-books?error=true";
+            return "redirect:/admin/books?error=true";
         }
     }
 

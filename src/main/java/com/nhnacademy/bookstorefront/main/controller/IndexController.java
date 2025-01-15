@@ -4,6 +4,7 @@ import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.PagedResponse;
+import com.nhnacademy.bookstorefront.main.dto.book.SellingBookResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +34,7 @@ public class IndexController {
             @RequestParam(defaultValue = "desc") String sortDir, // 정렬 방향
             Model model, HttpServletRequest request) {
         // Feign 클라이언트를 통해 페이징된 데이터 요청
-        Page<BookDetailResponseDto> response = bookClient.getBooks(page, size, sortBy, sortDir);
+        Page<SellingBookResponseDto> response = bookClient.getBooks(page, size, sortBy, sortDir).getBody();
 
         boolean isLoggedIn = authenticationService.isLoggedIn(request);
         String role = null;
