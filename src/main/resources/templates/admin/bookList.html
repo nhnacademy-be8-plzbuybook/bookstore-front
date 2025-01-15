@@ -283,8 +283,8 @@
     <!-- 사이드바 -->
     <div class="sidebar">
         <a href="/adminpage" class="group" data-section="member-management">회원 관리</a>
-        <a href="/admin/selling-books" class="group">도서 관리</a>
-        <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
+        <a href="/admin/books" class="group">도서 관리</a>
+        <a href="/admin/selling-books" class="group">판매 도서 관리</a>
         <div class="group" data-section="coupon-management">쿠폰 관리</div>
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
         <div class="group" data-section="tag-management">태그 관리</div>
@@ -298,12 +298,12 @@
 
         <div class="button-container">
             <!-- 새 도서 추가 -->
-            <form action="/admin/selling-books/register" method="GET">
+            <form action="/admin/books/register" method="GET">
                 <button type="submit" class="add-button">+ 도서 추가</button>
             </form>
 
             <!-- 알라딘 도서 동기화 -->
-            <form action="/admin/selling-books/sync" method="post" class="sync-form">
+            <form action="/admin/books/sync" method="post" class="sync-form">
                 <label for="queryType">Query:</label>
                 <select name="queryType" id="queryType">
                     <option value="ItemNewAll">ItemNewAll</option>
@@ -327,7 +327,7 @@
             </form>
 
             <!-- ISBN 입력 및 동기화 -->
-            <form action="/admin/selling-books/sync/isbn" method="post" class="isbn-form">
+            <form action="/admin/books/sync/isbn" method="post" class="isbn-form">
                 <label for="isbn">ISBN:</label>
                 <input type="text" name="isbn" id="isbn" placeholder="ISBN 입력">
                 <button type="submit" class="isbn-button">📚 ISBN 동기화</button>
@@ -363,7 +363,7 @@
                     <td th:text="${book.standardBookPrice}"></td>
                     <td>
                         <!-- 수정 버튼 -->
-                        <form th:action="@{'/admin/books/' + ${book.bookId}}" method="GET">
+                        <form th:action="@{'/admin/books/' + ${book.bookId}}" method="get">
                             <button type="submit" style="background-color: forestgreen; color: white;">수정</button>
                         </form>
 
@@ -382,7 +382,7 @@
             <div class="pagination">
                 <!-- 이전 버튼 -->
                 <a th:if="${currentPage > 0}"
-                   th:href="@{'/admin/selling-books'(page=${currentPage - 1})}"
+                   th:href="@{'/admin/books'(page=${currentPage - 1})}"
                    class="prev">
                     이전
                 </a>
@@ -392,7 +392,7 @@
 
                 <!-- 다음 버튼 -->
                 <a th:if="${currentPage < totalPages - 1}"
-                   th:href="@{'/admin/selling-books'(page=${currentPage + 1})}"
+                   th:href="@{'/admin/books'(page=${currentPage + 1})}"
                    class="next">
                     다음
                 </a>

@@ -32,20 +32,36 @@ public class AdminTagController {
             Model model,
             @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page, // 페이지 번호
-            @RequestParam(defaultValue = "10") int size // 페이지 크기
-    ) {
-        // 페이징된 태그 리스트 가져오기
-        Page<TagResponseDto> tagResponseDtoPage = bookClient.getAllTags(keyword, page,size).getBody();
+            @RequestParam(defaultValue = "10") int size, // 페이지 크기,
+            @RequestParam(required = false) Long tagId,
+            HttpServletRequest request) {
 
-        // 모델에 페이지 데이터 추가
-        model.addAttribute("tags", tagResponseDtoPage.getContent()); // 태그 목록
-        model.addAttribute("keyword", keyword); // 검색어
-        model.addAttribute("currentPage", page); // 현재 페이지
-        model.addAttribute("totalPages", tagResponseDtoPage.getTotalPages()); // 전체 페이지 수
-        model.addAttribute("totalElements", tagResponseDtoPage.getTotalElements()); // 전체 요소 수
-        model.addAttribute("pageSize", size); // 페이지 크기
+        if(tagId == null) {
+            // 페이징된 태그 리스트 가져오기
+            Page<TagResponseDto> tagResponseDtoPage = bookClient.getAllTags(keyword, page,size).getBody();
 
-        return "admin/tag";
+            // 모델에 페이지 데이터 추가
+            model.addAttribute("tags", tagResponseDtoPage.getContent()); // 태그 목록
+            model.addAttribute("keyword", keyword); // 검색어
+            model.addAttribute("currentPage", page); // 현재 페이지
+            model.addAttribute("totalPages", tagResponseDtoPage.getTotalPages()); // 전체 페이지 수
+            model.addAttribute("totalElements", tagResponseDtoPage.getTotalElements()); // 전체 요소 수
+            model.addAttribute("pageSize", size); // 페이지 크기
+
+            return "admin/tag";
+        } else {
+            //태그를 하나 선택했을때
+
+            List<BookTagResponseDto> bookTagResponseDto = bookClient.getAllBookTags(tagId).getBody();
+            String tagName = bookClient.getTagNameByTagId(tagId).getBody();
+            model.addAttribute("tagId", tagId);
+            model.addAttribute("bookTags", bookTagResponseDto);
+            model.addAttribute("currentUri", request.getRequestURI());
+            model.addAttribute("tagName", tagName);
+
+            return "admin/bookTagList";
+        }
+
     }
 
     @PostMapping("/admin/tag")
@@ -63,18 +79,6 @@ public class AdminTagController {
             bookClient.deleteTag(tagId);
         }
         return "redirect:/admin/tag";
-    }
-
-    @GetMapping("/admin/book-tag")
-    public String bookTagList(Model model, @RequestParam Long tagId, HttpServletRequest request) {
-        List<BookTagResponseDto> bookTagResponseDto = bookClient.getAllBookTags(tagId).getBody();
-        String tagName = bookClient.getTagNameByTagId(tagId).getBody();
-        model.addAttribute("tagId", tagId);
-        model.addAttribute("bookTags", bookTagResponseDto);
-        model.addAttribute("currentUri", request.getRequestURI());
-        model.addAttribute("tagName", tagName);
-
-        return "admin/bookTagList";
     }
 
     @PostMapping("/admin/book-tag")
