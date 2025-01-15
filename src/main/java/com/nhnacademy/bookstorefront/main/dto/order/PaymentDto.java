@@ -10,12 +10,12 @@ public class PaymentDto {
     private BigDecimal amount;
     private String method;
     private String easyPayProvider;
-    private LocalDateTime paidAt;
+    private LocalDateTime recordedAt;
 
-    public PaymentDto(BigDecimal amount, String method, String easyPayProvider, LocalDateTime paidAt) {
+    public PaymentDto(BigDecimal amount, String method, String easyPayProvider, LocalDateTime recordedAt) {
         this.amount = amount;
         this.method = method;
         this.easyPayProvider = easyPayProvider;
-        this.paidAt = paidAt;
+        this.recordedAt = recordedAt;
     }
 }
