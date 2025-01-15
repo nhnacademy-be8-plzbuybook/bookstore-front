@@ -63,7 +63,7 @@ const couponMap = new Map(); // 쿠폰 데이터 관리 Map
 document.addEventListener("DOMContentLoaded", function () {
     const orderTable = document.getElementById("orderTable"); // 상품 테이블
     const orderAmountEl = document.getElementById("orderAmount"); // 결제금액에서 주문금액 표시 요소
-    const discountAmountEl = document.getElementById("discountAmount"); // 결제금액에서 할인금액 표시 요소
+    const discountEl = document.getElementById("discount"); // 결제금액에서 할인금액 표시 요소
     const shippingFeeEl = document.getElementById("shippingFee"); // 결제금액에서 배송비 표시 요소
     const totalAmountEl = document.getElementById("totalAmount"); // 결제금액에서 최종 결제금액 표시 요소
 
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const coupon = couponMap.get(productId); // 쿠폰 Map 에서 데이터 가져옴
 
             if (coupon) {
-                totalDiscount += coupon.discountAmount; // 쿠폰 할인 금액 추가
+                totalDiscount += coupon.discount; // 쿠폰 할인 금액 추가
                 console.log("할인금액 쿠폰계산: ",totalDiscount)
                 console.log("상품 ID: ",productId)
             }
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 화면 업데이트
     function updateDisplay(orderAmount, totalDiscount, shippingFee, totalAmount) {
         document.getElementById("orderAmount").innerText = orderAmount;
-        document.getElementById("discountAmount").innerText = totalDiscount;
+        document.getElementById("discount").innerText = totalDiscount;
         document.getElementById("shippingFee").innerText = shippingFee;
         document.getElementById("totalAmount").innerText = totalAmount;
     }
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 포인트 적용 버튼 클릭 이벤트
     applyPointBtn.addEventListener('click', () => {
         const usedPoint = parseInt(usedPointInput.value) || 0; // 사용자가 입력한 포인트 값 읽기
-        discountAmountEl.innerText = usedPoint; // 입력한 포인트 값으로 할인 금액 덮어씌움
+        discountEl.innerText = usedPoint; // 입력한 포인트 값으로 할인 금액 덮어씌움
         
         // 총 결제 금액 다시 계산
         calculateTotal();
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const pageSize = this.getAttribute('data-page-size') || 10;
 
             const couponId = this.getAttribute('data-coupon-id');
-            const discountAmount = this.getAttribute('data-discount') || 0;
+            const discount = this.getAttribute('data-discount') || 0;
             // 쿠폰 팝업 창 열기
             const url = `/order/receipt/coupon-popup?productId=${productId}&price=${productPrice}&quantity=${quantity}&email=${email}&page=${page}&pageSize=${pageSize}`;
             console.log('팝업 URL:', url);
@@ -178,16 +178,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // 쿠폰팝업창에서 받은 데이터 업데이트
-    window.updateProductPrice = function (productId, discountAmount, couponId) {
+    window.updateProductPrice = function (productId, discount, couponId) {
         const productRow = document.querySelector(`#orderTable tr[data-product-id="${productId}"]`);
 
-        console.log(`updateProductPrice 호출: productId=${productId}, discountAmount=${discountAmount}, couponId=${couponId}`);
+        console.log(`updateProductPrice 호출: productId=${productId}, discount=${discount}, couponId=${couponId}`);
 
-        couponMap.set(productId, {
+        couponMap.set(productId.toString(), {
             couponId: couponId,
-            discountAmount: discountAmount,
+            discount: discount,
         });
-        console.log("couponMap 상태 업데이트:", [...couponMap.entries()]);
+
+        console.log("couponMap 상태 업데이트:", Array.from(couponMap.entries()));
 
         // 총 결제 금액 다시 계산
         calculateTotal();
@@ -294,10 +295,18 @@ function getOrderProducts() {
         const price = parseInt(row.querySelector(".book-price").innerText) || 0;
         const quantity = parseInt(row.querySelector(".book-quantity").innerText) || 0;
 
-        // 쿠폰 정보를 배열로 가져오기
-        const appliedCoupons = couponMap.has(productId)
-            ? [{ couponId: couponMap.get(productId).couponId, discountAmount: couponMap.get(productId).discountAmount }]
+        // 쿠폰 데이터 가져오기
+        const coupon = couponMap.get(productId.toString());
+
+        const appliedCoupons = coupon
+            ? [
+                {
+                    couponId: coupon.couponId,
+                    discount: coupon.discount,
+                },
+            ]
             : [];
+
 
         // 포장지 정보 가져오기
         const wrappingSelect = row.querySelector(".wrapping-select");

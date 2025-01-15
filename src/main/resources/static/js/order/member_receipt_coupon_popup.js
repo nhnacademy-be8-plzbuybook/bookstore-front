@@ -35,11 +35,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         return response.json();
                     })
                     .then(data => {
+                        const discountAmount = data.discountAmount
                         alert("쿠폰이 성공적으로 적용되었습니다!");
-                        const discountAmount = data.discountAmount;
-                        console.log("업데이트 직전 productId, discountAmount, couponId:", productId, discountAmount, couponId)
+                        const discount = discountAmount;
+                        console.log("업데이트 직전 productId, discount, couponId:", productId, discount, couponId)
                         // 부모창 업데이트
-                        window.opener.updateProductPrice(productId, discountAmount, couponId);
+                        window.opener.updateProductPrice(productId, discount, couponId);
 
                         window.close();
                     })
