@@ -73,12 +73,12 @@
             <td th:text="${orderProduct.getPrice()}"></td>
             <td th:text="${orderProduct.getQuantity()}"></td>
             <td th:text="${orderProduct.getStatus()}"></td>
-            <td th:if="${orderProduct.getOrderProductWrapping() != null}">
+            <td th:if="${orderProduct.getOrderProductWrapping().getName() != null}">
                 <span th:text="${orderProduct.getOrderProductWrapping().getName()}"></span> /
                 <span th:text="${orderProduct.getOrderProductWrapping().getPrice()}"></span> 원
                 <span th:text="${orderProduct.getOrderProductWrapping().getQuantity()}"></span> 개
             </td>
-            <td th:unless="${orderProduct.getOrderProductWrapping() != null}">
+            <td th:unless="${orderProduct.getOrderProductWrapping().getName() != null}">
                 <span>X</span>
             </td>
             <td th:if="${orderProduct.getStatus().equals('배송완료')}">

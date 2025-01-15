@@ -127,7 +127,7 @@
         const orderId = button.getAttribute('data-order-id');
         document.getElementById('modalTrackingNumber').textContent = trackingNumber;
         document.getElementById('modalRequestedAt').textContent = requestedAt;
-        document.getElementById('modalCompletedAt').textContent = completedAt != null ? completedAt : '완료완됨';
+        document.getElementById('modalCompletedAt').textContent = completedAt != null ? completedAt : ' ';
         document.getElementById("modalReason").textContent = reason;
 
         document.getElementById('orderDetailBtn').addEventListener('click', () => {
