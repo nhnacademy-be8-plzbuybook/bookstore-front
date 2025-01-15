@@ -239,7 +239,7 @@
 
         <div class="form-container">
             <h3>도서 등록</h3>
-            <form id="bookForm" action="/admin/selling-books/register" method="POST">
+            <form id="bookForm" action="/admin/selling-books/register" method="POST" enctype="multipart/form-data">
                 <label for="bookTitle">제목</label>
                 <input type="text" id="bookTitle" name="bookTitle" required>
 
@@ -307,14 +307,25 @@
                 <button type="submit"  class ="add-button">등록</button>
             </form>
         </div>
+
+
+
     </div>
+    <div class="form-container">
+        <h3>파일 업로드</h3>
+        <form id="fileUploadForm" enctype="multipart/form-data">
+            <label for="fileUpload">이미지 업로드</label>
+            <input type="file" id="fileUpload" name="file" />
+            <button type="button" onclick="uploadFile()">업로드</button>
+        </form>
+        <div>
+            <h3>Uploaded File URLs:</h3>
+            <ul id="uploadedFileUrls"></ul>
+        </div>
+    </div>
+
 </main>
 <th:block th:replace="~{layout/layout::footerLayout}"></th:block>
-
-<!--&lt;!&ndash; TUI Editor CSS &ndash;&gt;-->
-<!--<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css">-->
-<!--&lt;!&ndash; TUI Editor JS &ndash;&gt;-->
-<!--<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>-->
 
 <script>
     // 전역 변수 선언
@@ -405,7 +416,7 @@
         const modal = document.getElementById('categoryModal');
         modal.style.display = 'flex';
 
-        fetch('http://localhost:8080/api/categories?page=0&size=100')
+        fetch('/api/admin/categories?page=0&size=100')
             .then(response => response.json())
             .then(data => {
                 const list = document.getElementById('categoryList');
@@ -435,7 +446,7 @@
         const modal = document.getElementById('authorModal');
         modal.style.display = 'flex';
 
-        fetch('http://localhost:8080/api/authors?page=0&size=100')
+        fetch('/api/admin/authors?page=0&size=100')
             .then(response => response.json())
             .then(data => {
                 const list = document.getElementById('authorList');
@@ -465,6 +476,42 @@
     function closeModal(modalId) {
         document.getElementById(modalId).style.display = 'none';
     }
+
+    function uploadFile() {
+        const fileInput = document.getElementById('fileUpload');
+        const formData = new FormData();
+
+        if (fileInput.files.length > 0) {
+            formData.append('files', fileInput.files[0]); // Key를 'files'로 설정
+        } else {
+            alert('업로드할 파일을 선택해주세요.');
+            return;
+        }
+
+        fetch('/upload/url-files', {
+            method: 'POST',
+            body: formData, // FormData 객체를 직접 전달
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('파일 업로드 실패');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // 기존 리스트 초기화
+                uploadedFileUrls.innerHTML = '';
+
+                // 반환된 URL들을 화면에 표시
+                data.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = item.url;
+                    uploadedFileUrls.appendChild(listItem);
+                });
+            })
+            .catch(error => console.error('업로드 중 오류 발생:', error));
+    }
+
 </script>
 
 

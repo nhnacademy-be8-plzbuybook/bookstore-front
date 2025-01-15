@@ -168,8 +168,8 @@
     <!-- 사이드바 -->
     <div class="sidebar">
         <a href="/adminpage" class="group">회원 관리</a>
-        <a href="/admin/selling-books" class="group">도서 관리</a>
-        <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
+        <a href="/admin/books" class="group">도서 관리</a>
+        <a href="/admin/selling-books" class="group">판매 도서 관리</a>
         <div class="group" data-section="coupon-management">쿠폰 관리</div>
         <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
         <div class="group" data-section="tag-management">태그 관리</div>
@@ -200,6 +200,7 @@
             <tr>
                 <th>판매책 ID</th>
                 <th>Book ID</th>
+                <th>책 제목</th>
                 <th>판매가</th>
                 <th>재고</th>
                 <th>도서 상태</th>
@@ -211,22 +212,22 @@
             </thead>
             <tbody>
             <tr th:each="sellingBook : ${sellingBooks}">
-                <form id="sellingBookForm-${sellingBook.sellingBookId}"
-                      th:action="${sellingBook.sellingBookId != null ? '/admin/selling-books/' + sellingBook.sellingBookId : '/admin/selling-books/selling-register'}"
-                      method="post">
+
+
                     <input type="hidden" name="sellingBookId" th:value="${sellingBook.sellingBookId ?: ''}">
 
                     <td th:text="${sellingBook.sellingBookId != null ? sellingBook.sellingBookId : '새로 추가'}"></td> <!-- 판매책 ID -->
                     <td th:text="${sellingBook.bookId}"></td> <!-- Book ID -->
-                    <td><input type="number" name="sellingBookPrice" th:value="${sellingBook.sellingBookPrice ?: ''}"></td>
+                <td><input type="text" name="sellingBookName" th:value="${sellingBook.bookTitle ?: ''}" readonly></td>
+                <td><input type="number" name="sellingBookPrice" th:value="${sellingBook.sellingBookPrice ?: ''}"></td>
                     <td><input type="number" name="sellingBookStock" th:value="${sellingBook.sellingBookStock ?: ''}"></td>
-                    <td>
+                <td>
                         <select name="sellingBookStatus">
                             <option value="SELLING" th:selected="${sellingBook.sellingBookStatus == 'SELLING'}">SELLING</option>
                             <option value="SELLEND" th:selected="${sellingBook.sellingBookStatus == 'SELLEND'}">SELLEND</option>
                             <option value="DELETEBOOK" th:selected="${sellingBook.sellingBookStatus == 'DELETEBOOK'}">DELETEBOOK</option>
                         </select>
-                    </td>
+                </td>
                     <td>
                         <select name="used">
                             <option value="true" th:selected="${sellingBook.used == true}">중고</option>
@@ -243,9 +244,16 @@
                         </select>
                     </td>
                     <td>
-                        <button type="submit">저장</button>
+                        <form th:action="${sellingBook.sellingBookId != null ? '/admin/selling-books/' + sellingBook.sellingBookId : '/admin/selling-books/selling-register'}" method="post">
+                            <input type="hidden" name="_method" value="put" />
+                            <button type="submit">저장</button>
+                        </form>
+                        <form th:action="@{/admin/selling-books/delete/{id}(id=${sellingBook.getSellingBookId()})}" method="post">
+                            <input type="hidden" name="_method" value="delete" />
+                            <button type="submit">삭제</button>
+                        </form>
                     </td>
-                </form>
+
             </tr>
             </tbody>
         </table>
@@ -253,7 +261,7 @@
             <div class="pagination">
                 <!-- 이전 버튼 -->
                 <a th:if="${currentPage > 0}"
-                   th:href="@{'/admin/selling-books/selling-list'(page=${currentPage - 1})}"
+                   th:href="@{'/admin/selling-books'(page=${currentPage - 1})}"
                    class="prev">
                     이전
                 </a>
@@ -263,7 +271,7 @@
 
                 <!-- 다음 버튼 -->
                 <a th:if="${currentPage < totalPages - 1}"
-                   th:href="@{'/admin/selling-books/selling-list'(page=${currentPage + 1})}"
+                   th:href="@{'/admin/selling-books'(page=${currentPage + 1})}"
                    class="next">
                     다음
                 </a>

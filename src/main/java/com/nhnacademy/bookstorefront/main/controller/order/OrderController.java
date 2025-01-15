@@ -43,6 +43,34 @@ public class OrderController {
     private final PointClient pointClient;
     private final CouponClient couponClient;
 
+    @GetMapping("/admin/order-returns")
+    public String adminOrderReturns(@ModelAttribute OrderReturnSearchRequestDto searchRequest,
+                                    Model model, Pageable pageable) {
+        Page<OrderReturnDto> orderReturnPage = orderService.getOrderReturns(searchRequest, pageable);
+
+        model.addAttribute("orderReturns", orderReturnPage.getContent());
+        model.addAttribute("currentPage", pageable.getPageNumber());
+        model.addAttribute("totalPages", orderReturnPage.getTotalPages());
+        model.addAttribute("totalItems", orderReturnPage.getTotalElements());
+
+
+        return "order/admin/return/order_return_list";
+    }
+
+    /**
+     * 주문반품 폼
+     *
+     * @param orderId
+     * @param model
+     * @return
+     */
+    @GetMapping("/order-return")
+    public String orderReturnForm(@RequestParam("order-id") String orderId,
+                                  Model model) {
+        model.addAttribute("orderId", orderId);
+        return "order/return_form";
+    }
+
     /**
      * 비회원 주문페이지
      *
@@ -365,6 +393,8 @@ public class OrderController {
         orderService.completeReturningOrder(orderId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+
 
 
 }
