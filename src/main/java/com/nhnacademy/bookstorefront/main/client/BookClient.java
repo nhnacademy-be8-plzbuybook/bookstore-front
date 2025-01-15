@@ -135,21 +135,21 @@ public interface BookClient {
     @DeleteMapping("/api/tags/{tagId}")
     ResponseEntity<Void> deleteTag(@PathVariable("tagId") Long tagId);
 
-    @GetMapping("/api/book-tags")
-    ResponseEntity<List<BookTagResponseDto>> getAllBookTags(@RequestParam Long tagId);
+    @GetMapping("/api/tags/{tag-id}/books")
+    ResponseEntity<List<BookTagResponseDto>> getAllBookTags(@PathVariable(name="tag-id") Long tagId);
 
-    @PostMapping("/api/book-tags")
-    ResponseEntity<Void> saveBookTag(@RequestParam Long bookId, @RequestParam Long tagId);
+    @PostMapping("/api/books/{book-id}/tags/{tag-id}")
+    ResponseEntity<Void> saveBookTag(@PathVariable(name = "book-id") Long bookId, @PathVariable(name = "tag-id") Long tagId);
 
-    @DeleteMapping("/api/book-tags")
-    ResponseEntity<Void> deleteBookTag(@RequestParam Long bookId, @RequestParam Long tagId);
+    @DeleteMapping("/api/books/{book-id}/tags/{tag-id}")
+    ResponseEntity<Void> deleteBookTag(@PathVariable(name = "book-id") Long bookId, @PathVariable(name = "tag-id") Long tagId);
 
     @GetMapping("/api/tags/{tagId}")
     ResponseEntity<String> getTagNameByTagId(@PathVariable Long tagId);
 
 
-    @GetMapping("/api/book-tags/{bookId}")
-    ResponseEntity<List<BookTagResponseDto>> getBookTagsByBookId(@PathVariable Long bookId);
+    @GetMapping("/api/books/{book-id}/tags")
+    ResponseEntity<List<BookTagResponseDto>> getBookTagsByBookId(@PathVariable(name = "book-id") Long bookId);
 
     //sellingBookId에 해당하는 리뷰 가져오기
     @GetMapping("/api/books/{sellingBookId}/reviews")
