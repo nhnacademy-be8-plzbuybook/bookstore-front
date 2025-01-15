@@ -115,6 +115,11 @@
             <version>3.4.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
         <!-- log&crash logback sdk 사용을 위한 필수 의존성 -->
         <dependency>
             <groupId>org.json</groupId>

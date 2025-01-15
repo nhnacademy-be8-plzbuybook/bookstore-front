@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.print.Book;
+import java.math.BigDecimal;
 import java.util.List;
 
 @FeignClient(name = "GATEWAY", contextId = "bookclient")
@@ -69,7 +71,7 @@ public interface BookClient {
 
     /**
      * 관리자 도서관리에서 도서 등록 api
-     * @param registerDto
+     * @param
      * @return
      */
     @PostMapping("/api/books")
@@ -171,8 +173,10 @@ public interface BookClient {
         @RequestParam(defaultValue = "10") int size);
 
     @GetMapping("/api/authors")
-    List<AuthorResponseDto> getAuthors(
+    Page<AuthorResponseDto> getAuthors(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size);
 
+    @PostMapping(value = "/api/objects/upload_files" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<List<FileUploadResponse>> uploadFiles(@RequestPart("files") List<MultipartFile> files);
 }
