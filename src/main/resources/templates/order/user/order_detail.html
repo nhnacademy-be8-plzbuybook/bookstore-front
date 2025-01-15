@@ -108,7 +108,12 @@
     </table>
 
     <h2>배송희망 날짜</h2>
+    <div th:if="${orderDetail.getOrderDeliveryAddress().getDetailAddress()} != null">
     <span th:text="${orderDetail.getDeliveryWishDate()}"></span>
+    </div>
+    <div th:unless="${orderDetail.getOrderDeliveryAddress().getDetailAddress()} != null">
+        <span>설정안됨</span>
+    </div>
 
     <h2>주문 배송 정보</h2>
     <table>
@@ -147,7 +152,11 @@
         <tr>
             <!--        쿠폰할인금액 등 추가-->
             <td>할인금액</td>
-            <td>1000원</td>
+            <td th:if="${orderDetail.getCouponDiscount() != null}"
+                th:text="${orderDetail.getCouponDiscount()}"></td>
+            <td th:unless="${orderDetail.getCouponDiscount() != null}">
+                0원
+            </td>
         </tr>
         <tr>
             <td>배송비</td>
@@ -169,7 +178,7 @@
             <td th:text="${orderDetail.getPayment().getMethod()}"></td>
             <td th:text="${orderDetail.getPayment().getEasyPayProvider()}"></td>
             <td th:text="${orderDetail.getPayment().getAmount()}"></td>
-            <td th:text="${#temporals.format(orderDetail.getPayment().getPaidAt(), 'yyyy/MM/dd HH:mm')}"></td>
+            <td th:text="${#temporals.format(orderDetail.getPayment().getRecordedAt(), 'yyyy/MM/dd HH:mm')}"></td>
         </tr>
         </tbody>
     </table>
