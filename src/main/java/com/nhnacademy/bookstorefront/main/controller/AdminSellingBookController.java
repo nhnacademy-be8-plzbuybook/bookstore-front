@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorefront.main.controller;
 
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
+import com.nhnacademy.bookstorefront.main.dto.BookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.SellingBookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.book.SellingBookResponseDto;
 import jakarta.validation.Valid;
@@ -74,7 +75,16 @@ public class AdminSellingBookController {
     }
 
     @GetMapping("/register")
-    public String registerForm(Model model) {
+    public String registerForm(Model model, @RequestParam Long bookId) {
+        model.addAttribute("bookId", bookId);
         return "admin/sellingBookRegister";
+    }
+
+    @PostMapping("/register")
+    public String registerSellingBook(@RequestParam Long bookId,  @ModelAttribute @Valid SellingBookRegisterDto registerDto) {
+        registerDto.setBookId(bookId);
+        bookClient.registerSellingBooks(registerDto);
+        return "redirect:/admin/books?bookType=non-selling";
+
     }
 }

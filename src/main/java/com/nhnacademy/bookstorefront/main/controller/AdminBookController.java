@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.*;
+import com.nhnacademy.bookstorefront.main.dto.book.BookResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.AdminBookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
@@ -45,12 +46,23 @@ public class AdminBookController {
     public String adminGetBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String bookType, // 책 종류 파라미터
+
             Model model
     ) {
-        Page<AdminBookRegisterDto> books = bookClient.adminGetBooks(page, size);
-        model.addAttribute("books", books.getContent());  // books.getContent()로 리스트만 전달
-        model.addAttribute("currentPage", books.getNumber());
-        model.addAttribute("totalPages", books.getTotalPages());
+
+        if ("non-selling".equals(bookType)) {
+            // 외국 도서 API 호출
+            Page<BookResponseDto> books = bookClient.getBooksNotInSellingBooks(page, size).getBody();
+            model.addAttribute("books", books.getContent());
+        } else {
+            // 기본 도서 API 호출
+            Page<AdminBookRegisterDto> books = bookClient.adminGetBooks(page, size);
+            model.addAttribute("books", books.getContent());
+        }
+        model.addAttribute("bookType", bookType);  // bookType 값을 전달
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", 10); // 총 페이지 수는 실제로 받아오는 값으로 설정
         return "admin/bookList";
     }
 

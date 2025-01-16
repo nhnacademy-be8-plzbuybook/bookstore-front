@@ -179,4 +179,10 @@ public interface BookClient {
 
     @PostMapping(value = "/api/objects/upload_files" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<List<FileUploadResponse>> uploadFiles(@RequestPart("files") List<MultipartFile> files);
+
+    @GetMapping("/api/books/not-in-selling-books")
+    ResponseEntity<Page<BookResponseDto>> getBooksNotInSellingBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
+
+
+
 }

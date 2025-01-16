@@ -302,6 +302,14 @@
                 <button type="submit" class="add-button">+ 도서 추가</button>
             </form>
 
+            <!-- 체크박스 -->
+            <form action="/admin/books" method="GET">
+                <label for="bookType">도서 종류:</label>
+                <input type="checkbox" id="bookType" name="bookType" value="non-selling"> 미판매책
+                <button type="submit">검색</button>
+            </form>
+
+
             <!-- 알라딘 도서 동기화 -->
             <form action="/admin/books/sync" method="post" class="sync-form">
                 <label for="queryType">Query:</label>
@@ -351,6 +359,8 @@
                     <th>ISBN</th>
                     <th>정가</th>
                     <th>수정/삭제</th>
+                    <th th:if="${bookType == 'non-selling'}">판매도서로 추가</th>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -371,11 +381,19 @@
                         <form th:action="@{'/admin/books/' + ${book.bookId}}" method="POST">
                             <button type="submit" style="background-color: red; color: white;">삭제</button>
                         </form>
-
-
                     </td>
-                </tr>
+
+                    <form th:if="${bookType == 'non-selling'}"
+                          action="/admin/selling-books/register"
+                          method="GET">
+                        <td>
+                            <input type="hidden" name="bookId" th:value="${book.bookId}">
+                            <button type="submit" class="add-button">판매도서로 추가</button>
+                        </td>
+                    </form>
+
                 </tbody>
+
             </table>
 
             <!-- 페이징 버튼 -->
