@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 public class BookRegisterDto {
+    private Long bookId;
     private String bookTitle;
     private String bookIndex;
     private String bookDescription;
