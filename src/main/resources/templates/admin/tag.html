@@ -325,12 +325,12 @@
         </thead>
         <tbody>
         <tr th:each="tag : ${tags}">
-          <td th:text="${tag.tagId}">1</td>
+          <td th:text="${tag.tagId}"></td>
           <td>
-            <a th:href="@{/admin/tags/{tag-id}/books(tag-id=${tag.tagId})}" th:text="${tag.tagName}">태그 이름</a>
+            <a th:href="@{/admin/tags(tagId=${tag.tagId})}" th:text="${tag.tagName}">태그 이름</a>
           </td>
           <td class="action-buttons">
-            <form th:action="@{/admin/tags/{id}(id=${tag.tagId})}" method="post">
+            <form th:action="@{/admin/tags(tagId=${tagId})}" method="post">
               <input type="hidden" name="_method" value="delete" />
               <button type="submit">삭제</button>
             </form>
@@ -344,7 +344,7 @@
     <div class="pagination">
       <!-- 이전 버튼 -->
       <span th:if="${currentPage > 0}">
-    <a th:href="@{/admin/tag(page=${currentPage - 1}, size=${pageSize}, keyword=${keyword})}">이전</a>
+    <a th:href="@{/admin/tags(page=${currentPage - 1}, size=${pageSize}, keyword=${keyword})}">이전</a>
   </span>
 
       <!-- 페이지 번호 표시 -->
@@ -352,7 +352,7 @@
 
       <!-- 다음 버튼 -->
       <span th:if="${currentPage < totalPages - 1}">
-    <a th:href="@{/admin/tag(page=${currentPage + 1}, size=${pageSize}, keyword=${keyword})}">다음</a>
+    <a th:href="@{/admin/tags(page=${currentPage + 1}, size=${pageSize}, keyword=${keyword})}">다음</a>
   </span>
     </div>
   </div>

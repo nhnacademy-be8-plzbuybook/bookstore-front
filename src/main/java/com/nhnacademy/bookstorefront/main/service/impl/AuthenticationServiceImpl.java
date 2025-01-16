@@ -78,12 +78,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public MyPageDto getMyPage() {
-        try{
+
             ResponseEntity<MyPageDto> response = authenticationClient.getMemberMyPage();
             return response.getBody();
-        }catch(FeignException  e){
-            throw new RuntimeException("마이페이지 조회 중 오류 발생!");
-        }
+
+//        }catch(FeignException  e){
+//            throw new RuntimeException("마이페이지 조회 중 오류 발생!");
+//        }
     }
 
     @Override

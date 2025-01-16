@@ -30,23 +30,24 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="orderReturn: ${orderReturns}">
-            <td th:text="${orderReturn.getId()}"></td>
-            <td th:text="${#temporals.format(orderReturn.getRequestedAt(), 'yyyy/MM/dd HH:mm')}"></td>
+        <tr th:each="orderProductReturn: ${orderProductReturns}">
+            <td th:text="${orderProductReturn.getId()}"></td>
+            <td th:text="${#temporals.format(orderProductReturn.getRequestedAt(), 'yyyy/MM/dd HH:mm')}"></td>
 
-            <td th:if="${orderReturn.getCompletedAt() != null}" th:text="${#temporals.format(orderReturn.getCompletedAt(), 'yyyy/MM/dd HH:mm')}"></td>
-            <td th:if="${orderReturn.getCompletedAt() == null}"></td>
-            <td th:text="${orderReturn.getTrackingNumber()}"></td>
+            <td th:if="${orderProductReturn.getCompletedAt() != null}" th:text="${#temporals.format(orderProductReturn.getCompletedAt(), 'yyyy/MM/dd HH:mm')}"></td>
+            <td th:if="${orderProductReturn.getCompletedAt() == null}"></td>
+            <td th:text="${orderProductReturn.getTrackingNumber()}"></td>
             <td>
                 <button class="btn btn-primary"
                         data-bs-toggle="modal"
                         data-bs-target="#detailModal"
-                        th:attr="data-id=${orderReturn.getId()},
-                                  data-requested-at=${#temporals.format(orderReturn.getRequestedAt(), 'yyyy/MM/dd HH:mm')},
-                                  data-requested-at=${#temporals.format(orderReturn.getCompletedAt(), 'yyyy/MM/dd HH:mm')},
-                                  data-tracking-number=${orderReturn.getTrackingNumber()},
-                                  data-reason=${orderReturn.getReason()},
-                                  data-order-id=${orderReturn.getOrderId()}">
+                        th:attr="data-id=${orderProductReturn.getId()},
+                                  data-requested-at=${#temporals.format(orderProductReturn.getRequestedAt(), 'yyyy/MM/dd HH:mm')},
+                                  data-requested-at=${#temporals.format(orderProductReturn.getCompletedAt(), 'yyyy/MM/dd HH:mm')},
+                                  data-tracking-number=${orderProductReturn.getTrackingNumber()},
+                                  data-reason=${orderProductReturn.getReason()},
+                                  data-order-id=${orderProductReturn.getOrderId()},
+                                  data-order-product-id=${orderProductReturn.getOrderProductId()}">
                     보기
                 </button>
             </td>
@@ -125,6 +126,7 @@
         const completedAt = button.getAttribute('data-Completed-at');
         const reason = button.getAttribute('data-reason');
         const orderId = button.getAttribute('data-order-id');
+        const orderProductId = button.getAttribute('data-order-product-id');
         document.getElementById('modalTrackingNumber').textContent = trackingNumber;
         document.getElementById('modalRequestedAt').textContent = requestedAt;
         document.getElementById('modalCompletedAt').textContent = completedAt != null ? completedAt : ' ';
@@ -135,7 +137,7 @@
         });
 
         document.getElementById('orderReturnCompleteBtn').addEventListener('click', async () => {
-            const response = await fetch(`/api/orders/${orderId}/return/complete`, {
+            const response = await fetch(`/api/orders/${orderId}/order-products/${orderProductId}/return/complete`, {
                 method: "POST"
             });
             if (!response.ok) {
@@ -143,7 +145,7 @@
                 return;
             }
             alert('주문반품요청 완료처리 되었습니다.');
-            window.location.replace('/admin/order-returns');
+            window.location.reload();
         });
     });
 </script>

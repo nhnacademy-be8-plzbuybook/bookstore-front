@@ -205,6 +205,7 @@
 </head>
 <body>
 <th:block th:replace="~{layout/layout::headerFragment}"></th:block>
+
 <main>
     <!-- 사이드바 -->
     <div class="sidebar">
@@ -217,7 +218,6 @@
         <div class="group" data-section="category-management">카테고리 관리</div>
         <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
         <a href="/admin/category" class="group">카테고리 관리</a>
-
     </div>
 
     <!-- 메인 콘텐츠 -->
@@ -254,15 +254,19 @@
 
                 <input type="hidden" id="selectedCategories" name="categories">
                 <input type="hidden" id="selectedAuthors" name="authors">
+
+
+
                 <!-- 카테고리 선택 -->
                 <div id="categoryModal" class="modal" style="display: none;">
                     <div class="modal-content">
-                        <span class="close" onclick="closeCategoryModal()">&times;</span>
-                        <h3>카테고리 검색</h3>
+                        <span class="close" onclick="closeModal('categoryModal')">&times;</span>
+                        <h3>카테고리 선택</h3>
                         <ul id="categoryList"></ul> <!-- 스크롤 가능하도록 스타일 추가 -->
                     </div>
                 </div>
-
+                <!-- 카테고리 초기화 버튼 -->
+                <button type="button" onclick="clearSelectedCategories()">카테고리 선택 초기화</button>
 
                 <!-- 카테고리 검색 버튼 -->
                 <button type="button" onclick="openCategoryModal()">카테고리 검색</button>
@@ -272,14 +276,20 @@
                 <input type="hidden" id="selectedCategoryName" name="categoryName"> <!-- 카테고리 이름 저장 -->
 
 
+
+
                 <!-- 작가 검색 모달 -->
                 <div id="authorModal" class="modal" style="display: none;">
                     <div class="modal-content">
-                        <span class="close" onclick="closeAuthorModal()">&times;</span>
+                        <span class="close" onclick="closeModal('authorModal')">&times;</span>
                         <h3>작가 검색</h3>
                         <ul id="authorList" style="max-height: 300px; overflow-y: auto;"></ul> <!-- 스크롤 가능 -->
                     </div>
                 </div>
+
+
+                <!-- 작가 초기화 버튼 -->
+                <button type="button" onclick="clearSelectedAuthors()">작가 선택 초기화</button>
 
                 <!-- 작가 검색 버튼 -->
                 <button type="button" onclick="openAuthorModal()">작가 검색</button>
@@ -287,7 +297,6 @@
                 <div id="selectedAuthorDisplay">선택된 작가: 없음</div>
                 <input type="hidden" id="selectedAuthorId" name="authorId">
                 <input type="hidden" id="selectedAuthorName" name="authorName"> <!-- 카테고리 이름 저장 -->
-
 
 
                 <!-- 제출 버튼 -->
@@ -378,7 +387,7 @@
             authors: selectedAuthors,
         };
 
-        fetch('/admin/selling-books/register', {
+        fetch('/admin/books/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -397,13 +406,22 @@
     });
 
 
+    // 전역 변수 선언
+    let currentPage = 0; // 현재 페이지
+    const pageSize = 50; // 페이지 크기
 
     // 카테고리 모달 열기
     function openCategoryModal() {
         const modal = document.getElementById('categoryModal');
         modal.style.display = 'flex';
 
-        fetch('/api/admin/categories?page=0&size=100')
+        // 첫 번째 페이지 로드
+        loadCategories(currentPage);
+    }
+
+    // 카테고리 데이터 불러오기 및 페이징 처리
+    function loadCategories(page) {
+        fetch(`/api/admin/categories?page=${page}&size=${pageSize}`)
             .then(response => response.json())
             .then(data => {
                 const list = document.getElementById('categoryList');
@@ -421,6 +439,9 @@
                         });
                         list.appendChild(listItem);
                     });
+
+                    // 페이지네이션 업데이트
+                    updateCategoryPagination(data);
                 } else {
                     list.innerHTML = '<li>카테고리가 없습니다.</li>';
                 }
@@ -428,12 +449,55 @@
             .catch(error => console.error('카테고리 데이터를 불러오는 중 오류 발생:', error));
     }
 
+    // 페이지네이션 버튼 상태 업데이트
+    function updateCategoryPagination(data) {
+        const pagination = document.getElementById('pagination');
+        if (!pagination) {
+            // 페이징 UI가 없으면 생성
+            const modal = document.getElementById('categoryModal');
+            const paginationDiv = document.createElement('div');
+            paginationDiv.id = 'pagination';
+            paginationDiv.innerHTML = `
+            <button id="prevPage" onclick="navigateCategoryPage('prev')" disabled>이전</button>
+            <span id="currentPageDisplay">${currentPage + 1}</span>
+            <button id="nextPage" onclick="navigateCategoryPage('next')">다음</button>
+        `;
+            modal.appendChild(paginationDiv);
+        }
+
+        // 이전 및 다음 버튼 활성화/비활성화
+        const prevButton = document.getElementById('prevPage');
+        const nextButton = document.getElementById('nextPage');
+        const currentPageDisplay = document.getElementById('currentPageDisplay');
+
+        prevButton.disabled = currentPage === 0; // 첫 페이지일 때 비활성화
+        nextButton.disabled = data.last; // 마지막 페이지일 때 비활성화
+        currentPageDisplay.textContent = currentPage + 1; // 현재 페이지 표시
+    }
+
+    // 카테고리 페이지 탐색
+    function navigateCategoryPage(direction) {
+        if (direction === 'prev' && currentPage > 0) {
+            currentPage--;
+        } else if (direction === 'next' && !document.getElementById('nextPage').disabled) {
+            currentPage++;
+        }
+        loadCategories(currentPage);
+    }
+
+
     // 작가 모달 열기
     function openAuthorModal() {
         const modal = document.getElementById('authorModal');
         modal.style.display = 'flex';
 
-        fetch('/api/admin/authors?page=0&size=100')
+        // 첫 번째 페이지 로드
+        loadAuthors(currentPage);
+    }
+
+    // 작가 데이터 불러오기 및 페이징 처리
+    function loadAuthors(page) {
+        fetch(`/api/admin/authors?page=${page}&size=${pageSize}`)
             .then(response => response.json())
             .then(data => {
                 const list = document.getElementById('authorList');
@@ -451,6 +515,9 @@
                         });
                         list.appendChild(listItem);
                     });
+
+                    // 페이지네이션 업데이트
+                    updateAuthorPagination(data);
                 } else {
                     list.innerHTML = '<li>작가가 없습니다.</li>';
                 }
@@ -458,11 +525,63 @@
             .catch(error => console.error('작가 데이터를 불러오는 중 오류 발생:', error));
     }
 
+    // 페이지네이션 버튼 상태 업데이트
+    function updateAuthorPagination(data) {
+        const pagination = document.getElementById('authorPagination');
+        if (!pagination) {
+            // 페이징 UI가 없으면 생성
+            const modal = document.getElementById('authorModal');
+            const paginationDiv = document.createElement('div');
+            paginationDiv.id = 'authorPagination';
+            paginationDiv.innerHTML = `
+            <button id="authorPrevPage" onclick="navigateAuthorPage('prev')" disabled>이전</button>
+            <span id="authorCurrentPageDisplay">${currentPage + 1}</span>
+            <button id="authorNextPage" onclick="navigateAuthorPage('next')">다음</button>
+        `;
+            modal.appendChild(paginationDiv);
+        }
+
+        const prevButton = document.getElementById('authorPrevPage');
+        const nextButton = document.getElementById('authorNextPage');
+        const currentPageDisplay = document.getElementById('authorCurrentPageDisplay');
+
+        prevButton.disabled = currentPage === 0;
+        nextButton.disabled = data.last;
+        currentPageDisplay.textContent = currentPage + 1;
+    }
+    function navigateAuthorPage(direction) {
+        if (direction === 'prev' && currentPage > 0) {
+            currentPage--;
+        } else if (direction === 'next') {
+            currentPage++;
+        }
+        loadAuthors(currentPage);
+    }
 
     // 모달 닫기
     function closeModal(modalId) {
         document.getElementById(modalId).style.display = 'none';
+
+        // ESC 키로 모달 닫기
+        window.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeModal('categoryModal');
+                closeModal('authorModal');
+            }
+        });
     }
+    // 선택된 카테고리 초기화
+    function clearSelectedCategories() {
+        selectedCategories = []; // 선택된 카테고리 리스트 초기화
+        updateCategoryDisplay(); // UI 업데이트
+    }
+
+    // 선택된 작가 초기화
+    function clearSelectedAuthors() {
+        selectedAuthors = []; // 선택된 작가 리스트 초기화
+        updateAuthorDisplay(); // UI 업데이트
+    }
+
 
     function uploadFile() {
         const fileInput = document.getElementById('fileUpload');

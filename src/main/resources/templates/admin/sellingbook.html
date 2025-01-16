@@ -191,6 +191,9 @@
             <p th:text="${errorMessage}"></p>
         </div>
 
+        <form action="/admin/selling-books/register" method="GET">
+            <button type="submit" class="add-button">+ 판매도서 추가</button>
+        </form>
 
 
         <!-- 판매 책 목록 -->
@@ -212,6 +215,7 @@
             </thead>
             <tbody>
             <tr th:each="sellingBook : ${sellingBooks}">
+                <form th:action="${sellingBook.sellingBookId != null ? '/admin/selling-books/' + sellingBook.sellingBookId : '/admin/selling-books/selling-register'}" method="post">
 
 
                     <input type="hidden" name="sellingBookId" th:value="${sellingBook.sellingBookId ?: ''}">
@@ -244,10 +248,11 @@
                         </select>
                     </td>
                     <td>
-                        <form th:action="${sellingBook.sellingBookId != null ? '/admin/selling-books/' + sellingBook.sellingBookId : '/admin/selling-books/selling-register'}" method="post">
                             <input type="hidden" name="_method" value="put" />
                             <button type="submit">저장</button>
                         </form>
+
+
                         <form th:action="@{/admin/selling-books/delete/{id}(id=${sellingBook.getSellingBookId()})}" method="post">
                             <input type="hidden" name="_method" value="delete" />
                             <button type="submit">삭제</button>

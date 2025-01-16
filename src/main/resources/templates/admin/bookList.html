@@ -302,6 +302,14 @@
                 <button type="submit" class="add-button">+ 도서 추가</button>
             </form>
 
+            <!-- 체크박스 -->
+            <form action="/admin/books" method="GET">
+                <label for="bookType">도서 종류:</label>
+                <input type="checkbox" id="bookType" name="bookType" value="non-selling"> 미판매책
+                <button type="submit">검색</button>
+            </form>
+
+
             <!-- 알라딘 도서 동기화 -->
             <form action="/admin/books/sync" method="post" class="sync-form">
                 <label for="queryType">Query:</label>
@@ -351,6 +359,8 @@
                     <th>ISBN</th>
                     <th>정가</th>
                     <th>수정/삭제</th>
+                    <th th:if="${bookType == 'non-selling'}">판매도서로 추가</th>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -361,42 +371,54 @@
                     <td th:text="${book.publisher}"></td>
                     <td th:text="${book.bookIsbn13}"></td>
                     <td th:text="${book.standardBookPrice}"></td>
-                    <td>
+                    <td class="action-buttons">
                         <!-- 수정 버튼 -->
                         <form th:action="@{'/admin/books/update/' + ${book.bookId}}" method="get">
                             <button type="submit" style="background-color: forestgreen; color: white;">수정</button>
                         </form>
 
                         <!-- 삭제 버튼 -->
-                        <form th:action="@{'/admin/books/' + ${book.bookId}}" method="POST">
+                        <form th:action="@{/admin/books/{bookId}(bookId=${book.bookId})}" method="post">
+                            <input type="hidden" name="_method" value="delete" />
+                            <input type="hidden" name="bookType" th:value="${bookType}">
                             <button type="submit" style="background-color: red; color: white;">삭제</button>
                         </form>
 
-
                     </td>
-                </tr>
+
+                    <form th:if="${bookType == 'non-selling'}"
+                          action="/admin/selling-books/register"
+                          method="GET">
+                        <td>
+                            <input type="hidden" name="bookId" th:value="${book.bookId}">
+                            <button type="submit" class="add-button">판매도서로 추가</button>
+                        </td>
+                    </form>
+
                 </tbody>
+
             </table>
 
             <!-- 페이징 버튼 -->
             <div class="pagination">
                 <!-- 이전 버튼 -->
                 <a th:if="${currentPage > 0}"
-                   th:href="@{'/admin/books'(page=${currentPage - 1})}"
+                   th:href="@{'/admin/books'(page=${currentPage - 1}, bookType=${bookType})}"
                    class="prev">
                     이전
                 </a>
 
                 <!-- 페이지 번호 -->
-                <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">10</span></span>
+                <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}"></span></span>
 
                 <!-- 다음 버튼 -->
                 <a th:if="${currentPage < totalPages - 1}"
-                   th:href="@{'/admin/books'(page=${currentPage + 1})}"
+                   th:href="@{'/admin/books'(page=${currentPage + 1}, bookType=${bookType})}"
                    class="next">
                     다음
                 </a>
             </div>
+
         </div>
     </div>
 </main>
