@@ -2,14 +2,16 @@ package com.nhnacademy.bookstorefront.main.controller.coupon;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.BookSearchClient;
-import com.nhnacademy.bookstorefront.main.client.CouponClient;
 import com.nhnacademy.bookstorefront.main.dto.BookSearchPagedResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.*;
+import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCreateRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicyResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicySaveRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.coupon.CouponTargetSaveRequestDto;
+import com.nhnacademy.bookstorefront.main.service.CouponService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +24,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Controller
 public class AdminCouponRegisterController {
-    private final CouponClient couponClient;
+    private final CouponService couponService;
     private final BookClient bookClient;
     private final BookSearchClient bookSearchClient;
 
@@ -76,15 +78,15 @@ public class AdminCouponRegisterController {
             @RequestParam(required = false) Long categoryId,
             Model model) {
 
-        ResponseEntity<CouponPolicyResponseDto> policyResponse = couponClient.createCouponPolicy(couponPolicyRequestDto);
-        Long couponPolicyId = Objects.requireNonNull(policyResponse.getBody()).id();
+        CouponPolicyResponseDto policyResponse = couponService.createCouponPolicy(couponPolicyRequestDto);
+        Long couponPolicyId = Objects.requireNonNull(policyResponse).id();
 
         if (bookId != null) {
             CouponTargetSaveRequestDto targetRequest = new CouponTargetSaveRequestDto(couponPolicyId, bookId);
-            couponClient.createCouponTarget(targetRequest);
+            couponService.createCouponTarget(targetRequest);
         } else if (categoryId != null) {
             CouponTargetSaveRequestDto targetRequest = new CouponTargetSaveRequestDto(couponPolicyId, categoryId);
-            couponClient.createCouponTarget(targetRequest);
+            couponService.createCouponTarget(targetRequest);
         }
         model.addAttribute("createdCouponPolicyId", couponPolicyId);
 
@@ -94,7 +96,7 @@ public class AdminCouponRegisterController {
     // 쿠폰생성
     @PostMapping("/admin/coupons")
     public String createCoupon(@ModelAttribute CouponCreateRequestDto createRequest) {
-        couponClient.createCoupon(createRequest);
+        couponService.createCoupon(createRequest);
         return "redirect:/admin/coupon-register";
     }
 

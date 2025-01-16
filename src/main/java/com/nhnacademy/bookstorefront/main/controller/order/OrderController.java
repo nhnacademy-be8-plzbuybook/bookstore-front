@@ -11,6 +11,7 @@ import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCalculationResponseDt
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderRequestDto;
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
+import com.nhnacademy.bookstorefront.main.service.CouponService;
 import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import com.nhnacademy.bookstorefront.main.service.WrappingPaperService;
@@ -46,7 +47,7 @@ public class OrderController {
     private final MemberClient memberClient;
     private final OrderClient orderClient;
     private final PointClient pointClient;
-    private final CouponClient couponClient;
+    private final CouponService couponService;
 
     @GetMapping("/admin/order-product-returns")
     public String adminOrderReturns(@ModelAttribute OrderReturnSearchRequestDto searchRequest,
@@ -241,7 +242,7 @@ public class OrderController {
         Long memberId = memberClient.getMemberIdByMemberEmail(email).getBody();
 
         // 회원이 보유한 쿠폰 조회
-        Page<MemberCouponGetResponseDto> coupons = couponClient.getUnusedMemberCouponsByMemberId(memberId, pageable).getBody();
+        Page<MemberCouponGetResponseDto> coupons = couponService.getUnusedMemberCouponsByMemberId(memberId, pageable);
 
         model.addAttribute("productId", productId);
         model.addAttribute("email", email);
@@ -264,7 +265,7 @@ public class OrderController {
             @RequestParam Long couponId,
             @RequestBody CouponCalculationRequestDto requestDto) {
 
-        CouponCalculationResponseDto responseDto = couponClient.applyOrderProductCoupon(email, couponId, requestDto).getBody();
+        CouponCalculationResponseDto responseDto = couponService.applyOrderProductCoupon(email, couponId, requestDto);
 
         return ResponseEntity.ok(responseDto);
     }
