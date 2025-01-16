@@ -48,17 +48,20 @@ public class AdminBookController {
             @RequestParam(required = false) String bookType, // 책 종류 파라미터
             Model model) {
 
+
         if ("non-selling".equals(bookType)) {
             Page<BookResponseDto> books = bookClient.getBooksNotInSellingBooks(page, size).getBody();
             model.addAttribute("books", books.getContent());
+            model.addAttribute("totalPages", books.getTotalPages());
+
         } else {
             // 기본 도서 API 호출
             Page<AdminBookRegisterDto> books = bookClient.adminGetBooks(page, size);
             model.addAttribute("books", books.getContent());
+            model.addAttribute("totalPages", books.getTotalPages());
         }
         model.addAttribute("bookType", bookType);
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", 10); //TODO 여기 수정해야함
         return "admin/bookList";
     }
 
