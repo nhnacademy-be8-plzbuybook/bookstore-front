@@ -1,21 +1,15 @@
 package com.nhnacademy.bookstorefront.main.service;
 
-import com.nhnacademy.bookstorefront.main.dto.OrderCancelRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
-import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderRequestDto;
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 
 public interface OrderService {
-    OrderSaveResponseDto requestNonMemberOrder(NonMemberOrderRequestDto orderSaveRequestDto);
-
-    OrderSaveResponseDto requestMemberOrder(MemberOrderRequestDto orderSaveRequestDto);
+    OrderSaveResponseDto requestOrder(OrderRequestDto orderRequest);
 
     String completeOrder(String orderId);
 
@@ -29,9 +23,7 @@ public interface OrderService {
 
     List<OrderStatus> getOrderStatuses();
 
-    void cancelOrderProduct(String orderProductId, OrderProductCancelRequestDto cancelRequest);
-
-    void cancelOrder(String orderId, OrderCancelRequestDto cancelRequest);
+    void cancelOrderProduct(String orderProductId, OrderCancelRequestDto cancelRequest);
 
     void modifyOrderStatus(String orderId, StatusDto status);
 
