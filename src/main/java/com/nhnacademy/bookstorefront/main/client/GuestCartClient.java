@@ -24,9 +24,9 @@ public interface GuestCartClient {
                                           @RequestParam int quantity,
                                           @RequestHeader("cart") String sessionId);
 
-    @DeleteMapping("/api/bookstore/guests/carts") // 장바구니 선택 삭제
-    void deleteGuestCartBook(@RequestParam Long cartId,
-                                          @RequestHeader("cart") String sessionId);
+    @DeleteMapping("/api/bookstore/guests/carts/{cartId}") // 장바구니 선택 삭제
+    void deleteGuestCartBook(@PathVariable("cartId") Long cartId,
+                             @RequestHeader("cart") String sessionId);
 
     @DeleteMapping("/api/bookstore/guests/carts") // 장바구니 전체 비우기
     void deleteAllGuestCart(@RequestHeader("cart") String sessionId);
