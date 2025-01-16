@@ -9,8 +9,7 @@ import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCalculationRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCalculationResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
-import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderRequestDto;
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
@@ -317,30 +316,10 @@ public class OrderController {
     }
 
 
-    /**
-     * 비회원 주문요청
-     *
-     * @param orderRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/api/orders/non-member")
-    public OrderSaveResponseDto nonMemberOrder(@RequestBody NonMemberOrderRequestDto orderRequest) {
-        OrderSaveResponseDto orderSaveResponse = orderService.requestNonMemberOrder(orderRequest);
-        return orderSaveResponse;
-    }
-
-
-    /**
-     * 회원 주문요청
-     *
-     * @param orderRequest
-     * @return
-     */
     @ResponseBody
     @PostMapping("/api/orders")
-    public OrderSaveResponseDto memberOrder(@RequestBody MemberOrderRequestDto orderRequest) {
-        OrderSaveResponseDto orderSaveResponse = orderService.requestMemberOrder(orderRequest);
+    public OrderSaveResponseDto requestOrder(@RequestBody OrderRequestDto orderRequest) {
+        OrderSaveResponseDto orderSaveResponse = orderService.requestOrder(orderRequest);
         return orderSaveResponse;
     }
 
@@ -377,28 +356,6 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * 주문취소
-     *
-     * @param orderId       주문아이디
-     * @param cancelRequest 주문취소요청 DTO
-     * @return Void
-     */
-    @ResponseBody
-    @PostMapping("/api/orders/{order-id}/cancel")
-    public ResponseEntity<Void> cancelOrder(@PathVariable("order-id") String orderId,
-                                            @RequestBody OrderCancelRequestDto cancelRequest) {
-        orderService.cancelOrder(orderId, cancelRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @ResponseBody
-    @PostMapping("/api/orders/order-products/{order-product-id}/cancel")
-    public ResponseEntity<Void> cancelOrderProduct(@PathVariable("order-product-id") String orderProductId,
-                                                   @RequestBody OrderProductCancelRequestDto cancelRequest) {
-        orderService.cancelOrderProduct(orderProductId, cancelRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
 
     @ResponseBody
     @PostMapping("/api/orders/{order-id}/deliveries/{delivery-id}/complete")
@@ -423,5 +380,24 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
+    @GetMapping("/order/{order-id}/cancel")
+    public String orderCancellationPage(@PathVariable("order-id") String orderId,
+                                        Model model) {
+        OrderDetail orderDetail = orderService.getOrderDetail(orderId);
+        List<OrderProductDto> orderProducts = orderDetail.getOrderProducts();
+        model.addAttribute("orderProducts", orderProducts);
+        model.addAttribute("orderId", orderId);
+
+        return "order/cancel_form";
+    }
+
+    @ResponseBody
+    @PostMapping("/api/orders/{order-id}/cancel")
+    public ResponseEntity<?> cancelOrderProducts(@PathVariable("order-id") String orderId,
+                                                 @RequestBody OrderCancelRequestDto cancelRequest) {
+
+        orderService.cancelOrderProduct(orderId, cancelRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
 }
