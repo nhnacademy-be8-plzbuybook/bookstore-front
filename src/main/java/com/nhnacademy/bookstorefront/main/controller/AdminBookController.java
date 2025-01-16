@@ -93,6 +93,7 @@ public class AdminBookController {
                                 ,Model model) {
 
         BookRegisterDto bookData = bookClient.showupatePage(bookId);
+        model.addAttribute("bookId", bookId);
         model.addAttribute("bookData", bookData);
         return "admin/bookUpdate"; // 수정 페이지
     }
@@ -100,16 +101,16 @@ public class AdminBookController {
 
 //     * 도서 수정 데이터 저장
 
-    @PostMapping("/update/{bookId}")
-    public String updateBook(
-            @PathVariable(name = "bookId") Long bookId,
-            @ModelAttribute @Valid AdminBookRegisterDto updateDto) {
-        // 클라이언트를 통해 수정 API 호출
-        bookClient.updateSellingBook(bookId, updateDto);
+//    @RequestMapping(value = "/update/{bookId}", method = RequestMethod.POST)
+@RequestMapping(value = "/update/{bookId}", method = RequestMethod.POST)
+public String updateBook(
+        @PathVariable(name = "bookId") Long bookId,
+        @RequestBody @Valid AdminBookRegisterDto updateDto) {
+    bookClient.updateSellingBook(bookId, updateDto);
+//    model.addAttribute("bookId", bookId);
+    return "redirect:/admin/books";
+}
 
-        // 수정 완료 후 목록 페이지로 리다이렉트
-        return "redirect:/admin/books";
-    }
 
 
 

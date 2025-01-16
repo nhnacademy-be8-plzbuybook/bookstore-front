@@ -47,14 +47,6 @@ public interface BookClient {
     ResponseEntity<Void> deleteBook(@PathVariable Long bookId);
 
 
-//    /**
-//     * 관리자 도서관리에서 도서 수정 - 불러오기
-//     * @param sellingBookId
-//     * @param
-//     * @return
-//     */
-//    @GetMapping("/api/admin/selling-books/{sellingBookId}")
-//    AdminBookRegisterDto getUpdateForm(@PathVariable("sellingBookId") Long sellingBookId);
 
     /**
      * 관리자 도서 관리에서 도서 수정 - 수정후 데이터베이스 반영
