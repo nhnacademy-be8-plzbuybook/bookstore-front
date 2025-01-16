@@ -31,9 +31,9 @@
                 <a th:href="@{https://link.tracker.delivery/track(client_id='2mnplmpcj0hf723toi68kcdeal', carrier_id='kr.cjlogistics',tracking_number=${orderDetail.getOrderDelivery().getTrackingNumber()})}">배송조회</a>
             </td>
             <td th:if="${orderDetail.getStatus().getStatus().equals('결제대기') or orderDetail.getStatus().getStatus().equals('결제완료')}">
-                <button type="button" id="order-cancel-btn">
+                <a th:href="@{/order/{orderId}/cancel(orderId=${orderDetail.getOrderId()})}">
                     주문취소
-                </button>
+                </a>
             </td>
             <td th:if="${orderDetail.getStatus().getCode() >= 2 and orderDetail.getStatus().getCode() <= 5}">
 <!--                <button type="button" id="order-return-btn">-->

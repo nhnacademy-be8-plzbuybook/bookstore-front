@@ -1,8 +1,6 @@
 package com.nhnacademy.bookstorefront.main.client;
 
-import com.nhnacademy.bookstorefront.main.dto.OrderCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.OrderDeliveryRegisterRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
@@ -66,13 +64,13 @@ public interface OrderClient {
     ResponseEntity<Void> modifyOrderStatus(@PathVariable("order-id") String orderId,
                                            @RequestBody StatusDto status);
 
-    @PostMapping("/api/orders/{order-id}/cancel")
-    ResponseEntity<Void> cancelOrder(@PathVariable("order-id") String orderId,
-                                     @RequestBody OrderCancelRequestDto cancelRequest);
+//    @PostMapping("/api/orders/{order-id}/cancel")
+//    ResponseEntity<Void> cancelOrder(@PathVariable("order-id") String orderId,
+//                                     @RequestBody OrderCancelRequestDto cancelRequest);
 
-    @PostMapping("/api/orders/order-products/{order-product-id}/cancel")
-    ResponseEntity<Void> cancelOrderProduct(@PathVariable("order-product-id") String orderProductId,
-                                            @RequestBody OrderProductCancelRequestDto cancelRequest);
+    @PostMapping("/api/orders/{order-id}/cancel")
+    ResponseEntity<Void> cancelOrderProduct(@PathVariable("order-id") String orderId,
+                                            @RequestBody OrderCancelRequestDto cancelRequests);
 
     @PostMapping("/api/orders/{order-id}/deliveries/{delivery-id}/complete")
     ResponseEntity<Void> completeOrderDelivery(@PathVariable("order-id") String orderId,
