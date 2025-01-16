@@ -2,6 +2,8 @@ package com.nhnacademy.bookstorefront.main.service.impl;
 
 import com.nhnacademy.bookstorefront.common.exception.NonMemberAccessFailException;
 import com.nhnacademy.bookstorefront.main.client.OrderClient;
+import com.nhnacademy.bookstorefront.main.controller.order.OrderProductReturnDto;
+
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderRequestDto;
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
@@ -132,9 +134,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void requestReturnOrder(String orderId, OrderReturnRequestDto returnRequest) {
+    public void requestReturnOrderProduct(String orderId, Long orderProductId, OrderReturnRequestDto returnRequest) {
         try {
-            orderClient.requestReturnOrder(orderId, returnRequest);
+            orderClient.requestReturnOrderProduct(orderId, orderProductId, returnRequest);
         } catch (FeignException e) {
             throw new RuntimeException("주문 반품요청 중 오류가 발생했습니다.");
         }
@@ -150,9 +152,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderReturnDto> getOrderReturns(OrderReturnSearchRequestDto searchRequest, Pageable pageable) {
+    public void completeReturningOrderProduct(String orderId, Long orderProductId) {
         try {
-            ResponseEntity<Page<OrderReturnDto>> response = orderClient.getOrderReturns(searchRequest, pageable);
+            orderClient.completeReturningOrderProduct(orderId, orderProductId);
+        } catch (FeignException e) {
+            throw new RuntimeException("주문 반품요청 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public Page<OrderProductReturnDto> getOrderProductReturns(OrderReturnSearchRequestDto searchRequest, Pageable pageable) {
+        try {
+            ResponseEntity<Page<OrderProductReturnDto>> response = orderClient.getOrderProductReturns(searchRequest, pageable);
             return response.getBody();
         } catch (FeignException e) {
             throw new RuntimeException("주문반품 목록을 가져오는 중 오류가 발생했습니다.");
