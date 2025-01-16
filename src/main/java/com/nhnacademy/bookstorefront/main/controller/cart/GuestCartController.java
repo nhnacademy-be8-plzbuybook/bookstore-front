@@ -1,3 +1,4 @@
+
 package com.nhnacademy.bookstorefront.main.controller.cart;
 
 
@@ -37,25 +38,11 @@ public class GuestCartController {
                                HttpServletRequest request,
                                Model model) {
         List<ReadCartBookResponse> readCartBookResponses =  guestCartService.getGuestCarts(session);
-        boolean isLoggedIn = authenticationService.isLoggedIn(request);
-
-        String role = null;
-
-        if(isLoggedIn) {
-            String token = getTokenFromCookies(request);
-            if(token != null) {
-                role = authenticationClient.getRoleFromToken("Bearer " + token).getBody();
-            }
-        }
-        model.addAttribute("role", role);
-        model.addAttribute("isLoggedIn", isLoggedIn);
+        roleAndIsLoggedIn(request, model);
         model.addAttribute("cartBooks", readCartBookResponses);
-        log.info("cartBooks: {}", readCartBookResponses);
-
 
         return "cart/guestCart";
     }
-
 
     @PostMapping("/guests/carts")
     public String CreateCart(@RequestBody CreateCartBookRequest createCartBookRequest,
@@ -68,28 +55,35 @@ public class GuestCartController {
     }
 
     @PutMapping("/guests/carts")
-    public String updateGuestCart(Long cartId, int quantity,
+    public String updateGuestCart(@RequestParam Long cartId,
+                                  @RequestParam int quantity,
+                                  HttpServletRequest request,
                                   HttpSession session,
                                   Model model) {
         Long updatedCartId = guestCartService.updateGuestCart(cartId, quantity, session);
+        roleAndIsLoggedIn(request, model);
         model.addAttribute("cartId", updatedCartId);
-        return "redirect:/guests/carts";
+
+        return "cart/guestCart";
     }
 
     @DeleteMapping("/guests/carts/{cartId}")
-    public String deleteGuestCartItem(@PathVariable Long cartId,
+    public String deleteGuestCartItem(@PathVariable("cartId") Long cartId,
                                       HttpSession session,
+                                      HttpServletRequest request,
                                       Model model) {
-
-        Long deletedCartId = guestCartService.deleteGuestCartItem(cartId, session);
-        model.addAttribute("cartId", deletedCartId);
-        return "redirect:/guests/carts";
+        guestCartService.deleteGuestCartItem(cartId, session);
+        roleAndIsLoggedIn(request, model);
+        return "cart/guestCart";
     }
 
     @DeleteMapping("/guests/carts")
-    public String deleteAllGuestCartItems(HttpSession session) {
+    public String deleteAllGuestCartItems(HttpSession session,
+                                          HttpServletRequest request,
+                                          Model model) {
         guestCartService.deleteAllGuestCartItems(session);
-        return "redirect:/guests/carts";
+        roleAndIsLoggedIn(request, model);
+        return "cart/guestCart";
     }
 
     private String getTokenFromCookies(HttpServletRequest request) {
@@ -102,5 +96,22 @@ public class GuestCartController {
         }
         return null;
     }
+
+    private void roleAndIsLoggedIn(HttpServletRequest request, Model model) {
+        boolean isLoggedIn = authenticationService.isLoggedIn(request);
+
+        String role = null;
+
+        if(isLoggedIn) {
+            String token = getTokenFromCookies(request);
+            if(token != null) {
+                role = authenticationClient.getRoleFromToken("Bearer " + token).getBody();
+            }
+        }
+        model.addAttribute("role", role);
+        model.addAttribute("isLoggedIn", isLoggedIn);
+    }
+
+
 
 }

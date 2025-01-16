@@ -17,7 +17,7 @@ import java.util.List;
 public interface BookSearchClient {
 
 
-    @GetMapping("/api/books")
+    @GetMapping("/api/search")
     BookSearchPagedResponseDto searchBook(
             @RequestParam("searchKeyword") String searchKeyword,
             @RequestParam("page") int page,

@@ -14,7 +14,7 @@ public interface GuestCartService {
 
     Long updateGuestCart(Long cartId, int quantity, HttpSession session);
 
-    Long deleteGuestCartItem(Long cartId, HttpSession session);
+    void deleteGuestCartItem(Long cartId, HttpSession session);
 
     void deleteAllGuestCartItems(HttpSession session);
 }

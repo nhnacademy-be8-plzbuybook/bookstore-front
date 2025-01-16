@@ -153,7 +153,7 @@
       <div th:each="item : ${cartBooks}" class="cart-item row align-items-center">
         <div class="col-auto">
           <label>
-            <input type="checkbox" class="form-check-input" name="selectedItems" th:attr="data-cart-id=${item.cartBookId()}, data-selling-book-id=${item.sellingBookId()}" >
+            <input type="checkbox" class="form-check-input" name="selectedItems" th:attr="data-cart-id=${item.cartBookId}, data-selling-book-id=${item.sellingBookId}" >
           </label>
         </div>
 
@@ -167,16 +167,17 @@
           <p>수량:
             <input type="number" name="quantity" value="1" min="1" class="form-control w-50 d-inline" th:value="${item.quantity}" />
           </p>
-          <input type="hidden" name="cartBookId" th:value="${item.cartBookId}"/>
         </div>
-
+        <input type="hidden" name="sellingBookId" th:value="${item.sellingBookId}" />
+        <input type="hidden" name="cartId" th:value="${item.cartId}" />
+        <input type="hidden" name="cartBookId" th:value="${item.cartBookId}" />
         <div class="col-auto">
-          <button class="btn btn-warning" type="submit" formaction="/guests/carts" formmethod="put" th:attr="data-cart-book-id=${item.cartBookId}">수정</button>
-          <button class="btn btn-danger" type="submit" formaction="/guests/carts/${item.cartBookId}" formmethod="delete">삭제</button>
+          <button class="btn btn-warning" type="button" th:attr="data-cart-id=${item.cartId}" onclick="updateCart(this)">수정</button>
+          <button class="btn btn-danger" type="button" th:attr="data-cart-id=${item.cartId}" onclick="deleteCart(this)">삭제</button>
         </div>
 
         <div class="cart-actions">
-          <button class="btn btn-danger me-2" type="submit" formaction="/guests/carts" formmethod="delete">장바구니 전체 비우기</button>
+          <button class="btn btn-danger me-2" type="button" onclick="deleteAll()">장바구니 전체 비우기</button>
           <button class="btn btn-primary" type="button"  th:attr="data-selling-book-id=${item.sellingBookId}" onclick="buyNow()">주문하기</button>
         </div>
 
@@ -188,8 +189,7 @@
 
   </form>
 </main>
-<script th:inline="javascript">
-
+<script>
   function buyNow() {
     const selectedItems = document.querySelectorAll('input[name="selectedItems"]:checked');
 
@@ -218,6 +218,59 @@
 
     console.log(`Redirecting to: ${url}`); // 디버깅을 위한 로그
     window.location.href = url;
+  }
+
+
+  function updateCart(button) {
+    const cartItem = button.closest('.cart-item');
+    const quantityInput = cartItem.querySelector('input[name="quantity"]');
+    const cartId = cartItem.querySelector('button[data-cart-id]').getAttribute('data-cart-id');
+    const quantity = quantityInput ? quantityInput.value : 1;
+
+
+    console.log(cartId, quantity);
+    fetch(`/guests/carts?cartId=${cartId}&quantity=${quantity}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+      .then(response => {
+        if (response.ok) {
+          window.location.reload(); // 페이지 새로 고침
+        } else {
+          alert("수정 실패");
+        }
+      })
+  }
+  function deleteCart(button) {
+    const cartId = button.getAttribute('data-cart-id');
+
+    fetch(`/guests/carts/${cartId}`, {
+      method: 'DELETE'
+    })
+            .then(response => {
+              if (response.ok) {
+                window.location.reload(); // 페이지 새로 고침
+              } else {
+                alert("삭제 실패");
+              }
+            })
+            .catch(error => console.error('Error:', error));
+  }
+
+  function deleteAll() {
+    fetch(`/guests/carts`, {
+      method: 'DELETE'
+    })
+            .then(response => {
+              if (response.ok) {
+                window.location.reload(); // 페이지 새로 고침
+              } else {
+                alert("전체 비우기 실패");
+              }
+            })
+            .catch(error => console.error('Error:', error));
   }
 
 </script>

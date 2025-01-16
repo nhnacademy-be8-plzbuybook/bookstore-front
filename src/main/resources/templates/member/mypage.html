@@ -454,22 +454,22 @@
                 <tr>
                     <td>NORMAL</td>
                     <td>10만원 미만</td>
-                    <td>순수금액의 1%</td>
+                    <td>기본 적립금 5% + 순수금액의 1%</td>
                 </tr>
                 <tr>
                     <td>ROYAL</td>
                     <td>10만원 ~ 20만원</td>
-                    <td>순수금액의 2%</td>
+                    <td>기본 적립금 5% + 순수금액의 2%</td>
                 </tr>
                 <tr>
                     <td>GOLD</td>
                     <td>20만원 ~ 30만원</td>
-                    <td>순수금액의 3%</td>
+                    <td>기본 적립금 5% + 순수금액의 3%</td>
                 </tr>
                 <tr>
                     <td>PLATINUM</td>
                     <td>30만원 이상</td>
-                    <td>순수금액의 3%</td>
+                    <td>기본 적립금 5% + 순수금액의 4%</td>
                 </tr>
                 </tbody>
             </table>
@@ -485,50 +485,6 @@
                 </div>
             </div>
         </div>
-
-<!--        &lt;!&ndash; 포인트 &ndash;&gt;-->
-<!--        <div class="section" id="points">-->
-<!--            <h2>포인트 내역</h2>-->
-<!--            <p>총 포인트: <strong th:text="${#numbers.formatDecimal(totalPoints, 0, 0)}">0</strong></p>-->
-
-<!--            <table>-->
-<!--                <thead>-->
-<!--                <tr>-->
-<!--                    <th>적립 날짜</th>-->
-<!--                    <th>사유</th>-->
-<!--                    <th>포인트</th>-->
-<!--                    <th>만료 날짜</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                &lt;!&ndash; 포인트 내역이 없을 때 &ndash;&gt;-->
-<!--                <tr th:if="${#lists.isEmpty(points)}">-->
-<!--                    <td colspan="4" class="empty-message">포인트 내역이 없습니다.</td>-->
-<!--                </tr>-->
-
-<!--                &lt;!&ndash; 포인트 내역 출력 &ndash;&gt;-->
-<!--                <tr th:each="point : ${points}">-->
-<!--                    <td th:text="${#temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss')}">적립 날짜</td>-->
-<!--                    <td>-->
-<!--                <span th:switch="${point.pointConditionName}">-->
-<!--                    <span th:case="'SIGN_UP'">회원가입</span>-->
-<!--                    <span th:case="'BOOK_PURCHASE'">도서구매</span>-->
-<!--                    <span th:case="'REVIEW'">리뷰작성</span>-->
-<!--                    <span th:case="'PHOTO_REVIEW'">사진리뷰작성</span>-->
-<!--                    <span th:case="*">기타</span>-->
-<!--                </span>-->
-<!--                    </td>-->
-<!--                    <td th:text="${#numbers.formatDecimal(point.point, 0, 0)}">포인트</td>-->
-<!--                    <td th:text="${#temporals.format(point.endDate, 'yyyy-MM-dd HH:mm:ss')}">만료 날짜</td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-
-<!--            &lt;!&ndash; 오류 메시지 &ndash;&gt;-->
-<!--            <div th:if="${errorMessage}">-->
-<!--                <p class="error" th:text="${errorMessage}">오류가 발생했습니다.</p>-->
-<!--            </div>-->
-<!--        </div>-->
 
         <div class="section" id="points">
             <h2>포인트 내역</h2>
@@ -570,6 +526,8 @@
                 <span th:case="'BOOK_PURCHASE'">도서구매</span>
                 <span th:case="'REVIEW'">리뷰작성</span>
                 <span th:case="'PHOTO_REVIEW'">사진리뷰작성</span>
+                <span th:case="'PHOTO_REMOVE'">사진리뷰삭제</span>
+                <span th:case="'PHOTO_ADD'">사진추가</span>
                 <span th:case="*">기타</span>
             </span>
                     </td>

@@ -159,7 +159,7 @@
         <a href="/non-member/order">비회원 주문조회</a>
         <a th:if="${role == 'USER'}" href="/mypage" id="mypage-btn">MyPage</a>
         <a th:if="${role == null and !isLoggedIn}" href="/guests/carts">비회원 장바구니</a>
-        <a th:if="${role == 'USER' or !isLoggedIn}" href="/carts" id="cart-btn">장바구니</a>
+        <a th:if="${role == 'USER' and isLoggedIn}" href="/carts" id="cart-btn">장바구니</a>
         <a th:if="${role == null and !isLoggedIn}" href="/login" id="login-btn">로그인</a>
         <a th:if="${role == null and !isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>
         <a th:if="${isLoggedIn}" href="/logout" id="logout-btn">로그아웃</a>
@@ -171,7 +171,7 @@
 <main>
     <div class="search-bar">
         <form id="searchForm" method="GET" action="/search/books">
-            <input type="text" name="searchKeyword" placeholder="검색어를 입력하세요 (책 제목, 작가, ISBN)" required>
+            <input type="text" name="searchKeyword" placeholder="검색어를 입력하세요 (책 제목, 작가, ISBN)" required maxlength="15">
             <!-- 페이징 관련 기본값 -->
             <input type="hidden" name="page" value="0">
             <button type="submit">검색</button>

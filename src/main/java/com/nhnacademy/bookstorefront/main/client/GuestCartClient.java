@@ -14,21 +14,21 @@ public interface GuestCartClient {
 
     @PostMapping("/api/bookstore/guests/carts") // 장바구니 등록
     Map<String, Long> createGuestCartBook(CreateCartBookRequest createCartBookRequest,
-                                         @RequestHeader("Session-Id") String sessionId);
+                                         @RequestHeader("cart") String sessionId);
 
     @GetMapping("/api/bookstore/guests/carts") // 장바구니 전체 조회
-    List<ReadCartBookResponse> getGuestCartBooks(@RequestHeader("Session-Id") String sessionId);
+    List<ReadCartBookResponse> getGuestCartBooks(@RequestHeader("cart") String sessionId);
 
-    @PutMapping("/api/bookstore/guests/carts/{cartId}") // 장바구니 선택 수정
-    Map<String, Long> updateGuestCartBook(@PathVariable("cartId") Long cartId,
+    @PutMapping("/api/bookstore/guests/carts") // 장바구니 선택 수정
+    Map<String, Long> updateGuestCartBook(@RequestParam Long cartId,
                                           @RequestParam int quantity,
-                                          @RequestHeader("Session-Id") String sessionId);
+                                          @RequestHeader("cart") String sessionId);
 
     @DeleteMapping("/api/bookstore/guests/carts/{cartId}") // 장바구니 선택 삭제
-    Map<String, Long> deleteGuestCartBook(@PathVariable("cartId") Long cartId,
-                                          @RequestHeader("Session-Id") String sessionId);
+    void deleteGuestCartBook(@PathVariable("cartId") Long cartId,
+                             @RequestHeader("cart") String sessionId);
 
     @DeleteMapping("/api/bookstore/guests/carts") // 장바구니 전체 비우기
-    void deleteAllGuestCart(@RequestHeader("Session-Id") String sessionId);
+    void deleteAllGuestCart(@RequestHeader("cart") String sessionId);
 
 }

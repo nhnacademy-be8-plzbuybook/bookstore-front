@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>주문상품 쿠폰적용 팝업</title>
     <link rel="stylesheet" href="/css/order/receipt.css">
-    <script src="/js/order/member_receipt.js"></script>
+    <script src="/js/order/member_receipt_coupon_popup.js"></script>
 </head>
 <body>
 <h3>주문상품 쿠폰적용</h3>
@@ -41,12 +41,13 @@
         <td th:text="${coupon.discountRatio}">%</td> <!-- 할인율 -->
         <td>
             <button type="button"
+                    class="apply-coupon-btn"
                     th:data-product-id="${productId}"
                     th:data-coupon-id="${coupon.id}"
                     th:data-price="${price}"
                     th:data-quantity="${quantity}"
-                    th:data-email="${email}"
-                    onclick="applyCouponToProduct(this)">적용
+                    th:data-email="${email}">
+                적용
             </button>
         </td>
 

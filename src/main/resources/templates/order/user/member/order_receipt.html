@@ -45,9 +45,14 @@
                 <input type="number" class="wrapping-quantity" id="wrappingQuantity-0" value="0" min="1">
             </td>
             <td>
-                <button type="button"
-                        th:data-url="@{/order/receipt/coupon-popup(productId=${book.getId()}, price=${book.getPrice()}, quantity=${book.getQuantity()}, email=${email}, page=0, pageSize=10)}"
-                        onclick="openCouponPopup(this)">
+                <button class="coupon-select"
+                        th:data-product-id="${book.getId()}"
+                        th:data-product-price="${book.getPrice()}"
+                        th:data-product-quantity="${book.getQuantity()}"
+                        th:data-email="${email}"
+                        th:data-page="0"
+                        th:data-page-size="10"
+                        type="button">
                     쿠폰선택
                 </button>
             </td>
@@ -131,7 +136,7 @@
         </tr>
         <tr>
             <td>할인금액</td>
-            <td><span id="discountAmount">0</span> 원</td>
+            <td><span id="discount">0</span> 원</td>
         </tr>
         <tr>
             <td>배송비</td>

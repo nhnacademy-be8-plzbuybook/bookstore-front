@@ -4,9 +4,13 @@ import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.PagedResponse;
+import com.nhnacademy.bookstorefront.main.dto.book.SellingBookResponseDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
+import com.nhnacademy.bookstorefront.main.service.CookieService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,7 +19,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 
 @Slf4j
 @Controller
@@ -24,6 +27,7 @@ public class IndexController {
     private final BookClient bookClient;
     private final AuthenticationService authenticationService;
     private final AuthenticationClient authenticationClient;
+    private final CookieService cookieService;
 
     @GetMapping({"/index", "/"})
     public String index(
@@ -31,9 +35,15 @@ public class IndexController {
             @RequestParam(defaultValue = "16") int size,       // 한 페이지당 아이템 수
             @RequestParam(defaultValue = "sellingBookId") String sortBy, // 정렬 기준
             @RequestParam(defaultValue = "desc") String sortDir, // 정렬 방향
-            Model model, HttpServletRequest request) {
+            Model model, HttpServletRequest request,HttpServletResponse httpServletResponse) {
+
+        HttpSession session = request.getSession(true);
+        String sessionId = session.getId();
+        cookieService.addCookie(httpServletResponse, "cart", sessionId, 60*60);
+
+
         // Feign 클라이언트를 통해 페이징된 데이터 요청
-        Page<BookDetailResponseDto> response = bookClient.getBooks(page, size, sortBy, sortDir);
+        Page<SellingBookResponseDto> response = bookClient.getBooks(page, size, sortBy, sortDir).getBody();
 
         boolean isLoggedIn = authenticationService.isLoggedIn(request);
         String role = null;
@@ -68,4 +78,5 @@ public class IndexController {
         }
         return null;
     }
+
 }
