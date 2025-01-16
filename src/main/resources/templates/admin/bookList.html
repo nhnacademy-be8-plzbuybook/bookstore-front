@@ -371,16 +371,19 @@
                     <td th:text="${book.publisher}"></td>
                     <td th:text="${book.bookIsbn13}"></td>
                     <td th:text="${book.standardBookPrice}"></td>
-                    <td>
+                    <td class="action-buttons">
                         <!-- 수정 버튼 -->
                         <form th:action="@{'/admin/books/' + ${book.bookId}}" method="get">
                             <button type="submit" style="background-color: forestgreen; color: white;">수정</button>
                         </form>
 
                         <!-- 삭제 버튼 -->
-                        <form th:action="@{'/admin/books/' + ${book.bookId}}" method="POST">
+                        <form th:action="@{/admin/books/{bookId}(bookId=${book.bookId})}" method="post">
+                            <input type="hidden" name="_method" value="delete" />
+                            <input type="hidden" name="bookType" th:value="${bookType}">
                             <button type="submit" style="background-color: red; color: white;">삭제</button>
                         </form>
+
                     </td>
 
                     <form th:if="${bookType == 'non-selling'}"

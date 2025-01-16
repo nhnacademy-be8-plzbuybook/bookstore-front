@@ -41,18 +41,14 @@ public class AdminBookController {
         this.bookClient = bookClient;
     }
 
-    // 관리자용 도서 목록 (페이징 처리만) 리스트 보임
     @GetMapping
     public String adminGetBooks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "0" , required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int size,
             @RequestParam(required = false) String bookType, // 책 종류 파라미터
-
-            Model model
-    ) {
+            Model model) {
 
         if ("non-selling".equals(bookType)) {
-            // 외국 도서 API 호출
             Page<BookResponseDto> books = bookClient.getBooksNotInSellingBooks(page, size).getBody();
             model.addAttribute("books", books.getContent());
         } else {
@@ -60,10 +56,21 @@ public class AdminBookController {
             Page<AdminBookRegisterDto> books = bookClient.adminGetBooks(page, size);
             model.addAttribute("books", books.getContent());
         }
-        model.addAttribute("bookType", bookType);  // bookType 값을 전달
+        model.addAttribute("bookType", bookType);
         model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", 10); // 총 페이지 수는 실제로 받아오는 값으로 설정
+        model.addAttribute("totalPages", 10); //TODO 여기 수정해야함
         return "admin/bookList";
+    }
+
+
+
+    @RequestMapping(value = "/{bookId}", method = RequestMethod.POST)
+    public String deleteBook(@PathVariable("bookId") Long bookId,
+                            @RequestParam("_method") String method, @RequestParam(required = false) String bookType) {
+        if ("delete".equals(method)) {
+            bookClient.deleteBook(bookId);
+        }
+        return "redirect:/admin/books?bookType=" + bookType;
     }
 
 
@@ -103,47 +110,6 @@ public class AdminBookController {
         // 수정 완료 후 목록 페이지로 리다이렉트
         return "redirect:/admin/books";
     }
-
-
-//    /**
-//     * //TODO 판매책 불러오는 get
-//     * 판매 책 목록 페이지 - 관리자 도서불러올때랑똑같은데 return 파일이름이 달라 ..
-//     * @param page
-//     * @param size
-//     * @param model
-//     * @return
-//     */
-//    @GetMapping("/selling-list")
-//    public String getSellingBooks(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            Model model) {
-//        Page<SellingBookRegisterDto> sellingBooks = bookClient.getSellingBooks(page, size);
-//
-//        sellingBooks.getContent().forEach(book -> log.debug("SellingBookRegisterDto: {}", book));
-//
-//
-//        model.addAttribute("sellingBooks", sellingBooks.getContent());
-//        model.addAttribute("currentPage", sellingBooks.getNumber());
-//        model.addAttribute("totalPages", sellingBooks.getTotalPages());
-//        return "admin/sellingbook"; // HTML 파일 이름
-//    }
-
-
-
-//    //TODO 판매책 수정후 저장하는 PUT
-//    //판매책
-//    @PostMapping("/{sellingBookId}")
-//    public String updateSellingBook(
-//            @PathVariable Long sellingBookId,
-//            @ModelAttribute @Valid SellingBookRegisterDto updateDto) {
-//        // 클라이언트를 통해 수정 API 호출
-//        bookClient.updateSellingBook(sellingBookId, updateDto);
-//
-//        // 수정 완료 후 목록 페이지로 리다이렉트
-//        return "redirect:/admin/selling-books/selling-list";
-//    }
-//
 
 
 

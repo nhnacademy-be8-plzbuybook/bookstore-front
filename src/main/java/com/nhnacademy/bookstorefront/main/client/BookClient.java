@@ -41,6 +41,10 @@ public interface BookClient {
             @RequestParam(defaultValue = "10") int size
     );
 
+    @DeleteMapping("/api/books/{bookId}")
+    ResponseEntity<Void> deleteBook(@PathVariable Long bookId);
+
+
 //    /**
 //     * 관리자 도서관리에서 도서 수정 - 불러오기
 //     * @param sellingBookId

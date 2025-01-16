@@ -81,23 +81,23 @@ public class AdminTagController {
         return "redirect:/admin/tags";
     }
 
-    @PostMapping("/admin/book-tag")
-    public String bookTagSave(@RequestParam Long bookId,@RequestParam Long tagId, Model model) {
+    @PostMapping("/admin/books/{bookId}/tags/{tagId}")
+    public String bookTagSave(@PathVariable Long bookId,@PathVariable Long tagId, Model model) {
 
         bookClient.saveBookTag(bookId, tagId);
 
-        return "redirect:/admin/tags/"   + tagId  + "/books";
+        return "redirect:/admin/tags?tagId="   + tagId;
     }
 
     @RequestMapping(value = "/admin/book/{book-id}/tags/{tag-id}" , method = RequestMethod.POST)
     public String deleteBookTag(@PathVariable(name="tag-id") Long tagId, @PathVariable(name="book-id") Long bookId, @RequestParam("_method") String method, Model model) {
         if ("delete".equals(method)) {
-            bookClient.deleteBookTag(bookId,tagId);
+            bookClient.deleteBookTag(bookId, tagId);
         }
         model.addAttribute("bookId", bookId);
         model.addAttribute("tagId", tagId);
 
-        return "redirect:/admin/tags/"   + tagId  + "/books";
+        return "redirect:/admin/tags?tagId=" + tagId;
     }
 
 
