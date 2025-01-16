@@ -72,4 +72,9 @@ public class AdminSellingBookController {
 
         return "redirect:/admin/selling-books";
     }
+
+    @GetMapping("/register")
+    public String registerForm(Model model) {
+        return "admin/sellingBookRegister";
+    }
 }
