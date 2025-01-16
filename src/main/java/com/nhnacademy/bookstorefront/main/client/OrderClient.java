@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorefront.main.client;
 
+import com.nhnacademy.bookstorefront.main.controller.order.OrderProductReturnDto;
 import com.nhnacademy.bookstorefront.main.dto.OrderDeliveryRegisterRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
@@ -80,11 +81,23 @@ public interface OrderClient {
     ResponseEntity<Void> requestReturnOrder(@PathVariable("order-id") String orderId,
                                             @RequestBody OrderReturnRequestDto returnRequest);
 
+    @PostMapping("/api/orders/{order-id}/order-products/{order-product-id}/return")
+    ResponseEntity<Void> requestReturnOrderProduct(@PathVariable("order-id") String orderId,
+                                                   @PathVariable("order-product-id") Long orderProductId,
+                                                   @RequestBody OrderReturnRequestDto returnRequest);
+
     @PostMapping("/api/orders/{order-id}/return/complete")
     ResponseEntity<Void> completeReturningOrder(@PathVariable("order-id") String orderId);
 
     @GetMapping("/api/orders/order-returns")
     ResponseEntity<Page<OrderReturnDto>> getOrderReturns(@SpringQueryMap OrderReturnSearchRequestDto searchRequest,
                                                          Pageable pageable);
+
+    @GetMapping("/api/orders/order-product-returns")
+    ResponseEntity<Page<OrderProductReturnDto>> getOrderProductReturns(@SpringQueryMap OrderReturnSearchRequestDto searchRequest, Pageable pageable);
+
+    @PostMapping("/api/orders/{order-id}/order-products/{order-product-id}/return/complete")
+    void completeReturningOrderProduct(@PathVariable("order-id") String orderId,
+                                       @PathVariable("order-product-id") Long orderProductId);
 
 }

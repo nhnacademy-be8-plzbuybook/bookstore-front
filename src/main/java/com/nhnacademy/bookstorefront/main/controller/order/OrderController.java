@@ -38,15 +38,15 @@ public class OrderController {
     private final PointClient pointClient;
     private final CouponClient couponClient;
 
-    @GetMapping("/admin/order-returns")
+    @GetMapping("/admin/order-product-returns")
     public String adminOrderReturns(@ModelAttribute OrderReturnSearchRequestDto searchRequest,
                                     Model model, Pageable pageable) {
-        Page<OrderReturnDto> orderReturnPage = orderService.getOrderReturns(searchRequest, pageable);
+        Page<OrderProductReturnDto> orderProductReturnPage = orderService.getOrderProductReturns(searchRequest, pageable);
 
-        model.addAttribute("orderReturns", orderReturnPage.getContent());
+        model.addAttribute("orderProductReturns", orderProductReturnPage.getContent());
         model.addAttribute("currentPage", pageable.getPageNumber());
-        model.addAttribute("totalPages", orderReturnPage.getTotalPages());
-        model.addAttribute("totalItems", orderReturnPage.getTotalElements());
+        model.addAttribute("totalPages", orderProductReturnPage.getTotalPages());
+        model.addAttribute("totalItems", orderProductReturnPage.getTotalElements());
 
 
         return "order/admin/return/order_return_list";
@@ -59,12 +59,49 @@ public class OrderController {
      * @param model
      * @return
      */
-    @GetMapping("/order-return")
-    public String orderReturnForm(@RequestParam("order-id") String orderId,
+    @GetMapping("/orders/{order-id}/order-products/{order-product-id}/return")
+    public String orderReturnForm(@PathVariable("order-id") String orderId,
+                                  @PathVariable("order-product-id") Long orderProductId,
+                                  @RequestParam("quantity") int quantity,
                                   Model model) {
         model.addAttribute("orderId", orderId);
+        model.addAttribute("orderProductId", orderProductId);
+        model.addAttribute("quantity", quantity);
         return "order/return_form";
     }
+
+    /**
+     * 주문상품 반품 요청
+     *
+     * @param orderId
+     * @param orderProductId
+     * @param returnRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/api/orders/{order-id}/order-products/{order-product-id}/return")
+    public ResponseEntity<Void> requestReturnOrder(@PathVariable("order-id") String orderId,
+                                                   @PathVariable("order-product-id") Long orderProductId,
+                                                   @RequestBody OrderReturnRequestDto returnRequest) {
+        orderService.requestReturnOrderProduct(orderId, orderProductId, returnRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+
+    /**
+     * 주문상품 반품요청 완료처리
+     *
+     * @param orderId
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/api/orders/{order-id}/order-products/{order-product-id}/return/complete")
+    public ResponseEntity<Void> completeReturnOrder(@PathVariable("order-id") String orderId,
+                                                    @PathVariable("order-product-id") Long orderProductId) {
+        orderService.completeReturningOrderProduct(orderId, orderProductId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 
     /**
      * 비회원 주문페이지
@@ -332,20 +369,9 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @ResponseBody
-    @PostMapping("/api/orders/{order-id}/return")
-    public ResponseEntity<Void> requestReturnOrder(@PathVariable("order-id") String orderId,
-                                                   @RequestBody OrderReturnRequestDto returnRequest) {
-        orderService.requestReturnOrder(orderId, returnRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
 
-    @ResponseBody
-    @PostMapping("/api/orders/{order-id}/return/complete")
-    public ResponseEntity<Void> completeReturnOrder(@PathVariable("order-id") String orderId) {
-        orderService.completeReturningOrder(orderId);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
+
+
 
     @GetMapping("/order/{order-id}/cancel")
     public String orderCancellationPage(@PathVariable("order-id") String orderId,

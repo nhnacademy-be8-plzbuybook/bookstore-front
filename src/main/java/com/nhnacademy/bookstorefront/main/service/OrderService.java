@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorefront.main.service;
 
+import com.nhnacademy.bookstorefront.main.controller.order.OrderProductReturnDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderRequestDto;
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
@@ -29,10 +30,13 @@ public interface OrderService {
 
     void completeOrderDelivery(String orderId, Long deliveryId);
 
-    void requestReturnOrder(String orderId, OrderReturnRequestDto returnRequest);
+//    void requestReturnOrder(String orderId, OrderReturnRequestDto returnRequest);
+    void requestReturnOrderProduct(String orderId, Long orderProductId, OrderReturnRequestDto returnRequest);
 
     void completeReturningOrder(String orderId);
 
-    Page<OrderReturnDto> getOrderReturns(OrderReturnSearchRequestDto searchRequest, Pageable pageable);
+    Page<OrderProductReturnDto> getOrderProductReturns(OrderReturnSearchRequestDto searchRequest, Pageable pageable);
+
+    void completeReturningOrderProduct(String orderId, Long orderProductId);
 
 }
