@@ -25,4 +25,6 @@ public class OrderRequestDto {
     private BigDecimal deliveryFee;
     @NotNull
     private BigDecimal orderPrice;
+    private String memberEmail;
+    private String nonMemberPassword;
 }

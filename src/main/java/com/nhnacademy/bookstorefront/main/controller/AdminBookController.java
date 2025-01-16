@@ -1,31 +1,19 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.*;
+
+import com.nhnacademy.bookstorefront.main.dto.book.BookResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.AdminBookRegisterDto;
-import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.SellingBookRegisterDto;
-import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
-import feign.FeignException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -40,18 +28,39 @@ public class AdminBookController {
         this.bookClient = bookClient;
     }
 
-    // 관리자용 도서 목록 (페이징 처리만) 리스트 보임
     @GetMapping
     public String adminGetBooks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            Model model
-    ) {
-        Page<AdminBookRegisterDto> books = bookClient.adminGetBooks(page, size);
-        model.addAttribute("books", books.getContent());  // books.getContent()로 리스트만 전달
-        model.addAttribute("currentPage", books.getNumber());
-        model.addAttribute("totalPages", books.getTotalPages());
+            @RequestParam(defaultValue = "0" , required = false) int page,
+            @RequestParam(defaultValue = "10", required = false) int size,
+            @RequestParam(required = false) String bookType, // 책 종류 파라미터
+            Model model) {
+
+
+        if ("non-selling".equals(bookType)) {
+            Page<BookResponseDto> books = bookClient.getBooksNotInSellingBooks(page, size).getBody();
+            model.addAttribute("books", books.getContent());
+            model.addAttribute("totalPages", books.getTotalPages());
+
+        } else {
+            // 기본 도서 API 호출
+            Page<AdminBookRegisterDto> books = bookClient.adminGetBooks(page, size);
+            model.addAttribute("books", books.getContent());
+            model.addAttribute("totalPages", books.getTotalPages());
+        }
+        model.addAttribute("bookType", bookType);
+        model.addAttribute("currentPage", page);
         return "admin/bookList";
+    }
+
+
+
+    @RequestMapping(value = "/{bookId}", method = RequestMethod.POST)
+    public String deleteBook(@PathVariable("bookId") Long bookId,
+                            @RequestParam("_method") String method, @RequestParam(required = false) String bookType) {
+        if ("delete".equals(method)) {
+            bookClient.deleteBook(bookId);
+        }
+        return "redirect:/admin/books?bookType=" + bookType;
     }
 
 
@@ -78,12 +87,22 @@ public class AdminBookController {
 
     }
 
+    // 관리자가 도서 수정 버튼 누르면 보이는 페이지
+    @GetMapping("/update/{bookId}")
+    public String showupatePage(@PathVariable(name="bookId") Long bookId
+                                ,Model model) {
+
+        BookRegisterDto bookData = bookClient.showupatePage(bookId);
+        model.addAttribute("bookData", bookData);
+        return "admin/bookUpdate"; // 수정 페이지
+    }
+
 
 //     * 도서 수정 데이터 저장
 
-    @PostMapping("/update/{book-id}")
+    @PostMapping("/update/{bookId}")
     public String updateBook(
-            @PathVariable(name = "book-id") Long bookId,
+            @PathVariable(name = "bookId") Long bookId,
             @ModelAttribute @Valid AdminBookRegisterDto updateDto) {
         // 클라이언트를 통해 수정 API 호출
         bookClient.updateSellingBook(bookId, updateDto);
@@ -91,47 +110,6 @@ public class AdminBookController {
         // 수정 완료 후 목록 페이지로 리다이렉트
         return "redirect:/admin/books";
     }
-
-
-//    /**
-//     * //TODO 판매책 불러오는 get
-//     * 판매 책 목록 페이지 - 관리자 도서불러올때랑똑같은데 return 파일이름이 달라 ..
-//     * @param page
-//     * @param size
-//     * @param model
-//     * @return
-//     */
-//    @GetMapping("/selling-list")
-//    public String getSellingBooks(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            Model model) {
-//        Page<SellingBookRegisterDto> sellingBooks = bookClient.getSellingBooks(page, size);
-//
-//        sellingBooks.getContent().forEach(book -> log.debug("SellingBookRegisterDto: {}", book));
-//
-//
-//        model.addAttribute("sellingBooks", sellingBooks.getContent());
-//        model.addAttribute("currentPage", sellingBooks.getNumber());
-//        model.addAttribute("totalPages", sellingBooks.getTotalPages());
-//        return "admin/sellingbook"; // HTML 파일 이름
-//    }
-
-
-
-//    //TODO 판매책 수정후 저장하는 PUT
-//    //판매책
-//    @PostMapping("/{sellingBookId}")
-//    public String updateSellingBook(
-//            @PathVariable Long sellingBookId,
-//            @ModelAttribute @Valid SellingBookRegisterDto updateDto) {
-//        // 클라이언트를 통해 수정 API 호출
-//        bookClient.updateSellingBook(sellingBookId, updateDto);
-//
-//        // 수정 완료 후 목록 페이지로 리다이렉트
-//        return "redirect:/admin/selling-books/selling-list";
-//    }
-//
 
 
 

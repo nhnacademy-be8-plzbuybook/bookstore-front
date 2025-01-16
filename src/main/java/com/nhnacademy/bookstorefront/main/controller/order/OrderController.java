@@ -5,19 +5,22 @@ import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCouponGetResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.OrderCancelRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCalculationRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCalculationResponseDto;
-
-import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
-
 import com.nhnacademy.bookstorefront.main.dto.order.*;
-import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderRequestDto;
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import com.nhnacademy.bookstorefront.main.service.WrappingPaperService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,9 +31,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 public class OrderController {
@@ -43,15 +48,15 @@ public class OrderController {
     private final PointClient pointClient;
     private final CouponClient couponClient;
 
-    @GetMapping("/admin/order-returns")
+    @GetMapping("/admin/order-product-returns")
     public String adminOrderReturns(@ModelAttribute OrderReturnSearchRequestDto searchRequest,
                                     Model model, Pageable pageable) {
-        Page<OrderReturnDto> orderReturnPage = orderService.getOrderReturns(searchRequest, pageable);
+        Page<OrderProductReturnDto> orderProductReturnPage = orderService.getOrderProductReturns(searchRequest, pageable);
 
-        model.addAttribute("orderReturns", orderReturnPage.getContent());
+        model.addAttribute("orderProductReturns", orderProductReturnPage.getContent());
         model.addAttribute("currentPage", pageable.getPageNumber());
-        model.addAttribute("totalPages", orderReturnPage.getTotalPages());
-        model.addAttribute("totalItems", orderReturnPage.getTotalElements());
+        model.addAttribute("totalPages", orderProductReturnPage.getTotalPages());
+        model.addAttribute("totalItems", orderProductReturnPage.getTotalElements());
 
 
         return "order/admin/return/order_return_list";
@@ -64,12 +69,49 @@ public class OrderController {
      * @param model
      * @return
      */
-    @GetMapping("/order-return")
-    public String orderReturnForm(@RequestParam("order-id") String orderId,
+    @GetMapping("/orders/{order-id}/order-products/{order-product-id}/return")
+    public String orderReturnForm(@PathVariable("order-id") String orderId,
+                                  @PathVariable("order-product-id") Long orderProductId,
+                                  @RequestParam("quantity") int quantity,
                                   Model model) {
         model.addAttribute("orderId", orderId);
+        model.addAttribute("orderProductId", orderProductId);
+        model.addAttribute("quantity", quantity);
         return "order/return_form";
     }
+
+    /**
+     * 주문상품 반품 요청
+     *
+     * @param orderId
+     * @param orderProductId
+     * @param returnRequest
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/api/orders/{order-id}/order-products/{order-product-id}/return")
+    public ResponseEntity<Void> requestReturnOrder(@PathVariable("order-id") String orderId,
+                                                   @PathVariable("order-product-id") Long orderProductId,
+                                                   @RequestBody OrderReturnRequestDto returnRequest) {
+        orderService.requestReturnOrderProduct(orderId, orderProductId, returnRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+
+    /**
+     * 주문상품 반품요청 완료처리
+     *
+     * @param orderId
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/api/orders/{order-id}/order-products/{order-product-id}/return/complete")
+    public ResponseEntity<Void> completeReturnOrder(@PathVariable("order-id") String orderId,
+                                                    @PathVariable("order-product-id") Long orderProductId) {
+        orderService.completeReturningOrderProduct(orderId, orderProductId);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 
     /**
      * 비회원 주문페이지
@@ -118,6 +160,7 @@ public class OrderController {
     @GetMapping("/order/receipt")
     public String memberOrderReceipt(@RequestParam("productId") List<Long> productId,
                                      @RequestParam("quantity") List<Integer> quantity,
+                                     HttpServletRequest httpServletRequest,
                                      Model model) {
         // 책 정보
         List<OrderReceiptProduct> books = new ArrayList<>();
@@ -134,14 +177,15 @@ public class OrderController {
                 .findFirst()
                 .orElse(null);
 
-
         //회원 포인트
         Integer availablePoints = pointClient.getAvailablePoints().getBody();
 
-        //회원아이디(하드코딩) -> 아이디를 가져오는 방법이 필요함
-        String email="ct1@naver.com";
-        model.addAttribute("email", email);
 
+        // JWT에서 이메일 추출
+        String accessToken = getAccessTokenFromCookies(httpServletRequest);
+        String email = extractEmailFromToken(accessToken);
+
+        model.addAttribute("email", email);
         model.addAttribute("wrappingPapers", wrappingPaperService.getWrappingPapers());
         model.addAttribute("books", books);
         model.addAttribute("deliveryFeePolicy", deliveryFeePolicyService.getGeneralPolicy());
@@ -151,8 +195,32 @@ public class OrderController {
         return "order/user/member/order_receipt";
     }
 
+    private String getAccessTokenFromCookies(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    private String extractEmailFromToken(String token) {
+        if (token != null) {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey("Ny0pm2CWIAST07ElsTAVZgCqJKJd2bE9lpKyewuOhyyKoBApt1Ny0pm2CWIAST07ElsTAVZgCqJKJd2bE9lpKyewuOhyyKoBApt1")
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return claims.getSubject();
+        }
+        return null;
+    }
+
     /**
      * 회원이 사용가능한 쿠폰 목록 조회 할 수 있는 주문상품 쿠폰적용 팝업 페이지
+     *
      * @param email
      * @param price
      * @param quantity
@@ -160,15 +228,16 @@ public class OrderController {
      * @param pageSize
      */
     @GetMapping("/order/receipt/coupon-popup")
-    public String orderReceiptCouponPopup(@RequestParam("productId") Long productId,
+    public String orderReceiptCouponPopup(@RequestHeader("X-USER-ID") String email,
+                                          @RequestParam("productId") Long productId,
                                           @RequestParam BigDecimal price,
                                           @RequestParam Integer quantity,
-                                          @RequestParam String email,
                                           @RequestParam int page,
                                           @RequestParam int pageSize,
                                           Model model) {
         Pageable pageable = PageRequest.of(page, pageSize);
 
+        // 이메일로 회원 식별키 조회
         Long memberId = memberClient.getMemberIdByMemberEmail(email).getBody();
 
         // 회원이 보유한 쿠폰 조회
@@ -191,17 +260,14 @@ public class OrderController {
      */
     @PostMapping("/order/receipt/coupon-popup/apply")
     public ResponseEntity<CouponCalculationResponseDto> orderReceiptCouponPopupApply(
-            @RequestParam String email,
+            @RequestHeader("X-USER-ID") String email,
             @RequestParam Long couponId,
             @RequestBody CouponCalculationRequestDto requestDto) {
 
-        Long memberId = memberClient.getMemberIdByMemberEmail(email).getBody();
-
-        CouponCalculationResponseDto responseDto = couponClient.applyOrderProductCoupon(memberId, couponId, requestDto).getBody();
+        CouponCalculationResponseDto responseDto = couponClient.applyOrderProductCoupon(email, couponId, requestDto).getBody();
 
         return ResponseEntity.ok(responseDto);
     }
-
 
 
     /**
@@ -288,30 +354,10 @@ public class OrderController {
     }
 
 
-    /**
-     * 비회원 주문요청
-     *
-     * @param orderRequest
-     * @return
-     */
-    @ResponseBody
-    @PostMapping("/api/orders/non-member")
-    public OrderSaveResponseDto nonMemberOrder(@RequestBody NonMemberOrderRequestDto orderRequest) {
-        OrderSaveResponseDto orderSaveResponse = orderService.requestNonMemberOrder(orderRequest);
-        return orderSaveResponse;
-    }
-
-
-    /**
-     * 회원 주문요청
-     *
-     * @param orderRequest
-     * @return
-     */
     @ResponseBody
     @PostMapping("/api/orders")
-    public OrderSaveResponseDto memberOrder(@RequestBody MemberOrderRequestDto orderRequest) {
-        OrderSaveResponseDto orderSaveResponse = orderService.requestMemberOrder(orderRequest);
+    public OrderSaveResponseDto requestOrder(@RequestBody OrderRequestDto orderRequest) {
+        OrderSaveResponseDto orderSaveResponse = orderService.requestOrder(orderRequest);
         return orderSaveResponse;
     }
 
@@ -348,28 +394,6 @@ public class OrderController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * 주문취소
-     *
-     * @param orderId       주문아이디
-     * @param cancelRequest 주문취소요청 DTO
-     * @return Void
-     */
-    @ResponseBody
-    @PostMapping("/api/orders/{order-id}/cancel")
-    public ResponseEntity<Void> cancelOrder(@PathVariable("order-id") String orderId,
-                                            @RequestBody OrderCancelRequestDto cancelRequest) {
-        orderService.cancelOrder(orderId, cancelRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @ResponseBody
-    @PostMapping("/api/orders/order-products/{order-product-id}/cancel")
-    public ResponseEntity<Void> cancelOrderProduct(@PathVariable("order-product-id") String orderProductId,
-                                                   @RequestBody OrderProductCancelRequestDto cancelRequest) {
-        orderService.cancelOrderProduct(orderProductId, cancelRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
-    }
 
     @ResponseBody
     @PostMapping("/api/orders/{order-id}/deliveries/{delivery-id}/complete")
@@ -382,19 +406,33 @@ public class OrderController {
     @ResponseBody
     @PostMapping("/api/orders/{order-id}/return")
     public ResponseEntity<Void> requestReturnOrder(@PathVariable("order-id") String orderId,
-                                            @RequestBody OrderReturnRequestDto returnRequest) {
+                                                   @RequestBody OrderReturnRequestDto returnRequest) {
         orderService.requestReturnOrder(orderId, returnRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @ResponseBody
-    @PostMapping("/api/orders/{order-id}/return/complete")
-    public ResponseEntity<Void> completeReturnOrder(@PathVariable("order-id") String orderId) {
-        orderService.completeReturningOrder(orderId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+
+    @GetMapping("/order/{order-id}/cancel")
+    public String orderCancellationPage(@PathVariable("order-id") String orderId,
+                                        Model model) {
+        OrderDetail orderDetail = orderService.getOrderDetail(orderId);
+        List<OrderProductDto> orderProducts = orderDetail.getOrderProducts();
+        model.addAttribute("orderProducts", orderProducts);
+        model.addAttribute("orderId", orderId);
+
+        return "order/cancel_form";
     }
 
 
+ 
 
+    @ResponseBody
+    @PostMapping("/api/orders/{order-id}/cancel")
+    public ResponseEntity<?> cancelOrderProducts(@PathVariable("order-id") String orderId,
+                                                 @RequestBody OrderCancelRequestDto cancelRequest) {
+        orderService.cancelOrderProduct(orderId, cancelRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
+    
 }

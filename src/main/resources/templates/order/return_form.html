@@ -18,29 +18,46 @@
     document.getElementById("return-btn").addEventListener('click', async () => {
         const reason = document.getElementById("reason").value;
         const trackingNumber = document.getElementById("tracking-number").value;
-        const data = {
-            reason: reason,
-            trackingNumber: trackingNumber
-        };
 
-        const orderId = [[${orderId}]];
-        const response = await fetch(`/api/orders/${orderId}/return`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
-
-        if (!(response.ok)){
-            alert("반품요청이 실패했습니다.");
+        // 데이터 검증
+        if (!reason || !trackingNumber) {
+            alert("반품사유와 반송장번호를 입력해주세요.");
             return;
         }
 
-        alert("반품이 성공적으로 요청되었습니다.");
-        window.location.replace(`/orders/${orderId}`);
-    });
+        const quantity = /*[[${quantity}]]*/;
+        const orderId = /*[[${orderId}]]*/;
+        const orderProductId = /*[[${orderProductId}]]*/;
 
+        const data = {
+            reason: reason,
+            quantity: quantity,
+            trackingNumber: trackingNumber
+        };
+
+        const url = `/api/orders/${orderId}/order-products/${orderProductId}/return`;
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                alert(`반품요청이 실패했습니다: ${errorMessage}`);
+                return;
+            }
+
+            alert("반품이 성공적으로 요청되었습니다.");
+            window.location.replace(`/orders/${orderId}`);
+        } catch (error) {
+            console.error("요청 중 오류가 발생했습니다:", error);
+            alert("알 수 없는 오류가 발생했습니다.");
+        }
+    });
 </script>
 </body>
 </html>

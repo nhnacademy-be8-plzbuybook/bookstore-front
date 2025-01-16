@@ -1,13 +1,11 @@
 package com.nhnacademy.bookstorefront.main.service.impl;
 
-import com.nhnacademy.bookstorefront.common.exception.ConflictException;
 import com.nhnacademy.bookstorefront.common.exception.NonMemberAccessFailException;
 import com.nhnacademy.bookstorefront.main.client.OrderClient;
-import com.nhnacademy.bookstorefront.main.dto.OrderCancelRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
+import com.nhnacademy.bookstorefront.main.controller.order.OrderProductReturnDto;
+
 import com.nhnacademy.bookstorefront.main.dto.order.*;
-import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.MemberOrderRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.NonMemberOrderRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderRequestDto;
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
 import feign.FeignException;
@@ -18,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -31,22 +28,9 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public OrderSaveResponseDto requestNonMemberOrder(NonMemberOrderRequestDto orderSaveRequestDto) {
+    public OrderSaveResponseDto requestOrder(OrderRequestDto orderRequest) {
         try {
-            ResponseEntity<OrderSaveResponseDto> response = orderClient.requestNonMemberOrder(orderSaveRequestDto);
-            return response.getBody();
-        } catch (FeignException.BadRequest e) {
-            log.error("feignClient error: {}", e.getMessage());
-            throw new RuntimeException("잘못된 주문형식입니다.");
-        } catch (FeignException.Conflict e) {
-            throw new ConflictException(e.getMessage());
-        }
-    }
-
-    @Override
-    public OrderSaveResponseDto requestMemberOrder(MemberOrderRequestDto orderSaveRequestDto) {
-        try {
-            ResponseEntity<OrderSaveResponseDto> response = orderClient.requestMemberOrder(orderSaveRequestDto);
+            ResponseEntity<OrderSaveResponseDto> response = orderClient.requestOrder(orderRequest);
             return response.getBody();
 
         } catch (FeignException.BadRequest e) {
@@ -123,18 +107,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void cancelOrder(String orderId, OrderCancelRequestDto cancelRequest) {
+    public void cancelOrderProduct(String orderId, OrderCancelRequestDto cancelRequest) {
         try {
-            orderClient.cancelOrder(orderId, cancelRequest);
-        } catch (FeignException e) {
-            throw new RuntimeException("주문취소 중 오류가 발생했습니다.");
-        }
-    }
-
-    @Override
-    public void cancelOrderProduct(String orderProductId, OrderProductCancelRequestDto cancelRequest) {
-        try {
-            orderClient.cancelOrderProduct(orderProductId, cancelRequest);
+            orderClient.cancelOrderProduct(orderId, cancelRequest);
         } catch (FeignException e) {
             throw new RuntimeException("주문상품 취소 중 오류가 발생했습니다.");
         }
@@ -159,9 +134,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void requestReturnOrder(String orderId, OrderReturnRequestDto returnRequest) {
+    public void requestReturnOrderProduct(String orderId, Long orderProductId, OrderReturnRequestDto returnRequest) {
         try {
-            orderClient.requestReturnOrder(orderId, returnRequest);
+            orderClient.requestReturnOrderProduct(orderId, orderProductId, returnRequest);
         } catch (FeignException e) {
             throw new RuntimeException("주문 반품요청 중 오류가 발생했습니다.");
         }
@@ -177,9 +152,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<OrderReturnDto> getOrderReturns(OrderReturnSearchRequestDto searchRequest, Pageable pageable) {
+    public void completeReturningOrderProduct(String orderId, Long orderProductId) {
         try {
-            ResponseEntity<Page<OrderReturnDto>> response = orderClient.getOrderReturns(searchRequest, pageable);
+            orderClient.completeReturningOrderProduct(orderId, orderProductId);
+        } catch (FeignException e) {
+            throw new RuntimeException("주문 반품요청 중 오류가 발생했습니다.");
+        }
+    }
+
+    @Override
+    public Page<OrderProductReturnDto> getOrderProductReturns(OrderReturnSearchRequestDto searchRequest, Pageable pageable) {
+        try {
+            ResponseEntity<Page<OrderProductReturnDto>> response = orderClient.getOrderProductReturns(searchRequest, pageable);
             return response.getBody();
         } catch (FeignException e) {
             throw new RuntimeException("주문반품 목록을 가져오는 중 오류가 발생했습니다.");
