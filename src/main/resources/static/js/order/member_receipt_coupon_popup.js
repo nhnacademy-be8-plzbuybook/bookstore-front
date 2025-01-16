@@ -17,16 +17,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("quantity:", quantity);
                 console.log("email:", email);
 
+                const productPrice = price * quantity;
                 const requestBody = {
-                    productPrice: price,
-                    quantity: quantity,
+                    price: productPrice,
                 };
 
                 // API 요청
-                fetch(`/order/receipt/coupon-popup/apply?email=${encodeURIComponent(email)}&couponId=${couponId}`, {
+                fetch(`/order/receipt/coupon-popup/apply?couponId=${couponId}`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
+                        "X-USER-ID": email
                     },
                     body: JSON.stringify(requestBody),
                 })

@@ -183,6 +183,7 @@ public class OrderController {
 
     /**
      * 회원이 사용가능한 쿠폰 목록 조회 할 수 있는 주문상품 쿠폰적용 팝업 페이지
+     *
      * @param email
      * @param price
      * @param quantity
@@ -190,15 +191,16 @@ public class OrderController {
      * @param pageSize
      */
     @GetMapping("/order/receipt/coupon-popup")
-    public String orderReceiptCouponPopup(@RequestParam("productId") Long productId,
+    public String orderReceiptCouponPopup(@RequestHeader("X-USER-ID") String email,
+                                          @RequestParam("productId") Long productId,
                                           @RequestParam BigDecimal price,
                                           @RequestParam Integer quantity,
-                                          @RequestParam String email,
                                           @RequestParam int page,
                                           @RequestParam int pageSize,
                                           Model model) {
         Pageable pageable = PageRequest.of(page, pageSize);
 
+        // 이메일로 회원 식별키 조회
         Long memberId = memberClient.getMemberIdByMemberEmail(email).getBody();
 
         // 회원이 보유한 쿠폰 조회
@@ -221,17 +223,14 @@ public class OrderController {
      */
     @PostMapping("/order/receipt/coupon-popup/apply")
     public ResponseEntity<CouponCalculationResponseDto> orderReceiptCouponPopupApply(
-            @RequestParam String email,
+            @RequestHeader("X-USER-ID") String email,
             @RequestParam Long couponId,
             @RequestBody CouponCalculationRequestDto requestDto) {
 
-        Long memberId = memberClient.getMemberIdByMemberEmail(email).getBody();
-
-        CouponCalculationResponseDto responseDto = couponClient.applyOrderProductCoupon(memberId, couponId, requestDto).getBody();
+        CouponCalculationResponseDto responseDto = couponClient.applyOrderProductCoupon(email, couponId, requestDto).getBody();
 
         return ResponseEntity.ok(responseDto);
     }
-
 
 
     /**
@@ -412,7 +411,7 @@ public class OrderController {
     @ResponseBody
     @PostMapping("/api/orders/{order-id}/return")
     public ResponseEntity<Void> requestReturnOrder(@PathVariable("order-id") String orderId,
-                                            @RequestBody OrderReturnRequestDto returnRequest) {
+                                                   @RequestBody OrderReturnRequestDto returnRequest) {
         orderService.requestReturnOrder(orderId, returnRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -423,8 +422,6 @@ public class OrderController {
         orderService.completeReturningOrder(orderId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-
 
 
 }

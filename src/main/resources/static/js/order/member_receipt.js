@@ -166,11 +166,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const couponId = this.getAttribute('data-coupon-id');
             const discount = this.getAttribute('data-discount') || 0;
+
             // 쿠폰 팝업 창 열기
-            const url = `/order/receipt/coupon-popup?productId=${productId}&price=${productPrice}&quantity=${quantity}&email=${email}&page=${page}&pageSize=${pageSize}`;
+            const url = `/order/receipt/coupon-popup?productId=${productId}&price=${productPrice}&quantity=${quantity}&page=${page}&pageSize=${pageSize}`;
             console.log('팝업 URL:', url);
 
-            window.open(url, '주문상품 쿠폰적용', 'width=1000,height=600,scrollbars=yes');
+            const popup = window.open(url, '주문상품 쿠폰적용', 'width=1000,height=600,scrollbars=yes');
+            // 팝업창이 열릴 때 헤더 설정
+            if (popup) {
+                fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        "X-USER-ID": email
+                    }
+                }).then(response => {
+                    if (!response.ok) throw new Error("팝업창 요청 실패");
+                    return response.text();
+                }).then(html => {
+                    popup.document.write(html); // 팝업창 내용 업데이트
+                    popup.document.close();
+                }).catch(error => {
+                    alert(`에러 발생: ${error.message}`);
+                    console.error(error);
+                });
+            }
 
             // 총 결제 금액 다시 계산
             calculateTotal();
@@ -231,20 +250,6 @@ document.addEventListener("DOMContentLoaded", function () {
             orderName: responseData.orderName
         });
         window.location.replace(`/payments/toss?${queryString}`);
-    });
-
-    document.querySelectorAll('.coupon-select').forEach(button => {
-        button.addEventListener('click', function () {
-            const productId = this.getAttribute('data-product-id');
-            const productPrice = this.getAttribute('data-product-price');
-            const quantity = this.getAttribute('data-product-quantity');
-            const email = this.getAttribute('data-email');
-            const page = this.getAttribute(`data-page`) || 0;
-            const pageSize = this.getAttribute(`data-page-size`) || 0;
-            const url = `/order/receipt/coupon-popup?productId=${productId}&price=${productPrice}&quantity=${quantity}&email=${email}&page=${page}&pageSize=${pageSize}`;
-
-            window.open(url, '주문상품 쿠폰적용', 'width=800,height=600,scrollbars=yes');
-        });
     });
 
 });
