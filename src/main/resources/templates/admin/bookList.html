@@ -363,7 +363,7 @@
                     <td th:text="${book.standardBookPrice}"></td>
                     <td>
                         <!-- 수정 버튼 -->
-                        <form th:action="@{'/admin/books/' + ${book.bookId}}" method="get">
+                        <form th:action="@{'/admin/books/update/' + ${book.bookId}}" method="get">
                             <button type="submit" style="background-color: forestgreen; color: white;">수정</button>
                         </form>
 
@@ -406,24 +406,5 @@
     <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>
     <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
 </footer>
-
-<!--<script>-->
-<!--    function filterBooks() {-->
-<!--        const input = document.getElementById('searchInput').value.toLowerCase();-->
-<!--        const table = document.getElementById('booksTable');-->
-<!--        const rows = table.getElementsByTagName('tr');-->
-
-<!--        for (let i = 1; i < rows.length; i++) {-->
-<!--            const cells = rows[i].getElementsByTagName('td');-->
-<!--            const titleCell = cells[1] ? cells[1].textContent.toLowerCase() : '';-->
-
-<!--            if (titleCell.includes(input)) {-->
-<!--                rows[i].style.display = '';-->
-<!--            } else {-->
-<!--                rows[i].style.display = 'none';-->
-<!--            }-->
-<!--        }-->
-<!--    }-->
-<!--</script>-->
 </body>
 </html>

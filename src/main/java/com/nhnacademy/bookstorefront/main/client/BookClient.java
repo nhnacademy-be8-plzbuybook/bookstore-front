@@ -15,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Book;
-import java.math.BigDecimal;
 import java.util.List;
 
 @FeignClient(name = "GATEWAY", contextId = "bookclient")
@@ -41,24 +39,20 @@ public interface BookClient {
             @RequestParam(defaultValue = "10") int size
     );
 
-//    /**
-//     * 관리자 도서관리에서 도서 수정 - 불러오기
-//     * @param sellingBookId
-//     * @param
-//     * @return
-//     */
-//    @GetMapping("/api/admin/selling-books/{sellingBookId}")
-//    AdminBookRegisterDto getUpdateForm(@PathVariable("sellingBookId") Long sellingBookId);
+    // 관리자용 도서 수정하기
+    @GetMapping("/api/books/update/{bookId}")
+    BookRegisterDto showupatePage(@PathVariable("bookId") Long bookId);
+
 
     /**
      * 관리자 도서 관리에서 도서 수정 - 수정후 데이터베이스 반영
-     * @param sellingBookId
+     * @param bookId
      * @param updateDto
      * @return
      */
     // TODO 나중에 이거 구현해야함
-    @PutMapping("/api/books/{sellingBookId}")
-    void updateSellingBook(@PathVariable("sellingBookId") Long sellingBookId,
+    @PutMapping("/api/books/{bookId}")
+    void updateSellingBook(@PathVariable("bookId") Long bookId,
                            @RequestBody AdminBookRegisterDto updateDto);
 
 

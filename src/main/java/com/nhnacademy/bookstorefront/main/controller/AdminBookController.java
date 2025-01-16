@@ -1,31 +1,16 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.*;
-import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.AdminBookRegisterDto;
-import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.SellingBookRegisterDto;
-import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
-import feign.FeignException;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -55,8 +40,6 @@ public class AdminBookController {
     }
 
 
-
-
     // 관리자가 도서 추가 버튼 누르면 보이는 페이지 = 이거는 잘돼
     @GetMapping("/register")
     public String showRegisterPage() {
@@ -78,12 +61,22 @@ public class AdminBookController {
 
     }
 
+    // 관리자가 도서 수정 버튼 누르면 보이는 페이지
+    @GetMapping("/update/{bookId}")
+    public String showupatePage(@PathVariable(name="bookId") Long bookId
+                                ,Model model) {
+
+        BookRegisterDto bookData = bookClient.showupatePage(bookId);
+        model.addAttribute("bookData", bookData);
+        return "admin/bookUpdate"; // 수정 페이지
+    }
+
 
 //     * 도서 수정 데이터 저장
 
-    @PostMapping("/update/{book-id}")
+    @PostMapping("/update/{bookId}")
     public String updateBook(
-            @PathVariable(name = "book-id") Long bookId,
+            @PathVariable(name = "bookId") Long bookId,
             @ModelAttribute @Valid AdminBookRegisterDto updateDto) {
         // 클라이언트를 통해 수정 API 호출
         bookClient.updateSellingBook(bookId, updateDto);
