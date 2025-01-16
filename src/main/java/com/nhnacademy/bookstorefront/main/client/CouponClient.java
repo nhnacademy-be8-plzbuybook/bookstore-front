@@ -42,9 +42,11 @@ public interface CouponClient {
     @GetMapping("/api/member-coupons")
     ResponseEntity<Page<MemberCouponResponseDto>> getAllMemberCoupons(@RequestParam @NotNull @Min(0) int page, @RequestParam @NotNull @Min(1) int pageSize);
 
-    // 특정 쿠폰을 주문 상품에 적용하여 (쿠폰서버에서) 할인 계산
-    @PostMapping("/api/member-coupons/member/{member-id}/coupon/{coupon-id}/calculate")
-    ResponseEntity<CouponCalculationResponseDto> applyOrderProductCoupon(@PathVariable("member-id") Long memberId, @PathVariable("coupon-id") Long couponId, @RequestBody CouponCalculationRequestDto calculationRequestDto);
+    // 주문금액 할인 계산
+    @PostMapping("/api/member-coupons/member/{coupon-id}/calculate")
+    ResponseEntity<CouponCalculationResponseDto> applyOrderProductCoupon(@RequestHeader("X-USER-ID") String email,
+                                                                                @PathVariable("coupon-id") Long couponId,
+                                                                                @RequestBody @Valid CouponCalculationRequestDto calculationRequestDto);
 
     @GetMapping("/api/member-coupons/member/{member-id}/unused")
     ResponseEntity<Page<MemberCouponGetResponseDto>> getUnusedMemberCouponsByMemberId(@PathVariable("member-id") Long memberId, Pageable pageable);
