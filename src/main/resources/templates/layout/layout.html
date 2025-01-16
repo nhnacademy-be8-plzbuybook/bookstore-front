@@ -18,14 +18,17 @@
             <a href="#">외국도서</a>
             <a href="#">추천도서</a>
         </nav>
-        <!--        <div class="icons">-->
-        <!--            &lt;!&ndash; 로그인 상태에 따라 버튼 표시 &ndash;&gt;-->
-        <!--            <a th:if="${role == 'ADMIN'}" href="/adminpage" id="adminpage-btn">AdminPage</a>-->
-        <!--            <a th:if="${role == 'USER'}" href="/mypage" id="mypage-btn">MyPage</a>-->
-        <!--            <a th:if="${role == null and !isLoggedIn}" href="/login" id="login-btn">로그인</a>-->
-        <!--            <a th:if="${role == null and !isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>-->
-        <!--            <a th:if="${isLoggedIn}" href="/logout" id="logout-btn">로그아웃</a>-->
-        <!--        </div>-->
+        <div class="icons">
+            <!-- 로그인 상태에 따라 버튼 표시 -->
+            <a th:if="${role == 'ADMIN'}" href="/adminpage" id="adminpage-btn">AdminPage</a>
+            <a th:if="${role == 'USER'}" href="/mypage" id="mypage-btn">MyPage</a>
+            <a th:if="${role == null and (isLoggedIn != null and !isLoggedIn)}"  href="/non-member/order">비회원 주문조회</a>
+            <a th:if="${role == 'USER' or (isLoggedIn != null and !isLoggedIn)}" href="/carts" id="cart-btn">장바구니</a>
+            <a th:if="${role == null and (isLoggedIn != null and !isLoggedIn)}" href="/guests/carts" id="guest-cart-btn">장바구니</a>
+            <a th:if="${role == null and (isLoggedIn != null and !isLoggedIn)}" href="/login" id="login-btn">로그인</a>
+            <a th:if="${role == null and (isLoggedIn != null and !isLoggedIn)}" href="/signup" id="signup-btn">회원가입</a>
+            <a th:if="${isLoggedIn}" href="/logout" id="logout-btn">로그아웃</a>
+        </div>
     </header>
 </div>
 </html>
