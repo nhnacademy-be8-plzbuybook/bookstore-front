@@ -5,6 +5,11 @@ spring:
       on-profile: dev
   application:
     name: front
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: false
 
 eureka:
   client:
