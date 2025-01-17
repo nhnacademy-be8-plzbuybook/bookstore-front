@@ -1,376 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/detail.css?v=1.1">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout/layout.css">
     <title th:text="${book.bookTitle} + ' - 상세정보'">책 상세정보</title>
-
-    <style>
-        /* 공통 스타일 */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #333;
-            padding: 15px 20px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header .logo {
-            text-decoration: none;
-            color: inherit;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        header .menu a,
-        header .icons a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 16px;
-        }
-
-        header .menu a:hover,
-        header .icons a:hover {
-            color: #f1f1f1;
-        }
-
-        main {
-            padding: 20px;
-        }
-
-        /* 검색바와 정렬바 */
-        .search-bar, .sort-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .search-bar input {
-            flex: 1;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .search-bar button {
-            padding: 10px 15px;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .search-bar button:hover {
-            background-color: #444;
-        }
-
-        .sort-bar select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .book img {
-            width: 100%;
-            height: auto;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-
-        .book div {
-            font-size: 14px;
-            color: #333;
-        }
-
-        /* 버튼 */
-        button {
-            padding: 12px 20px;
-            background-color: #333;
-            color: white;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #444;
-        }
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-        }
-
-        footer a {
-            color: #00aaff;
-            text-decoration: none;
-            margin: 0 5px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* 수량 조절 스타일 */
-        .quantity-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px; /* 위 간격 */
-            margin-bottom: 10px; /* 아래 간격 */
-            justify-content: flex-start;
-        }
-
-        .quantity-control input {
-            width: 60px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 5px;
-            height: 40px; /* 높이 통일 */
-        }
-
-        .star-rating {
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
-            cursor: pointer;
-        }
-
-        .star {
-            font-size: 2rem;
-            color: #ddd;
-            transition: color 0.2s;
-        }
-
-        .star.selected {
-            color: #f39c12;
-        }
-
-        /*리뷰 평점 관련 css*/
-        /* 전체 평균 평점 스타일 */
-        .average-score-container {
-            text-align: center;
-            margin-bottom: 20px;
-            background-color: #f0f0f0;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .average-score-text {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .average-score-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: #ff9800; /* 따뜻한 주황색 */
-            margin-top: 10px;
-        }
-
-        /*리뷰 관련 css*/
-        .reviews-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        .review-item {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .review-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .review-author {
-            font-size: 18px;
-            font-weight: 600;
-            color: #555;
-        }
-
-        .review-score {
-            font-size: 16px;
-            font-weight: 500;
-            color: #ff9800;
-        }
-
-        .review-content {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #333;
-            margin: 10px 0;
-        }
-
-        .review-images {
-            margin-top: 15px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .review-image {
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 페이징 CSS */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .pagination a { /* <a> 태그에 스타일 적용 */
-            padding: 10px 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #f0f0f0;
-            cursor: pointer;
-            text-decoration: none; /* 링크 밑줄 제거 */
-            transition: background-color 0.3s;
-        }
-
-        .pagination a:hover {
-            background-color: #ddd;
-        }
-
-        .pagination a:disabled { /* disabled 상태에 대한 스타일 */
-            cursor: not-allowed;
-            background-color: #eee;
-        }
-
-    /*    리뷰 수정*/
-        /* 리뷰 수정 폼 디자인 */
-        form {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .review-author {
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #333;
-        }
-
-        .review-score,
-        .review-content,
-        .review-images {
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-size: 16px;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        select,
-        textarea,
-        input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .form-actions {
-            text-align: center;
-        }
-
-        .review-images input[type="file"] {
-            padding: 5px;
-        }
-
-        .review-images label {
-            display: block;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-    </style>
 </head>
 <body>
-<header>
-    <a href="/" class = "logo">📚 책사조잉 📚</a>
-    <nav class="menu">
-        <a href="/">Home</a>
-        <a href="#">국내도서</a>
-        <a href="#">외국도서</a>
-        <a href="#">추천도서</a>
-    </nav>
-    <div class="icons">
-        <!-- 로그인 상태에 따라 버튼 표시 -->
-        <a th:if="${role == 'ADMIN'}" href="/adminpage" id="adminpage-btn">AdminPage</a>
-        <a th:if="${role == 'USER'}" href="/mypage" id="mypage-btn">MyPage</a>
-        <a th:if="${role == null and !isLoggedIn}" href="/login" id="login-btn">로그인</a>
-        <a th:if="${role == null and !isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>
-        <a th:if="${isLoggedIn}" href="/logout" id="logout-btn">로그아웃</a>
-        <a th:if="${role == null and !isLoggedIn}" href="/guests/carts" >비회원 장바구니</a>
-        <a th:if="${role == 'USER' and isLoggedIn}" href="/carts" id="cart-btn">장바구니</a>
-    </div>
-</header>
-
+<th:block th:replace="~{layout/layout :: headerFragment}"></th:block>
 <main>
-    <div class="book-detail">
+    <section class="book-detail mt-5">
         <!-- 이미지 -->
         <div class="book-image">
             <img th:src="${book.imageUrl != null ? book.imageUrl : '/default-image.png'}"
@@ -379,8 +21,16 @@
 
         <!-- 정보 -->
         <div class="book-info">
-            <h1 th:text="${book.bookTitle != null ? book.bookTitle : '제목 정보 없음'}"></h1>
-
+            <div class="d-flex align-items-center">
+                <h1 th:text="${book.bookTitle != null ? book.bookTitle : '제목 정보 없음'}"></h1>
+                <div class="like-form">
+                    <form class="like-form" th:action="@{/book/detail/like/{id}(id=${book.sellingBookId})}" method="post">
+                        <p>좋아요: <span id="likesCount" th:text="${book.likeCount ?: 0}"></span></p>
+                        <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}">
+                        <button id="likeButton" class="btn btn-light">❤️ 좋아요</button>
+                    </form>
+                </div>
+            </div>
             <p th:if="${book.bookIndex != null}">
                 <strong>목차:</strong> <span th:text="${book.bookIndex}"></span>
             </p>
@@ -427,20 +77,12 @@
                 <strong>재고:</strong> <span th:text="${book.selling_book_stock}"></span>
             </p>
 
+            <div class="quantity-control">
+                <label for="quantity">수량</label>
+                <input type="number" id="quantity" name="quantity" value="1" min="1">
+            </div>
 
 
-            <form th:action="@{/book/detail/like/{id}(id=${book.sellingBookId})}" method="post">
-                <p>좋아요: <span id="likesCount" th:text="${book.likeCount ?: 0}"></span></p>
-                <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}">
-                <button id="likeButton">❤️ 좋아요</button>
-
-
-                <!-- 수량 조절 -->
-                <div class="quantity-control">
-                    <label for="quantity">수량</label>
-                    <input type="number" id="quantity" name="quantity" value="1" min="1">
-                </div>
-            </form>
 
             <div class="tags mb-3">
                 <h5>태그</h5>
@@ -480,131 +122,124 @@
                     </div>
                 </div>
             </div>
-
-            <section class="review-section mt-5">
-
-                <!-- 리뷰 목록 -->
-                <h3 class="reviews-title">리뷰 목록</h3>
-
-                <div class="average-score-container">
-                    <p class="average-score-text">전체 평점</p>
-                    <p class="average-score-value" th:text="${avgScore}"></p>
-                </div>
-
-                <div th:each="review : ${reviews}" class="review-item">
-                    <!-- 리뷰 내용 -->
-                    <div class="review-header">
-                        <p class="review-author">ID : <strong th:text="${review.email}">작성자 ID</strong></p>
-                        <p class="review-score">평점 : <span th:text="${review.score}"></span></p>
-                    </div>
-                    <p class="review-content">작성 시간 : <span th:text="${review.getWriteDate()}"></span></p>
-                    <p class="review-content">내용 : <p class="review-content" th:text="${review.content}">리뷰 내용</p>
-
-                    <!-- 리뷰 이미지 -->
-                    <div class="review-images">
-                        <div th:each="image : ${review.imageUrls}">
-                            <img th:src="${image}" class="review-image" style="max-width: 200px;">
-                        </div>
-                    </div>
-                    </div>
-
-<!--                    리뷰 수정-->
-                    <div th:each="review : ${userReviews}">
-                    <form th:action="@{'/book/reviews/update/' + ${review.reviewId}}" method="post" enctype="multipart/form-data">
-                            <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}">
-                            <input type="hidden" name="memberId" th:value="${memberId}">
-                        <Strong>리뷰 수정</Strong>
-                        <p class="review-author">ID : <strong th:text="${review.email}">작성자 ID</strong></p>
-
-                            <label for="score">평점:</label>
-                            <select name="score" id="score" required>
-                                <option value="1" th:selected="${review.score == 1}">1점</option>
-                                <option value="2" th:selected="${review.score == 2}">2점</option>
-                                <option value="3" th:selected="${review.score == 3}">3점</option>
-                                <option value="4" th:selected="${review.score == 4}">4점</option>
-                                <option value="5" th:selected="${review.score == 5}">5점</option>
-                            </select>
-                            <label>
-                                <textarea name="content" required th:placeholder="'내용 수정'"></textarea>
-                            </label>
-                            <input type="file" name="images" multiple>
-                            <button type="submit">수정</button>
-                        </form>
-
-                </div>
-
-                <!-- 페이징 버튼 -->
-                <div class="pagination">
-                    <!-- 이전 버튼 -->
-                    <a th:if="${currentPage > 0}"
-                       th:href="@{'/book/detail/' + ${book.sellingBookId} + '?page=' + (${currentPage - 1}) + '&size=' + ${size}}"
-                       class="prev">
-                        이전
-                    </a>
-
-                    <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span></span>
-
-                    <!-- 다음 버튼 -->
-                    <a th:if="${currentPage < totalPages - 1}"
-                       th:href="@{'/book/detail/' + ${book.sellingBookId} + '?page=' + (${currentPage + 1}) + '&size=' + ${size}}"
-                       class="next">
-                        다음
-                    </a>
-                </div>
-
-                <!-- 리뷰 등록 폼 -->
-                <div th:if="${isLoggedIn}" class="review-form mt-4">
-                    <h3>리뷰 작성</h3>
-                    <form th:action="@{/book/detail/review}" method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="memberId" th:value="${memberId}">
-                        <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}">
-
-
-                        <!-- 별점 -->
-                        <div class="rating mb-3">
-<!--                            <label for="rating" class="form-label">평점 (0~5)</label>-->
-                            <div class="star-rating">
-                                <!-- 별 5개 -->
-                                <span class="star" data-value="1">★</span>
-                                <span class="star" data-value="2">★</span>
-                                <span class="star" data-value="3">★</span>
-                                <span class="star" data-value="4">★</span>
-                                <span class="star" data-value="5">★</span>
-                            </div>
-                            <input type="hidden" id="score" name="score" value="0">
-                        </div>
-
-                        <!-- 리뷰 내용 -->
-                        <div class="mb-3">
-                            <label for="content" class="form-label">리뷰 내용</label>
-                            <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
-                        </div>
-
-                        <input type="file" name="images" multiple>
-
-                        <!-- 제출 버튼 -->
-                        <button type="submit" class="btn btn-primary">리뷰 등록</button>
-                    </form>
-
-                </div>
-            </section>
         </div>
-    </div>
+    </section>
+        <section class="review-section mt-5">
+
+            <!-- 리뷰 목록 -->
+            <h3 class="reviews-title">리뷰 목록</h3>
+
+            <div class="average-score-container">
+                <p class="average-score-text">전체 평점</p>
+                <p class="average-score-value" th:text="${avgScore}"></p>
+            </div>
+
+            <div th:each="review : ${reviews}" class="review-item">
+                <!-- 리뷰 내용 -->
+                <div class="review-header">
+                    <p class="review-author">ID : <strong th:text="${review.email}">작성자 ID</strong></p>
+                    <p class="review-score">평점 : <span th:text="${review.score}"></span></p>
+                </div>
+                <p class="review-content">작성 시간 : <span th:text="${review.getWriteDate()}"></span></p>
+                <p class="review-content">내용 : <p class="review-content" th:text="${review.content}">리뷰 내용</p>
+
+                <!-- 리뷰 이미지 -->
+                <div class="review-images">
+                    <div th:each="image : ${review.imageUrls}">
+                        <img th:src="${image}" class="review-image" style="max-width: 200px;">
+                    </div>
+                </div>
+            </div>
+
+            <!--                    리뷰 수정-->
+            <div th:each="review : ${userReviews}">
+                <form th:action="@{'/book/reviews/update/' + ${review.reviewId}}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}">
+                    <input type="hidden" name="memberId" th:value="${memberId}">
+                    <Strong>리뷰 수정</Strong>
+                    <p class="review-author">ID : <strong th:text="${review.email}">작성자 ID</strong></p>
+
+                    <label for="score">평점:</label>
+                    <select name="score" id="score" required>
+                        <option value="1" th:selected="${review.score == 1}">1점</option>
+                        <option value="2" th:selected="${review.score == 2}">2점</option>
+                        <option value="3" th:selected="${review.score == 3}">3점</option>
+                        <option value="4" th:selected="${review.score == 4}">4점</option>
+                        <option value="5" th:selected="${review.score == 5}">5점</option>
+                    </select>
+                    <label>
+                        <textarea name="content" required th:placeholder="'내용 수정'"></textarea>
+                    </label>
+                    <input type="file" name="images" multiple>
+                    <button type="submit">수정</button>
+                </form>
+
+            </div>
+
+            <!-- 페이징 버튼 -->
+            <div class="pagination">
+                <!-- 이전 버튼 -->
+                <a th:if="${currentPage > 0}"
+                   th:href="@{'/book/detail/' + ${book.sellingBookId} + '?page=' + (${currentPage - 1}) + '&size=' + ${size}}"
+                   class="prev">
+                    이전
+                </a>
+
+                <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">1</span></span>
+
+                <!-- 다음 버튼 -->
+                <a th:if="${currentPage < totalPages - 1}"
+                   th:href="@{'/book/detail/' + ${book.sellingBookId} + '?page=' + (${currentPage + 1}) + '&size=' + ${size}}"
+                   class="next">
+                    다음
+                </a>
+            </div>
+
+            <!-- 리뷰 등록 폼 -->
+            <div th:if="${isLoggedIn}" class="review-form mt-4">
+                <h3>리뷰 작성</h3>
+                <form th:action="@{/book/detail/review}" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="memberId" th:value="${memberId}">
+                    <input type="hidden" name="sellingBookId" th:value="${book.sellingBookId}">
+
+
+                    <!-- 별점 -->
+                    <div class="rating mb-3">
+                        <!--                            <label for="rating" class="form-label">평점 (0~5)</label>-->
+                        <div class="star-rating">
+                            <!-- 별 5개 -->
+                            <span class="star" data-value="1">★</span>
+                            <span class="star" data-value="2">★</span>
+                            <span class="star" data-value="3">★</span>
+                            <span class="star" data-value="4">★</span>
+                            <span class="star" data-value="5">★</span>
+                        </div>
+                        <input type="hidden" id="score" name="score" value="0">
+                    </div>
+
+                    <!-- 리뷰 내용 -->
+                    <div class="mb-3">
+                        <label for="content" class="form-label">리뷰 내용</label>
+                        <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
+                    </div>
+
+                    <input type="file" name="images" multiple>
+
+                    <!-- 제출 버튼 -->
+                    <button type="submit" class="btn btn-primary">리뷰 등록</button>
+                </form>
+
+            </div>
+        </section>
 </main>
-
-<footer>
-    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>
-    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
-</footer>
-
+<th:block th:replace="~{layout/layout :: footerLayout}"></th:block>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script th:inline="javascript">
 
     function addToGuestCart() {
         const sellingBookId = [[${book.getSellingBookId()}]];
         const quantity = document.getElementById("quantity").value;
-
+        console.log(sellingBookId,quantity);
         const data = {
             sellingBookId: sellingBookId,
             quantity: quantity

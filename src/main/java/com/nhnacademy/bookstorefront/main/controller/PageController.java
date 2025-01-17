@@ -10,6 +10,7 @@ import com.nhnacademy.bookstorefront.main.dto.order.OrderDto;
 import com.nhnacademy.bookstorefront.main.dto.order.OrderSearchRequestDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,7 +39,8 @@ public class PageController {
     public String mypage( @RequestParam(defaultValue = "0") int page,
                           @RequestParam(defaultValue = "16") int size,
                           @RequestParam(required = false) OrderSearchRequestDto searchRequest,
-                          Model model) {
+                          Model model,
+                          HttpServletRequest request) {
         MyPageDto myPageDto = authenticationService.getMyPage();
 
 
