@@ -29,17 +29,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderSaveResponseDto requestOrder(OrderRequestDto orderRequest) {
-        try {
-            ResponseEntity<OrderSaveResponseDto> response = orderClient.requestOrder(orderRequest);
-            return response.getBody();
-
-        } catch (FeignException.BadRequest e) {
-            log.error("feignClient error: {}", e.getMessage());
-            throw new RuntimeException("잘못된 주문형식입니다.");
-        } catch (FeignException e) {
-            log.error("feignClient error: {}", e.getMessage());
-            throw new RuntimeException("주문 중 오류가 발생했습니다.");
-        }
+        ResponseEntity<OrderSaveResponseDto> response = orderClient.requestOrder(orderRequest);
+        return response.getBody();
     }
 
     @ResponseBody
