@@ -97,9 +97,13 @@ document.addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     // 카테고리 선택 시 동작
-    function selectCategory(categoryId) {
+    function selectCategory(categoryId, categoryName) {
         const categoryIdDisplay = document.getElementById('selectedCategoryDisplay');
         const categoryIdInput = document.getElementById('selectedCategoryId');
+
+        const categoryNameDisplay = document.getElementById('selectedCategoryNameDisplay');
+        const categoryNameInput = document.getElementById('selectedCategoryNameInput')
+
         const bookIdDisplay = document.getElementById('selectedBookDisplay');
         const bookIdInput = document.getElementById('selectedBookId');
 
@@ -107,11 +111,14 @@ document.addEventListener('DOMContentLoaded', () => {
         categoryIdDisplay.textContent = `선택된 카테고리 ID: ${categoryId}`;
         categoryIdInput.value = categoryId;
 
+        categoryNameDisplay.textContent = `선택된 카테고리 이름: ${categoryName}`;
+        categoryNameInput.value = categoryName;
+
         // 선택된 책 ID 초기화
         bookIdDisplay.textContent = '선택된 책 ID: 없음';
         bookIdInput.value = '';
 
-        alert(`선택된 Category ID: ${categoryId}`);
+        alert(`선택된 카테고리 ID: ${categoryId}, 카테고리 Name: ${categoryName}`);
         closeModal('categorySearchModal');
     }
 
