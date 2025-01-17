@@ -13,25 +13,35 @@
     <label for="tracking-number">반송장번호</label><br>
     <input type="text" id="tracking-number"/>
 </div>
+<div>
+    <label for="quantity">반품수량</label><br>
+    <input type="number" id="quantity" min="1"/>
+</div>
 <button type="button" id="return-btn">반품요청하기</button>
 <script th:inline="javascript">
     document.getElementById("return-btn").addEventListener('click', async () => {
         const reason = document.getElementById("reason").value;
         const trackingNumber = document.getElementById("tracking-number").value;
+        const quantity = document.getElementById("quantity").value;
+
 
         // 데이터 검증
         if (!reason || !trackingNumber) {
             alert("반품사유와 반송장번호를 입력해주세요.");
             return;
         }
+        if (!quantity || quantity <= 0) {
+            alert("유효한 반품수량을 입력해주세요.");
+            return;
+        }
 
-        const quantity = /*[[${quantity}]]*/;
+
         const orderId = /*[[${orderId}]]*/;
         const orderProductId = /*[[${orderProductId}]]*/;
 
         const data = {
             reason: reason,
-            quantity: quantity,
+            quantity: parseInt(quantity, 10),
             trackingNumber: trackingNumber
         };
 
