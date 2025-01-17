@@ -454,26 +454,34 @@
                 <!-- 포인트 내역 출력 -->
                 <tr th:each="point : ${points}" class="point-row" th:data-type="${point.type}">
                     <!-- 날짜 -->
-                    <td th:text="${point.type == 'SAVE' ? #temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss') : (point.usingDate != null ? #temporals.format(point.usingDate, 'yyyy-MM-dd HH:mm:ss') : '-')}">
+                    <td th:text="${point.type == 'SAVE' ? #temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss') : (point.type == 'USE' && point.name == 'PHOTO_REMOVE' ?
+                       #temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss') : (point.usingDate != null ? #temporals.format(point.usingDate, 'yyyy-MM-dd HH:mm:ss') : '-'))}">
                         날짜
                     </td>
 
                     <!-- 유형 -->
                     <td th:text="${point.type == 'SAVE' ? '적립' : '사용'}">유형</td>
 
-                    <!-- 사유: 적립일 때만 표시 -->
-                    <td th:if="${point.type == 'SAVE'}">
-            <span th:switch="${point.name}">
-                <span th:case="'SIGN_UP'">회원가입</span>
-                <span th:case="'BOOK_PURCHASE'">도서구매</span>
-                <span th:case="'REVIEW'">리뷰작성</span>
-                <span th:case="'PHOTO_REVIEW'">사진리뷰작성</span>
-                <span th:case="'PHOTO_REMOVE'">사진리뷰삭제</span>
-                <span th:case="'PHOTO_ADD'">사진추가</span>
-                <span th:case="*">기타</span>
-            </span>
+                    <!-- 사유 -->
+                    <td>
+                <span th:if="${point.type == 'SAVE'}">
+                    <span th:switch="${point.name}">
+                        <span th:case="'SIGN_UP'">회원가입</span>
+                        <span th:case="'BOOK_PURCHASE'">도서 구매</span>
+                        <span th:case="'REVIEW'">리뷰작성</span>
+                        <span th:case="'PHOTO_REVIEW'">사진리뷰 작성</span>
+                        <span th:case="'PHOTO_ADD'">사진추가</span>
+                        <span th:case="'RETURN'">반품</span>
+                        <span th:case="*">기타</span>
+                    </span>
+                </span>
+                        <span th:if="${point.type == 'USE'}">
+                        <span th:switch="${point.name}">
+                        <span th:case="'PHOTO_REMOVE'">사진리뷰 삭제</span>
+                        <span th:case="*">포인트 사용</span>
+                    </span>
+                        </span>
                     </td>
-                    <td th:if="${point.type == 'USE'}">-</td> <!-- 사용 내역일 경우 사유는 표시하지 않음 -->
 
                     <!-- 포인트 -->
                     <td th:text="${#numbers.formatDecimal(point.point, 0, 0)}">포인트</td>
