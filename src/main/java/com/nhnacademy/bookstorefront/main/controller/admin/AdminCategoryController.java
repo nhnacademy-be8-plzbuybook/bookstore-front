@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorefront.main.controller;
+package com.nhnacademy.bookstorefront.main.controller.admin;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.book.CategoryRegisterDto;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @Controller

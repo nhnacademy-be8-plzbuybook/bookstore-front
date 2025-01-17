@@ -47,5 +47,8 @@ public class AdminBookRegisterDto {
 
     }
 
+    public AdminBookRegisterDto() {
+
+    }
 }
 

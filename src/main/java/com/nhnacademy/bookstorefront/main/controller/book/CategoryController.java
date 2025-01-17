@@ -1,7 +1,6 @@
-package com.nhnacademy.bookstorefront.main.controller;
+package com.nhnacademy.bookstorefront.main.controller.book;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
-import com.nhnacademy.bookstorefront.main.dto.BookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
 
 @Slf4j
 @Controller

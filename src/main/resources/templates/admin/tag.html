@@ -330,7 +330,7 @@
             <a th:href="@{/admin/tags(tagId=${tag.tagId})}" th:text="${tag.tagName}">태그 이름</a>
           </td>
           <td class="action-buttons">
-            <form th:action="@{/admin/tags(tagId=${tagId})}" method="post">
+            <form th:action="@{/admin/tags/{tagId}(tagId=${tag.tagId})}" method="post">
               <input type="hidden" name="_method" value="delete" />
               <button type="submit">삭제</button>
             </form>

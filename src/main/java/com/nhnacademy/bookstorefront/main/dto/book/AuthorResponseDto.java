@@ -16,4 +16,8 @@ public class AuthorResponseDto {
         this.authorId = authorId;
         this.authorName = authorName;
     }
+
+    public AuthorResponseDto(String author2) {
+        this.authorName = author2;
+    }
 }

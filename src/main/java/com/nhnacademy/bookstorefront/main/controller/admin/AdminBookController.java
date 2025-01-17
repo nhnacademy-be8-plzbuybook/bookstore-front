@@ -1,10 +1,9 @@
-package com.nhnacademy.bookstorefront.main.controller;
+package com.nhnacademy.bookstorefront.main.controller.admin;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.*;
 
 import com.nhnacademy.bookstorefront.main.dto.book.BookResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.AdminBookRegisterDto;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -162,6 +161,8 @@ public class AdminBookController {
             return "redirect:/admin/books?error=true";
         }
     }
+
+
 
 }
 
