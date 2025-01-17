@@ -10,9 +10,9 @@ public enum OrderStatus {
     SHIPPED(2, "발송완료"),
     DELIVERING(3, "배송중"),
     DELIVERED(4, "배송완료"),
-    PURCHASE_CONFIRMED(5, "구매확정"),
-    RETURN_REQUESTED(6, "반품요청"),
-    ORDER_CANCELLED(7, "주문취소"),
+    PARTIALLY_CANCELED(5, "부분취소"),
+    ORDER_CANCELLED(6, "주문취소"),
+    RETURN_REQUESTED(7, "반품요청"),
     RETURN_COMPLETED(8, "반품완료");
 
     private final int code;
