@@ -1,5 +1,7 @@
 package com.nhnacademy.bookstorefront.main.service.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nhnacademy.bookstorefront.common.exception.NonMemberAccessFailException;
 import com.nhnacademy.bookstorefront.main.client.OrderClient;
 import com.nhnacademy.bookstorefront.main.controller.order.OrderProductReturnDto;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -138,7 +141,18 @@ public class OrderServiceImpl implements OrderService {
         try {
             orderClient.requestReturnOrderProduct(orderId, orderProductId, returnRequest);
         } catch (FeignException e) {
-            throw new RuntimeException("주문 반품요청 중 오류가 발생했습니다.");
+            String errorMessage = parseFeignException(e);
+            throw new RuntimeException(errorMessage, e);
+        }
+    }
+
+    private String parseFeignException(FeignException e) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, String> errorResponse = objectMapper.readValue(e.contentUTF8(), new TypeReference<>() {});
+            return errorResponse.getOrDefault("message", "알 수 없는 오류가 발생했습니다.");
+        } catch (Exception parseException) {
+            return "주문 반품 요청 중 오류가 발생했습니다.";
         }
     }
 
