@@ -89,26 +89,27 @@ public class AdminBookController {
 
     // 관리자가 도서 수정 버튼 누르면 보이는 페이지
     @GetMapping("/update/{bookId}")
-    public String showupatePage(@PathVariable(name="bookId") Long bookId
+    public String showUpdatePage(@PathVariable(name="bookId") Long bookId
                                 ,Model model) {
 
-        BookRegisterDto bookData = bookClient.showupatePage(bookId);
+        BookRegisterDto bookData = bookClient.showUpdatePage(bookId);
         model.addAttribute("bookId", bookId);
         model.addAttribute("bookData", bookData);
         return "admin/bookUpdate"; // 수정 페이지
     }
 
 
-//     * 도서 수정 데이터 저장
+    //     * 도서 수정 데이터 저장
 
-//    @RequestMapping(value = "/update/{bookId}", method = RequestMethod.POST)
-@RequestMapping(value = "/update/{bookId}", method = RequestMethod.POST)
-public String updateBook(
-        @PathVariable(name = "bookId") Long bookId,
-        @RequestBody @Valid AdminBookRegisterDto updateDto) {
-    bookClient.updateSellingBook(bookId, updateDto);
-//    model.addAttribute("bookId", bookId);
-    return "redirect:/admin/books";
+    //@RequestMapping(value = "/update/{bookId}", method = RequestMethod.POST)
+//    @RequestMapping(value = "/update/{bookId}", method = RequestMethod.PUT)
+//    @PutMapping("/{bookId}")
+    @PostMapping("/update")
+    public String updateBook(
+            @RequestBody @Valid BookRegisterDto updateDto) {
+        bookClient.updateBook(updateDto);
+
+        return "redirect:/admin/books";
 }
 
 

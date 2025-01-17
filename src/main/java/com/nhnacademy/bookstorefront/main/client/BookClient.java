@@ -41,7 +41,7 @@ public interface BookClient {
 
     // 관리자용 도서 수정하기
     @GetMapping("/api/books/update/{bookId}")
-    BookRegisterDto showupatePage(@PathVariable("bookId") Long bookId);
+    BookRegisterDto showUpdatePage(@PathVariable("bookId") Long bookId);
 
     @DeleteMapping("/api/books/{bookId}")
     ResponseEntity<Void> deleteBook(@PathVariable Long bookId);
@@ -50,14 +50,11 @@ public interface BookClient {
 
     /**
      * 관리자 도서 관리에서 도서 수정 - 수정후 데이터베이스 반영
-     * @param bookId
      * @param updateDto
      * @return
      */
-    // TODO 나중에 이거 구현해야함
-    @PutMapping("/api/books/{bookId}")
-    void updateSellingBook(@PathVariable("bookId") Long bookId,
-                           @RequestBody AdminBookRegisterDto updateDto);
+    @PutMapping("/api/books")
+    void updateBook(@RequestBody BookRegisterDto updateDto);
 
 
     /**

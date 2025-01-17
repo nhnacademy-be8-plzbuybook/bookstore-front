@@ -225,9 +225,13 @@
         <h2>도서 관리</h2>
 
         <div class="form-container">
+
             <h3>도서 등록</h3>
-            <form id="bookForm" th:action="@{/admin/books/update/{bookId}(bookId=${bookId})}" method="POST">
-                <input type="hidden" name="_method" value="put">
+            <form id="bookForm" th:action="@{/admin/books/{bookId}(bookId=${bookData.bookId})}" th:attr="data-book-id=${bookData.bookId}" method="POST">
+<!--                <input type="hidden" name="_method" value="put">-->
+
+                <label for="bookId">id</label>
+                <input type="hidden" id="bookId" name="bookId" th:value="${bookData.bookId}" required>
 
                 <label for="bookTitle">제목</label>
                 <input type="text" id="bookTitle" name="bookTitle" th:value="${bookData.bookTitle}" required>
@@ -375,8 +379,9 @@
     document.getElementById('bookForm').addEventListener('submit', function (event) {
         event.preventDefault();
         const bookId = document.getElementById('bookForm').getAttribute('data-book-id');
-
+        console.log(bookId);
         const payload = {
+            bookId: bookId,
             bookTitle: document.getElementById('bookTitle').value,
             bookIsbn13: document.getElementById('bookIsbn13').value,
             publisher: document.getElementById('publisher').value,
@@ -389,8 +394,10 @@
             authors: selectedAuthors,
         };
 
-        fetch(`/api/books/${bookId}`, {
-            method: 'PUT',
+        console.log(payload);
+
+        fetch(`/admin/books/update`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
