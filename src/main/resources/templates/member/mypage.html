@@ -1,49 +1,19 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/index.css?v=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout/layout.css">
     <title>📚 책사조잉 📚</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #333;
-            padding: 15px 20px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        header .menu a,
-        header .icons a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 16px;
-        }
-
-        header .menu a:hover,
-        header .icons a:hover {
-            color: #f1f1f1;
-        }
-
         main {
-            display: flex;
+            flex: 1;
             gap: 20px;
+            flex-direction: row;
             padding: 20px;
+            display: flex;
         }
 
         .sidebar {
@@ -199,21 +169,6 @@
             color: #333;
         }
 
-        .highlight {
-            background-color: #fffbe6;
-            font-weight: bold;
-            position: relative;
-            padding-right: 120px; /* 오른쪽 여백을 추가하여 텍스트가 셀 안에 보이도록 합니다 */
-        }
-
-        .highlight:after {
-            content: "← 현재 등급";
-            position: absolute;
-            right: 10px; /* 셀 내 오른쪽에 텍스트를 위치시킵니다 */
-            color: #ff5722;
-            font-weight: bold;
-            font-size: 14px;
-        }
         /* 섹션 제목 */
         .section-title {
             font-size: 18px;
@@ -407,23 +362,11 @@
             font-size: 16px;
         }
 
+
     </style>
 </head>
 <body>
-<header>
-    <div class="logo">📚 책사조잉 📚</div>
-    <nav class="menu">
-        <a href="/index">Home</a>
-        <a href="#">국내도서</a>
-        <a href="#">외국도서</a>
-        <a href="#">추천도서</a>
-    </nav>
-    <div class="icons">
-        <a href="/mypage">MyPage</a>
-        <a href="/carts">장바구니</a>
-        <a href="/logout">로그아웃</a>
-    </div>
-</header>
+<th:block th:replace="~{layout/layout :: headerFragment}"></th:block>
 <main>
     <div class="sidebar">
         <div class="group active" data-section="grade-benefits">회원 등급 및 혜택</div>
@@ -453,22 +396,22 @@
                 <tr>
                     <td>NORMAL</td>
                     <td>10만원 미만</td>
-                    <td>순수금액의 1%</td>
+                    <td>기본 적립금 5% + 순수금액의 1%</td>
                 </tr>
                 <tr>
                     <td>ROYAL</td>
                     <td>10만원 ~ 20만원</td>
-                    <td>순수금액의 2%</td>
+                    <td>기본 적립금 5% + 순수금액의 2%</td>
                 </tr>
                 <tr>
                     <td>GOLD</td>
                     <td>20만원 ~ 30만원</td>
-                    <td>순수금액의 3%</td>
+                    <td>기본 적립금 5% + 순수금액의 3%</td>
                 </tr>
                 <tr>
                     <td>PLATINUM</td>
                     <td>30만원 이상</td>
-                    <td>순수금액의 3%</td>
+                    <td>기본 적립금 5% + 순수금액의 4%</td>
                 </tr>
                 </tbody>
             </table>
@@ -484,50 +427,6 @@
                 </div>
             </div>
         </div>
-
-<!--        &lt;!&ndash; 포인트 &ndash;&gt;-->
-<!--        <div class="section" id="points">-->
-<!--            <h2>포인트 내역</h2>-->
-<!--            <p>총 포인트: <strong th:text="${#numbers.formatDecimal(totalPoints, 0, 0)}">0</strong></p>-->
-
-<!--            <table>-->
-<!--                <thead>-->
-<!--                <tr>-->
-<!--                    <th>적립 날짜</th>-->
-<!--                    <th>사유</th>-->
-<!--                    <th>포인트</th>-->
-<!--                    <th>만료 날짜</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                &lt;!&ndash; 포인트 내역이 없을 때 &ndash;&gt;-->
-<!--                <tr th:if="${#lists.isEmpty(points)}">-->
-<!--                    <td colspan="4" class="empty-message">포인트 내역이 없습니다.</td>-->
-<!--                </tr>-->
-
-<!--                &lt;!&ndash; 포인트 내역 출력 &ndash;&gt;-->
-<!--                <tr th:each="point : ${points}">-->
-<!--                    <td th:text="${#temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss')}">적립 날짜</td>-->
-<!--                    <td>-->
-<!--                <span th:switch="${point.pointConditionName}">-->
-<!--                    <span th:case="'SIGN_UP'">회원가입</span>-->
-<!--                    <span th:case="'BOOK_PURCHASE'">도서구매</span>-->
-<!--                    <span th:case="'REVIEW'">리뷰작성</span>-->
-<!--                    <span th:case="'PHOTO_REVIEW'">사진리뷰작성</span>-->
-<!--                    <span th:case="*">기타</span>-->
-<!--                </span>-->
-<!--                    </td>-->
-<!--                    <td th:text="${#numbers.formatDecimal(point.point, 0, 0)}">포인트</td>-->
-<!--                    <td th:text="${#temporals.format(point.endDate, 'yyyy-MM-dd HH:mm:ss')}">만료 날짜</td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-
-<!--            &lt;!&ndash; 오류 메시지 &ndash;&gt;-->
-<!--            <div th:if="${errorMessage}">-->
-<!--                <p class="error" th:text="${errorMessage}">오류가 발생했습니다.</p>-->
-<!--            </div>-->
-<!--        </div>-->
 
         <div class="section" id="points">
             <h2>포인트 내역</h2>
@@ -555,24 +454,34 @@
                 <!-- 포인트 내역 출력 -->
                 <tr th:each="point : ${points}" class="point-row" th:data-type="${point.type}">
                     <!-- 날짜 -->
-                    <td th:text="${point.type == 'SAVE' ? #temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss') : (point.usingDate != null ? #temporals.format(point.usingDate, 'yyyy-MM-dd HH:mm:ss') : '-')}">
+                    <td th:text="${point.type == 'SAVE' ? #temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss') : (point.type == 'USE' && point.name == 'PHOTO_REMOVE' ?
+                       #temporals.format(point.addDate, 'yyyy-MM-dd HH:mm:ss') : (point.usingDate != null ? #temporals.format(point.usingDate, 'yyyy-MM-dd HH:mm:ss') : '-'))}">
                         날짜
                     </td>
 
                     <!-- 유형 -->
                     <td th:text="${point.type == 'SAVE' ? '적립' : '사용'}">유형</td>
 
-                    <!-- 사유: 적립일 때만 표시 -->
-                    <td th:if="${point.type == 'SAVE'}">
-            <span th:switch="${point.name}">
-                <span th:case="'SIGN_UP'">회원가입</span>
-                <span th:case="'BOOK_PURCHASE'">도서구매</span>
-                <span th:case="'REVIEW'">리뷰작성</span>
-                <span th:case="'PHOTO_REVIEW'">사진리뷰작성</span>
-                <span th:case="*">기타</span>
-            </span>
+                    <!-- 사유 -->
+                    <td>
+                <span th:if="${point.type == 'SAVE'}">
+                    <span th:switch="${point.name}">
+                        <span th:case="'SIGN_UP'">회원가입</span>
+                        <span th:case="'BOOK_PURCHASE'">도서 구매</span>
+                        <span th:case="'REVIEW'">리뷰작성</span>
+                        <span th:case="'PHOTO_REVIEW'">사진리뷰 작성</span>
+                        <span th:case="'PHOTO_ADD'">사진추가</span>
+                        <span th:case="'RETURN'">반품</span>
+                        <span th:case="*">기타</span>
+                    </span>
+                </span>
+                        <span th:if="${point.type == 'USE'}">
+                        <span th:switch="${point.name}">
+                        <span th:case="'PHOTO_REMOVE'">사진리뷰 삭제</span>
+                        <span th:case="*">포인트 사용</span>
+                    </span>
+                        </span>
                     </td>
-                    <td th:if="${point.type == 'USE'}">-</td> <!-- 사용 내역일 경우 사유는 표시하지 않음 -->
 
                     <!-- 포인트 -->
                     <td th:text="${#numbers.formatDecimal(point.point, 0, 0)}">포인트</td>
@@ -673,6 +582,8 @@
                     <div th:if="${error}" class="error-message">
                         <p th:text="${error}"></p>
                     </div>
+                    <button onclick="execDaumPostcode()">주소 검색</button>
+                    <div id="postcode-container" style="display: none; border: 1px solid #000; width: 100%; height: 500px;"></div>
 
                     <label for="locationAddress">도로명 주소</label>
                     <input type="text" id="locationAddress" name="locationAddress" placeholder="도로명 주소를 입력하세요" required>
@@ -792,6 +703,7 @@
         </div>
     </div>
 </main>
+<th:block th:replace="~{layout/layout :: footerLayout}"></th:block>
 <script>
     // Thymeleaf에서 서버에서 받은 등급을 JavaScript로 전달받음
     const currentGrade = '[[${member.memberGradeName}]]'; // 서버에서 렌더링된 등급 값
@@ -845,6 +757,7 @@
             });
         });
     });
+
     function applyFilters() {
         const keyword = document.getElementById("searchKeyword").value;
         const status = document.getElementById("statusFilter").value;
@@ -901,7 +814,25 @@
         filterPoints("ALL");
     });
 
+    function execDaumPostcode() {
+        var container = document.getElementById('postcode-container'); // 결과를 표시할 div
+        container.style.display = 'block'; // div를 보이게 설정
 
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 선택된 주소 정보를 설정
+                document.getElementById("locationAddress").value = data.roadAddress; // 도로명 주소 채우기
+
+                // 주소 입력 후 DIV 숨기기
+                container.style.display = 'none';
+            },
+            onresize: function(size) {
+                container.style.height = size.height + 'px';
+            },
+            width: '100%',
+            height: '100%'
+        }).embed(container);
+    }
 </script>
 </body>
 </html>

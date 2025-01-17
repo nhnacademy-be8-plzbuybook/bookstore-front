@@ -27,20 +27,14 @@
             <td th:text="${orderDetail.getOrderNumber()}"></td>
             <td th:text="${#temporals.format(orderDetail.getOrderedAt(), 'yyyy/MM/dd HH:mm')}"></td>
             <td th:text="${orderDetail.getStatus().getStatus()}"></td>
-            <td th:if="${orderDetail.getStatus().equals('배송완료') and orderDetail.getOrderDelivery().getTrackingNumber() != null}">
+            <td th:if="${orderDetail.getOrderDelivery().getTrackingNumber() != null}">
                 <a th:href="@{https://link.tracker.delivery/track(client_id='2mnplmpcj0hf723toi68kcdeal', carrier_id='kr.cjlogistics',tracking_number=${orderDetail.getOrderDelivery().getTrackingNumber()})}">배송조회</a>
             </td>
             <td th:if="${orderDetail.getStatus().getStatus().equals('결제대기') or orderDetail.getStatus().getStatus().equals('결제완료')}">
-                <button type="button" id="order-cancel-btn">
+                <a th:href="@{/order/{orderId}/cancel(orderId=${orderDetail.getOrderId()})}">
                     주문취소
-                </button>
+                </a>
             </td>
-            <td th:if="${orderDetail.getStatus().getCode() >= 2 and orderDetail.getStatus().getCode() <= 5}">
-                <button type="button" id="order-return-btn">
-                    반품요청
-                </button>
-            </td>
-
         </tr>
         </tbody>
     </table>
@@ -67,17 +61,17 @@
             <td>
                 <a th:href="@{/book/detail/{id}(id=${orderProduct.getBookId()})}"
                    th:text="${orderProduct.getBookTitle()}"></a>
-<!--                <span th:text="${orderProduct.getBookTitle()}"></span>-->
+                <!--                <span th:text="${orderProduct.getBookTitle()}"></span>-->
             </td>
             <td th:text="${orderProduct.getPrice()}"></td>
             <td th:text="${orderProduct.getQuantity()}"></td>
             <td th:text="${orderProduct.getStatus()}"></td>
-            <td th:if="${orderProduct.getOrderProductWrapping() != null}">
+            <td th:if="${orderProduct.getOrderProductWrapping().getName() != null}">
                 <span th:text="${orderProduct.getOrderProductWrapping().getName()}"></span> /
                 <span th:text="${orderProduct.getOrderProductWrapping().getPrice()}"></span> 원
                 <span th:text="${orderProduct.getOrderProductWrapping().getQuantity()}"></span> 개
             </td>
-            <td th:unless="${orderProduct.getOrderProductWrapping() != null}">
+            <td th:unless="${orderProduct.getOrderProductWrapping().getName() != null}">
                 <span>X</span>
             </td>
             <td th:if="${orderProduct.getStatus().equals('배송완료')}">
@@ -85,29 +79,25 @@
                         th:attr="onclick=|purchaseConfirm(${orderProduct.getOrderProductId()})|">구매확정
                 </button>
             </td>
-<!--            <td th:if="${orderProduct.getStatus().equals('구매확정')}">-->
-<!--                <button type="button">리뷰작성</button>-->
-<!--                &lt;!&ndash;TODO: 리뷰 작성 페이지로 이동하는 링크 추가&ndash;&gt;-->
-<!--            </td>-->
             <td th:if="${orderProduct.getStatus().equals('구매확정')}">
                 <form th:action="@{/book/detail/{id}(id=${orderProduct.getBookId()})}" method="get">
                     <button type="submit">리뷰작성</button>
                 </form>
             </td>
-<!--            <td th:if="${orderDetail.getStatus().equals('결제대기') or orderDetail.getStatus().equals('결제완료')}">-->
-<!--                <form method="POST" th:action="/api/orders/order-products/${orderProduct.getOrderProductId()}/cancel">-->
-<!--                    <button type="submit">-->
-<!--                        주문취소-->
-<!--                    </button>-->
-
-<!--                </form>-->
-<!--            </td>-->
+            <td th:if="${orderDetail.getStatus().getCode() >= 2 and orderDetail.getStatus().getCode() <= 5}">
+                <a th:href="@{/orders/{order-id}/order-products/{order-product-id}/return(order-id=${orderDetail.getOrderId()}, order-product-id=${orderProduct.getOrderProductId()}, quantity=${orderProduct.getQuantity()})}">반품요청</a>
+            </td>
         </tr>
         </tbody>
     </table>
 
     <h2>배송희망 날짜</h2>
-    <span th:text="${orderDetail.getDeliveryWishDate()}"></span>
+    <div th:if="${orderDetail.getOrderDeliveryAddress().getDetailAddress()} != null">
+        <span th:text="${orderDetail.getDeliveryWishDate()}"></span>
+    </div>
+    <div th:unless="${orderDetail.getOrderDeliveryAddress().getDetailAddress()} != null">
+        <span>설정안됨</span>
+    </div>
 
     <h2>주문 배송 정보</h2>
     <table>
@@ -146,7 +136,11 @@
         <tr>
             <!--        쿠폰할인금액 등 추가-->
             <td>할인금액</td>
-            <td>1000원</td>
+            <td th:if="${orderDetail.getCouponDiscount() != null}"
+                th:text="${orderDetail.getCouponDiscount()}"></td>
+            <td th:unless="${orderDetail.getCouponDiscount() != null}">
+                0원
+            </td>
         </tr>
         <tr>
             <td>배송비</td>
@@ -168,7 +162,7 @@
             <td th:text="${orderDetail.getPayment().getMethod()}"></td>
             <td th:text="${orderDetail.getPayment().getEasyPayProvider()}"></td>
             <td th:text="${orderDetail.getPayment().getAmount()}"></td>
-            <td th:text="${#temporals.format(orderDetail.getPayment().getPaidAt(), 'yyyy/MM/dd HH:mm')}"></td>
+            <td th:text="${#temporals.format(orderDetail.getPayment().getRecordedAt(), 'yyyy/MM/dd HH:mm')}"></td>
         </tr>
         </tbody>
     </table>
@@ -215,30 +209,6 @@
                 window.location.reload();
             });
         }
-
-
-        const orderReturnBtn = document.getElementById("order-return-btn");
-        if (orderReturnBtn) {
-            orderReturnBtn.addEventListener('click', async () => {
-                const response = await fetch(`/api/orders/${orderId}/return`, {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        reason: "하드코딩된 반품사유"
-                    })
-                });
-
-                if (!response.ok) {
-                    alert("반품요청이 실패했습니다. 다시 시도해 주세요.");
-                    return;
-                }
-                alert("반품이 요청되었습니다.");
-                window.location.reload();
-            });
-        }
-
 
     })
 

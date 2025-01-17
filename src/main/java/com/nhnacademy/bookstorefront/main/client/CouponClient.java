@@ -11,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-
 @FeignClient(name = "GATEWAY", contextId = "couponClient")
 public interface CouponClient {
 
@@ -36,16 +34,19 @@ public interface CouponClient {
 
     // 쿠폰 전체 목록 조회
     @GetMapping("/api/coupons")
-    ResponseEntity<Page<CouponResponseDto>> getAllCoupons(@RequestParam @Min(0) int page, @RequestParam @Min(1)int pageSize);
+    ResponseEntity<Page<CouponResponseDto>> getAllCoupons(@RequestParam @Min(0) int page, @RequestParam @Min(1) int pageSize);
 
     // 모든 회원쿠폰 정보 목록 조회
     @GetMapping("/api/member-coupons")
     ResponseEntity<Page<MemberCouponResponseDto>> getAllMemberCoupons(@RequestParam @NotNull @Min(0) int page, @RequestParam @NotNull @Min(1) int pageSize);
 
-    // 특정 쿠폰을 주문 상품에 적용하여 (쿠폰서버에서) 할인 계산
-    @PostMapping("/api/member-coupons/member/{member-id}/coupon/{coupon-id}/calculate")
-    ResponseEntity<CouponCalculationResponseDto> applyOrderProductCoupon(@PathVariable("member-id") Long memberId, @PathVariable("coupon-id") Long couponId, @RequestBody CouponCalculationRequestDto calculationRequestDto);
+    // 주문금액 할인 계산
+    @PostMapping("/api/member-coupons/member/{coupon-id}/calculate")
+    ResponseEntity<CouponCalculationResponseDto> applyOrderProductCoupon(@RequestHeader("X-USER-ID") String email,
+                                                                         @PathVariable("coupon-id") Long couponId,
+                                                                         @RequestBody @Valid CouponCalculationRequestDto calculationRequestDto);
 
+    // 회원이 사용가능한 쿠폰 목록 조회
     @GetMapping("/api/member-coupons/member/{member-id}/unused")
     ResponseEntity<Page<MemberCouponGetResponseDto>> getUnusedMemberCouponsByMemberId(@PathVariable("member-id") Long memberId, Pageable pageable);
 

@@ -1,19 +1,24 @@
 package com.nhnacademy.bookstorefront.file.controller;
 
+import com.nhnacademy.bookstorefront.main.client.BookClient;
+import com.nhnacademy.bookstorefront.main.dto.FileUploadResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.print.Book;
 import java.util.List;
 
 @Controller
 @RequestMapping("/upload")
+@RequiredArgsConstructor
 public class FileUploadController {
-
+    private final BookClient bookClient;
 
     @GetMapping
     public String uploadForm() {
@@ -43,5 +48,22 @@ public class FileUploadController {
         model.addAttribute("message", "File uploaded successfully from URL: " + imageUrl); // 변경 필요
 
         return "file/upload";
+    }
+
+
+    @PostMapping(value = "/url-files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<List<FileUploadResponse>> uploadFiles(@RequestPart("files") List<MultipartFile> files) {
+        if (files == null || files.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(List.of(new FileUploadResponse("No files provided for upload.")));
+        }
+
+        try {
+            List<FileUploadResponse> responses = bookClient.uploadFiles(files).getBody();
+            return ResponseEntity.ok(responses);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(List.of(new FileUploadResponse("File upload failed: " + e.getMessage())));
+        }
     }
 }

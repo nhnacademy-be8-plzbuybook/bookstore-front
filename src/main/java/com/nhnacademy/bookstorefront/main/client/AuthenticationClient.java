@@ -5,10 +5,10 @@ import com.nhnacademy.bookstorefront.main.dto.*;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCreateResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberModifyRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.auth.LoginResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.auth.OauthLoginResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.auth.UpdateLastLoginRequestDto;
+import com.nhnacademy.bookstorefront.main.dto.auth.*;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -76,10 +76,18 @@ public interface AuthenticationClient {
     @GetMapping("/api/auth/role")
     ResponseEntity<String> getRoleFromToken(@RequestHeader("Authorization") String token);
 
+    //email 요청
+    @GetMapping("/api/auth/email")
+    ResponseEntity<String> getEmailFromToken(@RequestHeader("Authorization") String token);
+
     @PostMapping("/api/members/last-login")
     void updateLastLogin(@RequestBody UpdateLastLoginRequestDto updateLastLoginRequestDto);
 
     @PostMapping("/api/members/status/dormant")
     ResponseEntity<String> updateDormantMembers();
+
+    //리플래쉬 토큰 재발급
+    @PostMapping("/api/auth/access-token/re-issue")
+    ResponseEntity<AccessTokenReIssueResponseDto> reIssueAccessToken(@Valid @RequestBody AccessTokenReIssueRequestDto reIssueRequest);
 
 }

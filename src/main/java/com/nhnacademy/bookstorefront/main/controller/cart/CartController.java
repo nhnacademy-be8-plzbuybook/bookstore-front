@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorefront.main.controller;
+package com.nhnacademy.bookstorefront.main.controller.cart;
 
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.dto.cart.request.CreateCartBookRequest;
@@ -108,18 +108,26 @@ public class CartController {
 
     @DeleteMapping("/carts")
     @ResponseBody
-    public ResponseEntity<Map<String, Object>> deleteCartBook(@RequestBody DeleteCartBookRequest deleteCartBookRequest) {
+    public ResponseEntity<Map<String, Object>> deleteCartBook(@RequestParam("cartId") List<Long> cartId,
+                                                            @RequestParam("cartBookId") List<Long> cartBookId) {
         Map<String, Object> response = new HashMap<>();
         try{
-            cartService.deleteCartBook(deleteCartBookRequest);
+            for(int i = 0; i < cartId.size(); i++) {
+                DeleteCartBookRequest deleteCartBookRequest = DeleteCartBookRequest.builder()
+                        .cartId(cartId.get(i))
+                        .cartBookId(cartBookId.get(i))
+                        .build();
+                cartService.deleteCartBook(deleteCartBookRequest);
+            }
             response.put("success", true);
             response.put("message", "장바구니에서 상품이 삭제되었습니다.");
             return ResponseEntity.ok(response);
-        } catch(Exception e) {
+        } catch (Exception e) {
             response.put("success", false);
             response.put("message", "장바구니 상품 삭제 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+
     }
 
 

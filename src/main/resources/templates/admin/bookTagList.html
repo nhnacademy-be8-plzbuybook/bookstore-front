@@ -290,9 +290,10 @@
   <!-- 사이드바 -->
   <div class="sidebar">
     <a href="/adminpage" class="group">회원 관리</a>
-    <a href="/admin/selling-books" class="group">도서 관리</a>
+    <a href="/admin/books" class="group">도서 관리</a>
+    <a href="/admin/selling-books" class="group">판매 도서 관리</a>
     <a href="/admin/category" class="group">카테고리 관리</a>
-    <a href="/admin/tag" class="group" th:classappend="${currentUri == '/admin/book-tag' ? ' active' : ''}" data-section="tag-management">태그 관리</a>
+    <a href="/admin/tags" class="group" th:classappend="${currentUri == '/admin/book-tag' ? ' active' : ''}" data-section="tag-management">태그 관리</a>
 
   </div>
 
@@ -302,8 +303,7 @@
 
     <!-- 태그 추가 폼 -->
     <div class="button-container">
-      <!-- 카테고리 추가 버튼 -->
-      <button id="openModal" class="add-button">태그에 도서 추가</button>
+      <button id="openModal" class="add-button" th:tag-id="${tagId} ">태그에 도서 추가</button>
     </div>
 
     <!-- 태그 검색 -->
@@ -328,7 +328,7 @@
           <td th:text="${bookTag.getBookName()}"></td>
 
           <td class="action-buttons">
-            <form th:action="@{/admin/book-tag/delete(tagId=${bookTag.tagId}, bookId=${bookTag.bookId})}" method="post">
+            <form th:action="@{/admin/book/{book-id}/tags/{tag-id}(book-id=${bookTag.bookId}, tag-id=${bookTag.tagId})}" method="post">
               <input type="hidden" name="_method" value="delete" />
               <button type="submit">삭제</button>
             </form>
@@ -347,16 +347,17 @@
   <div class="modal-content">
     <span class="close" onclick="closeModal()">&times;</span>
     <h3>태그 추가</h3>
-    <form action="/admin/book-tag" method="post">
+    <!-- 폼에서 bookId와 tagId를 포함하여 POST 요청 -->
+    <form id="tagForm" method="post">
       <label>
-        <input type="text" name="bookId" placeholder="여기에 추가할 도서 아이디를 입력하세요" required>
-        <input type="hidden" name="tagId" th:value="${tagId}">
+        <input type="text" name="bookId" id="bookIdInput" placeholder="도서 아이디를 입력하세요" required>
+        <input type="hidden" name="tagId" id="tagIdInput" th:value="${tagId}">
       </label>
-
-      <button type="submit">추가</button>
+      <span class="action-buttons" onclick="submitForm()">추가</span>
     </form>
   </div>
 </div>
+
 
 
 
@@ -369,16 +370,44 @@
 
 <script>
   // 모달 열기
-  document.getElementById('openModal').onclick = function() {
-    document.getElementById('tagModal').style.display = "block";
+  document.getElementById('openModal').addEventListener('click', function() {
+    const tagId = this.getAttribute('tag-id');  // 버튼에서 tagId 값을 가져옴
+
+    openModal(tagId);
+  });
+
+  function openModal(tagId) {
+    console.log("openModal called with tagId: " + tagId);
+
+    const modal = document.getElementById('tagModal');
+    const form = document.getElementById('tagForm');
+
+    // tagId를 폼에 설정 (숨겨진 필드에 값을 설정)
+    document.getElementById('tagIdInput').value = tagId;
+
+    // 모달 열기
+    modal.style.display = 'block';
   }
 
+  function submitForm() {
+    const form = document.getElementById('tagForm');
+    const bookId = document.getElementById('bookIdInput').value;  // 사용자가 입력한 bookId
+    const tagId = document.getElementById('tagIdInput').value;    // tagId는 숨겨진 필드에 있음
+
+    // form action 동적으로 설정
+    form.action = '/admin/books/' + bookId + '/tags/' + tagId;
+    console.log("Form action set to: " + form.action); // 디버깅용
+
+    // 폼 제출
+    form.submit();  // 폼 제출
+
+    // 모달 닫기
+    closeModal();
+  }
   // 모달 닫기
   function closeModal() {
     document.getElementById('tagModal').style.display = "none";
   }
-
-
 </script>
 
 

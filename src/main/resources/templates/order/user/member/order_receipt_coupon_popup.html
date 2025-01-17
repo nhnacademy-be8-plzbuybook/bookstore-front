@@ -4,67 +4,71 @@
     <meta charset="UTF-8">
     <title>주문상품 쿠폰적용 팝업</title>
     <link rel="stylesheet" href="/css/order/receipt.css">
-    <script src="/js/order/member_receipt.js"></script>
+    <script src="/js/order/member_receipt_coupon_popup.js"></script>
 </head>
 <body>
-    <h3>주문상품 쿠폰적용</h3>
-    <input type="hidden" th:id="price" th:value="${price}" />
-    <table>
-        <thead>
-        <tr>
-            <th>쿠폰 ID</th>
-            <th>쿠폰 이름</th>
-            <th>쿠폰 코드</th>
-            <th>발급일</th>
-            <th>만료일</th>
-            <th>할인 타입</th>
-            <th>사용 최소 금액</th>
-            <th>최대 할인 금액</th>
-            <th>할인율</th>
-            <th>적용</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${#lists.isEmpty(coupons.getContent())}">
-            <td colspan="10">적용 가능한 쿠폰이 없습니다.</td>
-        </tr>
-        <tr th:each="coupon : ${coupons}">
-            <td th:text="${coupon.id}"></td> <!-- 쿠폰 ID -->
-            <td th:text="${coupon.couponScope}"></td> <!-- 적용범위 -->
-            <td th:text="${coupon.name}"></td> <!-- 쿠폰정책 이름 -->
-            <td th:text="${coupon.code}"></td> <!-- 쿠폰 코드 -->
-            <td th:text="${#temporals.format(coupon.issuedAt, 'yyyy-MM-dd HH:mm:ss')}"></td> <!-- 발급 날짜 -->
-            <td th:text="${#temporals.format(coupon.expiredAt, 'yyyy-MM-dd HH:mm:ss')}"></td> <!-- 만료 날짜 -->
-            <td th:text="${coupon.saleType}"></td> <!-- 할인 타입 -->
-            <td th:text="${coupon.minimumAmount}"></td> <!-- 적용 최소금액 -->
-            <td th:text="${coupon.discountLimit}"></td> <!-- 최대할인 금액 -->
-            <td th:text="${coupon.discountRatio}">%</td> <!-- 할인율 -->
-            <td>
-                <button type="button"
-                         th:data-coupon-id="${coupon.id}"
-                         th:data-price="${price}"
-                         th:data-quantity="${quantity}"
-                         th:data-email="${email}"
-                         onclick="applyCouponToProduct(this)">적용
+<h3>주문상품 쿠폰적용</h3>
+<input type="hidden" th:id="price" th:value="${price}"/>
+<table>
+    <thead>
+    <tr>
+        <th>쿠폰 ID</th>
+        <th>쿠폰 이름</th>
+        <th>쿠폰 코드</th>
+        <th>발급일</th>
+        <th>만료일</th>
+        <th>할인 타입</th>
+        <th>사용 최소 금액</th>
+        <th>최대 할인 금액</th>
+        <th>할인율</th>
+        <th>적용</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${#lists.isEmpty(coupons.getContent())}">
+        <td colspan="10">적용 가능한 쿠폰이 없습니다.</td>
+    </tr>
+    <tr th:each="coupon : ${coupons}">
+        <td th:text="${coupon.id}"></td> <!-- 쿠폰 ID -->
+        <td th:text="${coupon.couponScope}"></td> <!-- 적용범위 -->
+        <td th:text="${coupon.name}"></td> <!-- 쿠폰정책 이름 -->
+        <td th:text="${coupon.code}"></td> <!-- 쿠폰 코드 -->
+        <td th:text="${#temporals.format(coupon.issuedAt, 'yyyy-MM-dd HH:mm:ss')}"></td> <!-- 발급 날짜 -->
+        <td th:text="${#temporals.format(coupon.expiredAt, 'yyyy-MM-dd HH:mm:ss')}"></td> <!-- 만료 날짜 -->
+        <td th:text="${coupon.saleType}"></td> <!-- 할인 타입 -->
+        <td th:text="${coupon.minimumAmount}"></td> <!-- 적용 최소금액 -->
+        <td th:text="${coupon.discountLimit}"></td> <!-- 최대할인 금액 -->
+        <td th:text="${coupon.discountRatio}">%</td> <!-- 할인율 -->
+        <td>
+            <button type="button"
+                    class="apply-coupon-btn"
+                    th:data-product-id="${productId}"
+                    th:data-coupon-id="${coupon.id}"
+                    th:data-price="${price}"
+                    th:data-quantity="${quantity}"
+                    th:data-email="${email}">
+                적용
             </button>
-            </td>
+        </td>
 
-        </tr>
-        </tbody>
-    </table>
+    </tr>
+    </tbody>
+</table>
 
-    <div class="pagination">
-        <button th:if="${currentPage > 0}" th:onclick="'goToPage(' + (${currentPage} - 1) + ')'" th:text="'이전'"></button>
-        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-        <button th:onclick="'goToPage(' + ${i} + ')'" th:text="${i + 1}" th:classappend="${i == currentPage} ? 'active' : ''"></button>
+<div class="pagination">
+    <button th:if="${currentPage > 0}" th:onclick="'goToPage(' + (${currentPage} - 1) + ')'" th:text="'이전'"></button>
+    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+        <button th:onclick="'goToPage(' + ${i} + ')'" th:text="${i + 1}"
+                th:classappend="${i == currentPage} ? 'active' : ''"></button>
     </span>
-        <button th:if="${currentPage < totalPages - 1}" th:onclick="'goToPage(' + (${currentPage} + 1) + ')'" th:text="'다음'"></button>
-    </div>
-    <script>
-        function goToPage(page) {
-            const url = `/order/receipt/coupon-popup?email=[[${email}]]&price=[[${productPrice}]]&quantity=[[${quantity}]]&page=${page}&pageSize=10`;
-            window.location.href = url;
-        }
-    </script>
+    <button th:if="${currentPage < totalPages - 1}" th:onclick="'goToPage(' + (${currentPage} + 1) + ')'"
+            th:text="'다음'"></button>
+</div>
+<script>
+    function goToPage(page) {
+        const url = `/order/receipt/coupon-popup?email=[[${email}]]&price=[[${productPrice}]]&quantity=[[${quantity}]]&page=${page}&pageSize=10`;
+        window.location.href = url;
+    }
+</script>
 </body>
 </html>

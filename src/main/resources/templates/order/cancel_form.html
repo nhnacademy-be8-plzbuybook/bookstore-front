@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>주문취소</title>
+</head>
+<body>
+
+<h2>주문상품</h2>
+<form id="cancel-form">
+    <table>
+        <thead>
+        <tr>
+            <th>선택</th>
+            <th>이미지</th>
+            <th>상품명</th>
+            <th>가격</th>
+            <th>수량</th>
+            <th>상태</th>
+            <th>포장</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="orderProduct: ${orderProducts}">
+            <td>
+                <input type="checkbox" name="orderProductId" th:value="${orderProduct.getOrderProductId()}">
+            </td>
+            <td>
+                <img th:src="${orderProduct.getImageUrl()}" th:alt="${orderProduct.getBookTitle()}">
+            </td>
+            <td>
+                <a th:href="@{/book/detail/{id}(id=${orderProduct.getBookId()})}"
+                   th:text="${orderProduct.getBookTitle()}"></a>
+            </td>
+            <td th:text="${orderProduct.getPrice()}"></td>
+            <td th:text="${orderProduct.getQuantity()}"></td>
+            <td th:text="${orderProduct.getStatus()}"></td>
+            <td th:if="${orderProduct.getOrderProductWrapping().getName() != null}">
+                <span th:text="${orderProduct.getOrderProductWrapping().getName()}"></span> /
+                <span th:text="${orderProduct.getOrderProductWrapping().getPrice()}"></span> 원
+                <span th:text="${orderProduct.getOrderProductWrapping().getQuantity()}"></span> 개
+            </td>
+            <td th:unless="${orderProduct.getOrderProductWrapping().getName() != null}">
+                <span>X</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div>
+        <label>취소사유</label><br>
+        <input type="radio" name="reason" value="단순 변심" required><span>단순 변심</span> <br/>
+        <input type="radio" name="reason" value="주문 실수"><span>주문 실수</span> <br/>
+        <input type="radio" name="reason" value="결제수단 변경"><span>결제수단 변경</span> <br/>
+        <input type="radio" name="reason" value="기타"><span>기타</span> <br/>
+    </div>
+    <button type="button" id="return-btn">주문취소하기</button>
+</form>
+
+<script th:inline="javascript">
+    document.getElementById('return-btn').addEventListener('click', async function () {
+        const form = document.getElementById('cancel-form');
+        const formData = new FormData(form);
+
+        // Extract data for checked items
+        const checkedItems = [];
+        document.querySelectorAll('input[name="orderProductId"]:checked').forEach(checkbox => {
+            const row = checkbox.closest('tr');
+            const quantity = row.querySelector('td:nth-child(5)').textContent.trim();
+
+            checkedItems.push({
+                orderProductId: checkbox.value,
+                quantity: parseInt(quantity, 10)
+            });
+        });
+
+        if (checkedItems.length === 0) {
+            alert('취소할 상품을 선택해주세요.');
+            return;
+        }
+
+        const reason = formData.get('reason');
+        const cancelProducts = checkedItems.map(item => ({
+            orderProductId: item.orderProductId,
+            quantity: item.quantity
+        }));
+        const data = {
+            reason: reason,
+            cancelProducts: cancelProducts
+        }
+        const orderId = [[${orderId}]]; // Replace with actual order ID
+
+
+        try {
+            const response = await fetch(`/api/orders/${orderId}/cancel`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert('주문 취소가 성공적으로 처리되었습니다.');
+                window.location.replace(`/orders/${orderId}`);
+            } else {
+                const error = await response.json();
+                alert(`주문 취소 중 오류가 발생했습니다: ${error.message}`);
+            }
+        } catch (err) {
+            alert('서버와 통신 중 오류가 발생했습니다.');
+            console.error(err);
+        }
+    });
+</script>
+
+</body>
+</html>

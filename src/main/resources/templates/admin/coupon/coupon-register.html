@@ -67,6 +67,11 @@
             <label for="selectedCategoryDisplay"></label>
             <span id="selectedCategoryDisplay">선택된 카테고리 ID: 없음</span>
             <input type="hidden" id="selectedCategoryId" name="categoryId">
+            <span>, </span>
+            <label for="selectedCategoryNameDisplay"></label>
+            <span id="selectedCategoryNameDisplay">선택된 카테고리 이름: 없음</span>
+            <input type="hidden" id="selectedCategoryName" name="categoryName">
+
         </div>
         <input type="hidden" id="couponScope" name="couponScope" value="ALL"><br>
 
@@ -126,8 +131,6 @@
         </div>
     </div>
 
-
-
     <!-- 쿠폰 생성 -->
     <h3>쿠폰 생성</h3>
     <form action="/admin/coupons" method="post">
@@ -151,9 +154,7 @@
             </div>
             <button type="button" onclick="closeCouponModal()">닫기</button>
         </div>
-
     </div>
-
 
 </main>
 

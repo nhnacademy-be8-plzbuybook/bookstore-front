@@ -1,7 +1,7 @@
 package com.nhnacademy.bookstorefront.main.controller.coupon;
 
-import com.nhnacademy.bookstorefront.main.client.CouponClient;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicyResponseDto;
+import com.nhnacademy.bookstorefront.main.service.CouponService;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequiredArgsConstructor
 @Controller
 public class AdminCouponPolicyFindController {
-    private final CouponClient couponClient;
+    private final CouponService couponService;
 
     // 쿠폰정책 조회
     @GetMapping("/admin/coupon-policies")
@@ -21,7 +21,7 @@ public class AdminCouponPolicyFindController {
                                      @RequestParam(defaultValue = "0") @Min(0) int page,
                                      @RequestParam(defaultValue = "10") @Min(1) int pageSize) {
 
-        Page<CouponPolicyResponseDto> couponPolicies = couponClient.findActiveCouponPolicies(couponActive, page, pageSize).getBody();
+        Page<CouponPolicyResponseDto> couponPolicies = couponService.findActiveCouponPolicies(couponActive, page, pageSize);
 
         model.addAttribute("couponPolicies", couponPolicies);
         model.addAttribute("couponActive", couponActive);

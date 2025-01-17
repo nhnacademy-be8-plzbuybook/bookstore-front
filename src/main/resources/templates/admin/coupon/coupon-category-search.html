@@ -14,7 +14,7 @@
         <div th:each="category : ${searchResult}">
             <div class="category-item">
                 <div th:text="${category.categoryName}"></div>
-                <button type="button" th:onclick="'selectCategory(' + ${category.categoryId} + ')'">선택</button>
+                <button type="button" th:onclick="'selectCategory(' + ${category.categoryId} + ', \'' + ${category.categoryName} + '\')'">선택</button>
             </div>
         </div>
     </div>

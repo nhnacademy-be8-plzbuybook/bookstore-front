@@ -1,12 +1,11 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
-import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
-import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.PagedResponse;
-import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
-import jakarta.servlet.http.Cookie;
+import com.nhnacademy.bookstorefront.main.dto.book.SellingBookResponseDto;
+import com.nhnacademy.bookstorefront.main.service.CookieService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,15 +14,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 public class IndexController {
     private final BookClient bookClient;
-    private final AuthenticationService authenticationService;
-    private final AuthenticationClient authenticationClient;
+    private final CookieService cookieService;
 
     @GetMapping({"/index", "/"})
     public String index(
@@ -31,19 +28,15 @@ public class IndexController {
             @RequestParam(defaultValue = "16") int size,       // 한 페이지당 아이템 수
             @RequestParam(defaultValue = "sellingBookId") String sortBy, // 정렬 기준
             @RequestParam(defaultValue = "desc") String sortDir, // 정렬 방향
-            Model model, HttpServletRequest request) {
+            Model model, HttpServletRequest request,HttpServletResponse httpServletResponse) {
+
+        HttpSession session = request.getSession(true);
+        String sessionId = session.getId();
+        cookieService.addCookie(httpServletResponse, "cart", sessionId, 60*60);
+
+
         // Feign 클라이언트를 통해 페이징된 데이터 요청
-        Page<BookDetailResponseDto> response = bookClient.getBooks(page, size, sortBy, sortDir);
-
-        boolean isLoggedIn = authenticationService.isLoggedIn(request);
-        String role = null;
-
-        if(isLoggedIn) {
-            String token = getTokenFromCookies(request);
-            if(token != null) {
-                role = authenticationClient.getRoleFromToken("Bearer " + token).getBody();
-            }
-        }
+        Page<SellingBookResponseDto> response = bookClient.getBooks(page, size, sortBy, sortDir).getBody();
 
 
         model.addAttribute("books", response.getContent());
@@ -52,20 +45,8 @@ public class IndexController {
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("pageSize", size);
-        model.addAttribute("isLoggedIn", isLoggedIn);
-        model.addAttribute("role", role);
 
         return "index"; // index.html 렌더링
     }
 
-    private String getTokenFromCookies(HttpServletRequest request) {
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("accessToken".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
 }

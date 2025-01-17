@@ -1,54 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/detail.css?v=1.1">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/layout/layout.css">
     <title>장바구니</title>
-
     <style>
-        /* 공통 스타일 */
-        html, body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #333;
-            padding: 15px 20px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header .logo {
-            text-decoration: none;
-            color: inherit;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        header .menu a,
-        header .icons a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 16px;
-        }
-
-        header .menu a:hover,
-        header .icons a:hover {
-            color: #f1f1f1;
-        }
-
         main {
             padding: 20px;
             position: relative; /* 상대 위치 지정 */
         }
+
         .cart-item {
             background-color: #ffffff;
             border: 1px solid #ddd;
@@ -95,23 +59,6 @@
             background-color: #c82333;
         }
 
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-        }
-
-        footer a {
-            color: #00aaff;
-            text-decoration: none;
-            margin: 0 5px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
         .cart-actions {
             display: flex;
             justify-content: flex-end; /* 오른쪽 정렬 */
@@ -129,19 +76,8 @@
     </style>
 </head>
 <body>
-<header>
-    <a href="/" class="logo">📚 책사조잉 📚</a>
-    <nav class="menu">
-        <a href="/">Home</a>
-    </nav>
-    <div class="icons">
-        <a th:if="${role == 'ADMIN'}" href="/adminpage" id="adminpage-btn">AdminPage</a>
-        <a th:if="${role == 'USER'}" href="/mypage" id="mypage-btn">MyPage</a>
-        <a th:if="${role == null and !isLoggedIn}" href="/login" id="login-btn">로그인</a>
-        <a th:if="${role == null and !isLoggedIn}" href="/signup" id="signup-btn">회원가입</a>
-        <a th:if="${isLoggedIn}" href="/logout" id="logout-btn">로그아웃</a>
-    </div>
-</header>
+<th:block th:replace="~{layout/layout :: headerFragment}"></th:block>
+
 <main class="container mt-5">
     <div id="cartItems">
         <div th:each="item : ${cartItems}" class="cart-item row align-items-center">
@@ -149,26 +85,30 @@
                 <input type="checkbox" class="form-check-input" name="selectedItems" th:value="${item.cartBookId}">
             </div>
             <div class="col-auto">
-                <img th:src="${item.imageUrl}" alt="책 이미지" class="img-fluid" />
+                <img th:src="${item.imageUrl}" alt="책 이미지" class="img-fluid"/>
             </div>
             <div class="col">
                 <h5 th:text="${item.bookTitle}">책 제목</h5>
                 <p>가격: <span th:text="${item.sellingBookPrice}">가격</span>원</p>
                 <p>수량:
-                    <input type="number" value="1" min="1" class="form-control w-50 d-inline" th:value="${item.quantity}" />
+                    <input type="number" value="1" min="1" class="form-control w-50 d-inline" name="quantity"
+                           th:value="${item.quantity}"/>
                 </p>
             </div>
             <div class="col-auto">
                 <button class="btn btn-warning" type="button"
                         th:attr="data-selling-book-id=${item.sellingBookId}, data-quantity=${item.quantity}, data-cart-book-id=${item.cartBookId}"
-                        onclick="updateItem(this)">수정</button>
-                <button class="btn btn-danger" type="button"
-                        th:attr="data-cart-book-id=${item.cartBookId}, data-cart-id=${item.cartId}"
-                        onclick="deleteItem(this)">삭제</button>
+                        onclick="updateItem(this)">수정
+                </button>
             </div>
             <div class="cart-actions">
-                <button class="btn btn-danger me-2" type="button" th:attr="data-cart-id=${cartId}" onclick="deleteAllItems(this)">장바구니 전체 비우기</button>
-                <button class="btn btn-primary" type="button" th:attr="data-selling-book-id=${item.sellingBookId}" onclick="buyNow()">주문하기</button>
+                <button class="btn btn-danger me-2" type="button" onclick="deleteSelectedItems()">선택한 상품 삭제</button>
+                <button class="btn btn-danger me-2" type="button" th:attr="data-cart-id=${cartId}"
+                        onclick="deleteAllItems(this)">장바구니 전체 비우기
+                </button>
+                <button class="btn btn-primary" type="button" th:attr="data-selling-book-id=${item.sellingBookId}"
+                        onclick="buyNow()">주문하기
+                </button>
             </div>
         </div>
 
@@ -210,11 +150,14 @@
 
 
     function updateItem(button) {
+        const cartItem = button.closest('.cart-item');
         const sellingBookId = button.getAttribute('data-selling-book-id');
         const cartBookId = button.getAttribute('data-cart-book-id');
-        const quantity = button.getAttribute('data-quantity');
-        const updatedQuantity = prompt("수정할 수량을 입력하세요:", quantity);
-        if (updatedQuantity !== null) {
+        const quantityInput = cartItem.querySelector('input[type="number"]'); // 수량 입력 필드 선택
+
+        if (quantityInput && quantityInput.value) { // 수량 입력 필드가 존재하고 값이 있을 경우
+            const updatedQuantity = Number(quantityInput.value); // 값 가져오기
+
             fetch('/carts', {
                 method: 'PUT',
                 headers: {
@@ -223,7 +166,7 @@
                 body: JSON.stringify({
                     cartBookId: Number(cartBookId),
                     sellingBookId: Number(sellingBookId),
-                    quantity: Number(updatedQuantity)
+                    quantity: updatedQuantity // 수정된 수량 전송
                 })
             })
                 .then(response => response.json())
@@ -239,39 +182,53 @@
                     console.error('Error:', error);
                     alert('수정 중 오류가 발생했습니다.');
                 });
+        } else {
+            alert("수량을 입력하세요.");
         }
     }
 
-    function deleteItem(button) {
-        const cartBookId = button.getAttribute('data-cart-book-id');
-        const cartId = button.getAttribute('data-cart-id');
-        console.log(cartBookId, cartId);
-        if (confirm("정말로 이 상품을 삭제하시겠습니까?")) {
-            fetch(`/carts`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    cartId: Number(cartId),
-                    cartBookId: Number(cartBookId)
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        location.reload();
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('삭제 중 오류가 발생했습니다.');
-                });
+
+    function deleteSelectedItems() {
+        const selectedItems = document.querySelectorAll('input[name="selectedItems"]:checked');
+
+        if (selectedItems.length === 0) {
+            alert("삭제할 상품을 선택하세요.");
+            return;
         }
+
+        const cartIds = [];
+        const cartBookIds = [];
+
+        selectedItems.forEach(item => {
+            const cartBookId = item.value;
+            const cartId = item.closest('.cart-item').querySelector('.btn.btn-danger').getAttribute('data-cart-id');
+
+
+            cartIds.push(Number(cartId));
+            cartBookIds.push(Number(cartBookId));
+        });
+
+        fetch(`/carts?cartId=${cartIds.join(',')}&cartBookId=${cartBookIds.join(',')}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('삭제 중 오류가 발생했습니다.');
+            });
     }
+
 
     function deleteAllItems(button) {
         const cartId = button.getAttribute('data-cart-id');
