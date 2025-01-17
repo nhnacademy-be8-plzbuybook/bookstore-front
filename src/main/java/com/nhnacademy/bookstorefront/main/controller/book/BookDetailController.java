@@ -1,4 +1,4 @@
-package com.nhnacademy.bookstorefront.main.controller;
+package com.nhnacademy.bookstorefront.main.controller.book;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,7 +10,6 @@ import com.nhnacademy.bookstorefront.main.dto.book.BookTagResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.mypage.MyPageDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.review.ReviewUpdateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.review.ReviewWithReviewImageDto;
 import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import com.nhnacademy.bookstorefront.main.service.OrderService;
@@ -20,8 +19,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +28,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 @Slf4j

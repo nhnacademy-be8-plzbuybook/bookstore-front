@@ -1,8 +1,7 @@
-package com.nhnacademy.bookstorefront.main.controller;
+package com.nhnacademy.bookstorefront.main.controller.admin;
 
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
-import com.nhnacademy.bookstorefront.main.dto.BookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.SellingBookRegisterDto;
 import com.nhnacademy.bookstorefront.main.dto.book.SellingBookResponseDto;
 import jakarta.validation.Valid;

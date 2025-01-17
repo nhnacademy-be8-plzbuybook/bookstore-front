@@ -1,11 +1,9 @@
-package com.nhnacademy.bookstorefront.main.controller;
+package com.nhnacademy.bookstorefront.main.controller.book;
 
-import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.client.BookSearchClient;
 import com.nhnacademy.bookstorefront.main.dto.BookSearchPagedResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
