@@ -236,7 +236,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         if (!response.ok) {
-            alert("주문 정보를 저장하는데 실패했습니다. 다시 시도해 주세요.");
+            const errorMessage = await response.text();
+            alert(`${errorMessage}`);
             return;
         }
 
