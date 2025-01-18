@@ -11,6 +11,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -45,13 +46,18 @@ public class GuestCartController {
     }
 
     @PostMapping("/guests/carts")
-    public String CreateCart(@RequestBody CreateCartBookRequest createCartBookRequest,
-                             HttpSession session,
-                             Model model) {
-        Long cartId = guestCartService.addGuestCart(createCartBookRequest, session);
-        model.addAttribute("cartId", cartId);
+    @ResponseBody
+    public ResponseEntity<String> CreateCart(@RequestBody CreateCartBookRequest createCartBookRequest,
+                                     HttpSession session,
+                                     Model model) {
+        try{
+            Long cartId = guestCartService.addGuestCart(createCartBookRequest, session);
+            model.addAttribute("cartId", cartId);
+            return ResponseEntity.status(201).body("장바구니에 상품이 추가되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("장바구니에 상품 추가 실패");
+        }
 
-        return "redirect:/guests/carts";
     }
 
     @PutMapping("/guests/carts")
