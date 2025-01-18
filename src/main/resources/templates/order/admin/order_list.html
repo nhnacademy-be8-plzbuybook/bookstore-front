@@ -25,7 +25,7 @@
     </div>
     <div>
         <span><strong>주문일시</strong></span>
-        <input type="date" id="orderedAt"/>
+        <input type="date" id="orderDate"/>
     </div>
 
     <div>
@@ -84,7 +84,7 @@
         const productName = document.getElementById("searchProductName").value;
         const orderNumber = document.getElementById("searchOrderNumber").value;
         const memberId = document.getElementById("searchMemberId").value;
-        const orderedAt = document.getElementById("orderedAt").value;
+        const orderDate = document.getElementById("orderDate").value;
 
         // 입력된 필터 값을 URLSearchParams에 추가 또는 수정
         if (productName) params.set('productName', productName);
@@ -96,8 +96,8 @@
         if (memberId) params.set('memberId', memberId);
         else params.delete('memberId');
 
-        if (orderedAt) params.set('orderedAt', orderedAt);
-        else params.delete('orderedAt');
+        if (orderDate) params.set('orderDate', orderDate);
+        else params.delete('orderDate');
 
 
         // 수정된 URL로 이동

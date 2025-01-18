@@ -16,7 +16,7 @@ public class OrderSearchRequestDto {
     @Nullable
     private String productName;
     @Nullable
-    private LocalDate orderedAt;
+    private LocalDate orderDate;
     @Nullable
     private OrderStatus orderStatus;
     @Nullable
@@ -24,13 +24,13 @@ public class OrderSearchRequestDto {
 
     public OrderSearchRequestDto(@Nullable String memberId,
                                  @Nullable String productName,
-                                 @Nullable LocalDate orderedAt,
+                                 @Nullable LocalDate orderDate,
                                  @Nullable OrderStatus orderStatus,
                                  @Nullable String orderNumber
     ) {
         this.memberId = memberId;
         this.productName = productName;
-        this.orderedAt = orderedAt;
+        this.orderDate = orderDate;
         this.orderStatus = orderStatus;
         this.orderNumber = orderNumber;
     }

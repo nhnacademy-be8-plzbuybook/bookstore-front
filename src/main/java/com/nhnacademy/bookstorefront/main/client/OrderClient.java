@@ -22,7 +22,7 @@ import java.util.List;
 public interface OrderClient {
 
     @GetMapping("/api/orders/my")
-    ResponseEntity<Page<OrderDto>> getMemberOrders(@RequestParam(required = false) OrderSearchRequestDto searchRequest,
+    ResponseEntity<Page<OrderDto>> getMemberOrders(@SpringQueryMap OrderSearchRequestDto searchRequest,
                                                    Pageable pageable);
 
     @GetMapping("/api/orders")
