@@ -26,6 +26,9 @@ public class GuestCartServiceImpl implements GuestCartService {
     public Long addGuestCart(CreateCartBookRequest createCartBookRequest, HttpSession session) {
         String sessionId = session.getId();
         Map<String, Long> response = guestCartClient.createGuestCartBook(createCartBookRequest, sessionId);
+        log.warn("Adding to guest cart: {}", createCartBookRequest);
+        log.warn("Session ID: {}", sessionId);
+        log.warn("Response: {}", response);
         return response.get("cartId");
     }
 
