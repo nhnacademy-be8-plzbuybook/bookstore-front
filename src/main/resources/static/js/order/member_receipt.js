@@ -68,7 +68,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const totalAmountEl = document.getElementById("totalAmount"); // 결제금액에서 최종 결제금액 표시 요소
 
     const usedPointInput = document.getElementById("usedPoint"); // 사용할 포인트 입력 필드
-    const applyPointBtn = document.getElementById("applyPointBtn"); // 포인트 적용 버튼
 
 
 
@@ -140,18 +139,33 @@ document.addEventListener("DOMContentLoaded", function () {
     // 화면 업데이트
     function updateDisplay(orderAmount, totalDiscount, shippingFee, totalAmount) {
         document.getElementById("orderAmount").innerText = orderAmount;
-        document.getElementById("discount").innerText = totalDiscount;
+        document.getElementById("discount").innerText = totalDiscount === 0 ? "0" : `-${totalDiscount}`;
         document.getElementById("shippingFee").innerText = shippingFee;
         document.getElementById("totalAmount").innerText = totalAmount;
     }
 
-    // 포인트 적용 버튼 클릭 이벤트
-    applyPointBtn.addEventListener('click', () => {
-        const usedPoint = parseInt(usedPointInput.value) || 0; // 사용자가 입력한 포인트 값 읽기
-        discountEl.innerText = usedPoint; // 입력한 포인트 값으로 할인 금액 덮어씌움
-        
-        // 총 결제 금액 다시 계산
-        calculateTotal();
+    // 포인트 관련
+    usedPointInput.addEventListener("input", function () {
+        const availablePoints = parseInt(this.getAttribute("data-available-points"), 10) || 0; // 현재 포인트
+        const orderAmount = parseInt(document.getElementById("orderAmount").innerText, 10) || 0; // 주문 금액
+        const shippingFee = parseInt(document.getElementById("shippingFee").innerText, 10) || 0; // 배송비
+        const totalAmount = Math.max(0, orderAmount + shippingFee); // 총 결제 금액
+
+        let usedPoint = parseInt(this.value, 10) || 0;
+
+        // 사용 가능한 최대 포인트 (결제 금액과 보유 포인트 중 작은 값)
+        const maxUsablePoints = Math.min(totalAmount, availablePoints);
+
+        // 최대 사용 가능 포인트 초과 시 경고 및 제한
+        if (usedPoint > maxUsablePoints) {
+            alert(`사용 가능한 최대 포인트는 ${maxUsablePoints}원입니다.`);
+            usedPoint = maxUsablePoints; // 입력값 제한
+            this.value = maxUsablePoints; // 입력값 업데이트
+        }
+
+        // 할인 금액 업데이트
+        discountEl.innerText = usedPoint; // 할인 금액 표시
+        calculateTotal(); // 총 결제 금액 재계산
     });
 
     // 쿠폰 선택 시 쿠폰 데이터를 Map에 저장
