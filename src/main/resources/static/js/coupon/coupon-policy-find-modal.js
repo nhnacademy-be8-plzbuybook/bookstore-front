@@ -32,5 +32,5 @@ function selectPolicy(policyId) {
 // 페이지 이동 처리
 function goToPolicyPage() {
     const pageInput = document.getElementById('pageInput').value || 0;
-    openModal(`/admin/coupon-policies?page=${pageInput}`);
+    openModal(`/admin/coupon-policies/active?page=${pageInput}`);
 }
