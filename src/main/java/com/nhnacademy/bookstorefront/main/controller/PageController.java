@@ -70,7 +70,9 @@ public class PageController {
 
         BigDecimal totalPoints = points.stream()
                 .map(MemberPointResponseDto::getPoint)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .max(BigDecimal.ZERO);
+
         model.addAttribute("totalPoints", totalPoints);
 
         Page<OrderDto> orderPage = orderService.getMemberOrders(searchRequest, pageable);
