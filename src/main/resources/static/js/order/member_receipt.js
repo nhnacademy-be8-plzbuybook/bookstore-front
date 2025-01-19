@@ -69,6 +69,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const usedPointInput = document.getElementById("usedPoint"); // 사용할 포인트 입력 필드
 
+    const deliveryWishDateRadios = document.querySelectorAll('.wishDate');
+    const deliveryWishDateInput = document.getElementById('delivery-wish-date');
+
+    // 배송 희망 날짜 지정 관련
+    deliveryWishDateRadios.forEach(radio => {
+        radio.addEventListener('change', function () {
+            if (this.value === 'custom') {
+                deliveryWishDateInput.style.display = 'block';
+                deliveryWishDateInput.disabled = false;
+
+                // 날짜 설정 (오늘 이후로 가능)
+                const today = new Date();
+                today.setDate(today.getDate() + 1);
+                deliveryWishDateInput.min = today.toISOString().split('T')[0];
+            } else {
+                deliveryWishDateInput.style.display = 'none';
+                deliveryWishDateInput.disabled = true;
+                deliveryWishDateInput.value = '';
+            }
+        });
+    });
+
+    // 페이지 로드 시 기본 상태 설정
+    const checkedRadio = document.querySelector('input[name="delivery-wish-date"]:checked');
+    if (checkedRadio && checkedRadio.value === 'custom') {
+        deliveryWishDateInput.style.display = 'block';
+        deliveryWishDateInput.disabled = false;
+    }
 
 
     // 주문금액(상품, 포장지) 계산
@@ -276,10 +304,11 @@ function getOrderRequest() {
     const localAddress = document.getElementById("localAddress").value;
     const detailAddress = document.getElementById("detailAddress").value;
 
-    let deliveryWishDate =
-        document.querySelector('input[name="delivery-wish-date"]:checked').value === ""
-            ? null
-            : document.getElementById("delivery-wish-date").value;
+    // 배송 희망 날짜
+    const deliveryWishDate =
+        document.querySelector('input[name="delivery-wish-date"]:checked').value === 'custom'
+            ? document.getElementById('delivery-wish-date').value || null
+            : null; // 그냥 배송이면 null
 
     const orderAmount = document.getElementById("orderAmount").innerText;
     const deliveryFee = document.getElementById("shippingFee").innerText;
