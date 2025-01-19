@@ -21,7 +21,7 @@ public interface CouponService {
 
     Page<MemberCouponResponseDto> getAllMemberCoupons(int page, int pageSize);
 
-    CouponCalculationResponseDto applyOrderProductCoupon(String email, Long couponId, CouponCalculationRequestDto calculationRequestDto, HttpServletRequest request);
+    CouponCalculationResponseDto applyOrderProductCoupon(Long couponId, CouponCalculationRequestDto calculationRequestDto, HttpServletRequest request);
 
     Page<MemberCouponGetResponseDto> getUnusedMemberCouponsByMemberId(Long memberId, Pageable pageable);
 
