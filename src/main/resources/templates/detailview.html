@@ -252,14 +252,20 @@
             body: JSON.stringify(data)
         })
             .then(response => {
-                if (response.ok) {
+                console.log("Response status:", response.status); // 응답 상태 코드 확인
+                console.log("Response headers:", response.headers); // 응답 헤더 확인
+                return response.text(); // 응답 본문을 텍스트로 변환
+            })
+            .then(responseBody => {
+                console.log("Response body:", responseBody); // 응답 본문 출력
+                if (responseBody) {
                     alert("장바구니에 담겼습니다!");
                 } else {
                     alert("장바구니에 담는 데 실패했습니다.");
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Fetch Error:', error);
                 alert("장바구니에 담는 데 오류가 발생했습니다.");
             });
     }

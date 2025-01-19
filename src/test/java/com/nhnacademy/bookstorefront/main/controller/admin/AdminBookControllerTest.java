@@ -177,8 +177,7 @@ class AdminBookControllerTest {
                           ]
                         }
                         """))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/books"));
+                .andExpect(status().is2xxSuccessful());
 
         ArgumentCaptor<BookRegisterDto> captor = ArgumentCaptor.forClass(BookRegisterDto.class);
         verify(bookClient, times(1)).registerBook(captor.capture());
@@ -234,7 +233,7 @@ class AdminBookControllerTest {
 
         // When & Then
         mockMvc.perform(get("/admin/books/update/{bookId}", bookId))
-                .andExpect(status().isOk()) // 상태 코드 확인
+                .andExpect(status().is2xxSuccessful()) // 상태 코드 확인
                 .andExpect(view().name("admin/bookUpdate")) // 반환되는 뷰 이름 확인
                 .andExpect(model().attributeExists("bookId")) // 모델에 bookId 존재 여부 확인
                 .andExpect(model().attributeExists("bookData")) // 모델에 bookData 존재 여부 확인

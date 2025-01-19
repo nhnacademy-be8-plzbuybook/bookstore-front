@@ -1,8 +1,8 @@
 package com.nhnacademy.bookstorefront.main.controller;
 
 import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,11 +14,16 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Controller
-@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthenticationClient authenticationClient;
     private final RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    public AuthController(AuthenticationClient authenticationClient, @Qualifier("verifyRedisTemplate") RedisTemplate<String, Object> redisTemplate) {
+        this.authenticationClient = authenticationClient;
+        this.redisTemplate = redisTemplate;
+    }
 
     private static final String REDIS_KEY_PREFIX = "fronteend:auth:";
 

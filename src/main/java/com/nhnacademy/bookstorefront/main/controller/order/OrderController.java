@@ -11,17 +11,10 @@ import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCalculationResponseDt
 import com.nhnacademy.bookstorefront.main.dto.order.*;
 import com.nhnacademy.bookstorefront.main.dto.order.orderRequests.OrderRequestDto;
 import com.nhnacademy.bookstorefront.main.enums.OrderStatus;
-import com.nhnacademy.bookstorefront.main.service.CouponService;
-import com.nhnacademy.bookstorefront.main.service.DeliveryFeePolicyService;
-import com.nhnacademy.bookstorefront.main.service.OrderService;
-import com.nhnacademy.bookstorefront.main.service.WrappingPaperService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import jakarta.servlet.http.Cookie;
+import com.nhnacademy.bookstorefront.main.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +41,7 @@ public class OrderController {
     private final OrderClient orderClient;
     private final PointClient pointClient;
     private final CouponService couponService;
+    private final AuthenticationService authenticationService;
 
     @GetMapping("/admin/order-product-returns")
     public String adminOrderReturns(@ModelAttribute OrderReturnSearchRequestDto searchRequest,
@@ -161,7 +155,7 @@ public class OrderController {
     @GetMapping("/order/receipt")
     public String memberOrderReceipt(@RequestParam("productId") List<Long> productId,
                                      @RequestParam("quantity") List<Integer> quantity,
-                                     HttpServletRequest httpServletRequest,
+                                     HttpServletRequest request,
                                      Model model) {
         // 책 정보
         List<OrderReceiptProduct> books = new ArrayList<>();
@@ -180,12 +174,7 @@ public class OrderController {
 
         //회원 포인트
         Integer availablePoints = pointClient.getAvailablePoints().getBody();
-
-
-        // JWT에서 이메일 추출
-        String accessToken = getAccessTokenFromCookies(httpServletRequest);
-        String email = extractEmailFromToken(accessToken);
-
+        String email = authenticationService.getEmailFromToken(request);
         model.addAttribute("email", email);
         model.addAttribute("wrappingPapers", wrappingPaperService.getWrappingPapers());
         model.addAttribute("books", books);
@@ -196,46 +185,24 @@ public class OrderController {
         return "order/user/member/order_receipt";
     }
 
-    private String getAccessTokenFromCookies(HttpServletRequest request) {
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("accessToken".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    private String extractEmailFromToken(String token) {
-        if (token != null) {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey("Ny0pm2CWIAST07ElsTAVZgCqJKJd2bE9lpKyewuOhyyKoBApt1Ny0pm2CWIAST07ElsTAVZgCqJKJd2bE9lpKyewuOhyyKoBApt1")
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims.getSubject();
-        }
-        return null;
-    }
-
     /**
      * 회원이 사용가능한 쿠폰 목록 조회 할 수 있는 주문상품 쿠폰적용 팝업 페이지
      *
-     * @param email
      * @param price
      * @param quantity
      * @param page
      * @param pageSize
      */
     @GetMapping("/order/receipt/coupon-popup")
-    public String orderReceiptCouponPopup(@RequestHeader("X-USER-ID") String email,
-                                          @RequestParam("productId") Long productId,
+    public String orderReceiptCouponPopup(@RequestParam("productId") Long productId,
                                           @RequestParam BigDecimal price,
                                           @RequestParam Integer quantity,
                                           @RequestParam int page,
                                           @RequestParam int pageSize,
+                                          HttpServletRequest request,
                                           Model model) {
+
+        String email = authenticationService.getEmailFromToken(request);
         Pageable pageable = PageRequest.of(page, pageSize);
 
         // 이메일로 회원 식별키 조회
@@ -261,12 +228,16 @@ public class OrderController {
      */
     @PostMapping("/order/receipt/coupon-popup/apply")
     public ResponseEntity<CouponCalculationResponseDto> orderReceiptCouponPopupApply(
-            @RequestHeader("X-USER-ID") String email,
             @RequestParam Long couponId,
-            @RequestBody CouponCalculationRequestDto requestDto) {
+            @RequestBody CouponCalculationRequestDto requestDto,
+            HttpServletRequest request,
+            Model model
+            ) {
+        String email = authenticationService.getEmailFromToken(request);
+        CouponCalculationResponseDto responseDto = couponService.applyOrderProductCoupon(email, couponId, requestDto, request);
 
-        CouponCalculationResponseDto responseDto = couponService.applyOrderProductCoupon(email, couponId, requestDto);
-
+        model.addAttribute("email", email);
+        model.addAttribute("data", responseDto);
         return ResponseEntity.ok(responseDto);
     }
 

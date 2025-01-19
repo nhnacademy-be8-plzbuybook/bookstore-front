@@ -16,13 +16,14 @@ public class SKMProperties {
     private String password;
     private VerifyRedis verify_redis;
 
-   @Getter
-   @Setter
-   public static class VerifyRedis{
-       private String host;
-       private String port;
-       private String password;
-       private String range;
-   }
+    @Getter
+    @Setter
+    public static class VerifyRedis {
+        private String host;
+        private String port;
+        private String password;
+        private String range;
+    }
+
 }
 
