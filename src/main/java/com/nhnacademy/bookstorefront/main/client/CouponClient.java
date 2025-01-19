@@ -19,7 +19,7 @@ public interface CouponClient {
     ResponseEntity<CouponPolicyResponseDto> createCouponPolicy(@RequestBody @Valid CouponPolicySaveRequestDto couponPolicySaveRequestDto);
 
     // 활성화된 쿠폰정책 조회
-    @GetMapping("/api/coupon-policies")
+    @GetMapping("/api/coupon-policies/active")
     ResponseEntity<Page<CouponPolicyResponseDto>> findActiveCouponPolicies(@RequestParam(defaultValue = "true") boolean couponActive,
                                                                            @RequestParam(defaultValue = "0") @Min(0) int page,
                                                                            @RequestParam(defaultValue = "10") @Min(1) int pageSize);
