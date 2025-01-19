@@ -1,69 +1,68 @@
 package com.nhnacademy.bookstorefront.common.config;
 
-
 import com.nhnacademy.bookstorefront.skm.properties.SKMProperties;
 import com.nhnacademy.bookstorefront.skm.service.SecureKeyManagerService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 @Configuration
-public class RedisConfig {
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 60 * 60)
+public class RedisSessionConfig {
+
 
     private final SecureKeyManagerService secureKeyManagerService;
     private final SKMProperties skMProperties;
 
-    public RedisConfig(SecureKeyManagerService secureKeyManagerService, SKMProperties skMProperties) {
+    public RedisSessionConfig(SecureKeyManagerService secureKeyManagerService, SKMProperties skMProperties) {
         this.secureKeyManagerService = secureKeyManagerService;
         this.skMProperties = skMProperties;
     }
 
     @Bean
-    public String getOrderRedisHost() {
+    public String getSessionRedisHost() {
+        //인증 레디스 서버와 host, port, password 가 동일해서 가져옴.
         return secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getHost());
     }
 
     @Bean
-    public String getOrderRedisPort() {
+    public String getSessionRedisPort() {
         return secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getPort());
     }
 
     @Bean
-    public String getOrderRedisPassword() {
+    public String getSessionRedisPassword() {
         return secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getPassword());
     }
 
-    @Bean
-    public String getOrderRedisRange() {
-        return secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getRange());
-    }
 
-    @Bean(name = "verifyRedisConnectionFactory")
-    public RedisConnectionFactory verifyRedisConnectionFactory() {
-        String host = secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getHost());
-        int port = Integer.parseInt(secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getPort()));
-        String password = secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getPassword());
-        int database = Integer.parseInt(secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getRange()));
+    @Bean(name = "getSessionRedisFactory")
+    @Primary
+    public RedisConnectionFactory getSessionRedisFactory() {
+        String host = getSessionRedisHost();
+        int port = Integer.parseInt(getSessionRedisPort());
+        String password = getSessionRedisPassword();
 
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
         redisConfig.setHostName(host);
         redisConfig.setPort(port);
         redisConfig.setPassword(password);
-        redisConfig.setDatabase(database);
-
+        redisConfig.setDatabase(234);
         return new LettuceConnectionFactory(redisConfig);
     }
 
-    @Bean(name = "verifyRedisTemplate")
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory verifyRedisConnectionFactory) {
+
+    @Bean(name = "sessionRedisTemplate")
+    public RedisTemplate<String, Object> sessionRedisTemplate(RedisConnectionFactory getSessionRedisFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(verifyRedisConnectionFactory);
+        redisTemplate.setConnectionFactory(getSessionRedisFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
@@ -71,8 +70,4 @@ public class RedisConfig {
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
-
-
-
-
 }
