@@ -1,11 +1,12 @@
 package com.nhnacademy.bookstorefront.main.controller.order;
 
-import com.nhnacademy.bookstorefront.main.client.*;
+import com.nhnacademy.bookstorefront.main.client.BookClient;
+import com.nhnacademy.bookstorefront.main.client.MemberClient;
+import com.nhnacademy.bookstorefront.main.client.OrderClient;
+import com.nhnacademy.bookstorefront.main.client.PointClient;
 import com.nhnacademy.bookstorefront.main.dto.BookDetailResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberAddressResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCouponGetResponseDto;
-import com.nhnacademy.bookstorefront.main.dto.order.OrderCancelRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.OrderProductCancelRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCalculationRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCalculationResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.order.*;
@@ -25,7 +26,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +42,7 @@ public class OrderController {
     private final PointClient pointClient;
     private final CouponService couponService;
     private final AuthenticationService authenticationService;
+    private final MemberService memberService;
 
     @GetMapping("/admin/order-product-returns")
     public String adminOrderReturns(@ModelAttribute OrderReturnSearchRequestDto searchRequest,
@@ -206,11 +207,12 @@ public class OrderController {
         Pageable pageable = PageRequest.of(page, pageSize);
 
         // 이메일로 회원 식별키 조회
-        Long memberId = memberClient.getMemberIdByMemberEmail(email).getBody();
+        Long memberId = memberService.getMemberIdByEmail(email);
 
         // 회원이 보유한 쿠폰 조회
         Page<MemberCouponGetResponseDto> coupons = couponService.getUnusedMemberCouponsByMemberId(memberId, pageable);
 
+        model.addAttribute("memberId", memberId);
         model.addAttribute("productId", productId);
         model.addAttribute("email", email);
         model.addAttribute("price", price);
@@ -232,11 +234,14 @@ public class OrderController {
             @RequestBody CouponCalculationRequestDto requestDto,
             HttpServletRequest request,
             Model model
-            ) {
+    ) {
         String email = authenticationService.getEmailFromToken(request);
-        CouponCalculationResponseDto responseDto = couponService.applyOrderProductCoupon(email, couponId, requestDto, request);
+        Long memberId = memberService.getMemberIdByEmail(email);
+
+        CouponCalculationResponseDto responseDto = couponService.applyOrderProductCoupon(couponId, requestDto, request);
 
         model.addAttribute("email", email);
+        model.addAttribute("memberId", memberId);
         model.addAttribute("data", responseDto);
         return ResponseEntity.ok(responseDto);
     }
@@ -396,8 +401,6 @@ public class OrderController {
     }
 
 
- 
-
     @ResponseBody
     @PostMapping("/api/orders/{order-id}/cancel")
     public ResponseEntity<?> cancelOrderProducts(@PathVariable("order-id") String orderId,
@@ -406,5 +409,5 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    
+
 }
