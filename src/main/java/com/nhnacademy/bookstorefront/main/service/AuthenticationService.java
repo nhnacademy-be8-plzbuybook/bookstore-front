@@ -11,5 +11,5 @@ public interface AuthenticationService {
     LoginResponseDto processLogin(LoginRequestDto loginRequest);
     OauthLoginResponseDto processOauthLogin(String code);
     MyPageDto getMyPage();
-
+    String getEmailFromToken(HttpServletRequest request);
 }
