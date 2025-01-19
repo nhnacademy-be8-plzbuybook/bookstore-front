@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "GATEW" +
-        "AY", contextId = "orderClient")
+@FeignClient(name = "GATEWAY", contextId = "orderClient")
 public interface OrderClient {
 
     @GetMapping("/api/orders/my")
