@@ -71,15 +71,22 @@ public class AdminBookController {
 
     // 도서 등록 처리
     @PostMapping("/register")
-    public String registerBook(@RequestBody @Valid BookRegisterDto bookRegisterDto) {
-        log.info("Received Book Title: {}", bookRegisterDto.getBookTitle());
-        log.info("Received Categories: {}", bookRegisterDto.getCategories());
-        log.info("Received Authors: {}", bookRegisterDto.getAuthors());
-        // 클라이언트를 통해 데이터 전송
-        bookClient.registerBook(bookRegisterDto);
+    public ResponseEntity<String> registerBook(@RequestBody @Valid BookRegisterDto bookRegisterDto) {
+        try {
+            log.info("Received Book Title: {}", bookRegisterDto.getBookTitle());
+            log.info("Received Categories: {}", bookRegisterDto.getCategories());
+            log.info("Received Authors: {}", bookRegisterDto.getAuthors());
+            // 클라이언트를 통해 데이터 전송
+            bookClient.registerBook(bookRegisterDto);
+            return ResponseEntity.status(201).body(" 등록 성공 ");
+        } catch ( Exception e){
+            return ResponseEntity.status(500).body(" 등록 실패 ");
+        }
+
 
         // 성공적으로 처리된 경우 리다이렉트
-        return "redirect:/admin/books";
+//        return "redirect:/admin/books";
+
 
     }
 
