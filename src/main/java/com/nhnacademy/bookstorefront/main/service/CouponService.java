@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorefront.main.service;
 
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCouponGetResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,7 @@ public interface CouponService {
 
     Page<MemberCouponResponseDto> getAllMemberCoupons(int page, int pageSize);
 
-    CouponCalculationResponseDto applyOrderProductCoupon(String email, Long couponId, CouponCalculationRequestDto calculationRequestDto);
+    CouponCalculationResponseDto applyOrderProductCoupon(String email, Long couponId, CouponCalculationRequestDto calculationRequestDto, HttpServletRequest request);
 
     Page<MemberCouponGetResponseDto> getUnusedMemberCouponsByMemberId(Long memberId, Pageable pageable);
 

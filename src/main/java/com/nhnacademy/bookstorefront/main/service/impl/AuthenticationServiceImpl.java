@@ -100,4 +100,30 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         return false; // 쿠키에 accessToken이 없으면 로그아웃 상태
     }
+
+    // 토큰에서 이메일 추출
+    @Override
+    public String getEmailFromToken(HttpServletRequest request) {
+
+        String token = getTokenFromCookies(request);
+        String email = null;
+
+        if(token != null) {
+            email = authenticationClient.getEmailFromToken("Bearer " + token).getBody();
+        }
+
+        return email;
+    }
+
+    // 헤더에서 토큰추출
+    private String getTokenFromCookies(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
 }

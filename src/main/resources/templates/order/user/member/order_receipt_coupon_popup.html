@@ -64,11 +64,6 @@
     <button th:if="${currentPage < totalPages - 1}" th:onclick="'goToPage(' + (${currentPage} + 1) + ')'"
             th:text="'다음'"></button>
 </div>
-<script>
-    function goToPage(page) {
-        const url = `/order/receipt/coupon-popup?email=[[${email}]]&price=[[${productPrice}]]&quantity=[[${quantity}]]&page=${page}&pageSize=10`;
-        window.location.href = url;
-    }
-</script>
+
 </body>
 </html>
