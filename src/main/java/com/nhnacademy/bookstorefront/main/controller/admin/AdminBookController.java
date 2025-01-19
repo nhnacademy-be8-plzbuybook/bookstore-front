@@ -1,14 +1,14 @@
 package com.nhnacademy.bookstorefront.main.controller.admin;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
-import com.nhnacademy.bookstorefront.main.dto.*;
-
-import com.nhnacademy.bookstorefront.main.dto.book.BookResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.AdminBookRegisterDto;
+import com.nhnacademy.bookstorefront.main.dto.BookRegisterDto;
+import com.nhnacademy.bookstorefront.main.dto.book.BookResponseDto;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +29,7 @@ public class AdminBookController {
 
     @GetMapping
     public String adminGetBooks(
-            @RequestParam(defaultValue = "0" , required = false) int page,
+            @RequestParam(defaultValue = "0", required = false) int page,
             @RequestParam(defaultValue = "10", required = false) int size,
             @RequestParam(required = false) String bookType, // 책 종류 파라미터
             Model model) {
@@ -52,17 +52,14 @@ public class AdminBookController {
     }
 
 
-
     @RequestMapping(value = "/{bookId}", method = RequestMethod.POST)
     public String deleteBook(@PathVariable("bookId") Long bookId,
-                            @RequestParam("_method") String method, @RequestParam(required = false) String bookType) {
+                             @RequestParam("_method") String method, @RequestParam(required = false) String bookType) {
         if ("delete".equals(method)) {
             bookClient.deleteBook(bookId);
         }
         return "redirect:/admin/books?bookType=" + bookType;
     }
-
-
 
 
     // 관리자가 도서 추가 버튼 누르면 보이는 페이지 = 이거는 잘돼
@@ -88,8 +85,8 @@ public class AdminBookController {
 
     // 관리자가 도서 수정 버튼 누르면 보이는 페이지
     @GetMapping("/update/{bookId}")
-    public String showUpdatePage(@PathVariable(name="bookId") Long bookId
-                                ,Model model) {
+    public String showUpdatePage(@PathVariable(name = "bookId") Long bookId
+            , Model model) {
 
         BookRegisterDto bookData = bookClient.showUpdatePage(bookId);
         model.addAttribute("bookId", bookId);
@@ -100,22 +97,21 @@ public class AdminBookController {
 
     //     * 도서 수정 데이터 저장
 
-    //@RequestMapping(value = "/update/{bookId}", method = RequestMethod.POST)
-//    @RequestMapping(value = "/update/{bookId}", method = RequestMethod.PUT)
-//    @PutMapping("/{bookId}")
     @PostMapping("/update")
-    public String updateBook(
+    public ResponseEntity<String> updateBook(
             @RequestBody @Valid BookRegisterDto updateDto) {
-        bookClient.updateBook(updateDto);
-
-        return "redirect:/admin/books";
-}
-
-
+        try {
+            bookClient.updateBook(updateDto);
+            return ResponseEntity.status(204).body("수정 완료");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("수정 실패");
+        }
+    }
 
 
     /**
      * 동기화버튼
+     *
      * @param queryType
      * @param searchTarget
      * @param start
@@ -143,6 +139,7 @@ public class AdminBookController {
             return "redirect:/admin/books?error=true";
         }
     }
+
     //도서
     @PostMapping("/sync/isbn")
     public String syncBooksByIsbns(@RequestParam String isbn) {
@@ -161,7 +158,6 @@ public class AdminBookController {
             return "redirect:/admin/books?error=true";
         }
     }
-
 
 
 }
