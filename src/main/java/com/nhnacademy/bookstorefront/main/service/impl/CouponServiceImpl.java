@@ -6,6 +6,7 @@ import com.nhnacademy.bookstorefront.main.dto.Member.MemberCouponGetResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.*;
 import com.nhnacademy.bookstorefront.main.service.CouponService;
 import feign.FeignException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -120,8 +121,12 @@ public class CouponServiceImpl implements CouponService {
     }
 
     // 주문금액 할인 계산
-    public CouponCalculationResponseDto applyOrderProductCoupon(String email, Long couponId, CouponCalculationRequestDto calculationRequestDto) {
+    public CouponCalculationResponseDto applyOrderProductCoupon(String email, Long couponId, CouponCalculationRequestDto calculationRequestDto, HttpServletRequest request) {
         try {
+            String xUserIdHeader = request.getHeader("X-USER-ID");
+            log.info("헤더에서 추출한 X-USER-ID: {}", xUserIdHeader);
+            log.info("페인클라이언트 호출전 email: {}", email);
+
             CouponCalculationResponseDto applyOrderProductCoupon = couponClient.applyOrderProductCoupon(email, couponId, calculationRequestDto).getBody();
 
             if (applyOrderProductCoupon == null) {
@@ -130,7 +135,7 @@ public class CouponServiceImpl implements CouponService {
 
             return applyOrderProductCoupon;
         } catch (FeignException | CouponException e) {
-            log.error("applyOrderProductCoupon Feign Exception: {}", e.getMessage());
+            log.error("프론트서버 - applyOrderProductCoupon Feign Exception: {}", e.getMessage());
             throw new CouponException(e.getMessage());
         }
     }

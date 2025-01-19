@@ -1,13 +1,10 @@
 package com.nhnacademy.bookstorefront.main.controller.cart;
 
-import com.nhnacademy.bookstorefront.main.client.AuthenticationClient;
 import com.nhnacademy.bookstorefront.main.dto.cart.request.CreateCartBookRequest;
 import com.nhnacademy.bookstorefront.main.dto.cart.request.DeleteCartBookRequest;
 import com.nhnacademy.bookstorefront.main.dto.cart.request.UpdateCartBookRequest;
 import com.nhnacademy.bookstorefront.main.dto.cart.response.ReadCartBookResponse;
-import com.nhnacademy.bookstorefront.main.service.AuthenticationService;
 import com.nhnacademy.bookstorefront.main.service.CartService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +20,9 @@ import java.util.Map;
 public class CartController {
 
     private final CartService cartService;
-    private final AuthenticationService authenticationService;
-    private final AuthenticationClient authenticationClient;
 
-    public CartController(CartService cartService,
-                          AuthenticationService authenticationService,
-                          AuthenticationClient authenticationClient) {
+    public CartController(CartService cartService) {
         this.cartService = cartService;
-        this.authenticationService = authenticationService;
-        this.authenticationClient = authenticationClient;
     }
 
     @PostMapping("/carts")
@@ -49,31 +40,16 @@ public class CartController {
 
     @GetMapping("/carts")
     public String getCart(Model model, HttpServletRequest httpServletRequest) {
-        try{
+        try {
             List<ReadCartBookResponse> readCartBookResponses = cartService.getCartBooks();
-            boolean isLoggedIn = authenticationService.isLoggedIn(httpServletRequest);
-
-            String role = null;
-
-            if(isLoggedIn) {
-                String token = getTokenFromCookies(httpServletRequest);
-                if(token != null) {
-                    role = authenticationClient.getRoleFromToken("Bearer " + token).getBody();
-                }
-            }
-
-
             model.addAttribute("cartItems", readCartBookResponses);
-            model.addAttribute("isLoggedIn", isLoggedIn);
-            model.addAttribute("role", role);
-
             return "cart/myCart";
-        } catch(Exception e) {
+        } catch (Exception e) {
             return "index";
         }
     }
 
-    @PutMapping ("/carts")
+    @PutMapping("/carts")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateCartBook(@RequestBody UpdateCartBookRequest updateCartBookRequest) {
         Map<String, Object> response = new HashMap<>();
@@ -94,12 +70,12 @@ public class CartController {
     public ResponseEntity<Map<String, Object>> deleteAllCartBook(@PathVariable("cartId") Long cartId, Model model) {
         model.addAttribute("cartId", cartId);
         Map<String, Object> response = new HashMap<>();
-        try{
+        try {
             cartService.deleteAllCartBook(cartId);
             response.put("success", true);
             response.put("message", "장바구니가 비워졌습니다.");
             return ResponseEntity.ok(response);
-        } catch(Exception e) {
+        } catch (Exception e) {
             response.put("success", false);
             response.put("message", "장바구니 비우기 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -109,10 +85,10 @@ public class CartController {
     @DeleteMapping("/carts")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> deleteCartBook(@RequestParam("cartId") List<Long> cartId,
-                                                            @RequestParam("cartBookId") List<Long> cartBookId) {
+                                                              @RequestParam("cartBookId") List<Long> cartBookId) {
         Map<String, Object> response = new HashMap<>();
-        try{
-            for(int i = 0; i < cartId.size(); i++) {
+        try {
+            for (int i = 0; i < cartId.size(); i++) {
                 DeleteCartBookRequest deleteCartBookRequest = DeleteCartBookRequest.builder()
                         .cartId(cartId.get(i))
                         .cartBookId(cartBookId.get(i))
@@ -127,20 +103,6 @@ public class CartController {
             response.put("message", "장바구니 상품 삭제 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-
     }
-
-
-    private String getTokenFromCookies(HttpServletRequest request) {
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("accessToken".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
 
 }

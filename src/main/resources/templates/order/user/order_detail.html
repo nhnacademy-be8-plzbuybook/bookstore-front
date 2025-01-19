@@ -92,12 +92,26 @@
     </table>
 
     <h2>배송희망 날짜</h2>
-    <div th:if="${orderDetail.getOrderDeliveryAddress().getDetailAddress()} != null">
-        <span th:text="${orderDetail.getDeliveryWishDate()}"></span>
-    </div>
-    <div th:unless="${orderDetail.getOrderDeliveryAddress().getDetailAddress()} != null">
-        <span>설정안됨</span>
-    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>날짜</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <span th:if="${orderDetail.getDeliveryWishDate() != null}"
+                      th:text="${#temporals.format(orderDetail.getDeliveryWishDate(), 'yyyy/MM/dd')}">
+                </span>
+                <span th:unless="${orderDetail.getDeliveryWishDate() != null}">
+                    설정안됨
+                </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
 
     <h2>주문 배송 정보</h2>
     <table>
