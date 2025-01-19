@@ -109,10 +109,16 @@
     <!-- 배송 희망 날짜 -->
     <h2>배송 희망 날짜</h2>
     <div class="section">
-        <input type="radio" class="wishDate" name="delivery-wish-date" checked value=""> 그냥 배송
+        <label>
+            <input type="radio" class="wishDate" name="delivery-wish-date" value="default" checked>
+            그냥 배송
+        </label>
         <br>
-        <input type="radio" class="wishDate" name="delivery-wish-date" value="custom"> 배송 희망날짜 지정
-        <input type="date" id="delivery-wish-date">
+        <label>
+            <input type="radio" class="wishDate" name="delivery-wish-date" value="custom">
+            배송 희망 날짜 지정
+        </label>
+        <input type="date" id="delivery-wish-date" disabled style="display: none;">
     </div>
 
     <table class="table">
