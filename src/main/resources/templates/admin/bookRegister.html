@@ -398,7 +398,7 @@
                 if (!response.ok) {
                     throw new Error('서버 요청 실패');
                 }
-                window.location.href = 'admin/books';
+                window.location.href = '/admin/books';
             })
             .catch(error => {
                 console.error('등록 중 오류 발생:', error);
