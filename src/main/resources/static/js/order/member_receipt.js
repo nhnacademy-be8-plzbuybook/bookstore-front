@@ -79,10 +79,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 deliveryWishDateInput.style.display = 'block';
                 deliveryWishDateInput.disabled = false;
 
-                // 날짜 설정 (오늘 이후로 가능)
+                // 날짜 설정 (오늘 이후, 최대 7일까지)
                 const today = new Date();
+                const maxDate = new Date();
                 today.setDate(today.getDate() + 1);
+                maxDate.setDate(maxDate.getDate() + 7);
                 deliveryWishDateInput.min = today.toISOString().split('T')[0];
+                deliveryWishDateInput.max = maxDate.toISOString().split('T')[0];
             } else {
                 deliveryWishDateInput.style.display = 'none';
                 deliveryWishDateInput.disabled = true;
@@ -268,6 +271,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 주문 버튼 클릭 이벤트 핸들러
     document.getElementById("orderBtn").addEventListener("click", async function () {
+        const selectedDeliveryOption = document.querySelector('input[name="delivery-wish-date"]:checked');
+        const deliveryWishDateInput = document.getElementById("delivery-wish-date");
+
+        // 배송 희망 날짜 검증
+        if (selectedDeliveryOption && selectedDeliveryOption.value === "custom" && !deliveryWishDateInput.value) {
+            alert("배송 희망 날짜를 지정해야 합니다.");
+            event.preventDefault(); // 요청 중단
+            return;
+        }
+
         const orderRequest = getOrderRequest();
         console.log(orderRequest); // 결과 확인용
 
@@ -304,11 +317,16 @@ function getOrderRequest() {
     const localAddress = document.getElementById("localAddress").value;
     const detailAddress = document.getElementById("detailAddress").value;
 
-    // 배송 희망 날짜
-    const deliveryWishDate =
-        document.querySelector('input[name="delivery-wish-date"]:checked').value === 'custom'
-            ? document.getElementById('delivery-wish-date').value || null
-            : null; // 그냥 배송이면 null
+    // 배송 희망 날짜 처리
+    const selectedDeliveryOption = document.querySelector('input[name="delivery-wish-date"]:checked');
+    let deliveryWishDate = null;
+
+    if (selectedDeliveryOption && selectedDeliveryOption.value === 'custom') {
+        const deliveryWishDateInput = document.getElementById('delivery-wish-date').value;
+
+        // 날짜가 없는 경우 null로 설정
+        deliveryWishDate = deliveryWishDateInput ? deliveryWishDateInput : null;
+    }
 
     const orderAmount = document.getElementById("orderAmount").innerText;
     const deliveryFee = document.getElementById("shippingFee").innerText;
