@@ -128,26 +128,29 @@ document.addEventListener("DOMContentLoaded", function () {
         return orderAmount;
     }
 
-    // 할인 금액(포인트, 쿠폰) 계산
-    function calculateTotalDiscount() {
-        let totalDiscount = 0;
+    // 쿠폰 할인만 계산
+    function calculateCouponDiscount() {
+        let totalCouponDiscount = 0;
 
         document.querySelectorAll("#orderTable tbody tr").forEach((row) => {
             const productId = row.dataset.productId;
-            const coupon = couponMap.get(productId); // 쿠폰 Map 에서 데이터 가져옴
+            const coupon = couponMap.get(productId);
 
             if (coupon) {
-                totalDiscount += coupon.discount; // 쿠폰 할인 금액 추가
-                console.log("할인금액 쿠폰계산: ",totalDiscount)
-                console.log("상품 ID: ",productId)
+                totalCouponDiscount += parseInt(coupon.discount, 10) || 0; // 쿠폰 할인 금액 합산
             }
         });
 
-        const usedPoint = parseInt(document.getElementById("usedPoint").value) || 0;
-        totalDiscount += usedPoint; // 포인트 사용 금액
-
-        return totalDiscount;
+        return totalCouponDiscount;
     }
+
+    // 포인트와 쿠폰 합산 할인 계산
+    function calculateTotalDiscount() {
+        const couponDiscount = calculateCouponDiscount(); // 쿠폰 할인 금액
+        const usedPoint = parseInt(document.getElementById("usedPoint").value) || 0; // 사용 포인트
+        return couponDiscount + usedPoint; // 총 할인 금액
+    }
+
 
     // 주문 총액 계산 함수
     function calculateTotal() {
@@ -167,6 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateDisplay(orderAmount, totalDiscount, shippingFee, totalAmount);
     }
 
+
     // 화면 업데이트
     function updateDisplay(orderAmount, totalDiscount, shippingFee, totalAmount) {
         document.getElementById("orderAmount").innerText = orderAmount;
@@ -180,12 +184,15 @@ document.addEventListener("DOMContentLoaded", function () {
         const availablePoints = parseInt(this.getAttribute("data-available-points"), 10) || 0; // 현재 포인트
         const orderAmount = parseInt(document.getElementById("orderAmount").innerText, 10) || 0; // 주문 금액
         const shippingFee = parseInt(document.getElementById("shippingFee").innerText, 10) || 0; // 배송비
-        const totalAmount = Math.max(0, orderAmount + shippingFee); // 총 결제 금액
+
+        // 쿠폰 적용 포함
+        const couponDiscount = calculateCouponDiscount(); // 쿠폰 할인 금액 계산
+        const remainingAmount = Math.max(0, orderAmount + shippingFee - couponDiscount); // 쿠폰 적용 후 남은 결제 금액
 
         let usedPoint = parseInt(this.value, 10) || 0;
 
-        // 사용 가능한 최대 포인트 (결제 금액과 보유 포인트 중 작은 값)
-        const maxUsablePoints = Math.min(totalAmount, availablePoints);
+        // 사용 가능한 최대 포인트
+        const maxUsablePoints = Math.min(remainingAmount, availablePoints);
 
         // 최대 사용 가능 포인트 초과 시 경고 및 제한
         if (usedPoint > maxUsablePoints) {
@@ -195,9 +202,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // 할인 금액 업데이트
-        discountEl.innerText = usedPoint; // 할인 금액 표시
-        calculateTotal(); // 총 결제 금액 재계산
+        discountEl.innerText = calculateTotalDiscount(); // 할인 금액 표시
+        calculateTotal(); // 최종 금액 재계산
     });
+
 
     // 쿠폰 선택 시 쿠폰 데이터를 Map에 저장
     document.querySelectorAll('.coupon-select').forEach(button => {

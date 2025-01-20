@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorefront.common.config;
 
 import com.nhnacademy.bookstorefront.skm.properties.SKMProperties;
 import com.nhnacademy.bookstorefront.skm.service.SecureKeyManagerService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -42,9 +43,8 @@ public class RedisSessionConfig {
         return secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getPassword());
     }
 
-
-    @Bean(name = "getSessionRedisFactory")
     @Primary
+    @Bean(name = "getSessionRedisFactory")
     public RedisConnectionFactory getSessionRedisFactory() {
         String host = getSessionRedisHost();
         int port = Integer.parseInt(getSessionRedisPort());
@@ -54,13 +54,13 @@ public class RedisSessionConfig {
         redisConfig.setHostName(host);
         redisConfig.setPort(port);
         redisConfig.setPassword(password);
-        redisConfig.setDatabase(234);
+        redisConfig.setDatabase(235);
         return new LettuceConnectionFactory(redisConfig);
     }
 
 
     @Bean(name = "sessionRedisTemplate")
-    public RedisTemplate<String, Object> sessionRedisTemplate(RedisConnectionFactory getSessionRedisFactory) {
+    public RedisTemplate<String, Object> sessionRedisTemplate(@Qualifier("getSessionRedisFactory") RedisConnectionFactory getSessionRedisFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(getSessionRedisFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
@@ -70,4 +70,5 @@ public class RedisSessionConfig {
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
+
 }

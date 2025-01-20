@@ -7,7 +7,6 @@ spring:
     name: front
 
 
-
 eureka:
   client:
     register-with-eureka: true

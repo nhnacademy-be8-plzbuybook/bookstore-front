@@ -3,6 +3,7 @@ package com.nhnacademy.bookstorefront.common.config;
 
 import com.nhnacademy.bookstorefront.skm.properties.SKMProperties;
 import com.nhnacademy.bookstorefront.skm.service.SecureKeyManagerService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -61,7 +62,7 @@ public class RedisConfig {
     }
 
     @Bean(name = "verifyRedisTemplate")
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory verifyRedisConnectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(@Qualifier("verifyRedisConnectionFactory") RedisConnectionFactory verifyRedisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(verifyRedisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());

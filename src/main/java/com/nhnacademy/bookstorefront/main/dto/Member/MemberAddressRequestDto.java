@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MemberAddressRequestDto {
-    private Boolean defaultAddress;
+    private Boolean defaultAddress = false;
 
     @NotBlank(message = "도로명 주소를 입력하세요.")
     private String locationAddress;
