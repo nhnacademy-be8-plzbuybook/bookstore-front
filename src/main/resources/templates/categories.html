@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/index.css">
+  <link rel="stylesheet" href="/css/layout/layout.css">
+  <title>📚 책사조잉 📚</title>
+
+</head>
+<body>
+<th:block th:replace="~{layout/layout :: headerFragment}"></th:block>
+<main>
+
+  <h2>자식 카테고리 목록</h2>
+  <ul id="category-list">
+    <!-- 자식 카테고리가 동적으로 표시됩니다. -->
+    <li th:each="category : ${categories}">
+      <!-- 카테고리 이름을 표시하고, 링크를 생성 -->
+      <a th:href="@{'/category/' + ${category.categoryId}}" th:text="${category.categoryName}"></a>
+    </li>
+
+
+  </ul>
+</main>
+
+<footer>
+  <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
+  <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook
+    GitHub</a></p>
+  <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
+</footer>
+
+
+</body>
+</html>

@@ -179,6 +179,9 @@ public interface BookClient {
     ResponseEntity<Page<BookResponseDto>> getBooksNotInSellingBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
 
 
+
+    @GetMapping("/api/categories/children-category")
+    ResponseEntity<List<CategoryResponseDto>> getCategory(@RequestParam Long parentId);
     /**
      * 작가
      */
@@ -209,4 +212,6 @@ public interface BookClient {
     ResponseEntity<List<BookTagResponseDto>> getAuthorsByBookId(@PathVariable(name = "bookId") Long bookId);
 
 
-}
+
+
+    }
