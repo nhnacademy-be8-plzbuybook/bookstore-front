@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const price = parseFloat(this.getAttribute("data-price"));
                 const quantity = parseInt(this.getAttribute("data-quantity"));
                 const email = this.getAttribute("data-email");
-
+                const memberId = this.getAttribute("data-member-id")
                 console.log("팝업창에서 쿠폰 적용:");
                 console.log("productId:", productId);
                 console.log("couponId:", couponId);
@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const productPrice = price * quantity;
                 const requestBody = {
                     price: productPrice,
+                    memberId : memberId
                 };
 
                 // API 요청

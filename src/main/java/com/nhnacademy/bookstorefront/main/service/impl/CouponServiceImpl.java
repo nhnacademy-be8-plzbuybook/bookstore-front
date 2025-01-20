@@ -5,6 +5,7 @@ import com.nhnacademy.bookstorefront.main.client.CouponClient;
 import com.nhnacademy.bookstorefront.main.dto.Member.MemberCouponGetResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.*;
 import com.nhnacademy.bookstorefront.main.service.CouponService;
+import com.nhnacademy.bookstorefront.main.service.MemberService;
 import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Slf4j
 @Service
 public class CouponServiceImpl implements CouponService {
+    private final MemberService memberService;
     private final CouponClient couponClient;
 
     // 쿠폰정책 생성
@@ -121,13 +123,9 @@ public class CouponServiceImpl implements CouponService {
     }
 
     // 주문금액 할인 계산
-    public CouponCalculationResponseDto applyOrderProductCoupon(String email, Long couponId, CouponCalculationRequestDto calculationRequestDto, HttpServletRequest request) {
+    public CouponCalculationResponseDto applyOrderProductCoupon(Long couponId, CouponCalculationRequestDto calculationRequestDto, HttpServletRequest request) {
         try {
-            String xUserIdHeader = request.getHeader("X-USER-ID");
-            log.info("헤더에서 추출한 X-USER-ID: {}", xUserIdHeader);
-            log.info("페인클라이언트 호출전 email: {}", email);
-
-            CouponCalculationResponseDto applyOrderProductCoupon = couponClient.applyOrderProductCoupon(email, couponId, calculationRequestDto).getBody();
+            CouponCalculationResponseDto applyOrderProductCoupon = couponClient.applyOrderProductCoupon(couponId, calculationRequestDto).getBody();
 
             if (applyOrderProductCoupon == null) {
                 throw new CouponException("주문금액 할인 계산 에러");

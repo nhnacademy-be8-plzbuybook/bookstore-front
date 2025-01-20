@@ -42,8 +42,7 @@ public interface CouponClient {
 
     // 주문금액 할인 계산
     @PostMapping("/api/member-coupons/member/{coupon-id}/calculate")
-    ResponseEntity<CouponCalculationResponseDto> applyOrderProductCoupon(@RequestHeader("X-USER-ID") String email,
-                                                                         @PathVariable("coupon-id") Long couponId,
+    ResponseEntity<CouponCalculationResponseDto> applyOrderProductCoupon(@PathVariable("coupon-id") Long couponId,
                                                                          @RequestBody @Valid CouponCalculationRequestDto calculationRequestDto);
 
     // 회원이 사용가능한 쿠폰 목록 조회
