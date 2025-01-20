@@ -179,5 +179,34 @@ public interface BookClient {
     ResponseEntity<Page<BookResponseDto>> getBooksNotInSellingBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
 
 
+    /**
+     * 작가
+     */
+    @PostMapping("/api/authors")
+    ResponseEntity<Void> saveAuthor(@RequestBody AuthorRegisterDto authorRegisterDto);
+
+    @GetMapping("/api/admin/authors")
+    ResponseEntity<Page<AuthorResponseDto>> getAllAuthors(@RequestParam(required = false) String keyword,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size);
+
+    @DeleteMapping("/api/authors/{authorId}")
+    ResponseEntity<Void> deleteAuthor(@PathVariable("authorId") Long authorId);
+
+    @GetMapping("/api/authors/{authorId}")
+    ResponseEntity<String> getAuthorById(@PathVariable Long authorId);
+
+    @GetMapping("/api/authors/{authorId}/books")
+    ResponseEntity<List<AuthorResponseDto>> getBooksByAuthor(@PathVariable(name = "authorId") Long authorId);
+
+    @PostMapping("/api/books/{bookId}/authors/{authorId}")
+    ResponseEntity<Void> saveBookAuthor(@PathVariable(name = "bookId") Long bookId, @PathVariable(name = "authorId") Long authorId);
+
+    @DeleteMapping("/api/books/{bookId}/authors/{authorId}")
+    ResponseEntity<Void> deleteBookAuthor(@PathVariable(name = "bookId") Long bookId, @PathVariable(name = "authorId") Long authorId);
+
+    @GetMapping("/api/books/{bookId}/authors")
+    ResponseEntity<List<BookTagResponseDto>> getAuthorsByBookId(@PathVariable(name = "bookId") Long bookId);
+
 
 }
