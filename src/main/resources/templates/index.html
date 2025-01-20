@@ -14,7 +14,7 @@
 <main>
     <div class="search-bar">
         <form id="searchForm" method="GET" action="/search/books">
-            <input type="text" name="searchKeyword" placeholder="검색어를 입력하세요 (책 제목, 작가, ISBN)" required maxlength="15">
+            <input type="text" name="searchKeyword" placeholder="검색어를 입력하세요 (책 제목, 작가, ISBN)"  maxlength="15">
             <!-- 페이징 관련 기본값 -->
             <input type="hidden" name="page" value="0">
             <button type="submit">검색</button>
@@ -22,7 +22,7 @@
     </div>
 
     <div class="sort-bar">
-        <form id="sortForm" method="GET" action="/index">
+        <form id="sortForm" method="GET" action="/index">x
             정렬 기준
             <select name="sortBy" onchange="document.getElementById('sortForm').submit();">
                 <option value="sellingBookId" th:attr="selected=${sortBy == 'sellingBookId'}">인기순</option>
