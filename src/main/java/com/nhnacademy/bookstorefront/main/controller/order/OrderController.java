@@ -275,12 +275,18 @@ public class OrderController {
      * @return
      */
     @GetMapping("/my/orders")
-    public String getMemberOrders(@RequestParam(required = false) OrderSearchRequestDto searchRequest,
+    public String getMemberOrders(OrderSearchRequestDto searchRequest,
                                   Pageable pageable,
                                   Model model) {
         Page<OrderDto> orderPage = orderService.getMemberOrders(searchRequest, pageable);
-
+        List<OrderStatus> orderStatusList = orderService.getOrderStatuses();
         model.addAttribute("orderPage", orderPage);
+        model.addAttribute("orderStatusList", orderStatusList);
+        model.addAttribute("currentPage", pageable.getPageNumber());
+        model.addAttribute("totalPages", orderPage.getTotalPages());
+        model.addAttribute("totalItems", orderPage.getTotalElements());
+
+
 
         return "order/user/member/order_list";
     }

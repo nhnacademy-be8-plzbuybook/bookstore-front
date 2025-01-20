@@ -149,7 +149,7 @@ document.getElementById("orderBtn").addEventListener("click", async function () 
     const orderRequest = getOrderRequest();
     console.log(orderRequest); // 결과 확인용
 
-    const response = await fetch("/api/orders/non-member", {
+    const response = await fetch("/api/orders", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(orderRequest),
