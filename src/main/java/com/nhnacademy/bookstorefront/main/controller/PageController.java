@@ -100,14 +100,14 @@ public class PageController {
     public String handleAddressSubmission(@Valid MemberAddressRequestDto addressRequestDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("error", "모든 필드를 올바르게 입력해주세요.");
-            return "mypage";
+            return "redirect:/mypage";
         }
 
         try {
             memberClient.createAddress(addressRequestDto);
         } catch (Exception e) {
             model.addAttribute("error", "주소 등록에 실패했습니다.");
-            return "mypage";
+            return"redirect:/mypage";
         }
 
         return "redirect:/mypage";
@@ -135,7 +135,7 @@ public class PageController {
     public String updateAddress(@PathVariable("addressId") Long addressId, @Valid MemberAddressRequestDto memberAddressRequestDto, BindingResult bindingResult, Model model) {
         if(bindingResult.hasErrors()) {
             model.addAttribute("error", "모든 필드를 바르게 입력해주세요");
-            return "mypage";
+            return "redirect:/mypage";
         }
 
         try{
