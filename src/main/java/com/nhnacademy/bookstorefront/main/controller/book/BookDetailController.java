@@ -129,7 +129,9 @@ public class BookDetailController {
 
         try {
             // 좋아요 처리 로직 호출
-          ResponseEntity<Long> likesCount = memberClient.toggleLike(sellingBookId);
+//          ResponseEntity<Long> likesCount = memberClient.toggleLike(sellingBookId);
+            Long likesCount = memberClient.toggleLike(sellingBookId).getBody(); // Long 값만 가져옴
+
 
             // 성공 메시지와 좋아요 수 전달
             redirectAttributes.addFlashAttribute("success", "좋아요가 반영되었습니다.");
