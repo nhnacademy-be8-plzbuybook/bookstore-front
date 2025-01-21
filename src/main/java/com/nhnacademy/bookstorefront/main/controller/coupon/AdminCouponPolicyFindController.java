@@ -17,14 +17,12 @@ public class AdminCouponPolicyFindController {
 
     // 쿠폰정책 조회
     @GetMapping("/admin/coupon-policies/active")
-    public String getAllCouponPolicy(Model model, @RequestParam(defaultValue = "true") boolean couponActive,
-                                     @RequestParam(defaultValue = "0") @Min(0) int page,
+    public String getAllCouponPolicy(Model model, @RequestParam(defaultValue = "0") @Min(0) int page,
                                      @RequestParam(defaultValue = "10") @Min(1) int pageSize) {
 
-        Page<CouponPolicyResponseDto> couponPolicies = couponService.findActiveCouponPolicies(couponActive, page, pageSize);
+        Page<CouponPolicyResponseDto> couponPolicies = couponService.findAllCouponPolicies(page, pageSize);
 
         model.addAttribute("couponPolicies", couponPolicies);
-        model.addAttribute("couponActive", couponActive);
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", pageSize);
         model.addAttribute("totalPages", couponPolicies != null ? couponPolicies.getTotalPages() : 0);

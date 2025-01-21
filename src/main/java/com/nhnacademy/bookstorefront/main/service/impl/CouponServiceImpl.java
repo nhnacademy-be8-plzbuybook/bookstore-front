@@ -9,8 +9,6 @@ import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -58,51 +56,6 @@ public class CouponServiceImpl implements CouponService {
         }
     }
 
-    public CouponPolicyResponseDto findById(@PathVariable("id") @Min(0) Long couponPolicyId) {
-        try {
-            CouponPolicyResponseDto findById = couponClient.findById(couponPolicyId).getBody();
-
-            if (findById == null) {
-                throw new CouponException("쿠폰정책 ID 로 조회 에러");
-            }
-
-            return findById;
-        } catch (FeignException | CouponException e) {
-            log.error("findById Feign Exception: {}", e.getMessage());
-            throw new CouponException(e.getMessage());
-        }
-    }
-
-    public CouponPolicyResponseDto findByName(@RequestParam("name") @NotBlank String name) {
-        try {
-            CouponPolicyResponseDto findByName = couponClient.findByName(name).getBody();
-
-            if (findByName == null) {
-                throw new CouponException("쿠폰정책 이름 조회 에러");
-            }
-
-            return findByName;
-        } catch (FeignException | CouponException e) {
-            log.error("findByName Feign Exception: {}", e.getMessage());
-            throw new CouponException(e.getMessage());
-        }
-    }
-
-    public CouponPolicyResponseDto findCouponPolicyByCouponId(@PathVariable("coupon-id") @Min(0) Long couponId) {
-        try {
-            CouponPolicyResponseDto findCouponPolicyByCouponId = couponClient.findCouponPolicyByCouponId(couponId).getBody();
-
-            if (findCouponPolicyByCouponId == null) {
-                throw new CouponException("쿠폰 ID 로 쿠폰정책 조회 에러");
-            }
-
-            return findCouponPolicyByCouponId;
-        } catch (FeignException | CouponException e) {
-            log.error("findCouponPolicyByCouponId Feign Exception: {}", e.getMessage());
-            throw new CouponException(e.getMessage());
-        }
-    }
-
     public String addCouponTargets(@PathVariable("policy-id") @Min(0) Long policyId, @RequestBody @Valid Long ctTargetId) {
         try {
             String addCouponTargets = couponClient.addCouponTargets(policyId, ctTargetId).getBody();
@@ -114,23 +67,6 @@ public class CouponServiceImpl implements CouponService {
             return addCouponTargets;
         } catch (FeignException | CouponException e) {
             log.error("addCouponTargets Feign Exception: {}", e.getMessage());
-            throw new CouponException(e.getMessage());
-        }
-    }
-
-    public Page<CouponTargetGetResponseDto> getCouponTargetsByPolicy(@RequestParam("policy-id") @Min(0) Long policyId,
-                                                                     @RequestParam(defaultValue = "0") @Min(0) int page,
-                                                                     @RequestParam(defaultValue = "10") @Min(1) int pageSize) {
-        try {
-            Page<CouponTargetGetResponseDto> couponTargetGetResponseDto = couponClient.getCouponTargetsByPolicy(policyId, page, pageSize).getBody();
-
-            if (couponTargetGetResponseDto == null) {
-                throw new CouponException("쿠폰정책에 속하는 쿠폰대상 목록 조회 에러");
-            }
-
-            return couponTargetGetResponseDto;
-        } catch (FeignException | CouponException e) {
-            log.error("getCouponTargetsByPolicy Feign Exception: {}", e.getMessage());
             throw new CouponException(e.getMessage());
         }
     }
@@ -165,38 +101,6 @@ public class CouponServiceImpl implements CouponService {
         }
     }
 
-    public Page<CouponResponseDto> getCouponsByPolicies(@PathVariable("policy-id") @Min(0) @NotNull Long policyId,
-                                                        @RequestParam(defaultValue = "0") @Min(0) int page,
-                                                        @RequestParam(defaultValue = "10") @Min(1) int pageSize) {
-        try {
-            Page<CouponResponseDto> getCouponsByPolicies = couponClient.getCouponsByPolicies(policyId, page, pageSize).getBody();
-
-            if (getCouponsByPolicies == null) {
-                throw new CouponException("특정 쿠폰정책에 속한 쿠폰 조회 에러");
-            }
-
-            return getCouponsByPolicies;
-        } catch (FeignException | CouponException e) {
-            log.error("getCouponsByPolicies Feign Exception: {}", e.getMessage());
-            throw new CouponException(e.getMessage());
-        }
-    }
-
-    public String useCoupon(@PathVariable("coupon-id") @Min(0) Long couponId) {
-        try {
-            String useCoupon = couponClient.useCoupon(couponId).getBody();
-
-            if (useCoupon == null) {
-                throw new CouponException("쿠폰사용 에러");
-            }
-
-            return useCoupon;
-        } catch (FeignException | CouponException e) {
-            log.error("useCoupon Feign Exception: {}", e.getMessage());
-            throw new CouponException(e.getMessage());
-        }
-    }
-
     public Page<CouponHistoryResponseDto> getHistoryByCouponId(Long couponId, int page, int pageSize) {
         try {
             Page<CouponHistoryResponseDto> getHistoryByCouponId = couponClient.getHistoryByCouponId(couponId, page, pageSize).getBody();
@@ -212,20 +116,6 @@ public class CouponServiceImpl implements CouponService {
         }
     }
 
-    public Page<CouponHistoryResponseDto> getHistoryDate(String startDate, String endDate, int page, int pageSize) {
-        try {
-            Page<CouponHistoryResponseDto> getHistoryDate = couponClient.getHistoryDate(startDate, endDate, page, pageSize).getBody();
-
-            if (getHistoryDate == null) {
-                throw new CouponException("특정기간 쿠폰이력 목록 조회 에러");
-            }
-
-            return getHistoryDate;
-        } catch (FeignException | CouponException e) {
-            log.error("getHistoryDate Feign Exception: {}", e.getMessage());
-            throw new CouponException(e.getMessage());
-        }
-    }
 
     public MemberCouponResponseDto createMemberCoupon(@RequestBody @Valid MemberCouponCreateRequestDto memberCouponCreateRequestDto) {
         try {
@@ -253,21 +143,6 @@ public class CouponServiceImpl implements CouponService {
             return getAllMemberCoupons;
         } catch (FeignException | CouponException e) {
             log.error("getAllMemberCoupons Feign Exception: {}", e.getMessage());
-            throw new CouponException(e.getMessage());
-        }
-    }
-
-    public Page<MemberCouponResponseDto> getMemberCouponsByCouponId(Long couponId, int page, int pageSize) {
-        try {
-            Page<MemberCouponResponseDto> getMemberCouponsByCouponId = couponClient.getMemberCouponsByCouponId(couponId, page, pageSize).getBody();
-
-            if (getMemberCouponsByCouponId == null) {
-                throw new CouponException("회원쿠폰 조회 에러");
-            }
-
-            return getMemberCouponsByCouponId;
-        } catch (FeignException | CouponException e) {
-            log.error("getMemberCouponsByCouponId Feign Exception: {}", e.getMessage());
             throw new CouponException(e.getMessage());
         }
     }
