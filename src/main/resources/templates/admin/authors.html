@@ -327,7 +327,7 @@
           <td th:text="${author.authorId}"></td>
           <td th:text="${author.authorName}"></td>
           <td>
-            <form th:action="@{/api/admin/authors/{authorId}(authorId=${author.authorId})}" method="post">
+            <form th:action="@{/admin/authors/{authorId}(authorId=${author.authorId})}" method="post">
               <input type="hidden" name="_method" value="delete" />
               <button type="submit">삭제</button>
             </form>
