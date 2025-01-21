@@ -47,9 +47,9 @@ public interface BookClient {
     ResponseEntity<Void> deleteBook(@PathVariable Long bookId);
 
 
-
     /**
      * 관리자 도서 관리에서 도서 수정 - 수정후 데이터베이스 반영
+     *
      * @param updateDto
      * @return
      */
@@ -59,13 +59,15 @@ public interface BookClient {
 
     /**
      * 관리자 도서관리에서 도서 삭제 api
+     *
      * @param sellingBookId
      */
     @DeleteMapping("/api/selling-books/{selling-book-id}")
-    ResponseEntity<Void>  deleteSellingBook(@PathVariable("selling-book-id") Long sellingBookId);
+    ResponseEntity<Void> deleteSellingBook(@PathVariable("selling-book-id") Long sellingBookId);
 
     /**
      * 관리자 도서관리에서 도서 등록 api
+     *
      * @param
      * @return
      */
@@ -78,7 +80,7 @@ public interface BookClient {
     void registerSellingBooks(@RequestBody SellingBookRegisterDto sellingBookDto);
 
 
-        // 판매 책 수정
+    // 판매 책 수정
     @PutMapping("/api/selling-books/{sellingBookId}")
     SellingBookRegisterDto updateSellingBook(
             @PathVariable("sellingBookId") Long sellingBookId,
@@ -104,6 +106,7 @@ public interface BookClient {
             @RequestParam String keyword,
             @RequestParam int page,
             @RequestParam int size);
+
     @PostMapping("/api/categories")
     ResponseEntity<Void> saveCategory(@RequestBody CategoryRegisterDto categoryRegisterDto);
 
@@ -130,7 +133,7 @@ public interface BookClient {
     ResponseEntity<Void> deleteTag(@PathVariable("tagId") Long tagId);
 
     @GetMapping("/api/tags/{tag-id}/books")
-    ResponseEntity<List<BookTagResponseDto>> getAllBookTags(@PathVariable(name="tag-id") Long tagId);
+    ResponseEntity<List<BookTagResponseDto>> getAllBookTags(@PathVariable(name = "tag-id") Long tagId);
 
     @PostMapping("/api/books/{book-id}/tags/{tag-id}")
     ResponseEntity<Void> saveBookTag(@PathVariable(name = "book-id") Long bookId, @PathVariable(name = "tag-id") Long tagId);
@@ -164,20 +167,56 @@ public interface BookClient {
 
     @GetMapping("/api/categories")
     Page<CategorySimpleResponseDto> getCategories(
-        @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size);
-
-    @GetMapping("/api/authors")
-    Page<AuthorResponseDto> getAuthors(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size);
 
-    @PostMapping(value = "/api/objects/upload_files" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @GetMapping("/api/admin/authors")
+    Page<AuthorResponseDto> getAuthors(
+            @RequestParam int page,
+            @RequestParam int size);
+
+    @PostMapping(value = "/api/objects/upload_files", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<List<FileUploadResponse>> uploadFiles(@RequestPart("files") List<MultipartFile> files);
 
     @GetMapping("/api/books/not-in-selling-books")
     ResponseEntity<Page<BookResponseDto>> getBooksNotInSellingBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size);
 
 
+    @GetMapping("/api/categories/children-category")
+    ResponseEntity<List<CategoryResponseDto>> getCategory(@RequestParam Long parentId);
 
-}
+    /**
+     * 작가
+     */
+    @PostMapping("/api/authors")
+    ResponseEntity<Void> saveAuthor(@RequestBody AuthorRegisterDto authorRegisterDto);
+
+    @GetMapping("/api/admin/authors")
+    ResponseEntity<Page<AuthorResponseDto>> getAllAuthors(@RequestParam(required = false) String keyword,
+                                                          @RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "10") int size);
+
+    @DeleteMapping("/api/authors/{authorId}")
+    ResponseEntity<Void> deleteAuthor(@PathVariable("authorId") Long authorId);
+
+    @GetMapping("/api/authors/{authorId}")
+    ResponseEntity<String> getAuthorById(@PathVariable Long authorId);
+
+    @GetMapping("/api/authors/{authorId}/books")
+    ResponseEntity<List<AuthorResponseDto>> getBooksByAuthor(@PathVariable(name = "authorId") Long authorId);
+
+    @PostMapping("/api/books/{bookId}/authors/{authorId}")
+    ResponseEntity<Void> saveBookAuthor(@PathVariable(name = "bookId") Long bookId, @PathVariable(name = "authorId") Long authorId);
+
+    @DeleteMapping("/api/books/{bookId}/authors/{authorId}")
+    ResponseEntity<Void> deleteBookAuthor(@PathVariable(name = "bookId") Long bookId, @PathVariable(name = "authorId") Long authorId);
+
+    @GetMapping("/api/books/{bookId}/authors")
+    ResponseEntity<List<BookTagResponseDto>> getAuthorsByBookId(@PathVariable(name = "bookId") Long bookId);
+
+
+    @GetMapping("/api/categories/{category-id}/books")
+    ResponseEntity<Page<BookInfoResponseDto>> searchBooksByCategory(@PathVariable(name = "category-id") Long categoryId, @RequestParam(defaultValue = "0") int page);
+
+
+    }

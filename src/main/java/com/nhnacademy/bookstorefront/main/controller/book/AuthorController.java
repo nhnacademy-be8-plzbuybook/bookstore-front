@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 작가 모달창으로 불러오는거 Json 사용,,
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -20,10 +23,9 @@ public class AuthorController {
 
     // 관리자가 도서 추가 버튼 누르면 보이는 페이지 = 이거는 잘돼
     @GetMapping("/api/admin/authors")
-    public Page<AuthorResponseDto> getAuthors(@RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "10") int size) {
+    public Page<AuthorResponseDto> getAuthors(@RequestParam int page,
+                                              @RequestParam int size) {
         return bookClient.getAuthors(page, size);
 //        return "admin/bookregister"; // 모달창으로 가야하는데
     }
-
 }

@@ -6,4 +6,5 @@ import org.springframework.http.ResponseEntity;
 
 public interface MemberService {
     MemberCreateResponseDto createMember(MemberCreateRequestDto memberCreateRequestDto);
+    Long getMemberIdByEmail(String email);
 }

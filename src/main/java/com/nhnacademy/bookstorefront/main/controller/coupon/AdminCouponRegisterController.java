@@ -7,7 +7,6 @@ import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicyResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicySaveRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponTargetSaveRequestDto;
 import com.nhnacademy.bookstorefront.main.service.CouponService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -82,11 +81,9 @@ public class AdminCouponRegisterController {
         Long couponPolicyId = Objects.requireNonNull(policyResponse).id();
 
         if (bookId != null) {
-            CouponTargetSaveRequestDto targetRequest = new CouponTargetSaveRequestDto(couponPolicyId, bookId);
-            couponService.createCouponTarget(targetRequest);
+            couponService.addCouponTargets(couponPolicyId, bookId);
         } else if (categoryId != null) {
-            CouponTargetSaveRequestDto targetRequest = new CouponTargetSaveRequestDto(couponPolicyId, categoryId);
-            couponService.createCouponTarget(targetRequest);
+            couponService.addCouponTargets(couponPolicyId, categoryId);
         }
         model.addAttribute("createdCouponPolicyId", couponPolicyId);
 

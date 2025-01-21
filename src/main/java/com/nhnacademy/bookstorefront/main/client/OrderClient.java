@@ -17,12 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "GATEW" +
-        "AY", contextId = "orderClient")
+@FeignClient(name = "GATEWAY", contextId = "orderClient")
 public interface OrderClient {
 
     @GetMapping("/api/orders/my")
-    ResponseEntity<Page<OrderDto>> getMemberOrders(@RequestParam(required = false) OrderSearchRequestDto searchRequest,
+    ResponseEntity<Page<OrderDto>> getMemberOrders(@SpringQueryMap OrderSearchRequestDto searchRequest,
                                                    Pageable pageable);
 
     @GetMapping("/api/orders")

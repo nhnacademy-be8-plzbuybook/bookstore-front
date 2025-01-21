@@ -38,19 +38,19 @@ public class AuthenticationController {
                                HttpServletResponse response) {
 
         LoginRequestDto loginRequest = new LoginRequestDto(username, password);
-            // 로그인 수행
-            LoginResponseDto loginResponse = authenticationService.processLogin(loginRequest);
+        // 로그인 수행
+        LoginResponseDto loginResponse = authenticationService.processLogin(loginRequest);
 
         if ("DORMANT".equals(loginResponse.memberStateName())) {
             return "redirect:" + loginResponse.redirectUrl();
         }
 
-            String accessToken = loginResponse.accessToken();
+        String accessToken = loginResponse.accessToken();
 
-            // 발급된 토큰 쿠키에 저장
-            cookieService.addCookie(response, "accessToken", accessToken, 100000);
+        // 발급된 토큰 쿠키에 저장
+        cookieService.addCookie(response, "accessToken", accessToken, 100000);
 
-            return "redirect:/index";
+        return "redirect:/index";
 
     }
 
