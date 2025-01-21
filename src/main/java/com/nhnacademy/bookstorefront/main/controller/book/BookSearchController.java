@@ -32,14 +32,12 @@ public class BookSearchController {
                              @RequestParam(defaultValue = "0") int page,
                              @RequestParam(required = false, name="category-id") Long categoryId) {
 
-        // 검색 결과 뷰
-        // 페이지 크기
-        // 현재 페이지 번호
         if(categoryId != null) {
 
             Page<BookInfoResponseDto> responseDto = bookClient.searchBooksByCategory(categoryId,page).getBody();
             model.addAttribute("searchResult", Objects.requireNonNull(responseDto).getContent());
             model.addAttribute("totalPages", responseDto.getTotalPages());
+            model.addAttribute("categoryId", categoryId);
 
         } else {
 
