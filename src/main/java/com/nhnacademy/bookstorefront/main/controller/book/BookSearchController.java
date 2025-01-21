@@ -3,15 +3,16 @@ package com.nhnacademy.bookstorefront.main.controller.book;
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.client.BookSearchClient;
 import com.nhnacademy.bookstorefront.main.dto.BookSearchPagedResponseDto;
+import com.nhnacademy.bookstorefront.main.dto.book.BookInfoResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategoryResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,13 +30,17 @@ public class BookSearchController {
     public String searchBook(Model model,
                              @RequestParam(defaultValue = "15", required = false) String searchKeyword,
                              @RequestParam(defaultValue = "0") int page,
-                             @RequestParam(required = false) Long categoryId) {
+                             @RequestParam(required = false, name="category-id") Long categoryId) {
 
+        // 검색 결과 뷰
+        // 페이지 크기
+        // 현재 페이지 번호
         if(categoryId != null) {
 
+            Page<BookInfoResponseDto> responseDto = bookClient.searchBooksByCategory(categoryId,page).getBody();
+            model.addAttribute("searchResult", Objects.requireNonNull(responseDto).getContent());
+            model.addAttribute("totalPages", responseDto.getTotalPages());
 
-
-            return "1";
         } else {
 
 
@@ -45,12 +50,11 @@ public class BookSearchController {
             model.addAttribute("searchKeyword", searchKeyword);
             model.addAttribute("searchResult", Objects.requireNonNull(response).getContent()); // 책 목록
             model.addAttribute("totalPages", response.getTotalPages()); // 전체 페이지 수
-            model.addAttribute("currentPage", page); // 현재 페이지 번호
-            model.addAttribute("pageSize", 3); // 페이지 크기
-            return "search/searchResult"; // 검색 결과 뷰
 
         }
-
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize",3);
+        return "search/searchResult";
 
 
     }

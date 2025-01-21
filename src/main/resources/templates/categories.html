@@ -18,7 +18,7 @@
     <!-- 자식 카테고리가 동적으로 표시됩니다. -->
     <li th:each="category : ${categories}">
       <!-- 카테고리 이름을 표시하고, 링크를 생성 -->
-      <a th:href="@{'/category/' + ${category.categoryId}}" th:text="${category.categoryName}"></a>
+      <a th:href="@{'/search/books?category-id=' + ${category.categoryId}}" th:text="${category.categoryName}"></a>
     </li>
 
 
