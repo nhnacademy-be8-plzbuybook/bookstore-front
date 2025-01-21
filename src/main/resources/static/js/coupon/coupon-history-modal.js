@@ -29,7 +29,7 @@ function searchCouponHistories() {
         });
 }
 
-function closeModal(modalId) {
+function closeCouponHistoriesModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.style.display = 'none';

@@ -17,7 +17,7 @@ function openCouponMemberModal(url) {
         });
 }
 
-function closeModal(modalId) {
+function closeCouponMemberModal(modalId) {
     document.getElementById(modalId).style.display = 'none';
 }
 
