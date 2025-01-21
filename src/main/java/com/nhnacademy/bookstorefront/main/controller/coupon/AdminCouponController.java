@@ -27,8 +27,8 @@ public class AdminCouponController {
     // 회원에게 쿠폰 발급
     @PostMapping("/admin/member-coupons")
     public String createMemberCoupon(@ModelAttribute MemberCouponCreateRequestDto memberCouponCreateRequestDto, Model model) {
-        couponService.createMemberCoupon(memberCouponCreateRequestDto);
-
+        MemberCouponResponseDto responseDto = couponService.createMemberCoupon(memberCouponCreateRequestDto);
+        model.addAttribute("memberCouponResponseDto", responseDto);
         return "admin/coupon/coupon-issue";
     }
 

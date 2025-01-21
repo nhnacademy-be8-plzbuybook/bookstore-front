@@ -82,11 +82,9 @@ public class AdminCouponRegisterController {
         Long couponPolicyId = Objects.requireNonNull(policyResponse).id();
 
         if (bookId != null) {
-            CouponTargetSaveRequestDto targetRequest = new CouponTargetSaveRequestDto(couponPolicyId, bookId);
-            couponService.createCouponTarget(targetRequest);
+            couponService.addCouponTargets(couponPolicyId, bookId);
         } else if (categoryId != null) {
-            CouponTargetSaveRequestDto targetRequest = new CouponTargetSaveRequestDto(couponPolicyId, categoryId);
-            couponService.createCouponTarget(targetRequest);
+            couponService.addCouponTargets(couponPolicyId, categoryId);
         }
         model.addAttribute("createdCouponPolicyId", couponPolicyId);
 
