@@ -83,3 +83,8 @@ GET http://172.20.66.191:8080/api/admin/authors?page=0&size=10
 
 ###
 
+# curl -X GET "http://GATEWAY/api/authors?page=0&size=50"
+GET http://localhost:8080/api/admin/authors?page=1&size=50
+
+###
+

@@ -167,10 +167,10 @@ public interface BookClient {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size);
 
-    @GetMapping("/api/authors")
+    @GetMapping("/api/admin/authors")
     Page<AuthorResponseDto> getAuthors(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size);
+            @RequestParam int page,
+            @RequestParam int size);
 
     @PostMapping(value = "/api/objects/upload_files" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<List<FileUploadResponse>> uploadFiles(@RequestPart("files") List<MultipartFile> files);
