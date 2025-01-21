@@ -125,21 +125,8 @@
     </style>
 </head>
 <body>
-<header>
-    <div class="logo">📚 책사조잉 📚</div>
-    <nav class="menu">
-        <a href="/">Home</a>
-        <a href="#">국내도서</a>
-        <a href="#">외국도서</a>
-        <a href="#">추천도서</a>
-    </nav>
-    <div class="icons" id="auth-icons">
-        <a href="/mypage" id="mypage-btn" style="display:none;">MyPage</a>
-        <a href="#" id="logout-btn" style="display:none;" onclick="logout()">로그아웃</a>
-        <a href="/login" id="login-btn">로그인</a>
-        <a href="/signup" id="signup-btn">회원가입</a>
-    </div>
-</header>
+<th:block th:replace="~{layout/layout :: headerFragment}"></th:block>
+
 <main>
     <div class="search-bar">
         <form id="searchForm" method="GET" action="/search/books">
