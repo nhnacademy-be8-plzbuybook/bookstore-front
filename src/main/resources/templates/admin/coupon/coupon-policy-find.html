@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>쿠폰 정책 조회</title>
     <link rel="stylesheet" href="/css/coupon/coupon-register.css">
-    <script src="coupon-policy-find.html"></script>
+    <script src="/js/coupon/coupon-policy-find-modal.js" defer></script>
 </head>
 <body>
     <h3>쿠폰 정책 조회</h3>
@@ -13,7 +13,10 @@
     <p>현재 페이지: <span th:text="${currentPage + 1}"></span> / 총 페이지: <span th:text="${totalPages}"></span></p>
 
     <!-- 페이지 이동 -->
-    <div><input type="number" id="pageInput" placeholder="페이지 번호 입력" min="0"><button type="button" onclick="goToCouponPage()">이동</button></div>
+    <div><label for="couponPolicyFindPageInput"></label>
+        <input type="number" id="couponPolicyFindPageInput" placeholder="페이지 번호 입력" min="0">
+        <button type="button" onclick="couponPolicyFindGoToPage()">이동</button>
+    </div>
 
     <!-- 쿠폰 정책 목록 -->
     <table>
@@ -47,7 +50,7 @@
             <td th:text="${couponPolicy.endDate()}"></td>
             <td th:text="${couponPolicy.couponActive() ? '활성화' : '비활성화'}"></td>
             <td>
-                <button type="button" th:onclick="'selectPolicy(' + ${couponPolicy.id} + ')'">선택</button>
+                <button type="button" th:onclick="'couponPolicyFindSelect(' + ${couponPolicy.id} + ')'">선택</button>
             </td>
         </tr>
         </tbody>
@@ -58,12 +61,12 @@
         <!-- 이전 버튼 -->
         <a th:if="${currentPage > 0}"
            th:href="@{/admin/coupon-policies(page=${currentPage - 1})}"
-           th:onclick="'return updateModalContent(this.href)'">이전</a>
+           th:onclick="'return couponPolicyFindUpdateModal(this.href)'">이전</a>
 
         <!-- 다음 버튼 -->
         <a th:if="${currentPage < totalPages - 1}"
            th:href="@{/admin/coupon-policies(page=${currentPage + 1})}"
-           th:onclick="'return updateModalContent(this.href)'">다음</a>
+           th:onclick="'return couponPolicyFindUpdateModal(this.href)'">다음</a>
     </div>
 </body>
 </html>

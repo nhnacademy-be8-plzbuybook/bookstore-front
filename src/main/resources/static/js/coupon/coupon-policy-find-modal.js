@@ -1,36 +1,42 @@
-// 모달창 제어
-function openModal(url) {
-    const modal = document.getElementById('couponPolicyModal');
-    const couponPolicyModalContent = document.getElementById('couponPolicyModalContent');
+function couponPolicyFindOpenModal(url) {
+    const modal = document.getElementById('couponPolicyFindModal');
+    const content = document.getElementById('couponPolicyFindModalContent');
 
-    // 서버에서 HTML 로드
     fetch(url)
-        .then(response => response.text())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('서버 응답 오류');
+            }
+            return response.text();
+        })
         .then(html => {
-            couponPolicyModalContent.innerHTML = html;
+            content.innerHTML = html;
             modal.style.display = 'block';
         })
-        .catch(error => console.error('쿠폰정책 조회 오류:', error));
+        .catch(error => {
+            console.error('쿠폰정책 조회 오류:', error);
+            alert('쿠폰정책을 불러오는데 실패했습니다.');
+        });
 }
 
-function closeModal() {
-    const modal = document.getElementById('couponPolicyModal');
+function couponPolicyFindCloseModal() {
+    const modal = document.getElementById('couponPolicyFindModal');
     modal.style.display = 'none';
 }
 
-function updateModalContent(url) {
-    openModal(url);
-    return false; // 기본 동작 방지
+function couponPolicyFindSelect(policyId) {
+    alert(`선택된 쿠폰정책 ID: ${policyId}`);
+    couponPolicyFindCloseModal();
 }
 
-// 선택된 정책 처리
-function selectPolicy(policyId) {
-    alert('선택된 정책 ID: ' + policyId);
-    closeModal();
-}
+function couponPolicyFindGoToPage() {
+    const pageInput = document.getElementById('couponPolicyFindPageInput');
+    const page = pageInput.value;
 
-// 페이지 이동 처리
-function goToPolicyPage() {
-    const pageInput = document.getElementById('pageInput').value || 0;
-    openModal(`/admin/coupon-policies/active?page=${pageInput}`);
+    if (!page || page < 0) {
+        alert('유효한 페이지 번호를 입력해주세요.');
+        return;
+    }
+
+    couponPolicyFindOpenModal(`/admin/coupon-policies?page=${page}`);
 }

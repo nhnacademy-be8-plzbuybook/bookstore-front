@@ -7,7 +7,6 @@ import com.nhnacademy.bookstorefront.main.dto.book.CategorySimpleResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponCreateRequestDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicyResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicySaveRequestDto;
-import com.nhnacademy.bookstorefront.main.dto.coupon.CouponTargetSaveRequestDto;
 import com.nhnacademy.bookstorefront.main.service.CouponService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
