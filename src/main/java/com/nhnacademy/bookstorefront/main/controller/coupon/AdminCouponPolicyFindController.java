@@ -16,7 +16,7 @@ public class AdminCouponPolicyFindController {
     private final CouponService couponService;
 
     // 쿠폰정책 조회
-    @GetMapping("/admin/coupon-policies/active")
+    @GetMapping("/admin/coupon-policies")
     public String getAllCouponPolicy(Model model, @RequestParam(defaultValue = "0") @Min(0) int page,
                                      @RequestParam(defaultValue = "10") @Min(1) int pageSize) {
 
