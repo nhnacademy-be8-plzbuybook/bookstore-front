@@ -1,9 +1,7 @@
 package com.nhnacademy.bookstorefront.common.config;
 
-
-import com.nhnacademy.bookstorefront.skm.properties.SKMProperties;
-import com.nhnacademy.bookstorefront.skm.service.SecureKeyManagerService;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -17,43 +15,25 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-    private final SecureKeyManagerService secureKeyManagerService;
-    private final SKMProperties skMProperties;
+    @Value("${spring.data.redis.port}")
+    private String redisHost;
 
-    public RedisConfig(SecureKeyManagerService secureKeyManagerService, SKMProperties skMProperties) {
-        this.secureKeyManagerService = secureKeyManagerService;
-        this.skMProperties = skMProperties;
-    }
+    @Value("${spring.data.redis.port}")
+    private int redisPort;
 
-    @Bean
-    public String getOrderRedisHost() {
-        return secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getHost());
-    }
+    @Value("${spring.data.redis.password}")
+    private String redisPassword;
 
-    @Bean
-    public String getOrderRedisPort() {
-        return secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getPort());
-    }
 
-    @Bean
-    public String getOrderRedisPassword() {
-        return secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getPassword());
-    }
-
-    @Bean
-    public String getOrderRedisRange() {
-        return secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getRange());
-    }
 
     @Bean(name = "verifyRedisConnectionFactory")
     public RedisConnectionFactory verifyRedisConnectionFactory() {
-        String host = secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getHost());
-        int port = Integer.parseInt(secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getPort()));
-        String password = secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getPassword());
-        int database = Integer.parseInt(secureKeyManagerService.fetchSecret(skMProperties.getVerify_redis().getRange()));
+        int port = redisPort;
+        String password = redisPassword;
+        int database = 234;
 
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
-        redisConfig.setHostName(host);
+        redisConfig.setHostName("220.67.216.14");
         redisConfig.setPort(port);
         redisConfig.setPassword(password);
         redisConfig.setDatabase(database);

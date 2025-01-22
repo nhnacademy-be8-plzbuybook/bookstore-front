@@ -145,8 +145,7 @@ public class OrderController {
     public String accessNonMemberOrderDetail(@ModelAttribute NonMemberOrderDetailAccessRequestDto accessRequest) {
         String orderId = orderService.getNonMemberOrderId(accessRequest);
 
-        return "redirect:/orders/" + orderId;
-    }
+        return "redirect:/orders/" + orderId;   }
 
     /**
      * 회원 주문페이지

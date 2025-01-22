@@ -1,0 +1,49 @@
+# 실행할때 vm option 으로 -Dserver.port=3000 , 3001 -> 두개의 포트만 다른 프론트가 실행됩니다.
+spring:
+  config:
+    activate:
+      on-profile: nhn
+  application:
+    name: front
+
+  data:
+    redis:
+      host: 220.67.216.14
+      port: 6379
+      password: "*N2vya7H@muDTwdNMR!"
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:10149/eureka
+
+logging:
+  level:
+    root: INFO
+
+server:
+  port: 10141
+  servlet:
+    session:
+      tracking-modes: cookie
+#front 2 port = 10142
+
+
+oauth:
+  payco:
+    loginUrl: https://id.payco.com/oauth2.0/authorize?client_id=3RDjoVxezCTITgSDTsHnlnB&response_type=code&redirect_uri=http://plzbuybook.store:3000/oauth/callback&serviceProviderCode=FRIENDS&userLocale=ko_KR
+
+#app:
+#  skm:
+#    url: https://api-keymanager.nhncloudservice.com
+#    appKey: qTQNj7LyHhdAazH3
+#    keystoreFile: skm.p12
+#    password: 4444
+#
+#    verify_redis:
+#      host: b2f0a980ffaa480286e37314248774cf
+#      port: 5cd143faaa144e25a6c5470ec0d168be
+#      password: 14fbaf7a1be74641b6832c7a16d29acc
+#      range: 086ed8a388cb42f98dfa7f9272e95941
