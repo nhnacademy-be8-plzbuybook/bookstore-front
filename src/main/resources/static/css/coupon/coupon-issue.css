@@ -1,9 +1,3 @@
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f9f9f9;
-    margin: 0;
-    padding: 0;
-}
 
 header {
     background-color: #333;
@@ -34,12 +28,25 @@ header .icons a:hover {
     color: #f1f1f1;
 }
 
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* 화면 전체 높이 */
+}
+
+/* 레이아웃 컨테이너 */
 main {
+    flex: 1; /* 메인 콘텐츠가 남은 공간을 차지하도록 설정 */
     display: flex;
     gap: 20px;
     padding: 20px;
 }
 
+/* 사이드바 스타일 */
 .sidebar {
     width: 220px;
     background-color: #fff;
@@ -49,9 +56,9 @@ main {
 }
 
 .sidebar .group {
-    display: block; /* a 태그를 블록 요소로 변경 */
-    text-decoration: none; /* 기본 밑줄 제거 */
-    color: inherit; /* 기본 색상 상속 */
+    display: block;
+    text-decoration: none;
+    color: inherit;
     padding: 12px;
     border-radius: 4px;
     cursor: pointer;
@@ -67,6 +74,7 @@ main {
     color: black;
 }
 
+/* 메인 콘텐츠 */
 .content {
     flex: 1;
     padding: 20px;
@@ -81,19 +89,7 @@ main {
     margin-bottom: 20px;
 }
 
-.section {
-    display: none;
-}
-
-.section.active {
-    display: block;
-}
-
-.table-wrapper {
-    overflow-x: auto;
-    margin-bottom: 20px;
-}
-
+/* 테이블 스타일 */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -114,58 +110,13 @@ td {
     background-color: #fff;
 }
 
-.pagination {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.pagination a {
-    text-decoration: none;
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    color: #333;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-
-.pagination a:hover {
-    background-color: #ddd;
-}
-
-.pagination .disabled {
-    color: #ccc;
-    cursor: not-allowed;
-}
-
-.alert {
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-.alert.success {
-    background-color: #d4edda;
-    color: #155724;
-    font-weight: bold;
-    border: 1px solid #c3e6cb;
-}
-
-.alert.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    font-weight: bold;
-    border: 1px solid #f5c6cb;
-}
-
+/* 푸터 스타일 */
 footer {
     background-color: #333;
     color: white;
     padding: 15px 20px;
     text-align: center;
+    margin-top: auto; /* 항상 페이지 아래로 밀기 */
 }
 
 footer a {
