@@ -696,10 +696,11 @@
             </table>
 
             <div class="pagination">
-                <button>1</button>
-                <button>2</button>
-                <button>3</button>
+                <a th:if="${currentPage > 0}" th:href="@{/orders(page = ${currentPage} - 1)}">이전</a>
+                <span>현재 페이지: <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
+                <a th:if="${currentPage < totalPages - 1}" th:href="@{/orders(page = ${currentPage} + 1)}">다음</a>
             </div>
+
         </div>
     </div>
 </main>

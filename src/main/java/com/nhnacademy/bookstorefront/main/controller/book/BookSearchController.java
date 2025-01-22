@@ -62,7 +62,7 @@ public class BookSearchController {
 
     @GetMapping("/getChildrenCategories")
     public String getChildrenCategories(Model model, @RequestParam Long parentId, @RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "15")int size) {
+                                        @RequestParam(defaultValue = "15")int size, HttpServletRequest request) {
         // BookClient를 사용하여 자식 카테고리 가져오기
         ResponseEntity<Page<CategoryResponseDto>> response = bookClient.getCategory(parentId,page,size);
 
