@@ -12,6 +12,38 @@ document.addEventListener("DOMContentLoaded", function () {
     const shippingFeeEl = document.getElementById("shippingFee"); // 배송비 표시 요소
     const totalAmountEl = document.getElementById("totalAmount"); // 총결제금액 표시 요소
 
+    const deliveryWishDateRadios = document.querySelectorAll('.wishDate');
+    const deliveryWishDateInput = document.getElementById('delivery-wish-date');
+
+    // 배송 희망 날짜 지정 관련
+    deliveryWishDateRadios.forEach(radio => {
+        radio.addEventListener('change', function () {
+            if (this.value === 'custom') {
+                deliveryWishDateInput.style.display = 'block';
+                deliveryWishDateInput.disabled = false;
+
+                // 날짜 설정 (오늘 이후, 최대 7일까지)
+                const today = new Date();
+                const maxDate = new Date();
+                today.setDate(today.getDate() + 1);
+                maxDate.setDate(maxDate.getDate() + 7);
+                deliveryWishDateInput.min = today.toISOString().split('T')[0];
+                deliveryWishDateInput.max = maxDate.toISOString().split('T')[0];
+            } else {
+                deliveryWishDateInput.style.display = 'none';
+                deliveryWishDateInput.disabled = true;
+                deliveryWishDateInput.value = '';
+            }
+        });
+    });
+
+    // 페이지 로드 시 기본 상태 설정
+    const checkedRadio = document.querySelector('input[name="delivery-wish-date"]:checked');
+    if (checkedRadio && checkedRadio.value === 'custom') {
+        deliveryWishDateInput.style.display = 'block';
+        deliveryWishDateInput.disabled = false;
+    }
+
     // 주문 총액 계산 함수
     function calculateTotal() {
         let orderAmount = 0;
@@ -69,11 +101,16 @@ function getOrderRequest() {
     const localAddress = document.getElementById("localAddress").value;
     const detailAddress = document.getElementById("detailAddress").value;
 
-    let deliveryWishDate =
-        document.querySelector('input[name="delivery-wish-date"]:checked').value === ""
-            ? null
-            : document.getElementById("delivery-wish-date").value;
+    // 배송 희망 날짜 처리
+    const selectedDeliveryOption = document.querySelector('input[name="delivery-wish-date"]:checked');
+    let deliveryWishDate = null;
 
+    if (selectedDeliveryOption && selectedDeliveryOption.value === 'custom') {
+        const deliveryWishDateInput = document.getElementById('delivery-wish-date').value;
+
+        // 날짜가 없는 경우 null로 설정
+        deliveryWishDate = deliveryWishDateInput ? deliveryWishDateInput : null;
+    }
 
     const orderAmount = document.getElementById("orderAmount").innerText;
     const deliveryFee = document.getElementById("shippingFee").innerText;
@@ -146,6 +183,16 @@ function getOrderProducts() {
 
 // 주문 버튼 클릭 이벤트 핸들러
 document.getElementById("orderBtn").addEventListener("click", async function () {
+    const selectedDeliveryOption = document.querySelector('input[name="delivery-wish-date"]:checked');
+    const deliveryWishDateInput = document.getElementById("delivery-wish-date");
+
+    // 배송 희망 날짜 검증
+    if (selectedDeliveryOption && selectedDeliveryOption.value === "custom" && !deliveryWishDateInput.value) {
+        alert("배송 희망 날짜를 지정해야 합니다.");
+        event.preventDefault(); // 요청 중단
+        return;
+    }
+
     const orderRequest = getOrderRequest();
     console.log(orderRequest); // 결과 확인용
 
