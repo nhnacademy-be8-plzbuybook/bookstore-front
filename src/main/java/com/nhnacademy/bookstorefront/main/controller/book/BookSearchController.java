@@ -5,6 +5,8 @@ import com.nhnacademy.bookstorefront.main.client.BookSearchClient;
 import com.nhnacademy.bookstorefront.main.dto.BookSearchPagedResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.BookInfoResponseDto;
 import com.nhnacademy.bookstorefront.main.dto.book.CategoryResponseDto;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -30,11 +32,12 @@ public class BookSearchController {
     public String searchBook(Model model,
                              @RequestParam(defaultValue = "15", required = false) String searchKeyword,
                              @RequestParam(defaultValue = "0") int page,
-                             @RequestParam(required = false, name="category-id") Long categoryId) {
+                             @RequestParam(defaultValue = "14")int size,
+                             @RequestParam(required = false, name="category-id") Long categoryId, HttpServletRequest request) {
 
         if(categoryId != null) {
 
-            Page<BookInfoResponseDto> responseDto = bookClient.searchBooksByCategory(categoryId,page).getBody();
+            Page<BookInfoResponseDto> responseDto = bookClient.searchBooksByCategory(categoryId,page,size).getBody();
             model.addAttribute("searchResult", Objects.requireNonNull(responseDto).getContent());
             model.addAttribute("totalPages", responseDto.getTotalPages());
             model.addAttribute("categoryId", categoryId);
@@ -43,7 +46,7 @@ public class BookSearchController {
 
 
             // API 호출 (ResponseEntity로 반환)
-            BookSearchPagedResponseDto response = bookSearchClient.searchBook(searchKeyword, page, 3);
+            BookSearchPagedResponseDto response = bookSearchClient.searchBook(searchKeyword, page, size);
             // 모델에 검색어와 결과 및 페이징 정보를 추가
             model.addAttribute("searchKeyword", searchKeyword);
             model.addAttribute("searchResult", Objects.requireNonNull(response).getContent()); // 책 목록
@@ -51,19 +54,26 @@ public class BookSearchController {
 
         }
         model.addAttribute("currentPage", page);
-        model.addAttribute("pageSize",3);
+        model.addAttribute("pageSize",size);
         return "search/searchResult";
 
 
     }
 
     @GetMapping("/getChildrenCategories")
-    public String getChildrenCategories(Model model, @RequestParam Long parentId) {
+    public String getChildrenCategories(Model model, @RequestParam Long parentId, @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "15")int size) {
         // BookClient를 사용하여 자식 카테고리 가져오기
-        ResponseEntity<List<CategoryResponseDto>> response = bookClient.getCategory(parentId);
+        ResponseEntity<Page<CategoryResponseDto>> response = bookClient.getCategory(parentId,page,size);
 
         // 받은 데이터를 모델에 추가
         model.addAttribute("categories", response.getBody());
+        model.addAttribute("totalPages", Objects.requireNonNull(response.getBody()).getTotalPages()); // 전체 페이지 수
+        model.addAttribute("currentPage", page);
+        model.addAttribute("pageSize",size);
+        model.addAttribute("parentId", parentId);
+
+
 
         return "categories"; // 해당 데이터를 이용해 뷰에 렌더링
     }

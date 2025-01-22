@@ -269,7 +269,7 @@
                 </a>
 
                 <!-- 페이지 번호 -->
-                <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">10</span></span>
+                <span>페이지 <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
 
                 <!-- 다음 버튼 -->
                 <a th:if="${currentPage < totalPages - 1}"
