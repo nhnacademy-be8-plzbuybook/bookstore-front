@@ -204,20 +204,35 @@
     </style>
 </head>
 <body>
-<th:block th:replace="~{layout/layout::headerFragment}"></th:block>
-
+<header>
+    <a href="/" class = "logo">📚 책사조잉 📚</a>
+    <nav class="menu">
+        <a href="/">홈</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="/logout">로그아웃</a>
+    </div>
+</header>
 <main>
     <!-- 사이드바 -->
     <div class="sidebar">
-        <a href="/adminpage" class="group">회원 관리</a>
-        <a href="/admin/selling-books" class="group">도서 관리</a>
-        <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
-        <div class="group" data-section="coupon-management">쿠폰 관리</div>
-        <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
-        <div class="group" data-section="tag-management">태그 관리</div>
-        <div class="group" data-section="category-management">카테고리 관리</div>
-        <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
+        <div class="group active" data-section="member-management">회원 관리</div>
+        <a href="/admin/books" class="group">도서 관리</a>
+        <a href="/admin/selling-books" class="group">판매 도서 관리</a>
+        <a href="/admin/tags" class="group">태그 관리</a>
+        <a href="/admin/points-conditions" class="group">포인트 조건 관리</a>
         <a href="/admin/category" class="group">카테고리 관리</a>
+        <a href="/admin/coupon-register" class="group">쿠폰 제작</a>
+        <a href="/admin/coupon-issue" class="group">쿠폰 발급</a>
+        <a href="/admin/wrapping-papers" class="group">포장지 관리</a>
+        <a href="/admin/delivery-fee-policies" class="group">배송비정책 관리</a>
+        <a href="/admin/orders" class="group">주문 관리</a>
+        <a href="/admin/order-product-returns" class="group">반품요청 관리</a>
+        <a href = "/admin/authors" class="group" data-section="author-management">작가 관리</a>
+
     </div>
 
     <!-- 메인 콘텐츠 -->
@@ -617,6 +632,22 @@
             })
             .catch(error => console.error('업로드 중 오류 발생:', error));
     }
+    const currentPath = window.location.pathname;
+    const sidebarLinks = document.querySelectorAll('.sidebar .group');
+
+    sidebarLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+
+        link.addEventListener('click', () => {
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
 
 </script>
 

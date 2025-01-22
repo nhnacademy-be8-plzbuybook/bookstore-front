@@ -9,19 +9,19 @@
     <script src="/js/coupon/coupon-register-modal.js" defer></script>
     <script src="/js/coupon/coupon-policy-find-modal.js"></script>
     <script src="/js/coupon/coupon-find-modal.js" defer></script>
+
 </head>
 <body>
 <th:block th:replace="~{layout/layout::headerFragment}"></th:block>
+
 <main>
     <!-- 사이드바 -->
     <div class="sidebar">
         <div class="group active" data-section="member-management">회원 관리</div>
         <a href="/admin/books" class="group">도서 관리</a>
         <a href="/admin/selling-books" class="group">판매 도서 관리</a>
-        <div class="group" data-section="coupon-management">쿠폰 관리</div>
-        <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
-        <a href="/admin/tag" class="group">태그 관리</a>
-        <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
+        <a href="/admin/tags" class="group">태그 관리</a>
+        <a href="/admin/points-conditions" class="group">포인트 조건 관리</a>
         <a href="/admin/category" class="group">카테고리 관리</a>
         <a href="/admin/coupon-register" class="group">쿠폰 제작</a>
         <a href="/admin/coupon-issue" class="group">쿠폰 발급</a>
@@ -30,6 +30,7 @@
         <a href="/admin/orders" class="group">주문 관리</a>
         <a href="/admin/order-product-returns" class="group">반품요청 관리</a>
         <a href = "/admin/authors" class="group" data-section="author-management">작가 관리</a>
+
     </div>
     <!-- 메인 콘텐츠 -->
 
@@ -167,20 +168,27 @@
 </main>
 
 <script>
-    const sidebarItems = document.querySelectorAll('.sidebar .group');
-    const sections = document.querySelectorAll('.section');
+    const currentPath = window.location.pathname;
+    const sidebarLinks = document.querySelectorAll('.sidebar .group');
 
-    sidebarItems.forEach(item => {
-        item.addEventListener('click', () => {
-            sidebarItems.forEach(i => i.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
+    sidebarLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
 
-            item.classList.add('active');
-            const sectionId = item.getAttribute('data-section');
-            document.getElementById(sectionId).classList.add('active');
+        link.addEventListener('click', () => {
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
         });
     });
 </script>
-<th:block th:replace="~{layout/layout::footerLayout}"></th:block>
+<footer>
+    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
+    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank">PlzBuyBook GitHub</a></p>
+    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
+</footer>
 </body>
 </html>

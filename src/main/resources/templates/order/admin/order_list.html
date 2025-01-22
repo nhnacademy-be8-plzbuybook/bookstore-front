@@ -6,8 +6,40 @@
     <title>주문 목록 조회</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="/css/order/allOrderList.css">
+    <link rel="stylesheet" href="/css/layout/layout.css">
 </head>
 <body>
+<header>
+    <a href="/" class = "logo">📚 책사조잉 📚</a>
+    <nav class="menu">
+        <a href="/">홈</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="/logout">로그아웃</a>
+    </div>
+</header>
+
+<main>
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <div class="group active" data-section="member-management">회원 관리</div>
+        <a href="/admin/books" class="group">도서 관리</a>
+        <a href="/admin/selling-books" class="group">판매 도서 관리</a>
+        <a href="/admin/tag" class="group">태그 관리</a>
+        <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
+        <a href="/admin/category" class="group">카테고리 관리</a>
+        <a href="/admin/coupon-register" class="group">쿠폰 제작</a>
+        <a href="/admin/coupon-issue" class="group">쿠폰 발급</a>
+        <a href="/admin/wrapping-papers" class="group">포장지 관리</a>
+        <a href="/admin/delivery-fee-policies" class="group">배송비정책 관리</a>
+        <a href="/admin/orders" class="group">주문 관리</a>
+        <a href="/admin/order-product-returns" class="group">반품요청 관리</a>
+        <a href = "/admin/authors" class="group" data-section="author-management">작가 관리</a>
+
+    </div>
 
 <div class="container">
     <h1>주문 목록 조회(관리자)</h1>
@@ -72,6 +104,10 @@
     </div>
 </div>
 
+</main>
+
+<th:block th:replace="layout/layout::footerLayout"></th:block>
+
 <script>
     function applyFilters() {
         // 현재 URL 가져오기
@@ -114,6 +150,18 @@
         // 수정된 URL로 이동
         window.location.href = `${currentUrl.pathname}?${params.toString()}`;
     }
+
+    const currentPath = window.location.pathname;
+    const sidebarLinks = document.querySelectorAll('.sidebar .group');
+
+    sidebarLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
 
 </script>
 

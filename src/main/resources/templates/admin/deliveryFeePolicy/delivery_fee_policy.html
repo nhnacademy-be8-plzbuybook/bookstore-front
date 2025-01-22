@@ -1,12 +1,189 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>배송비정책 관리</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 책사조잉 관리자 페이지 📚</title>
+    <style>
+        /* 공통 스타일 */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 레이아웃 스타일 */
+        main {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: #333;
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            text-decoration: none;
+            color: inherit;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header .menu a,
+        header .icons a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        header .menu a:hover,
+        header .icons a:hover {
+            color: #f1f1f1;
+        }
+
+        /* 사이드바 스타일 */
+        .sidebar {
+            width: 220px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .sidebar .group {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar .group.active,
+        .sidebar .group:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        /* 테이블 스타일 */
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #333;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #fff;
+        }
+
+        td {
+            color: #333;
+        }
+
+        td input, td select, td button {
+            width: 100%;
+            padding: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        /* 푸터 스타일 */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #00aaff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+
+    </style>
 </head>
 <body>
+<header>
+    <a href="/" class = "logo">📚 책사조잉 📚</a>
+    <nav class="menu">
+        <a href="/">홈</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="/logout">로그아웃</a>
+    </div>
+</header>
+
+<main>
+    <!-- 사이드바 -->
+    <div class="sidebar">
+        <div class="group active" data-section="member-management">회원 관리</div>
+        <a href="/admin/books" class="group">도서 관리</a>
+        <a href="/admin/selling-books" class="group">판매 도서 관리</a>
+        <a href="/admin/tags" class="group">태그 관리</a>
+        <a href="/admin/points-conditions" class="group">포인트 조건 관리</a>
+        <a href="/admin/category" class="group">카테고리 관리</a>
+        <a href="/admin/coupon-register" class="group">쿠폰 제작</a>
+        <a href="/admin/coupon-issue" class="group">쿠폰 발급</a>
+        <a href="/admin/wrapping-papers" class="group">포장지 관리</a>
+        <a href="/admin/delivery-fee-policies" class="group">배송비정책 관리</a>
+        <a href="/admin/orders" class="group">주문 관리</a>
+        <a href="/admin/order-product-returns" class="group">반품요청 관리</a>
+        <a href = "/admin/authors" class="group" data-section="author-management">작가 관리</a>
+
+    </div>
 <h1>배송비정책 관리</h1>
-d<table>
+<table>
     <thead>
     <tr>
         <th>번호</th>
@@ -59,6 +236,7 @@ d<table>
         </td>
     </tr>
 </table>
+</main>
 <script>
     // 정책 등록
     async function registerPolicy() {
@@ -169,6 +347,27 @@ d<table>
         alert('정책이 수정되었습니다.');
         window.location.reload();
     }
+    const currentPath = window.location.pathname;
+    const sidebarLinks = document.querySelectorAll('.sidebar .group');
+
+    sidebarLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+
+        link.addEventListener('click', () => {
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
 </script>
+<footer>
+    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
+    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank">PlzBuyBook GitHub</a></p>
+    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
+</footer>
 </body>
 </html>

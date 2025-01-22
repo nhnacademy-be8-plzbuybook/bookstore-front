@@ -190,7 +190,7 @@
 </head>
 <body>
 <header>
-    <a href="/" class="logo">📚 책사조잉 📚</a>
+    <a href="/" class = "logo">📚 책사조잉 📚</a>
     <nav class="menu">
         <a href="/">홈</a>
         <a href="#">국내도서</a>
@@ -207,10 +207,8 @@
         <div class="group active" data-section="member-management">회원 관리</div>
         <a href="/admin/books" class="group">도서 관리</a>
         <a href="/admin/selling-books" class="group">판매 도서 관리</a>
-        <div class="group" data-section="coupon-management">쿠폰 관리</div>
-        <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
-        <a href="/admin/tag" class="group">태그 관리</a>
-        <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
+        <a href="/admin/tags" class="group">태그 관리</a>
+        <a href="/admin/points-conditions" class="group">포인트 조건 관리</a>
         <a href="/admin/category" class="group">카테고리 관리</a>
         <a href="/admin/coupon-register" class="group">쿠폰 제작</a>
         <a href="/admin/coupon-issue" class="group">쿠폰 발급</a>
@@ -317,101 +315,29 @@
                 </a>
             </div>
         </div>
-        <!--        <div class="group active" data-section="book-management">-->
-        <!--            <a href="/admin/selling-books" >도서 관리</a>-->
-        <!--        </div>-->
-
-        <div id="coupon-management" class="section">
-            <h2>쿠폰 관리</h2>
-
-        </div>
-
-
-
-        <div id="tag-management" class="section">
-            <h2>태그 관리</h2>
-            <p>여기에 태그 crud 구현</p>
-        </div>
-        <div id="category-management" class="section">
-            <h2>카테고리 관리</h2>
-            <p>여기에 카테고리 crud 구현</p>
-        </div>
-
-        <!-- 포인트 조건 관리 -->
-        <div id="point-condition-management" class="section">
-            <h2>포인트 조건 관리</h2>
-
-            <h3>포인트 조건 생성</h3>
-            <form th:action="@{/adminpage/points-conditions/create}" method="post" onsubmit="return validateForm()">
-                <div th:if="${errorMessage}" class="alert error">
-                    <p th:text="${errorMessage}"></p>
-                </div>
-
-              <label for="pointConditionName">이름</label>
-                <input type="text" id="pointConditionName" name="name" placeholder="조건 이름을 입력하세요" required>
-
-
-                <label for="conditionPoint">포인트</label>
-                <input type="number" id="conditionPoint" name="conditionPoint" placeholder="포인트를 입력하세요">
-
-                <label for="conditionPercentage">비율</label>
-                <input type="number" id="conditionPercentage" name="conditionPercentage" placeholder="비율을 입력하세요" step="0.01">
-
-                <button type="submit">생성</button>
-            </form>
-
-            <h3>포인트 조건 수정</h3>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>이름</th>
-                        <th>포인트</th>
-                        <th>비율</th>
-                        <th>상태</th>
-                        <th>수정</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="pointCondition : ${pointConditions}">
-                        <form th:action="@{/adminpage/points-conditions/update/{id}(id=${pointCondition.id})}" method="post" th:object="${pointCondition}">
-                            <td><input type="text" th:name="name" th:value="${pointCondition.name}" /></td>
-                            <td><input type="number" th:name="conditionPoint" th:value="${pointCondition.conditionPoint}" /></td>
-                            <td><input type="number" step="0.01" th:name="conditionPercentage" th:value="${pointCondition.conditionPercentage}" /></td>
-                            <td>
-                                <select th:name="status">
-                                    <option value="1" th:selected="${pointCondition.status == true}">활성</option>
-                                    <option value="0" th:selected="${pointCondition.status == false}">비활성</option>
-                                </select>
-                            </td>
-                            <td><button type="submit">수정</button></td>
-                        </form>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
     </div>
 </main>
 <footer>
     <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook
+    <p><a href="https://github.com/nhnacademy-be8-plzbuybook" target="_blank"> PlzBuyBook
         GitHub</a></p>
     <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
 </footer>
 <script>
-    const sidebarItems = document.querySelectorAll('.sidebar .group');
-    const sections = document.querySelectorAll('.section');
+    const currentPath = window.location.pathname;
+    const sidebarLinks = document.querySelectorAll('.sidebar .group');
 
-    sidebarItems.forEach(item => {
-        item.addEventListener('click', () => {
-            sidebarItems.forEach(i => i.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
+    sidebarLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
 
-            item.classList.add('active');
-            const sectionId = item.getAttribute('data-section');
-            document.getElementById(sectionId).classList.add('active');
+        link.addEventListener('click', () => {
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
         });
     });
 </script>
