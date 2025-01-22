@@ -1,4 +1,147 @@
-/* 전체 컨테이너 스타일 */
+/*!* 전체 컨테이너 스타일 *!*/
+/*.container {*/
+/*    width: 80%;*/
+/*    margin: 0 auto;*/
+/*    font-family: Arial, sans-serif;*/
+/*    color: #333;*/
+/*}*/
+
+/*h1 {*/
+/*    text-align: center;*/
+/*    margin: 20px 0;*/
+/*    font-size: 24px;*/
+/*}*/
+
+/*!* 검색 필터 스타일 *!*/
+/*.search-filter {*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*    margin-bottom: 20px;*/
+/*    gap: 10px;*/
+/*}*/
+
+/*.search-filter input[type="text"],*/
+/*.search-filter input[type="date"],*/
+/*.search-filter select {*/
+/*    padding: 10px;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: 5px;*/
+/*    width: 20%;*/
+/*}*/
+
+/*.search-filter button {*/
+/*    padding: 10px 20px;*/
+/*    background-color: #007bff;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    border-radius: 5px;*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.3s ease;*/
+/*}*/
+
+/*.search-filter button:hover {*/
+/*    background-color: #0056b3;*/
+/*}*/
+
+/*!* 테이블 스타일 *!*/
+/*#orderTable {*/
+/*    width: 100%;*/
+/*    border-collapse: collapse;*/
+/*    margin-bottom: 20px;*/
+/*}*/
+
+/*#orderTable thead {*/
+/*    background-color: #f8f9fa;*/
+/*}*/
+
+/*#orderTable th, #orderTable td {*/
+/*    padding: 15px;*/
+/*    text-align: left;*/
+/*    border: 1px solid #ddd;*/
+/*}*/
+
+/*#orderTable th {*/
+/*    font-weight: bold;*/
+/*    color: #555;*/
+/*}*/
+
+/*#orderTable tbody tr:nth-child(even) {*/
+/*    background-color: #f9f9f9;*/
+/*}*/
+
+/*#orderTable tbody tr:hover {*/
+/*    background-color: #f1f1f1;*/
+/*}*/
+
+/*!* 주문명 길이 제한 *!*/
+/*#orderTable td a {*/
+/*    display: inline-block;*/
+
+/*    white-space: nowrap;*/
+/*    overflow: hidden;*/
+
+/*    text-decoration: none;*/
+/*    color: #007bff;*/
+/*}*/
+
+/*.orderName {*/
+/*    max-width: 200px; !* 원하는 최대 너비 *!*/
+/*    text-overflow: ellipsis;*/
+/*}*/
+
+/*#orderTable td a:hover {*/
+/*    text-decoration: underline;*/
+/*}*/
+
+/*!* 상태 태그 스타일 *!*/
+/*.status-tag {*/
+/*    padding: 5px 10px;*/
+/*    border-radius: 3px;*/
+/*    font-size: 12px;*/
+/*    font-weight: bold;*/
+/*    color: white;*/
+/*}*/
+
+/*.status-completed {*/
+/*    background-color: #28a745;*/
+/*}*/
+
+/*.status-pending {*/
+/*    background-color: #ffc107;*/
+/*}*/
+
+/*.status-cancelled {*/
+/*    background-color: #dc3545;*/
+/*}*/
+
+/*!* 페이지네이션 스타일 *!*/
+/*.pagination {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    margin-top: 20px;*/
+/*    gap: 10px;*/
+/*}*/
+
+/*.pagination a {*/
+/*    padding: 10px 15px;*/
+/*    text-decoration: none;*/
+/*    color: #007bff;*/
+/*    border: 1px solid #ddd;*/
+/*    border-radius: 5px;*/
+/*    transition: background-color 0.3s ease;*/
+/*}*/
+
+/*.pagination a:hover {*/
+/*    background-color: #007bff;*/
+/*    color: white;*/
+/*}*/
+
+/*.pagination span {*/
+/*    font-size: 14px;*/
+/*}*/
+/* ì „ì²´ ì»¨í…Œì´ë„ˆ ìŠ¤íƒ€ì¼ */
 .container {
     width: 80%;
     margin: 0 auto;
@@ -12,7 +155,7 @@ h1 {
     font-size: 24px;
 }
 
-/* 검색 필터 스타일 */
+/* ê²€ìƒ‰ í•„í„° ìŠ¤íƒ€ì¼ */
 .search-filter {
     display: flex;
     justify-content: space-between;
@@ -44,41 +187,29 @@ h1 {
     background-color: #0056b3;
 }
 
-/* 테이블 스타일 */
+/* í…Œì´ë¸” ìŠ¤íƒ€ì¼ */
 #orderTable {
-    width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
     margin-bottom: 20px;
+    text-align: left;
 }
 
 #orderTable thead {
     background-color: #f8f9fa;
-}
 
-#orderTable th, #orderTable td {
-    padding: 15px;
-    text-align: left;
-    border: 1px solid #ddd;
+}
+#orderTable td {
+    width: 50px;
 }
 
 #orderTable th {
-    font-weight: bold;
-    color: #555;
+    width: 100px;
 }
 
-#orderTable tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-#orderTable tbody tr:hover {
-    background-color: #f1f1f1;
-}
-
-/* 주문명 길이 제한 */
+/* ì£¼ë¬¸ëª… ê¸¸ì´ ì œí•œ */
 #orderTable td a {
+    border-collapse: collpase;
     display: inline-block;
-
-    white-space: nowrap;
     overflow: hidden;
 
     text-decoration: none;
@@ -86,7 +217,7 @@ h1 {
 }
 
 .orderName {
-    max-width: 200px; /* 원하는 최대 너비 */
+    max-width: 200px; /* ì›í•˜ëŠ” ìµœëŒ€ ë„ˆë¹„ */
     text-overflow: ellipsis;
 }
 
@@ -94,7 +225,7 @@ h1 {
     text-decoration: underline;
 }
 
-/* 상태 태그 스타일 */
+/* ìƒíƒœ íƒœê·¸ ìŠ¤íƒ€ì¼ */
 .status-tag {
     padding: 5px 10px;
     border-radius: 3px;
@@ -115,7 +246,7 @@ h1 {
     background-color: #dc3545;
 }
 
-/* 페이지네이션 스타일 */
+/* íŽ˜ì´ì§€ë„¤ì´ì…˜ ìŠ¤íƒ€ì¼ */
 .pagination {
     display: flex;
     justify-content: center;

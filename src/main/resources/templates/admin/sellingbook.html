@@ -283,7 +283,7 @@
     <!-- 사이드바 -->
     <th:block th:replace="~{admin/sidebar.html}"></th:block>
     <div class="content">
-        <h2>판매 책 관리</h2>
+        <h2>판매 도서 관리</h2>
 
         <!-- 성공 메시지 -->
         <div th:if="${successMessage}" class="alert success">
@@ -294,8 +294,6 @@
         <div th:if="${errorMessage}" class="alert error">
             <p th:text="${errorMessage}"></p>
         </div>
-
-
 
         <!-- 판매 책 목록 -->
         <h3>판매 책 목록</h3>

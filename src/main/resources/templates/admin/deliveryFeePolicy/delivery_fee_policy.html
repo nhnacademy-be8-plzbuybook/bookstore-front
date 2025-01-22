@@ -6,18 +6,14 @@
     <title>📚 책사조잉 관리자 페이지 📚</title>
     <style>
         /* 공통 스타일 */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
+        html, body {
             margin: 0;
             padding: 0;
-        }
-
-        /* 레이아웃 스타일 */
-        main {
+            height: 100%; /* 전체 높이를 100%로 설정 */
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
             display: flex;
-            gap: 20px;
-            padding: 20px;
+            flex-direction: column;
         }
 
         /* 헤더 스타일 */
@@ -32,7 +28,7 @@
 
         header .logo {
             text-decoration: none;
-            color: inherit;
+            color: white;
             font-size: 24px;
             font-weight: bold;
         }
@@ -48,6 +44,14 @@
         header .menu a:hover,
         header .icons a:hover {
             color: #f1f1f1;
+        }
+
+        /* 메인 컨테이너 */
+        main {
+            flex: 1; /* 남은 공간을 채우도록 설정 */
+            display: flex;
+            gap: 20px;
+            padding: 20px;
         }
 
         /* 사이드바 스타일 */
@@ -76,10 +80,26 @@
             background-color: #ddd;
             color: black;
         }
+
+        /* 콘텐츠 스타일 */
+        .content {
+            flex: 1;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
         /* 테이블 스타일 */
         .table-wrapper {
-            overflow-x: auto;
             margin-top: 20px;
+            overflow-x: auto;
         }
 
         table {
@@ -97,6 +117,7 @@
         th {
             background-color: #333;
             color: white;
+            font-weight: bold;
         }
 
         tr:nth-child(even) {
@@ -107,14 +128,13 @@
             background-color: #fff;
         }
 
-        td {
-            color: #333;
-        }
-
-        td input, td select, td button {
+        /* 입력 필드 및 버튼 스타일 */
+        td input, td select {
             width: 100%;
-            padding: 5px;
+            padding: 10px;
             font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
         button {
@@ -124,10 +144,24 @@
             border-radius: 4px;
             padding: 10px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
         button:hover {
             background-color: #555;
+        }
+
+        /* 수정/삭제 버튼 그룹 스타일 */
+        .view-buttons, .edit-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .view-buttons button, .edit-buttons button {
+            width: auto;
+            padding: 5px 10px;
+            font-size: 14px;
+            border-radius: 4px;
         }
 
         /* 푸터 스타일 */
@@ -136,6 +170,7 @@
             color: white;
             padding: 15px 20px;
             text-align: center;
+            margin-top: auto; /* 푸터를 화면 하단으로 밀기 */
         }
 
         footer a {
@@ -167,7 +202,7 @@
 <main>
     <!-- 사이드바 -->
     <th:block th:replace="~{admin/sidebar.html}"></th:block>
-<h1>배송비정책 관리</h1>
+<h2>배송비정책 관리</h2>
 <table>
     <thead>
     <tr>
@@ -349,10 +384,6 @@
         });
     });
 </script>
-<footer>
-    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank">PlzBuyBook GitHub</a></p>
-    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
-</footer>
+<th:block th:replace="~{layout/layout :: footerLayout}"></th:block>
 </body>
 </html>

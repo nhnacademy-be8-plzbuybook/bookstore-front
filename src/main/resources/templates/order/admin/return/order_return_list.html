@@ -8,10 +8,77 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/layout/layout.css">
 
+    <style>
+        /* 전체 레이아웃 스타일 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+
+        .main-layout {
+            display: flex;
+            min-height: 100vh; /* 전체 화면 높이 */
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .menu a, header .icons a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        header .menu a:hover, header .icons a:hover {
+            color: #ddd;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-right: 1px solid #dee2e6;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        footer a {
+            color: #00aaff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 <header>
-    <a href="/" class = "logo">📚 책사조잉 📚</a>
+    <a href="/" class="logo">📚 책사조잉 📚</a>
     <nav class="menu">
         <a href="/">홈</a>
         <a href="#">국내도서</a>
@@ -23,91 +90,71 @@
     </div>
 </header>
 
-<main>
+<main class="main-layout">
     <!-- 사이드바 -->
-    <th:block th:replace="~{admin/sidebar.html}"></th:block>
+    <aside class="sidebar">
+        <th:block th:replace="~{admin/sidebar.html}"></th:block>
+    </aside>
 
-    <div class="container mt-4">
-    <div class="d-flex mb-3">
-        <input type="text" id="searchTrackingNumber" class="form-control" placeholder="반송장번호로 검색">
-        <button id="searchButton" class="btn btn-primary ms-2">검색</button>
-    </div>
-    <div class="mb-3">
-        <!-- 필터 버튼 -->
-        <button id="filterAll" class="btn btn-link">전체</button>
-        <button id="filterReturnRequested" class="btn btn-link">반품요청</button>
-        <button id="filterReturnCompleted" class="btn btn-link">반품완료</button>
-    </div>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>번호</th>
-            <th>반품요청 일시</th>
-            <th>반품요청 완료일시</th>
-            <th>반송장 번호</th>
-            <th>상세</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="orderProductReturn: ${orderProductReturns}">
-            <td th:text="${orderProductReturn.getId()}"></td>
-            <td th:text="${#temporals.format(orderProductReturn.getRequestedAt(), 'yyyy/MM/dd HH:mm')}"></td>
-
-            <td th:if="${orderProductReturn.getCompletedAt() != null}" th:text="${#temporals.format(orderProductReturn.getCompletedAt(), 'yyyy/MM/dd HH:mm')}"></td>
-            <td th:if="${orderProductReturn.getCompletedAt() == null}"></td>
-            <td th:text="${orderProductReturn.getTrackingNumber()}"></td>
-            <td>
-                <button class="btn btn-primary"
-                        data-bs-toggle="modal"
-                        data-bs-target="#detailModal"
-                        th:attr="data-id=${orderProductReturn.getId()},
-                                  data-requested-at=${#temporals.format(orderProductReturn.getRequestedAt(), 'yyyy/MM/dd HH:mm')},
-                                  data-requested-at=${#temporals.format(orderProductReturn.getCompletedAt(), 'yyyy/MM/dd HH:mm')},
-                                  data-tracking-number=${orderProductReturn.getTrackingNumber()},
-                                  data-reason=${orderProductReturn.getReason()},
-                                  data-order-id=${orderProductReturn.getOrderId()},
-                                  data-order-product-id=${orderProductReturn.getOrderProductId()}">
-                    보기
-                </button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div class="pagination">
-        <a th:if="${currentPage > 0}" th:href="@{/admin/order-returns(page = ${currentPage} - 1)}">이전</a>
-        <span>현재 페이지: <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
-        <a th:if="${currentPage < totalPages - 1}" th:href="@{/admin/order-returns(page = ${currentPage} + 1)}">다음</a>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="detailModalLabel">반품 상세 정보</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- 콘텐츠 -->
+    <section class="content">
+        <div class="container mt-4">
+            <h1>주문 반품 목록</h1>
+            <div class="d-flex mb-3">
+                <input type="text" id="searchTrackingNumber" class="form-control" placeholder="반송장번호로 검색">
+                <button id="searchButton" class="btn btn-primary ms-2">검색</button>
             </div>
-            <div class="modal-body">
-                <p>반품요청 일시: <span id="modalRequestedAt"></span></p>
-                <p>반품요청 완료일시: <span id="modalCompletedAt"></span></p>
-                <p>반송장 번호: <span id="modalTrackingNumber"></span></p>
-                <p>반품 사유: <span id="modalReason"></span></p>
-                <button id="orderReturnCompleteBtn" class="btn btn-success">반품완료처리</button>
-                <button id="orderDetailBtn" class="btn btn-secondary">주문상세</button>
+            <div class="mb-3">
+                <!-- 필터 버튼 -->
+                <button id="filterAll" class="btn btn-link">전체</button>
+                <button id="filterReturnRequested" class="btn btn-link">반품요청</button>
+                <button id="filterReturnCompleted" class="btn btn-link">반품완료</button>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>반품요청 일시</th>
+                    <th>반품요청 완료일시</th>
+                    <th>반송장 번호</th>
+                    <th>상세</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="orderProductReturn: ${orderProductReturns}">
+                    <td th:text="${orderProductReturn.getId()}"></td>
+                    <td th:text="${#temporals.format(orderProductReturn.getRequestedAt(), 'yyyy/MM/dd HH:mm')}"></td>
+                    <td th:if="${orderProductReturn.getCompletedAt() != null}" th:text="${#temporals.format(orderProductReturn.getCompletedAt(), 'yyyy/MM/dd HH:mm')}"></td>
+                    <td th:if="${orderProductReturn.getCompletedAt() == null}"></td>
+                    <td th:text="${orderProductReturn.getTrackingNumber()}"></td>
+                    <td>
+                        <button class="btn btn-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#detailModal"
+                                th:attr="data-id=${orderProductReturn.getId()},
+                                          data-requested-at=${#temporals.format(orderProductReturn.getRequestedAt(), 'yyyy/MM/dd HH:mm')},
+                                          data-requested-at=${#temporals.format(orderProductReturn.getCompletedAt(), 'yyyy/MM/dd HH:mm')},
+                                          data-tracking-number=${orderProductReturn.getTrackingNumber()},
+                                          data-reason=${orderProductReturn.getReason()},
+                                          data-order-id=${orderProductReturn.getOrderId()},
+                                          data-order-product-id=${orderProductReturn.getOrderProductId()}">
+                            보기
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <a th:if="${currentPage > 0}" th:href="@{/admin/order-returns(page = ${currentPage} - 1)}">이전</a>
+                <span>현재 페이지: <span th:text="${currentPage + 1}"></span> / <span th:text="${totalPages}"></span></span>
+                <a th:if="${currentPage < totalPages - 1}" th:href="@{/admin/order-returns(page = ${currentPage} + 1)}">다음</a>
             </div>
         </div>
-    </div>
-</div>
-
+    </section>
 </main>
 
 <th:block th:replace="layout/layout::footerLayout"></th:block>
-
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
