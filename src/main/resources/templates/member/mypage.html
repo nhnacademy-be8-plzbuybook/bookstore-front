@@ -368,16 +368,7 @@
 <body>
 <th:block th:replace="~{layout/layout :: headerFragment}"></th:block>
 <main>
-    <div class="sidebar">
-        <div class="group active" data-section="grade-benefits">회원 등급 및 혜택</div>
-        <div class="group" data-section="likes">좋아요 도서</div>
-        <div class="group" data-section="points">포인트 내역</div>
-        <div class="group" data-section="edit-info">회원 정보 수정</div>
-        <div class="group" data-section="address">주소 설정</div>
-        <div class="group" data-section="coupon">보유 쿠폰</div>
-        <div class="group" data-section="withdraw">회원 탈퇴</div>
-        <div class="group" data-section="order-management">주문 내역</div>
-    </div>
+    <th:block th:replace="~{admin/sidebar.html}"></th:block>
     <div class="content">
         <div class="section active" id="grade-benefits">
             <h2>회원 등급 및 혜택</h2>
