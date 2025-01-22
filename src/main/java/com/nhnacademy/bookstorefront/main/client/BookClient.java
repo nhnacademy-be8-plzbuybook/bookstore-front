@@ -24,7 +24,7 @@ public interface BookClient {
     @GetMapping("/api/selling-books")
     ResponseEntity<Page<SellingBookResponseDto>> getBooks(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "14") int size,
             @RequestParam(defaultValue = "sellingBookId") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDir
     );
@@ -183,7 +183,7 @@ public interface BookClient {
 
 
     @GetMapping("/api/categories/children-category")
-    ResponseEntity<List<CategoryResponseDto>> getCategory(@RequestParam Long parentId);
+    ResponseEntity<Page<CategoryResponseDto>> getCategory(@RequestParam Long parentId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "15")int size);
 
     /**
      * 작가
@@ -216,7 +216,7 @@ public interface BookClient {
 
 
     @GetMapping("/api/categories/{category-id}/books")
-    ResponseEntity<Page<BookInfoResponseDto>> searchBooksByCategory(@PathVariable(name = "category-id") Long categoryId, @RequestParam(defaultValue = "0") int page);
+    ResponseEntity<Page<BookInfoResponseDto>> searchBooksByCategory(@PathVariable(name = "category-id") Long categoryId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "14")int size);
 
 
     }

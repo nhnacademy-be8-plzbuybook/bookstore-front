@@ -70,7 +70,7 @@ public class AdminController {
     }
 
   
-    private String getTokenFromCookies(HttpServletRequest request) {
+    public String getTokenFromCookies(HttpServletRequest request) {
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if ("accessToken".equals(cookie.getName())) {
