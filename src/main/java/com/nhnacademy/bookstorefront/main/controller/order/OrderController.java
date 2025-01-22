@@ -256,7 +256,7 @@ public class OrderController {
      */
     @GetMapping("/orders/{order-id}")
     public String orderDetail(@PathVariable("order-id") String orderId,
-                              Model model) {
+                              Model model, HttpServletRequest request) {
         // 주문상세 DTO
 
         OrderDetail orderDetail = orderService.getOrderDetail(orderId);
