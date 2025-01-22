@@ -292,7 +292,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const orderRequest = getOrderRequest();
         console.log(orderRequest); // 결과 확인용
 
-        const response = await fetch("/api/orders", {
+        const response = await fetch("/api/orders/member", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(orderRequest),

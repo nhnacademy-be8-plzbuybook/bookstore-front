@@ -196,7 +196,7 @@ document.getElementById("orderBtn").addEventListener("click", async function () 
     const orderRequest = getOrderRequest();
     console.log(orderRequest); // 결과 확인용
 
-    const response = await fetch("/api/orders", {
+    const response = await fetch("/api/orders/non-member", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(orderRequest),

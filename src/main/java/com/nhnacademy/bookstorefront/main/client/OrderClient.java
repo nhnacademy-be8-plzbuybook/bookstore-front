@@ -28,11 +28,16 @@ public interface OrderClient {
     ResponseEntity<Page<OrderDto>> getAllOrders(@SpringQueryMap OrderSearchRequestDto searchRequest,
                                                 Pageable pageable);
 
-    @PostMapping("/api/orders/non-member")
-    ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
+//    @PostMapping("/api/orders/non-member")
+//    ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody NonMemberOrderRequestDto orderSaveRequest);
+//
+//    @PostMapping("/api/orders/member")
+//    ResponseEntity<OrderSaveResponseDto> requestMemberOrder(@RequestBody MemberOrderRequestDto orderSaveRequest);
+@PostMapping("/api/orders/non-member")
+ResponseEntity<OrderSaveResponseDto> requestNonMemberOrder(@RequestBody OrderRequestDto orderSaveRequest);
 
     @PostMapping("/api/orders/member")
-    ResponseEntity<OrderSaveResponseDto> requestMemberOrder(@RequestBody MemberOrderRequestDto orderSaveRequest);
+    ResponseEntity<OrderSaveResponseDto> requestMemberOrder(@RequestBody OrderRequestDto orderSaveRequest);
 
     @PostMapping("/api/orders")
     ResponseEntity<OrderSaveResponseDto> requestOrder(@RequestBody OrderRequestDto orderSaveRequest);
