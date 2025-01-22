@@ -22,6 +22,7 @@ import java.util.List;
 
 @Slf4j
 @Controller
+@RequestMapping("/admin")
 public class AdminController {
 
     private final MemberClient memberClient;
@@ -34,7 +35,7 @@ public class AdminController {
         this.authenticationClient = authenticationClient;
     }
 
-    @GetMapping("/adminpage")
+    @GetMapping("/members")
     public String adminPage(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -60,13 +61,13 @@ public class AdminController {
         model.addAttribute("memberStatusList", memberStatusList);
         model.addAttribute("memberGradeList", memberGradeList);
 
-        return "admin/adminPage";
+        return "admin/members";
     }
 
-    @PostMapping("/adminpage/update")
+    @PostMapping("admin/members/update")
     public String updateMember(MemberModifyByAdminRequestDto memberModifyByAdminRequestDto) {
         memberClient.updateMember(memberModifyByAdminRequestDto);
-        return "redirect:/adminpage";
+        return "redirect:/admin/members";
     }
 
   

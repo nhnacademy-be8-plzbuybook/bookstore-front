@@ -21,7 +21,7 @@
 
         <div class="icons">
             <!-- 로그인 상태에 따라 버튼 표시 -->
-            <a th:if="${role == 'ADMIN'}" href="/adminpage" id="adminpage-btn">AdminPage</a>
+            <a th:if="${role == 'ADMIN'}" href="/admin/members" id="adminpage-btn">AdminPage</a>
             <a th:if="${role == 'USER'}" href="/mypage" id="mypage-btn">MyPage</a>
             <a th:if="${role == 'USER'}" href="/carts" id="cart-btn">장바구니</a>
             <a th:if="${role == null and (isLoggedIn != null and !isLoggedIn)}"  href="/non-member/order">비회원 주문조회</a>
