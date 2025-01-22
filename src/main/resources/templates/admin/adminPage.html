@@ -4,342 +4,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📚 책사조잉 관리자 페이지 📚</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #333;
-            padding: 15px 20px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header .logo {
-            text-decoration: none;
-            color: inherit;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        header .menu a,
-        header .icons a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 16px;
-        }
-
-        header .menu a:hover,
-        header .icons a:hover {
-            color: #f1f1f1;
-        }
-
-        main {
-            display: flex;
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .sidebar {
-            width: 220px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-
-        .sidebar .group {
-            display: block; /* a 태그를 블록 요소로 변경 */
-            text-decoration: none; /* 기본 밑줄 제거 */
-            color: inherit; /* 기본 색상 상속 */
-            padding: 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            font-size: 16px;
-            transition: background-color 0.3s;
-            text-align: center;
-        }
-
-        .sidebar .group.active,
-        .sidebar .group:hover {
-            background-color: #ddd;
-            color: black;
-        }
-
-        .content {
-            flex: 1;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .content h2 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            margin-bottom: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f1f1f1;
-        }
-
-        td {
-            background-color: #fff;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .pagination a {
-            text-decoration: none;
-            padding: 8px 16px;
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-            color: #333;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        .pagination a:hover {
-            background-color: #ddd;
-        }
-
-        .pagination .disabled {
-            color: #ccc;
-            cursor: not-allowed;
-        }
-
-        .alert {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .alert.success {
-            background-color: #d4edda;
-            color: #155724;
-            font-weight: bold;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            font-weight: bold;
-            border: 1px solid #f5c6cb;
-        }
-
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-        }
-
-        footer a {
-            color: #00aaff;
-            text-decoration: none;
-            margin: 0 5px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-
-    </style>
+    <link rel="stylesheet" href="/css/admin/adminPage.css">
 </head>
 <body>
-<header>
-    <a href="/" class = "logo">📚 책사조잉 📚</a>
-    <nav class="menu">
-        <a href="/">홈</a>
-        <a href="#">국내도서</a>
-        <a href="#">외국도서</a>
-        <a href="#">추천도서</a>
-    </nav>
-    <div class="icons">
-        <a href="/logout">로그아웃</a>
-    </div>
-</header>
-<main>
-    <!-- 사이드바 -->
-    <div class="sidebar">
-        <div class="group active" data-section="member-management">회원 관리</div>
-        <a href="/admin/books" class="group">도서 관리</a>
-        <a href="/admin/selling-books" class="group">판매 도서 관리</a>
-        <a href="/admin/tags" class="group">태그 관리</a>
-        <a href="/admin/points-conditions" class="group">포인트 조건 관리</a>
-        <a href="/admin/category" class="group">카테고리 관리</a>
-        <a href="/admin/coupon-register" class="group">쿠폰 제작</a>
-        <a href="/admin/coupon-issue" class="group">쿠폰 발급</a>
-        <a href="/admin/wrapping-papers" class="group">포장지 관리</a>
-        <a href="/admin/delivery-fee-policies" class="group">배송비정책 관리</a>
-        <a href="/admin/orders" class="group">주문 관리</a>
-        <a href="/admin/order-product-returns" class="group">반품요청 관리</a>
-        <a href = "/admin/authors" class="group" data-section="author-management">작가 관리</a>
-
-    </div>
-
-    <!-- 메인 콘텐츠 -->
-    <div class="content">
-        <div id="member-management" class="section active">
-            <h2>회원 관리</h2>
-
-            <!-- 성공 메시지 표시 -->
-            <div th:if="${successMessage}" class="alert success">
-                <p th:text="${successMessage}"></p>
+    <div class = "layout-container">
+        <header>
+            <a href="/" class = "logo">📚 책사조잉 📚</a>
+            <nav class="menu">
+                <a href="/">홈</a>
+                <a href="#">국내도서</a>
+                <a href="#">외국도서</a>
+                <a href="#">추천도서</a>
+            </nav>
+            <div class="icons">
+                <a href="/logout">로그아웃</a>
             </div>
+        </header>
+        <main>
+            <!-- 사이드바 -->
+            <th:block th:replace="~{admin/sidebar.html}"></th:block>
 
-            <!-- 실패 메시지 표시 -->
-            <div th:if="${errorMessage}" class="alert error">
-                <p th:text="${errorMessage}"></p>
+            <!-- 메인 콘텐츠 -->
+            <div class="content">
+                <div id="member-management" class="section active">
+                    <h2>회원 관리</h2>
+
+                    <!-- 성공 메시지 표시 -->
+                    <div th:if="${successMessage}" class="alert success">
+                        <p th:text="${successMessage}"></p>
+                    </div>
+
+                    <!-- 실패 메시지 표시 -->
+                    <div th:if="${errorMessage}" class="alert error">
+                        <p th:text="${errorMessage}"></p>
+                    </div>
+
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>이름</th>
+                            <th>전화번호</th>
+                            <th>이메일</th>
+                            <th>생년월일</th>
+                            <th>등급</th>
+                            <th>상태</th>
+                            <th>수정</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="member : ${members}">
+                            <form th:action="@{/adminpage/update}" method="post" th:object="${member}">
+
+                                <input type="hidden" th:name="originalEmail" th:value="${member.email}"/>
+
+                                <!-- 이름 수정 -->
+                                <td><input type="text" th:name="name" th:value="${member.name}"/></td>
+
+                                <!-- 전화번호 수정 -->
+                                <td><input type="text" th:name="phone" th:value="${member.phone}"/></td>
+
+                                <!-- 이메일 수정 -->
+                                <td><input type="email" th:name="email" th:value="${member.email}"/></td>
+
+                                <!-- 생년월일 수정 -->
+                                <td><input type="date" th:name="birth" th:value="${member.birth}"/></td>
+
+                                <td>
+                                    <select th:name="memberGradeId">
+                                        <option th:each="grade : ${memberGradeList}"
+                                                th:value="${grade.memberGradeId}"
+                                                th:text="${grade.memberGradeName}"
+                                                th:selected="${grade.memberGradeName == member.memberGradeName}">
+                                        </option>
+                                    </select>
+                                </td>
+
+                                <td>
+                                    <select th:name="memberStateId">
+                                        <option th:each="status : ${memberStatusList}"
+                                                th:value="${status.memberStateId}"
+                                                th:text="${status.memberStateName}"
+                                                th:selected="${status.memberStateName == member.memberStateName}">
+                                        </option>
+                                    </select>
+                                </td>
+
+
+                                </select>
+                                <td>
+                                    <button type="submit">수정</button>
+                                </td>
+                            </form>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 페이징 버튼 -->
+                    <div class="pagination">
+                        <!-- 이전 버튼 -->
+                        <a th:if="${currentPage > 0}"
+                           th:href="@{'/adminpage'(page=${currentPage - 1})}"
+                           class="prev">
+                            이전
+                        </a>
+
+                        <!-- 페이지 번호 -->
+                        <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">10</span></span>
+
+                        <!-- 다음 버튼 -->
+                        <a th:if="${currentPage < totalPages - 1}"
+                           th:href="@{'/adminpage'(page=${currentPage + 1})}"
+                           class="next">
+                            다음
+                        </a>
+                    </div>
+                </div>
             </div>
-
-            <table>
-                <thead>
-                <tr>
-                    <th>이름</th>
-                    <th>전화번호</th>
-                    <th>이메일</th>
-                    <th>생년월일</th>
-                    <th>등급</th>
-                    <th>상태</th>
-                    <th>수정</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="member : ${members}">
-                    <form th:action="@{/adminpage/update}" method="post" th:object="${member}">
-
-                        <input type="hidden" th:name="originalEmail" th:value="${member.email}"/>
-
-                        <!-- 이름 수정 -->
-                        <td><input type="text" th:name="name" th:value="${member.name}"/></td>
-
-                        <!-- 전화번호 수정 -->
-                        <td><input type="text" th:name="phone" th:value="${member.phone}"/></td>
-
-                        <!-- 이메일 수정 -->
-                        <td><input type="email" th:name="email" th:value="${member.email}"/></td>
-
-                        <!-- 생년월일 수정 -->
-                        <td><input type="date" th:name="birth" th:value="${member.birth}"/></td>
-
-                        <td>
-                            <select th:name="memberGradeId">
-                                <option th:each="grade : ${memberGradeList}"
-                                        th:value="${grade.memberGradeId}"
-                                        th:text="${grade.memberGradeName}"
-                                        th:selected="${grade.memberGradeName == member.memberGradeName}">
-                                </option>
-                            </select>
-                        </td>
-
-                        <td>
-                            <select th:name="memberStateId">
-                                <option th:each="status : ${memberStatusList}"
-                                        th:value="${status.memberStateId}"
-                                        th:text="${status.memberStateName}"
-                                        th:selected="${status.memberStateName == member.memberStateName}">
-                                </option>
-                            </select>
-                        </td>
-
-
-                        </select>
-                        <td>
-                            <button type="submit">수정</button>
-                        </td>
-                    </form>
-                </tr>
-                </tbody>
-            </table>
-
-            <!-- 페이징 버튼 -->
-            <div class="pagination">
-                <!-- 이전 버튼 -->
-                <a th:if="${currentPage > 0}"
-                   th:href="@{'/adminpage'(page=${currentPage - 1})}"
-                   class="prev">
-                    이전
-                </a>
-
-                <!-- 페이지 번호 -->
-                <span>페이지 <span th:text="${currentPage + 1}">1</span> / <span th:text="${totalPages}">10</span></span>
-
-                <!-- 다음 버튼 -->
-                <a th:if="${currentPage < totalPages - 1}"
-                   th:href="@{'/adminpage'(page=${currentPage + 1})}"
-                   class="next">
-                    다음
-                </a>
-            </div>
-        </div>
+        </main>
+        <footer>
+            <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
+            <p><a href="https://github.com/nhnacademy-be8-plzbuybook" target="_blank"> PlzBuyBook
+                GitHub</a></p>
+            <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
+        </footer>
     </div>
-</main>
-<footer>
-    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-    <p><a href="https://github.com/nhnacademy-be8-plzbuybook" target="_blank"> PlzBuyBook
-        GitHub</a></p>
-    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
-</footer>
-<script>
-    const currentPath = window.location.pathname;
-    const sidebarLinks = document.querySelectorAll('.sidebar .group');
+    <script>
+        const currentPath = window.location.pathname;
+        const sidebarLinks = document.querySelectorAll('.sidebar .group');
 
-    sidebarLinks.forEach(link => {
-        const linkPath = link.getAttribute('href');
-        if (linkPath === currentPath) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
+        sidebarLinks.forEach(link => {
+            const linkPath = link.getAttribute('href');
+            if (linkPath === currentPath) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
 
-        link.addEventListener('click', () => {
-            sidebarLinks.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
+            link.addEventListener('click', () => {
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>
