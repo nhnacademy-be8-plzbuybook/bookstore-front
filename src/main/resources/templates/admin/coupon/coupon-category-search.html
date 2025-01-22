@@ -1,34 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>책 검색</title>
-    <link rel="stylesheet" href="/css/coupon/coupon-search-cateogry.css">
+    <link rel="stylesheet" href="/css/coupon/coupon-register.css">
 </head>
 <body>
 <div th:fragment="categorySearchFragment">
 
-    <div class="category-list">
-        <div th:each="category : ${searchResult}">
-            <div class="category-item">
-                <div th:text="${category.categoryName}"></div>
-                <button type="button" th:onclick="'selectCategory(' + ${category.categoryId} + ', \'' + ${category.categoryName} + '\')'">선택</button>
-            </div>
-        </div>
-    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>카테고리 ID</th>
+            <th>카테고리 이름</th>
+            <th>선택</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="category : ${categories}">
+            <td th:text="${category.categoryId}">카테고리 ID</td>
+            <td th:text="${category.categoryName}">카테고리 이름</td>
+            <td>
+                <button type="button"
+                        th:attr="data-category-id=${category.categoryId}, data-category-name=${category.categoryName}"
+                        onclick="handleSelectCategory(this)">선택
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-    <div class="pagination">
-        <a th:if="${currentPage > 0}"
-           th:href="@{/admin/coupon-category-search(searchKeyword=${searchKeyword}, page=${currentPage - 1})}">이전</a>
-        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-            <a th:href="@{/admin/coupon-category-search(searchKeyword=${searchKeyword}, page=${i})}"
-               th:text="${i + 1}" th:classappend="${i == currentPage} ? 'active' : ''"></a>
-        </span>
-        <a th:if="${currentPage < totalPages - 1}"
-           th:href="@{/admin/coupon-category-search(searchKeyword=${searchKeyword}, page=${currentPage + 1})}">다음</a>
-    </div>
+<!--    <div>-->
+<!--        <button type="button" th:if="${currentPage > 0}" th:onclick="'fetchCategoryPage(' + (${currentPage} - 1) + ')'">이전</button>-->
+<!--        <button type="button" th:if="${currentPage < totalPages - 1}" th:onclick="'fetchCategoryPage(' + (${currentPage} + 1) + ')'">다음</button>-->
+<!--    </div>-->
+
 </div>
 
 </body>

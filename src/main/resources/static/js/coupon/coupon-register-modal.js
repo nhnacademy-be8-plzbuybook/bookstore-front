@@ -41,23 +41,44 @@ document.addEventListener('click', (event) => {
     }
 });
 
-// 카테고리 검색
+// 카테고리 검색 모달 열기
 function openCategorySearchModal() {
     const modal = document.getElementById('categorySearchModal');
     const container = document.getElementById('categorySearchContainer');
     const searchKeyword = prompt("카테고리 검색어를 입력하세요");
 
     if (searchKeyword) {
-        fetch(`/admin/coupon-category-search?searchKeyword=${encodeURIComponent(searchKeyword)}&page=0`)
-            .then(response => response.text())
+        fetch(`/admin/coupon-category-search?searchKeyword=${encodeURIComponent(searchKeyword)}&page=0&size=3`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 응답 오류');
+                }
+                return response.text();
+            })
             .then(html => {
-                container.innerHTML = html;
-                modal.style.display = 'block';
+                container.innerHTML = html; // HTML 삽입
+                modal.style.display = 'block'; // 모달 보이기
             })
             .catch(error => {
                 console.error("카테고리 검색 모달 에러:", error);
+                alert("카테고리 검색에 실패했습니다.");
             });
     }
+}
+
+function handleSelectCategory(button) {
+    const categoryId = button.getAttribute('data-category-id');
+    const categoryName = button.getAttribute('data-category-name');
+
+    document.getElementById('selectedCategoryDisplay').textContent = `카테고리 ID: ${categoryId}`;
+    document.getElementById('selectedCategoryNameDisplay').textContent = `카테고리 이름: ${categoryName}`;
+
+    document.getElementById('selectedCategoryId').value = categoryId;
+    document.getElementById('selectedCategoryName').value = categoryName;
+
+    console.log(`선택된 카테고리 ID: ${categoryId}, 카테고리 이름: ${categoryName}`);
+    alert(`선택된 카테고리 ID: ${categoryId}, 카테고리 이름: ${categoryName}`);
+    closeModal('categorySearchModal');
 }
 
 // 고정(비율) 할인 선택

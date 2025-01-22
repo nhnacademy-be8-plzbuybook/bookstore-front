@@ -10,6 +10,7 @@ import com.nhnacademy.bookstorefront.main.dto.coupon.CouponPolicySaveRequestDto;
 import com.nhnacademy.bookstorefront.main.service.CouponService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 public class AdminCouponRegisterController {
@@ -56,16 +59,22 @@ public class AdminCouponRegisterController {
     public String searchCategory(Model model, @RequestParam String searchKeyword,
                                  @RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "1") int size) {
-
         Page<CategorySimpleResponseDto> response = bookClient.searchCategories(searchKeyword, page, size).getBody();
 
-        model.addAttribute("categories", response);
+        if (response == null || response.isEmpty()) {
+            model.addAttribute("categories", List.of());
+            model.addAttribute("totalPages", 0);
+            model.addAttribute("currentPage", 0);
+        } else {
+            model.addAttribute("categories", response.getContent());
+            model.addAttribute("totalPages", response.getTotalPages());
+            model.addAttribute("currentPage", page);
+        }
+        log.info("검색어: {}", searchKeyword);
+        log.info("카테고리 목록: {}", response.getContent());
+        log.info("전체 페이지 수: {}", response.getTotalPages());
+        log.info("현재 페이지: {}", page);
         model.addAttribute("searchKeyword", searchKeyword);
-        model.addAttribute("searchResult", Objects.requireNonNull(response).getContent());
-        model.addAttribute("totalPages", response.getTotalPages());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("pageSize", size);
-
         return "admin/coupon/coupon-category-search";
     }
 
