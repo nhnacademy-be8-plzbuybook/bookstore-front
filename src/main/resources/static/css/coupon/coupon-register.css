@@ -1,3 +1,4 @@
+/* layout.css 기반 스타일 적용 */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f9f9f9;
@@ -36,16 +37,20 @@ header .icons a:hover {
 
 main {
     display: flex;
+    flex-direction: row;
     gap: 20px;
     padding: 20px;
+    flex: 1;
 }
 
+
 .sidebar {
-    width: 220px;
+    width: 220px; /* 고정된 사이드바 너비 */
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    flex-shrink: 0; /* 사이드바 크기 고정 */
 }
 
 .sidebar .group {
@@ -67,8 +72,9 @@ main {
     color: black;
 }
 
+
 .content {
-    flex: 1;
+    flex: 1; /* 나머지 공간을 메인 콘텐츠가 차지 */
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
