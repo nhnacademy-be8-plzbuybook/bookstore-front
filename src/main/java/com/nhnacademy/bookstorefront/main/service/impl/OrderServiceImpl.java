@@ -36,6 +36,18 @@ public class OrderServiceImpl implements OrderService {
         return response.getBody();
     }
 
+    @Override
+    public OrderSaveResponseDto requestMemberOrder(OrderRequestDto orderRequest) {
+        ResponseEntity<OrderSaveResponseDto> response = orderClient.requestMemberOrder(orderRequest);
+        return response.getBody();
+    }
+
+    @Override
+    public OrderSaveResponseDto requestNonMemberOrder(OrderRequestDto orderRequest) {
+        ResponseEntity<OrderSaveResponseDto> response = orderClient.requestNonMemberOrder(orderRequest);
+        return response.getBody();
+    }
+
     @ResponseBody
     @Override
     public String completeOrder(String orderId) {

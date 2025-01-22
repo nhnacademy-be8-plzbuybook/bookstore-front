@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface OrderService {
     OrderSaveResponseDto requestOrder(OrderRequestDto orderRequest);
+    OrderSaveResponseDto requestMemberOrder(OrderRequestDto orderRequest);
+    OrderSaveResponseDto requestNonMemberOrder(OrderRequestDto orderRequest);
 
     String completeOrder(String orderId);
 
