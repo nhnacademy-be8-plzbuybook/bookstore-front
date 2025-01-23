@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Controller
@@ -32,19 +33,22 @@ public class AdminBookController {
             @RequestParam(defaultValue = "0", required = false) int page,
             @RequestParam(defaultValue = "10", required = false) int size,
             @RequestParam(required = false) String bookType, // 책 종류 파라미터
+            @RequestParam(required = false) String keyword,
+
             Model model) {
 
 
         if ("non-selling".equals(bookType)) {
             Page<BookResponseDto> books = bookClient.getBooksNotInSellingBooks(page, size).getBody();
-            model.addAttribute("books", books.getContent());
+            model.addAttribute("books", Objects.requireNonNull(books).getContent());
             model.addAttribute("totalPages", books.getTotalPages());
 
         } else {
             // 기본 도서 API 호출
-            Page<AdminBookRegisterDto> books = bookClient.adminGetBooks(page, size);
+            Page<AdminBookRegisterDto> books = bookClient.adminGetBooks(keyword,page, size);
             model.addAttribute("books", books.getContent());
             model.addAttribute("totalPages", books.getTotalPages());
+            model.addAttribute("keyword", keyword); // 검색어
         }
         model.addAttribute("bookType", bookType);
         model.addAttribute("currentPage", page);
