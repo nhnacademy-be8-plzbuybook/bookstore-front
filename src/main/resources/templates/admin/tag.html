@@ -7,12 +7,15 @@
   <title>📚 카테고리 관리 📚</title>
   <link rel="stylesheet" href="https://uicdn.toast.com/tui-editor/latest/tui-editor.css">
   <style>
-    /* 기본 스타일은 기존 템플릿과 동일 */
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f9f9f9;
+    /* 기본 레이아웃 스타일 */
+    html, body {
+      height: 100%;
       margin: 0;
       padding: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
     }
 
     header {
@@ -45,6 +48,7 @@
     }
 
     main {
+      flex: 1; /* 컨텐츠 영역이 화면을 채우도록 설정 */
       display: flex;
       gap: 20px;
       padding: 20px;
@@ -67,8 +71,8 @@
       cursor: pointer;
       margin-bottom: 10px;
       font-size: 16px;
-      transition: background-color 0.3s;
       text-align: center;
+      transition: background-color 0.3s;
     }
 
     .sidebar .group.active,
@@ -105,6 +109,7 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
+      transition: opacity 0.3s;
     }
 
     button:hover {
@@ -143,6 +148,7 @@
       background-color: #0056b3;
     }
 
+    /* 테이블 스타일 */
     .table-wrapper {
       margin-top: 20px;
       overflow-x: auto;
@@ -185,7 +191,7 @@
       background-color: #dc3545;
     }
 
-    /* 페이징 */
+    /* 페이징 스타일 */
     .pagination {
       display: flex;
       justify-content: center;
@@ -212,11 +218,13 @@
       cursor: not-allowed;
     }
 
+    /* 푸터 스타일 */
     footer {
       background-color: #333;
       color: white;
       padding: 15px 20px;
       text-align: center;
+      margin-top: auto; /* 푸터를 아래로 밀기 */
     }
 
     footer a {
@@ -255,13 +263,13 @@
       float: right;
       font-size: 28px;
       font-weight: bold;
+      cursor: pointer;
     }
 
     .close:hover,
     .close:focus {
       color: black;
       text-decoration: none;
-      cursor: pointer;
     }
 
     .modal input {
@@ -271,6 +279,7 @@
       border: 1px solid #ddd;
       border-radius: 4px;
     }
+
   </style>
 </head>
 <body>
@@ -365,14 +374,6 @@
 </div>
 
 
-
-
-<footer>
-  <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-  <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank">PlzBuyBook GitHub</a></p>
-  <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
-</footer>
-
 <script>
   // 모달 열기
   document.getElementById('openModal').onclick = function() {
@@ -402,6 +403,7 @@
 
 
 </script>
+<th:block th:replace="~{layout/layout :: footerLayout}"></th:block>
 
 </body>
 </html>

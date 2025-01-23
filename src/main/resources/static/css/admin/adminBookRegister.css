@@ -1,0 +1,252 @@
+.layout-container {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    max-width: none; /* 화면 너비의 95% 사용 */
+    width: 100%;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 헤더 스타일 */
+header {
+    background-color: #333;
+    padding: 15px 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo {
+    text-decoration: none;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+header .menu a,
+header .icons a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 16px;
+}
+
+header .menu a:hover,
+header .icons a:hover {
+    color: #f1f1f1;
+}
+
+.sidebar {
+    width: 220px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.sidebar .group {
+    display: block; /* a 태그를 블록 요소로 변경 */
+    text-decoration: none; /* 기본 밑줄 제거 */
+    color: inherit; /* 기본 색상 상속 */
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.sidebar .group.active,
+.sidebar .group:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.content h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.form-container {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h3 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 20px;
+}
+
+.form-container form label {
+    font-size: 14px;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-container form input,
+.form-container form select {
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.form-container form input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
+}
+
+.form-container form button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-container form button:hover {
+    background-color: #555;
+}
+
+.table-wrapper {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f1f1f1;
+}
+
+table td {
+    background-color: #fff;
+}
+
+table .action-buttons button {
+    padding: 5px 10px;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+table .action-buttons .edit {
+    background-color: #007bff;
+}
+
+table .action-buttons .delete {
+    background-color: #dc3545;
+}
+
+/* 설명과 카테고리 사이 간격 추가 */
+#editor {
+    margin-bottom: 20px; /* 설명 아래 간격 추가 */
+}
+
+/* 카테고리 라벨 간격 추가 */
+label[for="category"] {
+    margin-top: 20px; /* 설명과 카테고리 사이 간격 */
+    display: block; /* 라벨을 블록 요소로 설정 */
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: none; /* 기본값 */
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#categoryList {
+    max-height: 300px; /* 최대 높이 지정 */
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    padding: 0;
+    list-style: none;
+}
+
+#categoryList ul {
+    list-style: none;
+    padding: 0;
+}
+
+#categoryList li {
+    cursor: pointer;
+    padding: 5px;
+}
+
+#categoryList li:hover {
+    background-color: #f0f0f0;
+}
+footer {
+    background-color: #333;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    margin-top: auto; /* 푸터를 아래로 밀기 */
+}
+
+footer a {
+    color: #00aaff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

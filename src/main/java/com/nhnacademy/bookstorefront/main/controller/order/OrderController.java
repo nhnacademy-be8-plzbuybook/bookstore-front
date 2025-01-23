@@ -326,6 +326,7 @@ public class OrderController {
      */
     @GetMapping("/admin/orders/{order-id}")
     public String getAdminOrderDetail(@PathVariable("order-id") String orderId,
+                                      HttpServletRequest request,
                                       Model model) {
         OrderDetail orderDetail = orderService.getOrderDetail(orderId);
         List<OrderStatus> orderStatuses = orderService.getOrderStatuses();
