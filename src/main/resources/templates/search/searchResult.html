@@ -35,6 +35,9 @@
             <option value="review">리뷰 많은순</option>
         </select>
     </div>
+    <div th:if="${totalPages == 0}">
+        <p>No results found.</p>
+    </div>
     <div class="book-list">
         <!-- 책 목록을 동적으로 표시 -->
         <div th:each="book : ${searchResult}">
@@ -62,12 +65,15 @@
 
             <!-- 페이지 번호들 -->
             <li class="page-item"
+                th:if="${totalPages > 0}"
                 th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
                 th:classappend="${i == currentPage} ? 'active'">
                 <a class="page-link"
                    th:href="@{/search/books(page=${i}, size=${pageSize}, searchKeyword=${searchKeyword}, category-id=${categoryId})}"
                    th:text="${i + 1}"></a>
             </li>
+
+
 
             <!-- 다음 페이지 버튼 -->
             <li class="page-item" th:if="${currentPage < totalPages - 1}">
