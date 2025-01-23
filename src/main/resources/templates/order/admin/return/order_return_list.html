@@ -133,7 +133,7 @@
                                 data-bs-target="#detailModal"
                                 th:attr="data-id=${orderProductReturn.getId()},
                                           data-requested-at=${#temporals.format(orderProductReturn.getRequestedAt(), 'yyyy/MM/dd HH:mm')},
-                                          data-requested-at=${#temporals.format(orderProductReturn.getCompletedAt(), 'yyyy/MM/dd HH:mm')},
+                                          data-completed-at=${#temporals.format(orderProductReturn.getCompletedAt(), 'yyyy/MM/dd HH:mm')},
                                           data-tracking-number=${orderProductReturn.getTrackingNumber()},
                                           data-reason=${orderProductReturn.getReason()},
                                           data-order-id=${orderProductReturn.getOrderId()},
@@ -153,6 +153,28 @@
         </div>
     </section>
 </main>
+
+<!-- 모달 HTML -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detailModalLabel">반품 상세</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>반송장 번호: <span id="modalTrackingNumber"></span></p>
+                <p>반품 요청 일시: <span id="modalRequestedAt"></span></p>
+                <p>반품 완료 일시: <span id="modalCompletedAt"></span></p>
+                <p>반품 사유: <span id="modalReason"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button id="orderDetailBtn" type="button" class="btn btn-secondary">주문 상세보기</button>
+                <button id="orderReturnCompleteBtn" type="button" class="btn btn-primary">반품 완료 처리</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <th:block th:replace="layout/layout::footerLayout"></th:block>
 
@@ -194,13 +216,14 @@
         const button = event.relatedTarget;
         const trackingNumber = button.getAttribute('data-tracking-number');
         const requestedAt = button.getAttribute('data-requested-at');
-        const completedAt = button.getAttribute('data-Completed-at');
+        const completedAt = button.getAttribute('data-completed-at');
         const reason = button.getAttribute('data-reason');
         const orderId = button.getAttribute('data-order-id');
         const orderProductId = button.getAttribute('data-order-product-id');
+
         document.getElementById('modalTrackingNumber').textContent = trackingNumber;
         document.getElementById('modalRequestedAt').textContent = requestedAt;
-        document.getElementById('modalCompletedAt').textContent = completedAt != null ? completedAt : ' ';
+        document.getElementById('modalCompletedAt').textContent = completedAt || ' ';
         document.getElementById("modalReason").textContent = reason;
 
         document.getElementById('orderDetailBtn').addEventListener('click', () => {
@@ -219,6 +242,8 @@
             window.location.reload();
         });
     });
+
+    // 사이드바 활성화
     const currentPath = window.location.pathname;
     const sidebarLinks = document.querySelectorAll('.sidebar .group');
 
