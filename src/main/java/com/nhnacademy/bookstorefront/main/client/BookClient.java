@@ -35,6 +35,7 @@ public interface BookClient {
     // 관리자용 도서 목록 조회 (페이징 처리만)
     @GetMapping("/api/books")
     Page<AdminBookRegisterDto> adminGetBooks(
+            @RequestParam(required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     );
