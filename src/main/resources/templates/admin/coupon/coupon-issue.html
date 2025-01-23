@@ -4,86 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>쿠폰 발급</title>
+    <link rel="stylesheet" href="/css/layout/layout.css">
     <link rel="stylesheet" href="/css/coupon/coupon-issue.css">
     <script src="/js/coupon/coupon-member-find-modal.js"></script>
     <script src="/js/coupon/coupon-history-modal.js"></script>
 </head>
 <body>
-<header>
-    <a href="/" class="logo">📚 책사조잉 📚</a>
-    <nav class="menu">
-        <a href="/">홈</a>
-        <a href="#">국내도서</a>
-        <a href="#">외국도서</a>
-        <a href="#">추천도서</a>
-    </nav>
-    <div class="icons">
-        <a href="/logout">로그아웃</a>
+    <!-- 헤더 -->
+    <th:block th:replace="~{layout/layout::headerFragment}"></th:block>
+
+    <!-- 전체 레이아웃 컨테이너 -->
+    <div class="layout-container">
+
+        <!-- 사이드바 -->
+        <aside class="sidebar">
+            <th:block th:replace="~{admin/sidebar.html}"></th:block>
+        </aside>
+
+        <!-- 메인 콘텐츠 -->
+        <main class = "content">
+
+            <!-- 회원에게 쿠폰 발급 -->
+            <div class = "form-section">
+                <h1>회원 쿠폰 발급</h1><br>
+                <form action="/admin/member-coupons" method="post">
+                    <div class="form-group">
+                        <label for="mcMemberId">회원 ID:</label>
+                        <input type="number" id="mcMemberId" name="mcMemberId" required><br>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="couponId">쿠폰 ID:</label>
+                        <input type="number" id="couponId" name="couponId" required><br>
+                    </div>
+
+                    <div class="inline-buttons">
+                        <button type="submit">발급</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="form-section">
+                <!-- 회원 쿠폰 목록 조회 -->
+                <h1>회원 쿠폰 목록</h1>
+                <div class="inline-buttons">
+                    <button type="button" onclick="openCouponMemberModal('/admin/member-coupons?page=0&pageSize=5')">회원 쿠폰 목록 조회</button>
+                </div>
+                <div id="couponMemberModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeCouponMemberModal('couponMemberModal')">닫기</span>
+                        <div id="couponMemberModalContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <!-- 쿠폰 이력 조회 -->
+                <h1>쿠폰 이력 조회</h1>
+                <form id="couponHistoryForm">
+                    <div class="form-group">
+                        <label for="couponIdInput">쿠폰 ID:</label>
+                        <input type="number" id="couponIdInput" placeholder="쿠폰 ID를 입력하세요" required>
+                    </div>
+
+                    <div class="inline-buttons">
+                        <button type="button" onclick="searchCouponHistories()">조회하기</button>
+                    </div>
+                </form>
+                <div id="couponHistoryModal" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeCouponHistoriesModal('couponHistoryModal')">닫기</span>
+                        <div id="couponHistoryModalContent"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
-</header>
-<main>
-    <!-- 사이드바 -->
-    <th:block th:replace="~{admin/sidebar.html}"></th:block>
 
-    <!-- 회원에게 쿠폰 발급 -->
-    <h3>회원 쿠폰 발급</h3>
+    <script>
+        const currentPath = window.location.pathname;
+        const sidebarLinks = document.querySelectorAll('.sidebar .group');
 
-    <div>
-        <form id="couponIssueForm" action="/admin/member-coupons" method="post">
-            <label for="mcMemberId">회원 ID:</label>
-            <input type="number" id="mcMemberId" name="mcMemberId" required><br>
+        sidebarLinks.forEach(link => {
+            const linkPath = link.getAttribute('href');
+            if (linkPath === currentPath) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
 
-            <label for="couponId">쿠폰 ID:</label>
-            <input type="number" id="couponId" name="couponId" required><br>
-
-            <button type="submit">발급</button>
-        </form>
-    </div>
-
-    <h3>회원 쿠폰 목록</h3>
-    <div>
-        <button type="button" onclick="openCouponMemberModal('/admin/member-coupons?page=0&pageSize=5')">회원 쿠폰 목록 조회</button>
-    </div>
-
-    <div id="couponMemberModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeCouponMemberModal('couponMemberModal')">닫기</span>
-            <div id="couponMemberModalContent"></div>
-        </div>
-    </div>
-
-    <!-- 쿠폰 이력 조회 -->
-    <h3>쿠폰 이력 조회</h3>
-    <div>
-        <label for="couponIdInput">쿠폰 ID:</label>
-        <input type="number" id="couponIdInput" placeholder="쿠폰 ID를 입력하세요">
-        <button type="button" onclick="searchCouponHistories()">조회하기</button>
-    </div>
-    <div id="couponHistoryModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeCouponHistoriesModal('couponHistoryModal')">닫기</span>
-            <div id="couponHistoryModalContent"></div>
-        </div>
-    </div>
-
-
-</main>
-<script>
-    const currentPath = window.location.pathname;
-    const sidebarLinks = document.querySelectorAll('.sidebar .group');
-
-    sidebarLinks.forEach(link => {
-        const linkPath = link.getAttribute('href');
-        if (linkPath === currentPath) {
-            link.classList.add('active');
-        } else {
-            link.classList.remove('active');
-        }
-
-        link.addEventListener('click', () => {
-            sidebarLinks.forEach(l => l.classList.remove('active'));
-            link.classList.add('active');
+            link.addEventListener('click', () => {
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
         });
+
     });
 </script>
 <footer>

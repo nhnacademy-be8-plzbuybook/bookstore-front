@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>쿠폰조회</title>
+    <link rel="stylesheet" href="/css/coupon/coupon-register.css">
 </head>
 <body>
-    <h3>쿠폰 조회</h3>
+    <div class="modal-header">
+        <h3>쿠폰 조회</h3>
+        <button type="button" class="close" onclick="closeCouponModal()">×</button>
+    </div>
+
 
     <p>현재 페이지: <span th:text="${currentPage + 1}"></span> / 총 페이지: <span th:text="${totalPages}"></span></p>
 
