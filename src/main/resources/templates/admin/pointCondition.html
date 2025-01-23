@@ -225,7 +225,7 @@
 
         <!-- 포인트 조건 생성 -->
         <h3>포인트 조건 생성</h3>
-        <form th:action="@{/adminpage/points-conditions/create}" method="post">
+        <form th:action="@{/admin/points-conditions/create}" method="post">
             <div th:if="${errorMessage}" class="alert error">
                 <p th:text="${errorMessage}"></p>
             </div>
@@ -257,7 +257,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="pointCondition : ${pointConditions}">
-                    <form th:action="@{/adminpage/points-conditions/update/{id}(id=${pointCondition.id})}" method="post" th:object="${pointCondition}">
+                    <form th:action="@{/admin/points-conditions/update/{id}(id=${pointCondition.id})}" method="post" th:object="${pointCondition}">
                         <td><input type="text" th:name="name" th:value="${pointCondition.name}" /></td>
                         <td><input type="number" th:name="conditionPoint" th:value="${pointCondition.conditionPoint}" /></td>
                         <td><input type="number" step="0.01" th:name="conditionPercentage" th:value="${pointCondition.conditionPercentage}" /></td>
