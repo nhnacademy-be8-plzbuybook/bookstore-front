@@ -6,14 +6,18 @@
   <title>📚 카테고리 관리 📚</title>
   <link rel="stylesheet" href="https://uicdn.toast.com/tui-editor/latest/tui-editor.css">
   <style>
-    /* 기본 스타일은 기존 템플릿과 동일 */
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f9f9f9;
+    /* 공통 스타일 */
+    html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
     }
 
+    /* 헤더 스타일 */
     header {
       background-color: #333;
       padding: 15px 20px;
@@ -25,7 +29,7 @@
 
     header .logo {
       text-decoration: none;
-      color: inherit;
+      color: white;
       font-size: 24px;
       font-weight: bold;
     }
@@ -43,12 +47,15 @@
       color: #f1f1f1;
     }
 
+    /* 메인 컨테이너 */
     main {
+      flex: 1; /* 남은 공간을 채우도록 설정 */
       display: flex;
       gap: 20px;
       padding: 20px;
     }
 
+    /* 사이드바 스타일 */
     .sidebar {
       width: 220px;
       background-color: #fff;
@@ -63,11 +70,10 @@
       color: inherit;
       padding: 12px;
       border-radius: 4px;
-      cursor: pointer;
       margin-bottom: 10px;
       font-size: 16px;
-      transition: background-color 0.3s;
       text-align: center;
+      transition: background-color 0.3s;
     }
 
     .sidebar .group.active,
@@ -76,11 +82,12 @@
       color: black;
     }
 
+    /* 콘텐츠 스타일 */
     .content {
       flex: 1;
-      padding: 20px;
       background-color: #fff;
       border-radius: 8px;
+      padding: 20px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
@@ -90,58 +97,62 @@
       margin-bottom: 20px;
     }
 
+    .content h3 {
+      font-size: 20px;
+      color: #555;
+      margin-bottom: 15px;
+    }
+
     /* 버튼 및 폼 스타일 */
-    .button-container {
-      display: flex;
-      justify-content: flex-end;
-      gap: 20px;
-      align-items: center;
-      padding: 20px;
-    }
-
-    button {
-      padding: 8px 12px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    .add-button {
-      background-color: #28a745;
-      color: white;
-    }
-
-    .search-container {
+    form {
       margin-bottom: 20px;
     }
 
-    .search-container input {
-      width: calc(100% - 110px);
+    form label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    form input, form select {
+      width: 100%;
       padding: 10px;
       font-size: 14px;
       border: 1px solid #ddd;
       border-radius: 4px;
+      margin-bottom: 15px;
     }
 
-    .search-container button {
+    button {
+      border: none;
+      border-radius: 4px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    /* 버튼 스타일 */
+    button.add-button {
+      background-color: #28a745;
+      color: white;
+    }
+
+    button.add-button:hover {
+      background-color: #218838;
+    }
+
+    button {
       background-color: #007bff;
       color: white;
-      border: none;
-      padding: 10px 20px;
-      font-size: 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
     }
 
-    .search-container button:hover {
+    button:hover {
       background-color: #0056b3;
     }
 
+    /* 테이블 스타일 */
     .table-wrapper {
       margin-top: 20px;
       overflow-x: auto;
@@ -150,41 +161,30 @@
     table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 14px;
     }
 
-    table th,
-    table td {
-      padding: 10px;
+    th, td {
+      padding: 12px;
       text-align: left;
       border: 1px solid #ddd;
     }
 
-    table th {
+    th {
       background-color: #f1f1f1;
+      color: #333;
+      font-weight: bold;
     }
 
-    table td {
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:nth-child(odd) {
       background-color: #fff;
     }
 
-    table .action-buttons button {
-      padding: 5px 10px;
-      border: none;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-
-    table .action-buttons .edit {
-      background-color: #007bff;
-    }
-
-    table .action-buttons .delete {
-      background-color: #dc3545;
-    }
-
-    /* 페이징 */
+    /* 페이징 스타일 */
     .pagination {
       display: flex;
       justify-content: center;
@@ -211,17 +211,18 @@
       cursor: not-allowed;
     }
 
+    /* 푸터 스타일 */
     footer {
       background-color: #333;
       color: white;
       padding: 15px 20px;
       text-align: center;
+      margin-top: auto; /* 푸터를 아래로 밀기 */
     }
 
     footer a {
       color: #00aaff;
       text-decoration: none;
-      margin: 0 5px;
     }
 
     footer a:hover {
@@ -247,9 +248,9 @@
       padding: 20px;
       background-color: white;
       border-radius: 8px;
-      width: 500px; /* 고정된 너비 */
-      max-height: 70%; /* 고정된 높이 */
-      overflow-y: auto; /* 내용이 넘칠 경우 스크롤 */
+      width: 500px;
+      max-height: 70%;
+      overflow-y: auto;
     }
 
     .close {
@@ -257,22 +258,15 @@
       float: right;
       font-size: 28px;
       font-weight: bold;
+      cursor: pointer;
     }
 
     .close:hover,
     .close:focus {
       color: black;
       text-decoration: none;
-      cursor: pointer;
     }
 
-    .modal input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
   </style>
 </head>
 <body>
@@ -400,10 +394,6 @@
     });
   });
 </script>
-<footer>
-  <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-  <p><a href="https://github.com/nhnacademy-be8-plzbuybook" target="_blank"> PlzBuyBook GitHub</a></p>
-  <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
-</footer>
+<th:block th:replace="~{layout/layout :: footerLayout}"></th:block>
 </body>
 </html>

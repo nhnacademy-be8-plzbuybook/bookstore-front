@@ -7,13 +7,18 @@
   <link rel="stylesheet" href="https://uicdn.toast.com/tui-editor/latest/tui-editor.css">
   <style>
     /* 기본 스타일은 기존 템플릿과 동일 */
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f9f9f9;
+    /* 기본 스타일 */
+    html, body {
+      height: 100%; /* 전체 화면 높이 설정 */
       margin: 0;
       padding: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column; /* 플렉스 레이아웃으로 푸터를 화면 하단에 고정 */
     }
 
+    /* 헤더 스타일 */
     header {
       background-color: #333;
       padding: 15px 20px;
@@ -43,7 +48,9 @@
       color: #f1f1f1;
     }
 
+    /* 메인 레이아웃 */
     main {
+      flex: 1; /* 콘텐츠 영역이 푸터를 밀어내도록 설정 */
       display: flex;
       gap: 20px;
       padding: 20px;
@@ -142,6 +149,7 @@
       background-color: #0056b3;
     }
 
+    /* 테이블 스타일 */
     .table-wrapper {
       margin-top: 20px;
       overflow-x: auto;
@@ -184,7 +192,6 @@
       background-color: #dc3545;
     }
 
-
     /* 페이지네이션 */
     .pagination {
       display: flex;
@@ -218,6 +225,10 @@
       color: white;
       padding: 15px 20px;
       text-align: center;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
     }
 
     footer a {
@@ -271,6 +282,7 @@
       border: 1px solid #ddd;
       border-radius: 4px;
     }
+
 
   </style>
 </head>
@@ -365,11 +377,6 @@
   </div>
 </div>
 
-<footer>
-  <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-  <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank">PlzBuyBook GitHub</a></p>
-  <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
-</footer>
 
 <script>
   // 모달 열기
@@ -399,6 +406,6 @@
     });
   });
 </script>
-
+<th:block th:replace="~{layout/layout :: footerLayout}"></th:block>
 </body>
 </html>

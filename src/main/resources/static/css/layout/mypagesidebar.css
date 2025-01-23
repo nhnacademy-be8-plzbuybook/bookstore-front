@@ -1,0 +1,29 @@
+/* 사이드바 스타일 */
+.sidebar {
+    width: 200px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.sidebar .group {
+    padding: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.sidebar .group a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.sidebar .group.active,
+.sidebar .group:hover {
+    background-color: #ddd;
+    color: black;
+}
