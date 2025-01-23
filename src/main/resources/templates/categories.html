@@ -7,6 +7,16 @@
   <link rel="stylesheet" href="/index.css">
   <link rel="stylesheet" href="/css/layout/layout.css">
   <title>📚 책사조잉 📚</title>
+  <link rel="stylesheet" href="/index.css">
+  <link rel="stylesheet" href="/css/layout/layout.css">
+
+  <style>
+    .page-item.active a {
+      background-color: #333;
+      color: #fff;
+      border-color: #333;
+    }
+  </style>
 
 </head>
 <body>
@@ -14,23 +24,47 @@
 <main>
 
   <h2>자식 카테고리 목록</h2>
-  <ul id="category-list">
-    <!-- 자식 카테고리가 동적으로 표시됩니다. -->
-    <li th:each="category : ${categories}">
-      <!-- 카테고리 이름을 표시하고, 링크를 생성 -->
-      <a th:href="@{'/search/books?category-id=' + ${category.categoryId}}" th:text="${category.categoryName}"></a>
+  <ul id="category-list" style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 15px;">
+    <li th:each="category : ${categories}" style="flex: 1 1 calc(30% - 10px); text-align: center; margin: 5px;">
+      <a th:href="@{/search/books(category-id=${category.categoryId})}"
+         th:text="${category.categoryName}"
+         style="display: block; padding: 10px 15px; text-decoration: none; background: #f0f0f0; border-radius: 8px; color: #555; font-weight: bold; transition: background 0.3s, color 0.3s;">
+      </a>
     </li>
-
-
   </ul>
+  <div class="pagination" style="display: flex; justify-content: center; align-items: center; margin-top: 20px; gap: 5px;">
+    <!-- 이전 버튼 -->
+    <a th:if="${currentPage > 0}"
+       th:href="@{/getChildrenCategories(page=${currentPage - 1}, size=${pageSize}, parentId=${parentId})}"
+       class="page-item"
+       style="display: block; padding: 10px 15px; color: #333; background-color: #fff; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; transition: background-color 0.3s, color 0.3s;">
+      이전
+    </a>
+
+    <!-- 페이지 번호 버튼 -->
+    <a th:each="page, stat : ${#numbers.sequence(0, totalPages - 1)}"
+       th:href="@{/getChildrenCategories(page=${page}, size=${pageSize}, parentId=${parentId})}"
+       th:classappend="${page == currentPage} ? 'active page-item' : 'page-item'"
+       style="display: block; padding: 10px 15px; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; transition: background-color 0.3s, color 0.3s;"
+       th:styleappend="${page == currentPage} ? 'background-color: #333; color: #fff; border-color: #333;' : 'background-color: #fff; color: #333; border-color: #ddd;'"
+       th:text="${page + 1}">
+    </a>
+
+
+    <!-- 다음 버튼 -->
+    <a th:if="${currentPage < totalPages - 1}"
+       th:href="@{/getChildrenCategories(page=${currentPage + 1}, size=${pageSize}, parentId=${parentId})}"
+       class="page-item"
+       style="display: block; padding: 10px 15px; color: #333; background-color: #fff; border: 1px solid #ddd; border-radius: 4px; text-decoration: none; transition: background-color 0.3s, color 0.3s;">
+      다음
+    </a>
+  </div>
+
+
+
 </main>
 
-<footer>
-  <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-  <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook
-    GitHub</a></p>
-  <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
-</footer>
+<th:block th:replace="~{layout/layout :: footerLayout}"></th:block>
 
 
 </body>

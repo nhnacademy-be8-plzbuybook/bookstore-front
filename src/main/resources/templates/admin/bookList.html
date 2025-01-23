@@ -263,7 +263,6 @@
             text-decoration: underline;
         }
 
-
     </style>
 </head>
 <body>
@@ -281,16 +280,7 @@
 </header>
 <main>
     <!-- 사이드바 -->
-    <div class="sidebar">
-        <a href="/adminpage" class="group" data-section="member-management">회원 관리</a>
-        <a href="/admin/books" class="group">도서 관리</a>
-        <a href="/admin/selling-books" class="group">판매 도서 관리</a>
-        <div class="group" data-section="coupon-management">쿠폰 관리</div>
-        <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
-        <div class="group" data-section="tag-management">태그 관리</div>
-        <div href= "/admin/category" class="group" data-section="category-management">카테고리 관리</div>
-
-    </div>
+    <th:block th:replace="~{admin/sidebar.html}"></th:block>
 
     <!-- 메인 콘텐츠 -->
     <div class="content">
@@ -341,11 +331,6 @@
                 <button type="submit" class="isbn-button">📚 ISBN 동기화</button>
             </form>
         </div>
-
-        <h3>디버깅 데이터</h3>
-        <pre th:text="${#lists.size(books)}"></pre>
-
-
 
         <!-- 도서 목록 -->
         <div class="table-wrapper">
@@ -422,10 +407,28 @@
         </div>
     </div>
 </main>
+<script>
+    const currentPath = window.location.pathname;
+    const sidebarLinks = document.querySelectorAll('.sidebar .group');
 
+    sidebarLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+
+        link.addEventListener('click', () => {
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
+</script>
 <footer>
     <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
-    <p><a href="https://github.com/nhnacademy-be8-plzbuybook/bookstore-shoppingmall" target="_blank"> PlzBuyBook GitHub</a></p>
+    <p><a href="https://github.com/nhnacademy-be8-plzbuybook" target="_blank"> PlzBuyBook
+        GitHub</a></p>
     <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
 </footer>
 </body>

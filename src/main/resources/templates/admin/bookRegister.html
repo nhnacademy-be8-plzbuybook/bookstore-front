@@ -4,221 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📚 책사조잉 관리자 페이지 📚</title>
-    <link rel="stylesheet" href="/css/layout/layout.css">
+    <link rel="stylesheet" href="/css/admin/adminBookRegister.css" />
 
-    <style>
-
-        main {
-            display: flex;
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .sidebar {
-            width: 220px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-
-        .sidebar .group {
-            display: block; /* a 태그를 블록 요소로 변경 */
-            text-decoration: none; /* 기본 밑줄 제거 */
-            color: inherit; /* 기본 색상 상속 */
-            padding: 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-bottom: 10px;
-            font-size: 16px;
-            transition: background-color 0.3s;
-            text-align: center;
-        }
-
-        .sidebar .group.active,
-        .sidebar .group:hover {
-            background-color: #ddd;
-            color: black;
-        }
-
-        .content {
-            flex: 1;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .content h2 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .form-container {
-            margin-bottom: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-container h3 {
-            margin-bottom: 10px;
-            color: #333;
-            font-size: 20px;
-        }
-
-        .form-container form label {
-            font-size: 14px;
-            color: #555;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-container form input,
-        .form-container form select {
-            width: 100%;
-            padding: 8px 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-
-        .form-container form input[type="checkbox"] {
-            width: auto;
-            margin-right: 10px;
-        }
-
-        .form-container form button {
-            background-color: #333;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 14px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .form-container form button:hover {
-            background-color: #555;
-        }
-
-        .table-wrapper {
-            margin-top: 20px;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        table th,
-        table td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        table th {
-            background-color: #f1f1f1;
-        }
-
-        table td {
-            background-color: #fff;
-        }
-
-        table .action-buttons button {
-            padding: 5px 10px;
-            border: none;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        table .action-buttons .edit {
-            background-color: #007bff;
-        }
-
-        table .action-buttons .delete {
-            background-color: #dc3545;
-        }
-
-        /* 설명과 카테고리 사이 간격 추가 */
-        #editor {
-            margin-bottom: 20px; /* 설명 아래 간격 추가 */
-        }
-
-        /* 카테고리 라벨 간격 추가 */
-        label[for="category"] {
-            margin-top: 20px; /* 설명과 카테고리 사이 간격 */
-            display: block; /* 라벨을 블록 요소로 설정 */
-        }
-
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none; /* 기본값 */
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            width: 300px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        #categoryList {
-            max-height: 300px; /* 최대 높이 지정 */
-            overflow-y: auto; /* 세로 스크롤 활성화 */
-            padding: 0;
-            list-style: none;
-        }
-
-        #categoryList ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        #categoryList li {
-            cursor: pointer;
-            padding: 5px;
-        }
-
-        #categoryList li:hover {
-            background-color: #f0f0f0;
-        }
-
-    </style>
 </head>
 <body>
-<th:block th:replace="~{layout/layout::headerFragment}"></th:block>
-
-<main>
-    <!-- 사이드바 -->
-    <div class="sidebar">
-        <a href="/adminpage" class="group">회원 관리</a>
-        <a href="/admin/selling-books" class="group">도서 관리</a>
-        <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
-        <div class="group" data-section="coupon-management">쿠폰 관리</div>
-        <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
-        <div class="group" data-section="tag-management">태그 관리</div>
-        <div class="group" data-section="category-management">카테고리 관리</div>
-        <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
-        <a href="/admin/category" class="group">카테고리 관리</a>
+<header>
+    <a href="/" class = "logo">📚 책사조잉 📚</a>
+    <nav class="menu">
+        <a href="/">홈</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="/logout">로그아웃</a>
     </div>
+</header>
+<main>
+<div class="layout-container">
+
+    <!-- 사이드바 -->
+
+    <th:block th:replace="~{admin/sidebar.html}"></th:block>
 
     <!-- 메인 콘텐츠 -->
     <div class="content">
@@ -250,7 +57,7 @@
 
                 <label for="imageUrl">이미지 URL</label>
                 <input type="url" id="imageUrl" name="imageUrl" placeholder="이미지 URL을 입력하세요">
-<!--                <input type="file" name="images" multiple>-->
+                <!--                <input type="file" name="images" multiple>-->
 
                 <input type="hidden" id="selectedCategories" name="categories">
                 <input type="hidden" id="selectedAuthors" name="authors">
@@ -319,6 +126,8 @@
             <ul id="uploadedFileUrls"></ul>
         </div>
     </div>
+
+</div>
 
 </main>
 <th:block th:replace="~{layout/layout::footerLayout}"></th:block>
@@ -617,6 +426,22 @@
             })
             .catch(error => console.error('업로드 중 오류 발생:', error));
     }
+    const currentPath = window.location.pathname;
+    const sidebarLinks = document.querySelectorAll('.sidebar .group');
+
+    sidebarLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+
+        link.addEventListener('click', () => {
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
 
 </script>
 

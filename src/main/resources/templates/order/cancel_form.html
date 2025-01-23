@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/layout/layout.css">
     <title>주문취소</title>
 </head>
 <body>
+<th:block th:replace="~{layout/layout :: headerFragment}"></th:block>
 
 <h2>주문상품</h2>
 <form id="cancel-form">
@@ -113,6 +115,7 @@
         }
     });
 </script>
+<th:block th:replace="~{layout/layout :: footerLayout}"></th:block>
 
 </body>
 </html>

@@ -8,65 +8,89 @@
     <script src="/js/coupon/coupon-policy-find-modal.js" defer></script>
 </head>
 <body>
-    <h3>쿠폰 정책 조회</h3>
-
-    <p>현재 페이지: <span th:text="${currentPage + 1}"></span> / 총 페이지: <span th:text="${totalPages}"></span></p>
-
-    <!-- 페이지 이동 -->
-    <div><label for="couponPolicyFindPageInput"></label>
-        <input type="number" id="couponPolicyFindPageInput" placeholder="페이지 번호 입력" min="0">
-        <button type="button" onclick="couponPolicyFindGoToPage()">이동</button>
+    <div class="modal-header">
+        <h3>쿠폰 정책 조회</h3>
+        <button type="button" class="close" onclick="couponPolicyFindCloseModal()">×</button>
     </div>
 
-    <!-- 쿠폰 정책 목록 -->
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>이름</th>
-            <th>할인 유형</th>
-            <th>최소 금액</th>
-            <th>최대 할인</th>
-            <th>할인율</th>
-            <th>중복 여부</th>
-            <th>적용범위</th>
-            <th>시작일</th>
-            <th>종료일</th>
-            <th>활성화 상태</th>
-            <th>선택</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="couponPolicy : ${couponPolicies}">
-            <td th:text="${couponPolicy.id()}"></td>
-            <td th:text="${couponPolicy.name()}"></td>
-            <td th:text="${couponPolicy.saleType()}"></td>
-            <td th:text="${couponPolicy.minimumAmount()}"></td>
-            <td th:text="${couponPolicy.discountLimit()}"></td>
-            <td th:text="${couponPolicy.discountRatio()}"></td>
-            <td th:text="${couponPolicy.isStackable() ? '가능' : '불가능'}"></td>
-            <td th:text="${couponPolicy.couponScope()}"></td>
-            <td th:text="${couponPolicy.startDate()}"></td>
-            <td th:text="${couponPolicy.endDate()}"></td>
-            <td th:text="${couponPolicy.couponActive() ? '활성화' : '비활성화'}"></td>
-            <td>
-                <button type="button" th:onclick="'couponPolicyFindSelect(' + ${couponPolicy.id} + ')'">선택</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="modal-body">
+        <p>현재 페이지: <span th:text="${currentPage + 1}">1</span> / 총 페이지: <span th:text="${totalPages}">1</span></p>
+
+        <!-- 페이지 이동 -->
+        <div>
+            <label for="couponPolicyFindPageInput"></label>
+            <input type="number" id="couponPolicyFindPageInput" placeholder="페이지 번호 입력">
+            <button type="button" onclick="couponPolicyFindGoToPage()">이동</button>
+        </div>
+
+        <!-- 쿠폰 정책 목록 -->
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>이름</th>
+                <th>할인 유형</th>
+                <th>최소 금액</th>
+                <th>최대 할인</th>
+                <th>할인율</th>
+                <th>중복여부</th>
+                <th>적용범위</th>
+                <th>시작일</th>
+                <th>종료일</th>
+                <th>활성화상태</th>
+                <th>선택</th>
+            </tr>
+            </thead>
+
+            <tbody id="couponPolicyTableBody">
+            <tr th:each="couponPolicy : ${couponPolicies}">
+                <td th:text="${couponPolicy.id()}"></td>
+                <td th:text="${couponPolicy.name()}"></td>
+                <td th:text="${couponPolicy.saleType()}"></td>
+                <td th:text="${couponPolicy.minimumAmount()}"></td>
+                <td th:text="${couponPolicy.discountLimit()}"></td>
+                <td th:text="${couponPolicy.discountRatio()}"></td>
+                <td th:text="${couponPolicy.isStackable() ? '가능' : '불가능'}"></td>
+                <td th:text="${couponPolicy.couponScope()}"></td>
+                <td th:text="${couponPolicy.startDate()}"></td>
+                <td th:text="${couponPolicy.endDate()}"></td>
+                <td th:text="${couponPolicy.couponActive() ? '활성화' : '비활성화'}"></td>
+                <td>
+                    <button type="button" th:onclick="'couponPolicyFindSelect(' + ${couponPolicy.id} + ')'">선택</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <!-- 페이지네이션 -->
-    <div class="pagination">
-        <!-- 이전 버튼 -->
-        <a th:if="${currentPage > 0}"
-           th:href="@{/admin/coupon-policies(page=${currentPage - 1})}"
-           th:onclick="'return couponPolicyFindUpdateModal(this.href)'">이전</a>
-
-        <!-- 다음 버튼 -->
-        <a th:if="${currentPage < totalPages - 1}"
-           th:href="@{/admin/coupon-policies(page=${currentPage + 1})}"
-           th:onclick="'return couponPolicyFindUpdateModal(this.href)'">다음</a>
+    <div class="modal-footer">
+        <div class="pagination">
+            <a th:if="${currentPage > 0}"
+               th:href="@{/admin/coupon-policies(page=${currentPage - 1})}">이전</a>
+            <a th:if="${currentPage < totalPages - 1}"
+               th:href="@{/admin/coupon-policies(page=${currentPage + 1})}">다음</a>
+        </div>
     </div>
+    <script>
+        function couponPolicyFindCloseModal() {
+            const modal = document.getElementById('couponPolicyFindModal');
+            modal.style.display = 'none';
+        }
+
+        function couponPolicyFindGoToPage() {
+            const pageInput = document.getElementById('couponPolicyFindPageInput').value;
+            if (!pageInput || pageInput < 1) {
+                alert('유효한 페이지 번호를 입력해주세요.');
+                return;
+            }
+            window.location.href = `/admin/coupon-policies?page=${pageInput - 1}`;
+        }
+
+        function couponPolicyFindSelect(policyId) {
+            alert(`선택된 쿠폰정책 ID: ${policyId}`);
+            couponPolicyFindCloseModal();
+        }
+    </script>
 </body>
 </html>

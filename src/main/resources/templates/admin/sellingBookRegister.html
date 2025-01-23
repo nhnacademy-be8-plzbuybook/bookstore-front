@@ -204,12 +204,7 @@
 </header>
 <main>
     <!-- 사이드바 -->
-    <div class="sidebar">
-        <a href="/adminpage" class="group">회원 관리</a>
-        <a href="/admin/selling-books" class="group">도서 관리</a>
-        <a href="/admin/selling-books/selling-list" class="group">판매 도서 관리</a>
-        <a href="/admin/category" class="group">카테고리 관리</a>
-    </div>
+    <th:block th:replace="~{admin/sidebar.html}"></th:block>
 
     <!-- 메인 콘텐츠 -->
     <div class="content">

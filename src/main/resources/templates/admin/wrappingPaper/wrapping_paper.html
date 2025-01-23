@@ -1,11 +1,166 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>포장지 관리</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 책사조잉 관리자 페이지 📚</title>
+    <style>
+        /* 전체 페이지 스타일 */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 헤더 스타일 */
+        header {
+            background-color: #333;
+            padding: 15px 20px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo {
+            text-decoration: none;
+            color: inherit;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        header .menu a,
+        header .icons a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        header .menu a:hover,
+        header .icons a:hover {
+            color: #f1f1f1;
+        }
+
+        /* 메인 레이아웃 스타일 */
+        main {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        /* 사이드바 스타일 */
+        .sidebar {
+            width: 220px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .sidebar .group {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar .group.active {
+            background-color: #ddd;
+            color: black;
+            font-weight: bold;
+            border: 1px solid #ccc;
+        }
+
+        .sidebar .group:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* 컨텐츠 영역 스타일 */
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h1 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* 표 스타일 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+            border: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #f1f1f1;
+        }
+
+        table td {
+            background-color: #fff;
+        }
+
+        /* 푸터 스타일 */
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #00aaff;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
 </head>
 <body>
-<h1>포장지 관리</h1>
+<header>
+    <a href="/" class = "logo">📚 책사조잉 📚</a>
+    <nav class="menu">
+        <a href="/">홈</a>
+        <a href="#">국내도서</a>
+        <a href="#">외국도서</a>
+        <a href="#">추천도서</a>
+    </nav>
+    <div class="icons">
+        <a href="/logout">로그아웃</a>
+    </div>
+</header>
+
+<main>
+    <!-- 사이드바 -->
+    <th:block th:replace="~{admin/sidebar.html}"></th:block>
+<h2>포장지 관리</h2>
 
 <table>
     <thead>
@@ -78,7 +233,13 @@
     </tr>
     </tbody>
 </table>
-
+    </main>
+<footer>
+    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
+    <p><a href="https://github.com/nhnacademy-be8-plzbuybook" target="_blank"> PlzBuyBook
+        GitHub</a></p>
+    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
+</footer>
 <script>
     // 삭제 기능
     async function remove(id) {
@@ -148,6 +309,23 @@
             console.error('Error:', error);
         }
     }
+
+    const currentPath = window.location.pathname;
+    const sidebarLinks = document.querySelectorAll('.sidebar .group');
+
+    sidebarLinks.forEach(link => {
+        const linkPath = link.getAttribute('href');
+        if (linkPath === currentPath) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+
+        link.addEventListener('click', () => {
+            sidebarLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+        });
+    });
 </script>
 </body>
 </html>

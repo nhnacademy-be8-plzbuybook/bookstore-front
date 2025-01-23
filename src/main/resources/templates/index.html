@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/css/layout/layout.css">
     <title>📚 책사조잉 📚</title>
 
+
+
 </head>
 <body>
 <th:block th:replace="~{layout/layout :: headerFragment}"></th:block>
@@ -22,7 +24,7 @@
     </div>
 
     <div class="sort-bar">
-        <form id="sortForm" method="GET" action="/index">x
+        <form id="sortForm" method="GET" action="/index">
             정렬 기준
             <select name="sortBy" onchange="document.getElementById('sortForm').submit();">
                 <option value="sellingBookId" th:attr="selected=${sortBy == 'sellingBookId'}">인기순</option>
@@ -48,27 +50,37 @@
     </div>
 
 
-<nav aria-label="Page navigation">
-    <ul class="pagination">
-        <!-- Previous button -->
-        <li class="page-item" th:classappend="${pageNumber == 0} ? 'disabled'">
-            <a th:href="@{/index(page=${pageNumber != null && pageNumber > 0 ? pageNumber - 1 : 0}, size=${pageSize != null ? pageSize : 16}, sortBy=${sortBy}, sortDir=${sortDir})}">이전</a>
-        </li>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <!-- Previous button -->
+            <li class="page-item" th:if="${currentPage > 0}">
+                <a class="page-link"
+                   th:href="@{/index(page=${currentPage - 1}, size=${pageSize ?: 16}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                    이전
+                </a>
+            </li>
 
-        <!-- Page number buttons -->
-        <li class="page-item" th:each="page, stat : ${#numbers.sequence(0, totalPages != null ? totalPages - 1 : 0)}"
-            th:classappend="${page == (pageNumber != null ? pageNumber : 0)} ? 'active'">
-            <a th:href="@{/index(page=${page}, size=${pageSize != null ? pageSize : 12}, sortBy=${sortBy}, sortDir=${sortDir})}"
-               th:text="${page + 1}"></a>
-        </li>
+            <!-- Page number buttons -->
+            <li class="page-item"
+                th:each="page, stat : ${#numbers.sequence(0, totalPages != null ? totalPages - 1 : 0)}"
+                th:classappend="${page == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/index(page=${page}, size=${pageSize ?: 12}, sortBy=${sortBy}, sortDir=${sortDir})}"
+                   th:text="${page + 1}"></a>
+            </li>
 
-        <!-- Next button -->
-        <li class="page-item"
-            th:classappend="${pageNumber != null && pageNumber == (totalPages != null ? totalPages - 1 : 0)} ? 'disabled'">
-            <a th:href="@{/index(page=${pageNumber != null && pageNumber < (totalPages != null ? totalPages - 1 : 0) ? pageNumber + 1 : (totalPages != null ? totalPages - 1 : 0)}, size=${pageSize != null ? pageSize : 16}, sortBy=${sortBy}, sortDir=${sortDir})}">다음</a>
-        </li>
-    </ul>
-</nav>
+            <!-- Next button -->
+            <li class="page-item"
+                th:if="${currentPage < totalPages - 1}">
+                <a class="page-link"
+                   th:href="@{/index(page=${currentPage + 1}, size=${pageSize ?: 16}, sortBy=${sortBy}, sortDir=${sortDir})}">
+                    다음
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+
 </main>
 <th:block th:replace="~{layout/layout :: footerLayout}"></th:block>
 <script src="/script/books.js"></script>

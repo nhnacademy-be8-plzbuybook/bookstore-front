@@ -3,143 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/index.css?v=1.0">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="/css/layout/layout.css">
     <title>📚 책사조잉 📚</title>
-    <style>
-        /* 공통 스타일 */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
 
-        header {
-            background-color: #333;
-            padding: 15px 20px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        header .menu a,
-        header .icons a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 16px;
-        }
-
-        header .menu a:hover,
-        header .icons a:hover {
-            color: #f1f1f1;
-        }
-
-        main {
-            padding: 20px;
-        }
-
-        /* 검색바와 정렬바 */
-        .search-bar, .sort-bar {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .search-bar input {
-            flex: 1;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .search-bar button {
-            padding: 10px 15px;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .search-bar button:hover {
-            background-color: #444;
-        }
-
-        .sort-bar select {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        /* 책 목록 스타일 */
-        .book-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 20px;
-        }
-
-        .book {
-            text-align: center;
-            background-color: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .book img {
-            width: 100%;
-            height: auto;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-
-        .book div {
-            font-size: 14px;
-            color: #333;
-        }
-
-        /* 버튼 */
-        button {
-            padding: 12px 20px;
-            background-color: #333;
-            color: white;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #444;
-        }
-    </style>
 </head>
 <body>
-<header>
-    <div class="logo">📚 책사조잉 📚</div>
-    <nav class="menu">
-        <a href="/">Home</a>
-        <a href="#">국내도서</a>
-        <a href="#">외국도서</a>
-        <a href="#">추천도서</a>
-    </nav>
-    <div class="icons" id="auth-icons">
-        <a href="/mypage" id="mypage-btn" style="display:none;">MyPage</a>
-        <a href="#" id="logout-btn" style="display:none;" onclick="logout()">로그아웃</a>
-        <a href="/login" id="login-btn">로그인</a>
-        <a href="/signup" id="signup-btn">회원가입</a>
-    </div>
-</header>
+
+    <th:block th:replace="~{layout/layout :: headerFragment}"></th:block>
+
+
 <main>
     <div class="search-bar">
         <form id="searchForm" method="GET" action="/search/books">
@@ -175,31 +50,41 @@
             </div>
         </div>
     </div>
-    <div class="pagination">
-        <!-- 이전 페이지 버튼 -->
-        <a th:if="${currentPage > 0}" th:href="@{/search/books(page=${currentPage - 1}, searchKeyword=${searchKeyword}, category-id=${categoryId})}"
-           th:class="${currentPage == 0} ? 'disabled' : ''">Prev</a>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <!-- 이전 페이지 버튼 -->
+            <li class="page-item" th:if="${currentPage > 0}">
+                <a class="page-link"
+                   th:href="@{/search/books(page=${currentPage - 1}, size=${pageSize}, searchKeyword=${searchKeyword}, category-id=${categoryId})}">
+                    이전
+                </a>
+            </li>
 
-        <!-- 페이지 번호들 -->
-        <div th:if="${totalPages > 0}">
-    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-        <a th:href="@{/search/books(page=${i}, searchKeyword=${searchKeyword}, category-id=${categoryId})}"
-           th:text="${i + 1}" th:classappend="${i == currentPage} ? ' active' : ''"></a>
-    </span>
-        </div>
-        <div th:if="${totalPages == 0}">
-            <p>No results found.</p>
-        </div>
+            <!-- 페이지 번호들 -->
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/search/books(page=${i}, size=${pageSize}, searchKeyword=${searchKeyword}, category-id=${categoryId})}"
+                   th:text="${i + 1}"></a>
+            </li>
+
+            <!-- 다음 페이지 버튼 -->
+            <li class="page-item" th:if="${currentPage < totalPages - 1}">
+                <a class="page-link"
+                   th:href="@{/search/books(page=${currentPage + 1}, size=${pageSize}, searchKeyword=${searchKeyword}, category-id=${categoryId})}">
+                    다음
+                </a>
+            </li>
+        </ul>
+    </nav>
 
 
-        <!-- 다음 페이지 버튼 -->
-        <a th:if="${currentPage < totalPages - 1}" th:href="@{/search/books(page=${currentPage + 1}, searchKeyword=${searchKeyword}, category-id=${categoryId})}"
-           th:class="${currentPage == totalPages - 1} ? 'disabled' : ''">Next</a>
-    </div>
 
 
 
 </main>
+    <th:block th:replace="~{layout/layout :: footerLayout}"></th:block>
 
 
 

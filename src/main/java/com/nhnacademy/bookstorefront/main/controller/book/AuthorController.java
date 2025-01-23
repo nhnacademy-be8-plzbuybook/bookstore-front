@@ -2,6 +2,7 @@ package com.nhnacademy.bookstorefront.main.controller.book;
 
 import com.nhnacademy.bookstorefront.main.client.BookClient;
 import com.nhnacademy.bookstorefront.main.dto.book.AuthorResponseDto;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,7 +25,7 @@ public class AuthorController {
     // 관리자가 도서 추가 버튼 누르면 보이는 페이지 = 이거는 잘돼
     @GetMapping("/api/admin/authors")
     public Page<AuthorResponseDto> getAuthors(@RequestParam int page,
-                                              @RequestParam int size) {
+                                              @RequestParam int size, HttpServletRequest request) {
         return bookClient.getAuthors(page, size);
 //        return "admin/bookregister"; // 모달창으로 가야하는데
     }

@@ -112,7 +112,9 @@
 
       </div>
 
-      <p th:if="${#lists.isEmpty(cartBooks)}">장바구니가 비어 있습니다.</p>
+      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; margin-top: -20%;">
+        <p th:if="${#lists.isEmpty(cartBooks)}">장바구니가 비어 있습니다.</p>
+      </div>
     </div>
 
 

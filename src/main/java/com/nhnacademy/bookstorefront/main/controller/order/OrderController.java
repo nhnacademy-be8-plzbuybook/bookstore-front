@@ -256,7 +256,7 @@ public class OrderController {
      */
     @GetMapping("/orders/{order-id}")
     public String orderDetail(@PathVariable("order-id") String orderId,
-                              Model model) {
+                              Model model, HttpServletRequest request) {
         // 주문상세 DTO
 
         OrderDetail orderDetail = orderService.getOrderDetail(orderId);
@@ -326,6 +326,7 @@ public class OrderController {
      */
     @GetMapping("/admin/orders/{order-id}")
     public String getAdminOrderDetail(@PathVariable("order-id") String orderId,
+                                      HttpServletRequest request,
                                       Model model) {
         OrderDetail orderDetail = orderService.getOrderDetail(orderId);
         List<OrderStatus> orderStatuses = orderService.getOrderStatuses();
@@ -338,10 +339,15 @@ public class OrderController {
 
 
     @ResponseBody
-    @PostMapping("/api/orders")
-    public OrderSaveResponseDto requestOrder(@RequestBody OrderRequestDto orderRequest) {
-        OrderSaveResponseDto orderSaveResponse = orderService.requestOrder(orderRequest);
-        return orderSaveResponse;
+    @PostMapping("/api/orders/member")
+    public OrderSaveResponseDto requestMemberOrder(@RequestBody OrderRequestDto orderRequest) {
+        return orderService.requestMemberOrder(orderRequest);
+    }
+
+    @ResponseBody
+    @PostMapping("/api/orders/non-member")
+    public OrderSaveResponseDto requestNonMemberOrder(@RequestBody OrderRequestDto orderRequest) {
+        return orderService.requestNonMemberOrder(orderRequest);
     }
 
 
@@ -385,15 +391,6 @@ public class OrderController {
         orderService.completeOrderDelivery(orderId, deliveryId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-//    @ResponseBody
-//    @PostMapping("/api/orders/{order-id}/return")
-//    public ResponseEntity<Void> requestReturnOrder(@PathVariable("order-id") String orderId,
-//                                                   @RequestBody OrderReturnRequestDto returnRequest) {
-//        orderService.requestReturnOrder(orderId, returnRequest);
-//        return ResponseEntity.status(HttpStatus.OK).build();
-//    }
-
 
     @GetMapping("/order/{order-id}/cancel")
     public String orderCancellationPage(@PathVariable("order-id") String orderId,

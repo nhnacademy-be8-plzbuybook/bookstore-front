@@ -4,183 +4,190 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>쿠폰 등록 페이지</title>
-    <link rel="stylesheet" href="/css/coupon/coupon-register.css">
     <link rel="stylesheet" href="/css/layout/layout.css">
+    <link rel="stylesheet" href="/css/coupon/coupon-register.css">
     <script src="/js/coupon/coupon-register-modal.js" defer></script>
     <script src="/js/coupon/coupon-policy-find-modal.js"></script>
     <script src="/js/coupon/coupon-find-modal.js" defer></script>
+
 </head>
 <body>
-<th:block th:replace="~{layout/layout::headerFragment}"></th:block>
-<main>
-    <!-- 사이드바 -->
-    <div class="sidebar">
-        <div class="group active" data-section="member-management">회원 관리</div>
-        <a href="/admin/books" class="group">도서 관리</a>
-        <a href="/admin/selling-books" class="group">판매 도서 관리</a>
-        <div class="group" data-section="coupon-management">쿠폰 관리</div>
-        <div class="group" data-section="coupon-policy-management">쿠폰 정책 관리</div>
-        <a href="/admin/tag" class="group">태그 관리</a>
-        <div class="group" data-section="point-condition-management">포인트 조건 관리</div>
-        <a href="/admin/category" class="group">카테고리 관리</a>
-        <a href="/admin/coupon-register" class="group">쿠폰 제작</a>
-        <a href="/admin/coupon-issue" class="group">쿠폰 발급</a>
-        <a href="/admin/wrapping-papers" class="group">포장지 관리</a>
-        <a href="/admin/delivery-fee-policies" class="group">배송비정책 관리</a>
-        <a href="/admin/orders" class="group">주문 관리</a>
-        <a href="/admin/order-product-returns" class="group">반품요청 관리</a>
-        <a href = "/admin/authors" class="group" data-section="author-management">작가 관리</a>
+    <!-- 헤더 -->
+    <th:block th:replace="~{layout/layout::headerFragment}"></th:block>
+
+    <!-- 전체 레이아웃 컨테이너 -->
+    <div class="layout-container">
+
+        <!-- 사이드바 -->
+        <aside class="sidebar">
+            <th:block th:replace="~{admin/sidebar.html}"></th:block>
+        </aside>
+
+        <!-- 메인 콘텐츠 -->
+        <main class = "content">
+            <h1>쿠폰 정책 생성</h1><br>
+
+            <form action="/admin/coupon-policies" method="post">
+                <div class="form-group">
+                    <label for="name">쿠폰 이름:</label>
+                    <input type="text" id="name" name="name" value="DEFAULT_NAME" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="saleType">할인 유형:</label>
+                    <select id="saleType" name="saleType" required onchange="updateDiscountRatio()">
+                        <option value="AMOUNT">AMOUNT</option>
+                        <option value="RATIO">RATIO</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="minimumAmount">쿠폰사용 최소금액:</label>
+                    <input type="number" id="minimumAmount" name="minimumAmount" value="0.0" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="discountLimit">최대 할인금액:</label>
+                    <input type="number" id="discountLimit" name="discountLimit" value="0.0" step="0.01" min="0.0" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="discountRatio">할인율:</label>
+                    <input type="number" id="discountRatio" name="discountRatio" value="0" min="0" max="100" required>
+                    <input type="hidden" id="discountRatioHidden" name="discountRatio" value="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="isStackable">중복 사용 가능:</label>
+                    <input type="checkbox" id="isStackable" name="isStackable" value="true" checked>
+                    <input type="hidden" name="isStackable" value="false">
+                </div>
+
+
+                <div class="form-group">
+                    <label for="couponScope">쿠폰 적용범위:</label>
+                    <div class="inline-buttons">
+                        <button type="button" onclick="setCouponScope('ALL')">ALL</button>
+                        <button type="button" onclick="openBookSearchModal()">책 검색</button>
+                        <button type="button" onclick="openCategorySearchModal()">카테고리 검색</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <input type="hidden" id="couponScope" name="couponScope" value="ALL"><br>
+                    <span id="selectedBookDisplay">선택된 책 ID: 없음</span>
+                    <input type="hidden" id="selectedBookId" name="bookId">
+                    <br>
+                    <span id="selectedCategoryDisplay">선택된 카테고리: 없음</span>
+                    <input type="hidden" id="selectedCategoryId" name="categoryId">
+                    <input type="hidden" id="selectedCategoryName" name="categoryName">
+                </div>
+
+                <div class="form-group">
+                    <label for="startDate">시작 날짜:</label>
+                    <input type="datetime-local" id="startDate" name="startDate" value="2025-01-01T00:00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="endDate">종료 날짜:</label>
+                    <input type="datetime-local" id="endDate" name="endDate" value="2025-01-01T23:59" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="couponActive">활성화 여부:</label>
+                    <input type="checkbox" id="couponActive" name="couponActive" value="true" checked>
+                    <input type="hidden" name="couponActive" value="false">
+                </div>
+
+                <div class="inline-buttons">
+                    <button type="submit">쿠폰 정책 생성</button>
+                    <button type="button" onclick="couponPolicyFindOpenModal('/admin/coupon-policies?page=0&pageSize=10')">쿠폰 정책 조회</button>
+
+                    <div id="couponPolicyFindModal" class="modal" style="display: none;">
+                        <div id="couponPolicyFindModalContent"></div>
+                    </div>
+                </div>
+            </form>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const policyId = urlParams.get('createdCouponPolicyId');
+                    if (policyId) {
+                        alert(`생성된 정책 ID: ${policyId}`);
+                    }
+                });
+            </script>
+
+            <!-- 책 검색 모달 -->
+            <div id="bookSearchModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('bookSearchModal')">닫기</span>
+                    <h3>책 검색</h3>
+                    <div id="bookSearchContainer">
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 카테고리 검색 모달 -->
+            <div id="categorySearchModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <span class="close" onclick="closeModal('categorySearchModal')">닫기</span>
+                    <h3>카테고리 검색</h3>
+                    <div id="categorySearchContainer">
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 쿠폰 생성 -->
+            <h1>쿠폰 생성</h1>
+            <form action="/admin/coupons" method="post">
+                <div class="form-group">
+                    <label for="expired-at">만료일</label>
+                    <input type="datetime-local" id="expired-at" name="expiredAt" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="coupon-policy-id">적용할 쿠폰정책 ID</label>
+                    <input type="number" id="coupon-policy-id" name="couponPolicyId" required>
+                </div>
+
+                <div class="inline-buttons">
+                    <button type="submit">쿠폰 생성</button>
+                    <button type="button" onclick="openCouponModal('/admin/coupons?page=0')">쿠폰 조회</button>
+
+                    <div id="couponModal" class="modal" style="display: none;">
+                        <div id="couponModalContent"></div>
+                    </div>
+                </div>
+            </form>
+
+        </main>
     </div>
-    <!-- 메인 콘텐츠 -->
-
-    <h1>쿠폰 정책 생성</h1><br>
-    <form action="/admin/coupon-policies" method="post">
-        <label for="name">쿠폰 이름:</label>
-        <input type="text" id="name" name="name" value="DEFAULT_NAME" required><br>
-
-        <label for="saleType">할인 유형:</label>
-        <select id="saleType" name="saleType" required onchange="updateDiscountRatio()">
-            <option value="AMOUNT">AMOUNT</option>
-            <option value="RATIO">RATIO</option>
-        </select><br>
-
-        <label for="minimumAmount">쿠폰사용 최소금액:</label>
-        <input type="number" id="minimumAmount" name="minimumAmount" value="0.0" step="0.01" min="0"
-               required><br>
-
-        <label for="discountLimit">최대 할인금액:</label>
-        <input type="number" id="discountLimit" name="discountLimit" value="0.0" step="0.01" min="0.0" required><br>
-
-        <label for="discountRatio">할인율:</label>
-        <input type="number" id="discountRatio" name="discountRatio" value="0" min="0" max="100" required>%<br>
-        <input type="hidden" id="discountRatioHidden" name="discountRatio" value="0">
-
-        <label for="isStackable">중복 사용 가능:</label>
-        <input type="checkbox" id="isStackable" name="isStackable" value="true" checked><br>
-        <input type="hidden" name="isStackable" value="false">
-
-        <label for="couponScope">쿠폰 적용범위:</label>
-        <div>
-            <button type="button" onclick="setCouponScope('ALL')">ALL</button>
-
-            <button type="button" onclick="openBookSearchModal()">책 검색</button>
-            <label for="selectedBookDisplay"></label>
-            <span id="selectedBookDisplay">선택된 책 ID: 없음</span>
-            <input type="hidden" id="selectedBookId" name="bookId">
-
-            <button type="button" onclick="openCategorySearchModal()">카테고리 검색</button>
-            <label for="selectedCategoryDisplay"></label>
-            <span id="selectedCategoryDisplay">선택된 카테고리 ID: 없음</span>
-            <input type="hidden" id="selectedCategoryId" name="categoryId">
-            <span>, </span>
-            <label for="selectedCategoryNameDisplay"></label>
-            <span id="selectedCategoryNameDisplay">선택된 카테고리 이름: 없음</span>
-            <input type="hidden" id="selectedCategoryName" name="categoryName">
-
-        </div>
-        <input type="hidden" id="couponScope" name="couponScope" value="ALL"><br>
-
-
-        <label for="startDate">시작 날짜:</label>
-        <input type="datetime-local" id="startDate" name="startDate" value="2025-01-01T00:00" required><br>
-
-        <label for="endDate">종료 날짜:</label>
-        <input type="datetime-local" id="endDate" name="endDate" value="2025-01-01T23:59" required><br>
-
-        <label for="couponActive">활성화 여부:</label>
-        <input type="checkbox" id="couponActive" name="couponActive" value="true" checked><br>
-        <input type="hidden" name="couponActive" value="false">
-
-        <button type="submit">쿠폰 정책 생성</button>
-    </form>
-
+   <footer>
+    <p>&copy; 2025 PlzBuyBook. 모든 권리 보유.</p>
+    <p><a href="https://github.com/nhnacademy-be8-plzbuybook" target="_blank">PlzBuyBook GitHub</a></p>
+    <p><a href="/privacy">개인정보처리방침</a> | <a href="/terms">이용약관</a></p>
+</footer>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const policyId = urlParams.get('createdCouponPolicyId');
-            if (policyId) {
-                alert(`생성된 정책 ID: ${policyId}`);
+        const currentPath = window.location.pathname;
+        const sidebarLinks = document.querySelectorAll('.sidebar .group');
+
+        sidebarLinks.forEach(link => {
+            const linkPath = link.getAttribute('href');
+            if (linkPath === currentPath) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
             }
+
+            link.addEventListener('click', () => {
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
         });
     </script>
-
-    <!-- 책 검색 모달 -->
-    <div id="bookSearchModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('bookSearchModal')">닫기</span>
-            <h3>책 검색</h3>
-            <div id="bookSearchContainer">
-
-            </div>
-        </div>
-    </div>
-
-    <!-- 카테고리 검색 모달 -->
-    <div id="categorySearchModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('categorySearchModal')">닫기</span>
-            <h3>카테고리 검색</h3>
-            <div id="categorySearchContainer">
-
-            </div>
-        </div>
-    </div>
-
-    <!-- 쿠폰정책 조회 -->
-    <div>
-        <button type="button" onclick="couponPolicyFindOpenModal('/admin/coupon-policies?page=0&pageSize=10')">쿠폰 정책 조회</button>
-    </div>
-    <div id="couponPolicyFindModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div id="couponPolicyFindModalContent">
-
-            </div>
-            <button type="button" onclick="couponPolicyFindCloseModal()">닫기</button>
-        </div>
-    </div>
-
-    <!-- 쿠폰 생성 -->
-    <h3>쿠폰 생성</h3>
-    <form action="/admin/coupons" method="post">
-        <label for="expired-at">만료일</label>
-        <input type="datetime-local" id="expired-at" name="expiredAt" required><br>
-
-        <label for="coupon-policy-id">적용할 쿠폰정책 ID</label>
-        <input type="number" id="coupon-policy-id" name="couponPolicyId" required><br>
-
-        <button type="submit">쿠폰 생성</button>
-    </form>
-
-    <!-- 쿠폰 조회 -->
-    <div>
-        <button type="button" onclick="openCouponModal('/admin/coupons?page=0')">쿠폰 조회</button>
-    </div>
-    <div id="couponModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div id="couponModalContent">
-
-            </div>
-            <button type="button" onclick="closeCouponModal()">닫기</button>
-        </div>
-    </div>
-
-</main>
-
-<script>
-    const sidebarItems = document.querySelectorAll('.sidebar .group');
-    const sections = document.querySelectorAll('.section');
-
-    sidebarItems.forEach(item => {
-        item.addEventListener('click', () => {
-            sidebarItems.forEach(i => i.classList.remove('active'));
-            sections.forEach(section => section.classList.remove('active'));
-
-            item.classList.add('active');
-            const sectionId = item.getAttribute('data-section');
-            document.getElementById(sectionId).classList.add('active');
-        });
-    });
-</script>
-<th:block th:replace="~{layout/layout::footerLayout}"></th:block>
 </body>
 </html>
