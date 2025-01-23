@@ -95,7 +95,7 @@
                     <button type="submit">리뷰작성</button>
                 </form>
             </td>
-            <td th:if="${orderDetail.getStatus().getCode() >= 2 and orderDetail.getStatus().getCode() <= 5}">
+            <td th:if="${orderProduct.getStatus().equals('배송완료') && orderProduct.getStatus().equals('주문확정')}">
                 <a th:href="@{/orders/{order-id}/order-products/{order-product-id}/return(order-id=${orderDetail.getOrderId()}, order-product-id=${orderProduct.getOrderProductId()}, quantity=${orderProduct.getQuantity()})}">반품요청</a>
             </td>
         </tr>
