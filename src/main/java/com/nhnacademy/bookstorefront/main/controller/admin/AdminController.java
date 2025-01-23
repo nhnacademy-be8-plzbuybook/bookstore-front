@@ -64,7 +64,7 @@ public class AdminController {
         return "admin/members";
     }
 
-    @PostMapping("/adminpage/update")
+    @PostMapping("members/update")
     public String updateMember(MemberModifyByAdminRequestDto memberModifyByAdminRequestDto) {
         memberClient.updateMember(memberModifyByAdminRequestDto);
         return "redirect:/admin/members";
