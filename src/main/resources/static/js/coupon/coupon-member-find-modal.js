@@ -44,8 +44,9 @@ function goToMemberFindPage(page) {
 
 function goToMemberFindPageByInput() {
     const pageInput = document.getElementById('pageInput').value;
-    if (pageInput !== '' && pageInput >= 0) {
-        goToMemberFindPage(pageInput);
+    if (pageInput !== '' && pageInput > 0) {
+        const adjustedPage = pageInput - 1;
+        goToMemberFindPage(adjustedPage);
     } else {
         alert('유효한 페이지 번호를 입력해주세요.');
     }

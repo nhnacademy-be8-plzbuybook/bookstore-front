@@ -217,9 +217,56 @@ form button:active {
     background-color: white;
     border-radius: 8px;
     padding: 20px;
-    width: 80%;
-    max-width: 600px;
+    width: 90%; /* 기본 너비 */
+    max-width: 800px; /* 최대 너비 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow-y: auto; /* 내용이 많으면 스크롤 생성 */
+    max-height: 90vh; /* 최대 높이를 화면 높이의 90%로 제한 */
+    box-sizing: border-box;
+}
+
+.modal-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.modal-content table th,
+.modal-content table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+.modal-content table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+    color: #333;
+}
+
+.modal-content table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.modal-content table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* 닫기 버튼 스타일 */
+.modal-content .close {
+    display: inline-block;
+    background-color: #ff6b6b;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    float: right; /* 버튼을 오른쪽으로 정렬 */
+}
+
+.modal-content .close:hover {
+    background-color: #ff4c4c;
 }
 
 /* 테이블 스타일 */
@@ -256,6 +303,7 @@ table tr:hover {
     justify-content: center;
     gap: 10px;
     margin-top: 20px;
+    flex-wrap: wrap;
 }
 
 .pagination a {
@@ -277,7 +325,33 @@ table tr:hover {
     color: white;
     pointer-events: none;
 }
+.pagination button,
+.pagination span {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
 
+.pagination button:hover {
+    background-color: #1abc9c;
+    color: white;
+}
+
+.pagination button.active {
+    background-color: #1abc9c;
+    color: white;
+    pointer-events: none;
+}
+
+.pagination span {
+    cursor: default;
+    color: #999;
+}
 /* 푸터 스타일 */
 footer {
     background-color: #333;
