@@ -44,7 +44,7 @@ public class MemberController {
             return "redirect:/login";
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
-            return "member/signup";
+            return "error/signupError";
         }
     }
 
