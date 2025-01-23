@@ -107,7 +107,7 @@ public class PageController {
             memberClient.createAddress(addressRequestDto);
         } catch (Exception e) {
             model.addAttribute("error", "주소 등록에 실패했습니다.");
-            return"redirect:/mypage";
+            return"error/maxAddressError";
         }
 
         return "redirect:/mypage";
