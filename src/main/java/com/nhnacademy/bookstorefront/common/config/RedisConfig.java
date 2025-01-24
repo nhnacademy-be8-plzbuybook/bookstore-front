@@ -33,7 +33,7 @@ public class RedisConfig {
         int database = 234;
 
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
-        redisConfig.setHostName("220.67.216.14");
+        redisConfig.setHostName("10.116.64.14");
         redisConfig.setPort(port);
         redisConfig.setPassword(password);
         redisConfig.setDatabase(database);
