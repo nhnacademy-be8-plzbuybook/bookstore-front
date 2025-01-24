@@ -45,6 +45,10 @@ public class AuthenticationController {
             return "redirect:" + loginResponse.redirectUrl();
         }
 
+        if ("WITHDRAWAL".equals(loginResponse.memberStateName())) {
+            return loginResponse.redirectUrl();
+        }
+
         String accessToken = loginResponse.accessToken();
 
         // 발급된 토큰 쿠키에 저장

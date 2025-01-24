@@ -34,10 +34,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 throw new LoginFailException("회원 상태 정보가 유효하지 않습니다.");
             }
 
-            if ("WITHDRAWAL".equals(loginResponse.memberStateName())) {
-                // 탈퇴한 회원의 경우
-                throw new LoginFailException("이미 탈퇴한 회원입니다.");
-            }
+//            if ("WITHDRAWAL".equals(loginResponse.memberStateName())) {
+//                // 탈퇴한 회원의 경우
+//                throw new LoginFailException("이미 탈퇴한 회원입니다.");
+//            }
 
             return loginResponse;
 
