@@ -43,12 +43,18 @@ jobs:
           port: ${{ secrets.SSH_NHN_PORT }}
           password: ${{ secrets.SSH_NHN_PASSWORD }}
           script: |
+            # 기존 애플리케이션 종료
+            echo -e "Stopping existing applications on ports 10141 and 10142"
+            pkill -f 'java -Dserver.port=10141 -Dspring.profiles.active=nhn -jar /home/be8/be8-team4/front/bookstore-front-0.0.1-SNAPSHOT.jar' || true
+            pkill -f 'java -Dserver.port=10142 -Dspring.profiles.active=nhn -jar /home/be8/be8-team4/front/bookstore-front-0.0.1-SNAPSHOT.jar' || true
+            
+            # 디렉토리 생성
             mkdir -p /home/be8/be8-team4/front
             
-            cd /home/be8/be8-team4/front
-            
-            echo -e "Starting auth jar on port 10141"
+            # 애플리케이션 실행
+            echo -e "Starting jar on port 10141"
             nohup /usr/local/java/java21/bin/java -Dserver.port=10141 -Dspring.profiles.active=nhn -jar /home/be8/be8-team4/front/bookstore-front-0.0.1-SNAPSHOT.jar > /home/be8/be8-team4/front/log_10141.log 2>&1 &
-              
-            echo -e "Starting auth jar on port 10142"
+            
+            echo -e "Starting jar on port 10142"
             nohup /usr/local/java/java21/bin/java -Dserver.port=10142 -Dspring.profiles.active=nhn -jar /home/be8/be8-team4/front/bookstore-front-0.0.1-SNAPSHOT.jar > /home/be8/be8-team4/front/log_10142.log 2>&1 &
+
