@@ -43,10 +43,14 @@ jobs:
           port: ${{ secrets.SSH_NHN_PORT }}
           password: ${{ secrets.SSH_NHN_PASSWORD }}
           script: |
+            script: |
+            
             # 기존 애플리케이션 종료
             echo -e "Stopping existing applications on ports 10141 and 10142"
-            pkill -f 'java -Dserver.port=10141 -Dspring.profiles.active=nhn -jar /home/be8/be8-team4/front/bookstore-front-0.0.1-SNAPSHOT.jar' || true
-            pkill -f 'java -Dserver.port=10142 -Dspring.profiles.active=nhn -jar /home/be8/be8-team4/front/bookstore-front-0.0.1-SNAPSHOT.jar' || true
+            PID_10141=$(lsof -t -i:10141) || true
+            PID_10142=$(lsof -t -i:10142) || true
+            [ -n "$PID_10141" ] && kill $PID_10141 || echo "No process found on port 10141"
+            [ -n "$PID_10142" ] && kill $PID_10142 || echo "No process found on port 10142"
             
             # 디렉토리 생성
             mkdir -p /home/be8/be8-team4/front
