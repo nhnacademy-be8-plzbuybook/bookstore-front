@@ -1,14 +1,11 @@
 # 실행할때 vm option 으로 -Dserver.port=3000 , 3001 -> 두개의 포트만 다른 프론트가 실행됩니다.
 spring:
-  config:
-    activate:
-      on-profile: nhn
   application:
     name: front
 
   data:
     redis:
-      host: 10.116.64.14
+      host: 220.67.216.14
       port: 6379
       password: "*N2vya7H@muDTwdNMR!"
 
