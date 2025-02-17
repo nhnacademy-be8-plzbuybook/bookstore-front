@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorefront.common.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,10 +13,11 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 
+@Slf4j
 @Configuration
 public class RedisConfig {
 
-    @Value("${spring.data.redis.port}")
+    @Value("${spring.data.redis.host}")
     private String redisHost;
 
     @Value("${spring.data.redis.port}")
@@ -28,12 +30,13 @@ public class RedisConfig {
 
     @Bean(name = "verifyRedisConnectionFactory")
     public RedisConnectionFactory verifyRedisConnectionFactory() {
+        String host = redisHost;
         int port = redisPort;
         String password = redisPassword;
         int database = 234;
 
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
-        redisConfig.setHostName("10.116.64.14");
+        redisConfig.setHostName(host);
         redisConfig.setPort(port);
         redisConfig.setPassword(password);
         redisConfig.setDatabase(database);

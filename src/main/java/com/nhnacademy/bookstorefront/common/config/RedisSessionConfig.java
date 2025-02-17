@@ -1,5 +1,6 @@
 package com.nhnacademy.bookstorefront.common.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
+@Slf4j
 @Configuration
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds = 60 * 60)
 public class RedisSessionConfig {
@@ -30,12 +32,14 @@ public class RedisSessionConfig {
     @Primary
     @Bean(name = "getSessionRedisFactory")
     public RedisConnectionFactory getSessionRedisFactory() {
+        String host = sessionRedisHost;
         int port = sessionRedisPort;
         String password = sessionRedisPassword;
         int database = 235;
 
+        log.info("host: {}, port: {}, password: {}", host, port, password);
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
-        redisConfig.setHostName("10.116.64.14");
+        redisConfig.setHostName(host);
         redisConfig.setPort(port);
         redisConfig.setPassword(password);
         redisConfig.setDatabase(database);
